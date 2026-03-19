@@ -1,0 +1,141 @@
+Assuming unrestricted shared filesystem usage.
+host: sebas-MS-7D09
+Building DAG of jobs...
+Creating conda environment envs/ml_per_segment.yml...
+Downloading and installing remote packages.
+Cleaning up conda package tarballs.
+Environment for /home/sebas/MIRA_NGS/flu_aviar/rules/../envs/ml_per_segment.yml created (location: .snakemake/conda/b5e3927d7e5dd358e1b57cb243e32c28_)
+Using shell: /usr/bin/bash
+Provided cores: 1 (use --cores to define parallelism)
+Rules claiming more threads will be scaled down.
+Job stats:
+job                        count
+-----------------------  -------
+align_all_segments             1
+mafft_align_per_segment        8
+total                          9
+
+Select jobs to execute...
+Execute 1 jobs...
+[Wed Mar 18 21:21:48 2026]
+localrule mafft_align_per_segment:
+    input: data/phylogeny/by_segment/H5N1_PB2.fasta
+    output: data/phylogeny/aligned/H5N1_PB2.aligned.fasta
+    jobid: 1
+    reason: Missing output files: data/phylogeny/aligned/H5N1_PB2.aligned.fasta
+    wildcards: segment=PB2
+    resources: tmpdir=/tmp
+Activating conda environment: .snakemake/conda/b5e3927d7e5dd358e1b57cb243e32c28_
+Select jobs to execute...
+[Wed Mar 18 21:23:00 2026]
+Finished jobid: 1 (Rule: mafft_align_per_segment)
+1 of 9 steps (11%) done
+Execute 1 jobs...
+[Wed Mar 18 21:23:00 2026]
+localrule mafft_align_per_segment:
+    input: data/phylogeny/by_segment/H5N1_NS.fasta
+    output: data/phylogeny/aligned/H5N1_NS.aligned.fasta
+    jobid: 8
+    reason: Missing output files: data/phylogeny/aligned/H5N1_NS.aligned.fasta
+    wildcards: segment=NS
+    resources: tmpdir=/tmp
+Activating conda environment: .snakemake/conda/b5e3927d7e5dd358e1b57cb243e32c28_
+Select jobs to execute...
+[Wed Mar 18 21:23:32 2026]
+Finished jobid: 8 (Rule: mafft_align_per_segment)
+2 of 9 steps (22%) done
+Execute 1 jobs...
+[Wed Mar 18 21:23:32 2026]
+localrule mafft_align_per_segment:
+    input: data/phylogeny/by_segment/H5N1_NA.fasta
+    output: data/phylogeny/aligned/H5N1_NA.aligned.fasta
+    jobid: 6
+    reason: Missing output files: data/phylogeny/aligned/H5N1_NA.aligned.fasta
+    wildcards: segment=NA
+    resources: tmpdir=/tmp
+Activating conda environment: .snakemake/conda/b5e3927d7e5dd358e1b57cb243e32c28_
+Select jobs to execute...
+[Wed Mar 18 21:23:44 2026]
+Finished jobid: 6 (Rule: mafft_align_per_segment)
+3 of 9 steps (33%) done
+Execute 1 jobs...
+[Wed Mar 18 21:23:44 2026]
+localrule mafft_align_per_segment:
+    input: data/phylogeny/by_segment/H5N1_HA.fasta
+    output: data/phylogeny/aligned/H5N1_HA.aligned.fasta
+    jobid: 4
+    reason: Missing output files: data/phylogeny/aligned/H5N1_HA.aligned.fasta
+    wildcards: segment=HA
+    resources: tmpdir=/tmp
+Activating conda environment: .snakemake/conda/b5e3927d7e5dd358e1b57cb243e32c28_
+Select jobs to execute...
+[Wed Mar 18 21:24:26 2026]
+Finished jobid: 4 (Rule: mafft_align_per_segment)
+4 of 9 steps (44%) done
+Execute 1 jobs...
+[Wed Mar 18 21:24:26 2026]
+localrule mafft_align_per_segment:
+    input: data/phylogeny/by_segment/H5N1_NP.fasta
+    output: data/phylogeny/aligned/H5N1_NP.aligned.fasta
+    jobid: 5
+    reason: Missing output files: data/phylogeny/aligned/H5N1_NP.aligned.fasta
+    wildcards: segment=NP
+    resources: tmpdir=/tmp
+Activating conda environment: .snakemake/conda/b5e3927d7e5dd358e1b57cb243e32c28_
+Select jobs to execute...
+[Wed Mar 18 21:24:27 2026]
+Finished jobid: 5 (Rule: mafft_align_per_segment)
+5 of 9 steps (56%) done
+Execute 1 jobs...
+[Wed Mar 18 21:24:27 2026]
+localrule mafft_align_per_segment:
+    input: data/phylogeny/by_segment/H5N1_PA.fasta
+    output: data/phylogeny/aligned/H5N1_PA.aligned.fasta
+    jobid: 3
+    reason: Missing output files: data/phylogeny/aligned/H5N1_PA.aligned.fasta
+    wildcards: segment=PA
+    resources: tmpdir=/tmp
+Activating conda environment: .snakemake/conda/b5e3927d7e5dd358e1b57cb243e32c28_
+Select jobs to execute...
+[Wed Mar 18 21:25:29 2026]
+Finished jobid: 3 (Rule: mafft_align_per_segment)
+6 of 9 steps (67%) done
+Execute 1 jobs...
+[Wed Mar 18 21:25:29 2026]
+localrule mafft_align_per_segment:
+    input: data/phylogeny/by_segment/H5N1_PB1.fasta
+    output: data/phylogeny/aligned/H5N1_PB1.aligned.fasta
+    jobid: 2
+    reason: Missing output files: data/phylogeny/aligned/H5N1_PB1.aligned.fasta
+    wildcards: segment=PB1
+    resources: tmpdir=/tmp
+Activating conda environment: .snakemake/conda/b5e3927d7e5dd358e1b57cb243e32c28_
+Select jobs to execute...
+[Wed Mar 18 21:26:33 2026]
+Finished jobid: 2 (Rule: mafft_align_per_segment)
+7 of 9 steps (78%) done
+Execute 1 jobs...
+[Wed Mar 18 21:26:33 2026]
+localrule mafft_align_per_segment:
+    input: data/phylogeny/by_segment/H5N1_MP.fasta
+    output: data/phylogeny/aligned/H5N1_MP.aligned.fasta
+    jobid: 7
+    reason: Missing output files: data/phylogeny/aligned/H5N1_MP.aligned.fasta
+    wildcards: segment=MP
+    resources: tmpdir=/tmp
+Activating conda environment: .snakemake/conda/b5e3927d7e5dd358e1b57cb243e32c28_
+[Wed Mar 18 21:26:34 2026]
+Finished jobid: 7 (Rule: mafft_align_per_segment)
+8 of 9 steps (89%) done
+Select jobs to execute...
+Execute 1 jobs...
+[Wed Mar 18 21:26:34 2026]
+localrule align_all_segments:
+    input: data/phylogeny/aligned/H5N1_PB2.aligned.fasta, data/phylogeny/aligned/H5N1_PB1.aligned.fasta, data/phylogeny/aligned/H5N1_PA.aligned.fasta, data/phylogeny/aligned/H5N1_HA.aligned.fasta, data/phylogeny/aligned/H5N1_NP.aligned.fasta, data/phylogeny/aligned/H5N1_NA.aligned.fasta, data/phylogeny/aligned/H5N1_MP.aligned.fasta, data/phylogeny/aligned/H5N1_NS.aligned.fasta
+    jobid: 0
+    reason: Input files updated by another job: data/phylogeny/aligned/H5N1_PA.aligned.fasta, data/phylogeny/aligned/H5N1_MP.aligned.fasta, data/phylogeny/aligned/H5N1_NP.aligned.fasta, data/phylogeny/aligned/H5N1_PB2.aligned.fasta, data/phylogeny/aligned/H5N1_NA.aligned.fasta, data/phylogeny/aligned/H5N1_NS.aligned.fasta, data/phylogeny/aligned/H5N1_PB1.aligned.fasta, data/phylogeny/aligned/H5N1_HA.aligned.fasta
+    resources: tmpdir=/tmp
+[Wed Mar 18 21:26:34 2026]
+Finished jobid: 0 (Rule: align_all_segments)
+9 of 9 steps (100%) done
+Complete log(s): /home/sebas/MIRA_NGS/flu_aviar/.snakemake/log/2026-03-18T212121.157702.snakemake.log

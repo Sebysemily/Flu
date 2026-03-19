@@ -1,0 +1,8 @@
+WorkflowError:
+Failed to clean up metadata for the following files because the metadata was not present.
+If this is expected, there is nothing to do.
+Otherwise, the reason might be file system latency or still running jobs.
+Consider running metadata cleanup again.
+Files:
+data/assembled/all_assembled_regions_denv2_style.fasta
+data/assembled/all_assembled_regions_denv2_style_summary.csv

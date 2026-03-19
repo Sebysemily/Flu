@@ -1,0 +1,28 @@
+{
+  "name": "mpi",
+  "version": "1.0",
+  "build": "openmpi",
+  "build_number": 0,
+  "channel": "https://conda.anaconda.org/conda-forge/linux-64",
+  "subdir": "linux-64",
+  "fn": "mpi-1.0-openmpi.tar.bz2",
+  "md5": "1dcc49e16749ff79ba2194fa5d4ca5e7",
+  "url": "https://conda.anaconda.org/conda-forge/linux-64/mpi-1.0-openmpi.tar.bz2",
+  "sha256": "54cf44ee2c122bce206f834a825af06e3b14fc4fd58c968ae9329715cc281d1e",
+  "depends": [],
+  "constrains": [],
+  "license": "BSD 3-clause",
+  "size": 4204,
+  "requested_spec": "None",
+  "package_tarball_full_path": "/home/sebas/miniconda3/pkgs/mpi-1.0-openmpi.tar.bz2",
+  "extracted_package_dir": "/home/sebas/miniconda3/pkgs/mpi-1.0-openmpi",
+  "files": [],
+  "paths_data": {
+    "paths_version": 1,
+    "paths": []
+  },
+  "link": {
+    "source": "/home/sebas/miniconda3/pkgs/mpi-1.0-openmpi",
+    "type": 1
+  }
+}

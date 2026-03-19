@@ -1,0 +1,47 @@
+The flag 'directory' used in rule all is only valid for outputs, not inputs.
+Assuming unrestricted shared filesystem usage.
+host: sebas-MS-7D09
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 20
+Rules claiming more threads will be scaled down.
+Job stats:
+job                             count
+----------------------------  -------
+all                                 1
+build_gisaid_input_from_mira        1
+total                               2
+
+Select jobs to execute...
+Execute 1 jobs...
+[Thu Mar 12 19:38:17 2026]
+localrule build_gisaid_input_from_mira:
+    input: ../run1/amended_consensus.fasta, ../run10/amended_consensus.fasta, ../run12/amended_consensus.fasta, ../run17/amended_consensus.fasta, ../run2/amended_consensus.fasta, ../run20/amended_consensus.fasta, ../run21/amended_consensus.fasta, ../run22/amended_consensus.fasta, ../run23/amended_consensus.fasta, ../run24/amended_consensus.fasta, ../run25/amended_consensus.fasta, ../run26/amended_consensus.fasta, ../run3/amended_consensus.fasta, ../run8/amended_consensus.fasta, ../run9/amended_consensus.fasta, ../run_agro/amended_consensus.fasta, config/flu_filtrado.csv
+    output: data/all_amended_fasta, data/assembled/mira_raw_segment_records.csv, data/assembled/mira_expected_segment_lengths.csv, data/assembled/mira_repo_input_summary.csv, data/assembled/mira_repo_input_fasta_audit.csv, data/assembled/samples_not_processed.csv, data/assembled/all_samples_filled_for_repo.fasta, data/assembled/per_sample_fastas
+    jobid: 1
+    reason: Missing output files: data/assembled/per_sample_fastas, data/assembled/mira_repo_input_fasta_audit.csv, data/all_amended_fasta, data/assembled/mira_repo_input_summary.csv, data/assembled/all_samples_filled_for_repo.fasta, data/assembled/samples_not_processed.csv
+    resources: tmpdir=/tmp
+ImproperOutputException in rule build_gisaid_input_from_mira in file "/home/sebas/MIRA_NGS/flu_aviar/rules/mira_prep.smk", line 10:
+Outputs of incorrect type (directories when expecting files or vice versa). Output directories must be flagged with directory(). for rule build_gisaid_input_from_mira:
+    output: data/all_amended_fasta, data/assembled/mira_raw_segment_records.csv, data/assembled/mira_expected_segment_lengths.csv, data/assembled/mira_repo_input_summary.csv, data/assembled/mira_repo_input_fasta_audit.csv, data/assembled/samples_not_processed.csv, data/assembled/all_samples_filled_for_repo.fasta, data/assembled/per_sample_fastas
+    affected files:
+        data/all_amended_fasta
+Removing output files of failed job build_gisaid_input_from_mira since they might be corrupted:
+data/all_amended_fasta, data/assembled/mira_raw_segment_records.csv, data/assembled/mira_expected_segment_lengths.csv, data/assembled/mira_repo_input_summary.csv, data/assembled/mira_repo_input_fasta_audit.csv, data/assembled/samples_not_processed.csv, data/assembled/all_samples_filled_for_repo.fasta, data/assembled/per_sample_fastas
+Skipped removing non-empty directory data/all_amended_fasta
+Shutting down, this might take some time.
+Exiting because a job execution failed. Look below for error messages
+[Thu Mar 12 19:38:17 2026]
+Error in rule build_gisaid_input_from_mira:
+    message: None
+    jobid: 1
+    input: ../run1/amended_consensus.fasta, ../run10/amended_consensus.fasta, ../run12/amended_consensus.fasta, ../run17/amended_consensus.fasta, ../run2/amended_consensus.fasta, ../run20/amended_consensus.fasta, ../run21/amended_consensus.fasta, ../run22/amended_consensus.fasta, ../run23/amended_consensus.fasta, ../run24/amended_consensus.fasta, ../run25/amended_consensus.fasta, ../run26/amended_consensus.fasta, ../run3/amended_consensus.fasta, ../run8/amended_consensus.fasta, ../run9/amended_consensus.fasta, ../run_agro/amended_consensus.fasta, config/flu_filtrado.csv
+    output: data/all_amended_fasta, data/assembled/mira_raw_segment_records.csv, data/assembled/mira_expected_segment_lengths.csv, data/assembled/mira_repo_input_summary.csv, data/assembled/mira_repo_input_fasta_audit.csv, data/assembled/samples_not_processed.csv, data/assembled/all_samples_filled_for_repo.fasta, data/assembled/per_sample_fastas
+    shell:
+        
+        python code/build_gisaid_input_from_mira.py
+        
+        (command exited with non-zero exit code)
+Complete log(s): /home/sebas/MIRA_NGS/flu_aviar/.snakemake/log/2026-03-12T193817.560982.snakemake.log
+WorkflowError:
+At least one job did not complete successfully.

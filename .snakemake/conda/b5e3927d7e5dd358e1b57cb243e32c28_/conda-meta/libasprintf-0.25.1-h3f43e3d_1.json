@@ -1,0 +1,51 @@
+{
+  "name": "libasprintf",
+  "version": "0.25.1",
+  "build": "h3f43e3d_1",
+  "build_number": 1,
+  "channel": "https://conda.anaconda.org/conda-forge/linux-64",
+  "subdir": "linux-64",
+  "fn": "libasprintf-0.25.1-h3f43e3d_1.conda",
+  "md5": "3b0d184bc9404516d418d4509e418bdc",
+  "url": "https://conda.anaconda.org/conda-forge/linux-64/libasprintf-0.25.1-h3f43e3d_1.conda",
+  "sha256": "cb728a2a95557bb6a5184be2b8be83a6f2083000d0c7eff4ad5bbe5792133541",
+  "depends": [
+    "__glibc >=2.17,<3.0.a0",
+    "libgcc >=14",
+    "libstdcxx >=14"
+  ],
+  "constrains": [],
+  "license": "LGPL-2.1-or-later",
+  "timestamp": 1753342901000,
+  "size": 53582,
+  "requested_spec": "None",
+  "package_tarball_full_path": "/home/sebas/miniconda3/pkgs/libasprintf-0.25.1-h3f43e3d_1.conda",
+  "extracted_package_dir": "/home/sebas/miniconda3/pkgs/libasprintf-0.25.1-h3f43e3d_1",
+  "files": [
+    "lib/libasprintf.so.0",
+    "lib/libasprintf.so.0.0.0"
+  ],
+  "paths_data": {
+    "paths_version": 1,
+    "paths": [
+      {
+        "_path": "lib/libasprintf.so.0",
+        "path_type": "hardlink",
+        "sha256": "b735cfc1eb0e5f017671523e4be5ae1614d22ba85ebc9a75229dbacab1d02c73",
+        "size_in_bytes": 110480,
+        "sha256_in_prefix": "b735cfc1eb0e5f017671523e4be5ae1614d22ba85ebc9a75229dbacab1d02c73"
+      },
+      {
+        "_path": "lib/libasprintf.so.0.0.0",
+        "path_type": "hardlink",
+        "sha256": "b735cfc1eb0e5f017671523e4be5ae1614d22ba85ebc9a75229dbacab1d02c73",
+        "size_in_bytes": 110480,
+        "sha256_in_prefix": "b735cfc1eb0e5f017671523e4be5ae1614d22ba85ebc9a75229dbacab1d02c73"
+      }
+    ]
+  },
+  "link": {
+    "source": "/home/sebas/miniconda3/pkgs/libasprintf-0.25.1-h3f43e3d_1",
+    "type": 1
+  }
+}

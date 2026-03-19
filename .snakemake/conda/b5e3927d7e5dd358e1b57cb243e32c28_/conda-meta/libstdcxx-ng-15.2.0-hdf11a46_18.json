@@ -1,0 +1,31 @@
+{
+  "name": "libstdcxx-ng",
+  "version": "15.2.0",
+  "build": "hdf11a46_18",
+  "build_number": 18,
+  "channel": "https://conda.anaconda.org/conda-forge/linux-64",
+  "subdir": "linux-64",
+  "fn": "libstdcxx-ng-15.2.0-hdf11a46_18.conda",
+  "md5": "6235adb93d064ecdf3d44faee6f468de",
+  "url": "https://conda.anaconda.org/conda-forge/linux-64/libstdcxx-ng-15.2.0-hdf11a46_18.conda",
+  "sha256": "3c902ffd673cb3c6ddde624cdb80f870b6c835f8bf28384b0016e7d444dd0145",
+  "depends": [
+    "libstdcxx 15.2.0 h934c35e_18"
+  ],
+  "constrains": [],
+  "license": "GPL-3.0-only WITH GCC-exception-3.1",
+  "timestamp": 1771378314000,
+  "size": 27575,
+  "requested_spec": "None",
+  "package_tarball_full_path": "/home/sebas/miniconda3/pkgs/libstdcxx-ng-15.2.0-hdf11a46_18",
+  "extracted_package_dir": "/home/sebas/miniconda3/pkgs/libstdcxx-ng-15.2.0-hdf11a46_18",
+  "files": [],
+  "paths_data": {
+    "paths_version": 1,
+    "paths": []
+  },
+  "link": {
+    "source": "/home/sebas/miniconda3/pkgs/libstdcxx-ng-15.2.0-hdf11a46_18",
+    "type": 1
+  }
+}

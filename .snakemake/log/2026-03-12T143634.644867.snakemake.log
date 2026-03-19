@@ -1,0 +1,38 @@
+The flag 'directory' used in rule all is only valid for outputs, not inputs.
+Assuming unrestricted shared filesystem usage.
+host: sebas-MS-7D09
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 20
+Rules claiming more threads will be scaled down.
+Job stats:
+job                             count
+----------------------------  -------
+all                                 1
+build_gisaid_input_from_mira        1
+total                               2
+
+Select jobs to execute...
+Execute 1 jobs...
+[Thu Mar 12 14:36:34 2026]
+localrule build_gisaid_input_from_mira:
+    input: ../run1/amended_consensus.fasta, ../run10/amended_consensus.fasta, ../run12/amended_consensus.fasta, ../run17/amended_consensus.fasta, ../run2/amended_consensus.fasta, ../run20/amended_consensus.fasta, ../run21/amended_consensus.fasta, ../run22/amended_consensus.fasta, ../run23/amended_consensus.fasta, ../run24/amended_consensus.fasta, ../run25/amended_consensus.fasta, ../run26/amended_consensus.fasta, ../run3/amended_consensus.fasta, ../run8/amended_consensus.fasta, ../run9/amended_consensus.fasta, ../run_agro/amended_consensus.fasta, config/flu_filtrado.csv
+    output: data/assembled/mira_raw_segment_records.csv, data/assembled/mira_expected_segment_lengths.csv, data/assembled/mira_repo_input_summary.csv, data/assembled/mira_repo_input_fasta_audit.csv, data/assembled/samples_not_processed.csv, data/assembled/all_samples_filled_for_repo.fasta, data/assembled/per_sample_fastas
+    jobid: 1
+    reason: Missing output files: data/assembled/samples_not_processed.csv, data/assembled/all_samples_filled_for_repo.fasta, data/assembled/mira_repo_input_fasta_audit.csv, data/assembled/mira_repo_input_summary.csv, data/assembled/per_sample_fastas
+    resources: tmpdir=/tmp
+[Thu Mar 12 14:36:34 2026]
+Finished jobid: 1 (Rule: build_gisaid_input_from_mira)
+1 of 2 steps (50%) done
+Select jobs to execute...
+Execute 1 jobs...
+[Thu Mar 12 14:36:34 2026]
+localrule all:
+    input: data/assembled/mira_repo_input_summary.csv, data/assembled/mira_repo_input_fasta_audit.csv, data/assembled/samples_not_processed.csv, data/assembled/all_samples_filled_for_repo.fasta, data/assembled/per_sample_fastas
+    jobid: 0
+    reason: Input files updated by another job: data/assembled/samples_not_processed.csv, data/assembled/all_samples_filled_for_repo.fasta, data/assembled/mira_repo_input_fasta_audit.csv, data/assembled/mira_repo_input_summary.csv, data/assembled/per_sample_fastas
+    resources: tmpdir=/tmp
+[Thu Mar 12 14:36:34 2026]
+Finished jobid: 0 (Rule: all)
+2 of 2 steps (100%) done
+Complete log(s): /home/sebas/MIRA_NGS/flu_aviar/.snakemake/log/2026-03-12T143634.644867.snakemake.log

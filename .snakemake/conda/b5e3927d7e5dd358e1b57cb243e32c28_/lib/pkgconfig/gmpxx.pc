@@ -1,0 +1,12 @@
+prefix=/home/sebas/MIRA_NGS/flu_aviar/.snakemake/conda/b5e3927d7e5dd358e1b57cb243e32c28_
+exec_prefix=${prefix}
+includedir=${prefix}/include
+libdir=${exec_prefix}/lib
+
+Name: GNU MP C++
+Description: GNU Multiple Precision Arithmetic Library (C++ bindings)
+URL: https://gmplib.org
+Version: 6.3.0
+Requires: gmp
+Cflags: -I${includedir}
+Libs: -L${libdir} -lgmpxx
