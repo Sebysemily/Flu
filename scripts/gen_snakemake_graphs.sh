@@ -2,9 +2,10 @@
 set -euo pipefail
 
 # Usage: ./scripts/gen_snakemake_graphs.sh [TARGET] [OUTDIR]
-# Example: ./scripts/gen_snakemake_graphs.sh data/final/H5N1_final.fasta analysis
+# Example (full pipeline, including ML trees): ./scripts/gen_snakemake_graphs.sh all analysis
+# Example (only until final FASTA): ./scripts/gen_snakemake_graphs.sh data/final/H5N1_final.fasta analysis
 
-TARGET=${1:-data/final/H5N1_final.fasta}
+TARGET=${1:-all}
 OUTDIR=${2:-analysis}
 mkdir -p "$OUTDIR"
 

@@ -1,15 +1,49 @@
 Building DAG of jobs...
 output_file	date	rule	log-file(s)	status	plan
-data/exports/H5N1_context.fasta	Wed Mar 18 15:22:13 2026	build_h5n1_final_fasta		ok	update pending
-data/exports/H5N1_context_summary.csv	Wed Mar 18 15:22:13 2026	build_h5n1_final_fasta		ok	update pending
-data/final/H5N1_final.fasta	Wed Mar 18 15:22:13 2026	build_h5n1_final_fasta		ok	update pending
-data/exports/H5N1_EC.fasta	Wed Mar 18 15:42:22 2026	build_h5n1_ec_fasta		ok	update pending
-data/exports/H5N1_EC_summary.csv	Wed Mar 18 15:42:22 2026	build_h5n1_ec_fasta		ok	update pending
-data/all_amended_fasta	Wed Mar 18 15:01:52 2026	build_ecuador_intermediate_input		updated input files	update pending
-data/assembled/ecuador_intermediate_raw_segments.csv	Wed Mar 18 15:01:52 2026	build_ecuador_intermediate_input		updated input files	update pending
-data/assembled/ecuador_intermediate_expected_lengths.csv	Wed Mar 18 15:01:52 2026	build_ecuador_intermediate_input		updated input files	update pending
-data/assembled/ecuador_intermediate_summary.csv	Wed Mar 18 15:01:52 2026	build_ecuador_intermediate_input		updated input files	update pending
-data/assembled/ecuador_intermediate_audit.csv	Wed Mar 18 15:01:52 2026	build_ecuador_intermediate_input		updated input files	update pending
-data/assembled/ecuador_intermediate_issues.csv	Wed Mar 18 15:01:52 2026	build_ecuador_intermediate_input		updated input files	update pending
-data/assembled/ecuador_intermediate_sequences.fasta	Wed Mar 18 15:01:52 2026	build_ecuador_intermediate_input		updated input files	update pending
-data/assembled/ecuador_intermediate_per_sample	Wed Mar 18 15:01:52 2026	build_ecuador_intermediate_input		updated input files	update pending
+data/all_amended_fasta	Wed Mar 18 22:14:50 2026	build_ecuador_intermediate_input		ok	no update
+data/assembled/ecuador_intermediate_raw_segments.csv	Wed Mar 18 22:14:50 2026	build_ecuador_intermediate_input		ok	no update
+data/assembled/ecuador_intermediate_expected_lengths.csv	Wed Mar 18 22:14:50 2026	build_ecuador_intermediate_input		ok	no update
+data/assembled/ecuador_intermediate_summary.csv	Wed Mar 18 22:14:50 2026	build_ecuador_intermediate_input		ok	no update
+data/assembled/ecuador_intermediate_audit.csv	Wed Mar 18 22:14:50 2026	build_ecuador_intermediate_input		ok	no update
+data/assembled/ecuador_intermediate_issues.csv	Wed Mar 18 22:14:50 2026	build_ecuador_intermediate_input		ok	no update
+data/assembled/ecuador_intermediate_sequences.fasta	Wed Mar 18 22:14:50 2026	build_ecuador_intermediate_input		ok	no update
+data/assembled/ecuador_intermediate_per_sample	Wed Mar 18 22:14:50 2026	build_ecuador_intermediate_input		ok	no update
+data/exports/H5N1_EC.fasta	Wed Mar 18 22:14:50 2026	build_h5n1_ec_fasta		ok	no update
+data/exports/H5N1_EC_summary.csv	Wed Mar 18 22:14:50 2026	build_h5n1_ec_fasta		ok	no update
+data/exports/H5N1_context.fasta	Wed Mar 18 22:14:53 2026	build_h5n1_final_fasta		ok	no update
+data/exports/H5N1_context_summary.csv	Wed Mar 18 22:14:53 2026	build_h5n1_final_fasta		ok	no update
+data/final/H5N1_final.fasta	Wed Mar 18 22:14:53 2026	build_h5n1_final_fasta		ok	no update
+data/phylogeny/by_segment	Wed Mar 18 22:14:53 2026	split_h5n1_final_by_segment		ok	no update
+data/phylogeny/by_segment_summary.csv	Wed Mar 18 22:14:53 2026	split_h5n1_final_by_segment		ok	no update
+results/phylogeny/raxml/PB2/H5N1_PB2.raxml.bestTreeCollapsed	Wed Mar 18 22:19:09 2026	raxml_ng_tree_per_segment		ok	update pending
+results/phylogeny/raxml/PB2/H5N1_PB2.raxml.supportFBP	Wed Mar 18 22:19:09 2026	raxml_ng_tree_per_segment		ok	update pending
+results/phylogeny/raxml/PB2/H5N1_PB2.raxml.supportTBE	Wed Mar 18 22:19:09 2026	raxml_ng_tree_per_segment		ok	update pending
+data/phylogeny/aligned/H5N1_PB2.mafft	Wed Mar 18 22:14:59 2026	mafft_align_per_segment		ok	update pending
+results/phylogeny/raxml/PB1/H5N1_PB1.raxml.bestTreeCollapsed	Wed Mar 18 22:19:47 2026	raxml_ng_tree_per_segment		ok	update pending
+results/phylogeny/raxml/PB1/H5N1_PB1.raxml.supportFBP	Wed Mar 18 22:19:47 2026	raxml_ng_tree_per_segment		ok	update pending
+results/phylogeny/raxml/PB1/H5N1_PB1.raxml.supportTBE	Wed Mar 18 22:19:47 2026	raxml_ng_tree_per_segment		ok	update pending
+data/phylogeny/aligned/H5N1_PB1.mafft	Wed Mar 18 22:14:55 2026	mafft_align_per_segment		ok	update pending
+results/phylogeny/raxml/PA/H5N1_PA.raxml.bestTreeCollapsed	Wed Mar 18 22:18:09 2026	raxml_ng_tree_per_segment		ok	update pending
+results/phylogeny/raxml/PA/H5N1_PA.raxml.supportFBP	Wed Mar 18 22:18:09 2026	raxml_ng_tree_per_segment		ok	update pending
+results/phylogeny/raxml/PA/H5N1_PA.raxml.supportTBE	Wed Mar 18 22:18:09 2026	raxml_ng_tree_per_segment		ok	update pending
+data/phylogeny/aligned/H5N1_PA.mafft	Wed Mar 18 22:14:55 2026	mafft_align_per_segment		ok	update pending
+results/phylogeny/raxml/HA/H5N1_HA.raxml.bestTreeCollapsed	Wed Mar 18 22:22:33 2026	raxml_ng_tree_per_segment		ok	update pending
+results/phylogeny/raxml/HA/H5N1_HA.raxml.supportFBP	Wed Mar 18 22:22:33 2026	raxml_ng_tree_per_segment		ok	update pending
+results/phylogeny/raxml/HA/H5N1_HA.raxml.supportTBE	Wed Mar 18 22:22:33 2026	raxml_ng_tree_per_segment		ok	update pending
+data/phylogeny/aligned/H5N1_HA.mafft	Wed Mar 18 22:14:49 2026	mafft_align_per_segment		ok	update pending
+results/phylogeny/raxml/NP/H5N1_NP.raxml.bestTreeCollapsed	Wed Mar 18 22:17:13 2026	raxml_ng_tree_per_segment		ok	update pending
+results/phylogeny/raxml/NP/H5N1_NP.raxml.supportFBP	Wed Mar 18 22:17:13 2026	raxml_ng_tree_per_segment		ok	update pending
+results/phylogeny/raxml/NP/H5N1_NP.raxml.supportTBE	Wed Mar 18 22:17:13 2026	raxml_ng_tree_per_segment		ok	update pending
+data/phylogeny/aligned/H5N1_NP.mafft	Wed Mar 18 22:14:31 2026	mafft_align_per_segment		ok	update pending
+results/phylogeny/raxml/NA/H5N1_NA.raxml.bestTreeCollapsed	Wed Mar 18 22:22:44 2026	raxml_ng_tree_per_segment		ok	update pending
+results/phylogeny/raxml/NA/H5N1_NA.raxml.supportFBP	Wed Mar 18 22:22:44 2026	raxml_ng_tree_per_segment		ok	update pending
+results/phylogeny/raxml/NA/H5N1_NA.raxml.supportTBE	Wed Mar 18 22:22:44 2026	raxml_ng_tree_per_segment		ok	update pending
+data/phylogeny/aligned/H5N1_NA.mafft	Wed Mar 18 22:14:50 2026	mafft_align_per_segment		ok	update pending
+results/phylogeny/raxml/MP/H5N1_MP.raxml.bestTreeCollapsed	Wed Mar 18 22:16:03 2026	raxml_ng_tree_per_segment		ok	update pending
+results/phylogeny/raxml/MP/H5N1_MP.raxml.supportFBP	Wed Mar 18 22:16:03 2026	raxml_ng_tree_per_segment		ok	update pending
+results/phylogeny/raxml/MP/H5N1_MP.raxml.supportTBE	Wed Mar 18 22:16:03 2026	raxml_ng_tree_per_segment		ok	update pending
+data/phylogeny/aligned/H5N1_MP.mafft	Wed Mar 18 22:14:31 2026	mafft_align_per_segment		ok	update pending
+results/phylogeny/raxml/NS/H5N1_NS.raxml.bestTreeCollapsed	Wed Mar 18 22:21:26 2026	raxml_ng_tree_per_segment		ok	update pending
+results/phylogeny/raxml/NS/H5N1_NS.raxml.supportFBP	Wed Mar 18 22:21:26 2026	raxml_ng_tree_per_segment		ok	update pending
+results/phylogeny/raxml/NS/H5N1_NS.raxml.supportTBE	Wed Mar 18 22:21:26 2026	raxml_ng_tree_per_segment		ok	update pending
+data/phylogeny/aligned/H5N1_NS.mafft	Wed Mar 18 22:14:44 2026	mafft_align_per_segment		ok	update pending

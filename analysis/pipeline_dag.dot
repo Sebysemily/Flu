@@ -2,9 +2,48 @@ digraph snakemake_dag {
     graph[bgcolor=white, margin=0];
     node[shape=box, style=rounded, fontname=sans,                 fontsize=10, penwidth=2];
     edge[penwidth=2, color=grey];
-	0[label = "build_h5n1_final_fasta", color = "0.50 0.6 0.85", style="rounded"];
-	1[label = "build_h5n1_ec_fasta", color = "0.33 0.6 0.85", style="rounded"];
-	2[label = "build_ecuador_intermediate_input", color = "0.17 0.6 0.85", style="rounded"];
+	0[label = "all", color = "0.07 0.6 0.85", style="rounded"];
+	1[label = "build_ecuador_intermediate_input", color = "0.15 0.6 0.85", style="rounded,dashed"];
+	2[label = "build_h5n1_ec_fasta", color = "0.22 0.6 0.85", style="rounded,dashed"];
+	3[label = "build_h5n1_final_fasta", color = "0.30 0.6 0.85", style="rounded,dashed"];
+	4[label = "split_h5n1_final_by_segment", color = "0.59 0.6 0.85", style="rounded,dashed"];
+	5[label = "raxml_ng_tree_per_segment", color = "0.44 0.6 0.85", style="rounded"];
+	6[label = "mafft_align_per_segment\nsegment: PB2", color = "0.37 0.6 0.85", style="rounded"];
+	7[label = "raxml_ng_tree_per_segment", color = "0.44 0.6 0.85", style="rounded"];
+	8[label = "mafft_align_per_segment\nsegment: PB1", color = "0.37 0.6 0.85", style="rounded"];
+	9[label = "raxml_ng_tree_per_segment", color = "0.44 0.6 0.85", style="rounded"];
+	10[label = "mafft_align_per_segment\nsegment: PA", color = "0.37 0.6 0.85", style="rounded"];
+	11[label = "raxml_ng_tree_per_segment", color = "0.44 0.6 0.85", style="rounded"];
+	12[label = "mafft_align_per_segment\nsegment: HA", color = "0.37 0.6 0.85", style="rounded"];
+	13[label = "raxml_ng_tree_per_segment", color = "0.44 0.6 0.85", style="rounded"];
+	14[label = "mafft_align_per_segment\nsegment: NP", color = "0.37 0.6 0.85", style="rounded"];
+	15[label = "raxml_ng_tree_per_segment", color = "0.44 0.6 0.85", style="rounded"];
+	16[label = "mafft_align_per_segment\nsegment: NA", color = "0.37 0.6 0.85", style="rounded"];
+	17[label = "raxml_ng_tree_per_segment", color = "0.44 0.6 0.85", style="rounded"];
+	18[label = "mafft_align_per_segment\nsegment: MP", color = "0.37 0.6 0.85", style="rounded"];
+	19[label = "raxml_ng_tree_per_segment", color = "0.44 0.6 0.85", style="rounded"];
+	20[label = "mafft_align_per_segment\nsegment: NS", color = "0.37 0.6 0.85", style="rounded"];
 	1 -> 0
-	2 -> 1
+	2 -> 0
+	3 -> 0
+	4 -> 0
+	5 -> 0
+	7 -> 0
+	9 -> 0
+	11 -> 0
+	13 -> 0
+	15 -> 0
+	17 -> 0
+	19 -> 0
+	1 -> 2
+	2 -> 3
+	3 -> 4
+	6 -> 5
+	8 -> 7
+	10 -> 9
+	12 -> 11
+	14 -> 13
+	16 -> 15
+	18 -> 17
+	20 -> 19
 }            

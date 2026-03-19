@@ -234,3 +234,77 @@ localrule raxml_ng_tree_per_segment:
     resources: tmpdir=/tmp
 Activating conda environment: .snakemake/conda/b5e3927d7e5dd358e1b57cb243e32c28_
 Select jobs to execute...
+[Wed Mar 18 22:19:09 2026]
+Finished jobid: 5 (Rule: raxml_ng_tree_per_segment)
+16 of 21 steps (76%) done
+Execute 1 jobs...
+[Wed Mar 18 22:19:09 2026]
+localrule raxml_ng_tree_per_segment:
+    input: data/phylogeny/aligned/H5N1_PB1.mafft
+    output: results/phylogeny/raxml/PB1/H5N1_PB1.raxml.bestTreeCollapsed, results/phylogeny/raxml/PB1/H5N1_PB1.raxml.supportFBP, results/phylogeny/raxml/PB1/H5N1_PB1.raxml.supportTBE
+    jobid: 7
+    reason: Forced execution
+    wildcards: segment=PB1
+    threads: 12
+    resources: tmpdir=/tmp
+Activating conda environment: .snakemake/conda/b5e3927d7e5dd358e1b57cb243e32c28_
+Select jobs to execute...
+[Wed Mar 18 22:19:47 2026]
+Finished jobid: 7 (Rule: raxml_ng_tree_per_segment)
+17 of 21 steps (81%) done
+Execute 1 jobs...
+[Wed Mar 18 22:19:47 2026]
+localrule raxml_ng_tree_per_segment:
+    input: data/phylogeny/aligned/H5N1_NS.mafft
+    output: results/phylogeny/raxml/NS/H5N1_NS.raxml.bestTreeCollapsed, results/phylogeny/raxml/NS/H5N1_NS.raxml.supportFBP, results/phylogeny/raxml/NS/H5N1_NS.raxml.supportTBE
+    jobid: 19
+    reason: Forced execution
+    wildcards: segment=NS
+    threads: 12
+    resources: tmpdir=/tmp
+Activating conda environment: .snakemake/conda/b5e3927d7e5dd358e1b57cb243e32c28_
+Select jobs to execute...
+[Wed Mar 18 22:21:26 2026]
+Finished jobid: 19 (Rule: raxml_ng_tree_per_segment)
+18 of 21 steps (86%) done
+Execute 1 jobs...
+[Wed Mar 18 22:21:26 2026]
+localrule raxml_ng_tree_per_segment:
+    input: data/phylogeny/aligned/H5N1_HA.mafft
+    output: results/phylogeny/raxml/HA/H5N1_HA.raxml.bestTreeCollapsed, results/phylogeny/raxml/HA/H5N1_HA.raxml.supportFBP, results/phylogeny/raxml/HA/H5N1_HA.raxml.supportTBE
+    jobid: 11
+    reason: Forced execution
+    wildcards: segment=HA
+    threads: 12
+    resources: tmpdir=/tmp
+Activating conda environment: .snakemake/conda/b5e3927d7e5dd358e1b57cb243e32c28_
+Select jobs to execute...
+[Wed Mar 18 22:22:33 2026]
+Finished jobid: 11 (Rule: raxml_ng_tree_per_segment)
+19 of 21 steps (90%) done
+Execute 1 jobs...
+[Wed Mar 18 22:22:33 2026]
+localrule raxml_ng_tree_per_segment:
+    input: data/phylogeny/aligned/H5N1_NA.mafft
+    output: results/phylogeny/raxml/NA/H5N1_NA.raxml.bestTreeCollapsed, results/phylogeny/raxml/NA/H5N1_NA.raxml.supportFBP, results/phylogeny/raxml/NA/H5N1_NA.raxml.supportTBE
+    jobid: 15
+    reason: Forced execution
+    wildcards: segment=NA
+    threads: 12
+    resources: tmpdir=/tmp
+Activating conda environment: .snakemake/conda/b5e3927d7e5dd358e1b57cb243e32c28_
+[Wed Mar 18 22:22:44 2026]
+Finished jobid: 15 (Rule: raxml_ng_tree_per_segment)
+20 of 21 steps (95%) done
+Select jobs to execute...
+Execute 1 jobs...
+[Wed Mar 18 22:22:44 2026]
+localrule all:
+    input: data/all_amended_fasta, data/assembled/ecuador_intermediate_summary.csv, data/assembled/ecuador_intermediate_audit.csv, data/assembled/ecuador_intermediate_issues.csv, data/assembled/ecuador_intermediate_sequences.fasta, data/assembled/ecuador_intermediate_per_sample, data/exports/H5N1_EC.fasta, data/exports/H5N1_EC_summary.csv, data/exports/H5N1_context.fasta, data/exports/H5N1_context_summary.csv, data/final/H5N1_final.fasta, data/phylogeny/by_segment, data/phylogeny/by_segment_summary.csv, results/phylogeny/raxml/PB2/H5N1_PB2.raxml.supportFBP, results/phylogeny/raxml/PB1/H5N1_PB1.raxml.supportFBP, results/phylogeny/raxml/PA/H5N1_PA.raxml.supportFBP, results/phylogeny/raxml/HA/H5N1_HA.raxml.supportFBP, results/phylogeny/raxml/NP/H5N1_NP.raxml.supportFBP, results/phylogeny/raxml/NA/H5N1_NA.raxml.supportFBP, results/phylogeny/raxml/MP/H5N1_MP.raxml.supportFBP, results/phylogeny/raxml/NS/H5N1_NS.raxml.supportFBP
+    jobid: 0
+    reason: Forced execution
+    resources: tmpdir=/tmp
+[Wed Mar 18 22:22:44 2026]
+Finished jobid: 0 (Rule: all)
+21 of 21 steps (100%) done
+Complete log(s): /home/sebas/MIRA_NGS/flu_aviar/.snakemake/log/2026-03-18T221428.602936.snakemake.log

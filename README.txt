@@ -31,13 +31,21 @@ Configuracion
 - Ruta base de runs MIRA: config/config.yml
 
 Ejecucion
-- Correr todo el pipeline:
+- Correr todo el pipeline (incluye alineamientos MAFFT y arboles ML por segmento):
 
-snakemake -j 1
+snakemake --cores all --use-conda all
 
-- O construir solo el FASTA final combinado:
+- Reintentar solo incompletos/fallidos:
 
-snakemake data/final/H5N1_final.fasta -j 1
+snakemake --cores all --use-conda --rerun-incomplete all
+
+- Forzar recomputacion completa desde cero:
+
+snakemake --cores all --use-conda --forceall all
+
+- Construir solo el FASTA final combinado (sin filogenia):
+
+snakemake --cores 1 --use-conda data/final/H5N1_final.fasta
 
 Flujo de reglas
 1. build_ecuador_intermediate_input
@@ -56,6 +64,20 @@ Flujo de reglas
      - Descarga secuencias contextuales por accession desde NCBI
     - Las renombra al mismo formato de influenza usado para Ecuador
     - Une Ecuador + contexto en un unico FASTA final
+
+4. split_h5n1_final_by_segment
+    - Divide data/final/H5N1_final.fasta en 8 FASTA (uno por segmento)
+
+5. mafft_align_per_segment
+    - Alinea cada segmento con MAFFT
+    - Salida por segmento en data/phylogeny/aligned/H5N1_{segment}.mafft
+
+6. raxml_ng_tree_per_segment
+    - Ejecuta RAxML-NG con modelo GTR+G
+    - Corre busqueda ML + bootstrap y calcula soporte FBP/TBE
+
+7. raxml_trees_all_segments
+    - Agregador final que exige soporte FBP para los 8 segmentos
 
 Estructura de salidas
 - Intermedios de ensamblaje:
@@ -76,9 +98,30 @@ Estructura de salidas
 - Salida final:
     - data/final/H5N1_final.fasta
 
+- Filogenia por segmento:
+    - data/phylogeny/by_segment/
+    - data/phylogeny/by_segment_summary.csv
+    - data/phylogeny/aligned/H5N1_*.mafft
+    - results/phylogeny/raxml/{segment}/H5N1_{segment}.raxml.bestTreeCollapsed
+    - results/phylogeny/raxml/{segment}/H5N1_{segment}.raxml.supportFBP
+    - results/phylogeny/raxml/{segment}/H5N1_{segment}.raxml.supportTBE
+
+Graficos del workflow (DAG, rulegraph y filegraph)
+- Generar graficos hasta la ultima regla (arboles ML):
+
+./scripts/gen_snakemake_graphs.sh all analysis
+
+- Archivo clave para revisar dependencias de archivos:
+    - analysis/pipeline_filegraph.svg
+
+- Si quieres solo hasta el FASTA final (sin filogenia):
+
+./scripts/gen_snakemake_graphs.sh data/final/H5N1_final.fasta analysis
+
 Notas
 - El FASTA final contiene primero Ecuador y despues el contexto regional.
 - Ejemplo de encabezado: Flu-0008/NS/SantaElena/2023
+- En contexto, el nombre de muestra se fuerza a ser unico anexando accession cuando existe isolate (isolate_accession) y usando accession cuando isolate falta.
 - La normalizacion del lugar se aplica igual a Ecuador y al contexto para evitar conteos dobles por variantes como Santa Elena, Santa_Elena o Santa-Elena.
 - La descarga contextual se hace en lotes desde NCBI para reducir tiempo de ejecucion.
 - Si cambia el archivo contextual, actualizar config/final_metadata_50_per_country.tsv o la ruta en config/config.yml.
