@@ -1,7 +1,0 @@
-name: h5n1_ml_per_segment
-channels:
-  - conda-forge
-  - bioconda
-dependencies:
-  - mafft
-  - raxml-ng
