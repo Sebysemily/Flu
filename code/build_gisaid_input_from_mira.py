@@ -7,7 +7,6 @@ import yaml
 import shutil
 
 CONFIG_FILE = "config/config.yml"
-FILTRADO_CSV = "config/flu_filtrado.csv"
 OUTDIR = os.path.join("data", "assembled")
 AMENDED_DIR = os.path.join("data", "all_amended_fasta")
 
@@ -15,6 +14,8 @@ SEGMENTS = ["PB2", "PB1", "PA", "HA", "NP", "NA", "MP", "NS"]
 
 with open(CONFIG_FILE) as fh:
     config = yaml.safe_load(fh)
+
+FILTRADO_CSV = config.get("flu_filtrado", "config/flu_filtrado.csv")
 
 MIRA_BASE = config.get("mira_base_dir", "..")
 

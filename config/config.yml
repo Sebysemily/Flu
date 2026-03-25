@@ -1,2 +1,3 @@
 mira_base_dir: ".."
-context_metadata_tsv: "config/final_metadata_50_per_country.tsv"
+flu_filtrado: "config/flu_filtrado.csv"
+context_metadata_tsv: "config/final_metadata_50_per_country_isolates.tsv"

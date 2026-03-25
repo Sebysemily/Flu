@@ -2,13 +2,24 @@ import argparse
 import os
 import re
 import unicodedata
+import yaml
 
 import pandas as pd
 
 
 DEFAULT_PER_SAMPLE_DIR = os.path.join("data", "assembled", "ecuador_intermediate_per_sample")
 DEFAULT_AUDIT_CSV = os.path.join("data", "assembled", "ecuador_intermediate_audit.csv")
+CONFIG_FILE = os.path.join("config", "config.yml")
 DEFAULT_METADATA_CSV = os.path.join("config", "flu_filtrado.csv")
+try:
+    if os.path.exists(CONFIG_FILE):
+        with open(CONFIG_FILE) as fh:
+            _cfg = yaml.safe_load(fh) or {}
+            DEFAULT_METADATA_CSV = _cfg.get("flu_filtrado", DEFAULT_METADATA_CSV)
+except Exception:
+    # Fall back to builtin default if config can't be read
+    pass
+
 DEFAULT_OUTPUT_FASTA = os.path.join("data", "exports", "H5N1_EC.fasta")
 DEFAULT_SUMMARY_CSV = os.path.join("data", "exports", "H5N1_EC_summary.csv")
 

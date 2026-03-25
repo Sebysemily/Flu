@@ -6,11 +6,13 @@ MIRA_BASE = config["mira_base_dir"]
 MIRA_FASTAS = sorted(glob.glob(os.path.join(MIRA_BASE, "run*", "amended_consensus.fasta")))
 MIRA_FASTAS += sorted(glob.glob(os.path.join(MIRA_BASE, "run_agro", "amended_consensus.fasta")))
 MIRA_FASTAS = sorted(set(MIRA_FASTAS))
+ 
+FILTRADO_CSV = config.get("flu_filtrado", "config/flu_filtrado.csv")
 
 rule build_ecuador_intermediate_input:
     input:
         MIRA_FASTAS,
-        "config/flu_filtrado.csv"
+        FILTRADO_CSV
     output:
         directory("data/all_amended_fasta"),
         "data/assembled/ecuador_intermediate_raw_segments.csv",
@@ -30,7 +32,7 @@ rule build_h5n1_ec_fasta:
     input:
         per_sample_fastas="data/assembled/ecuador_intermediate_per_sample",
         audit_csv="data/assembled/ecuador_intermediate_audit.csv",
-        metadata_csv="config/flu_filtrado.csv"
+        metadata_csv=FILTRADO_CSV
     output:
         fasta="data/exports/H5N1_EC.fasta",
         summary="data/exports/H5N1_EC_summary.csv"
