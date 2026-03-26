@@ -27,7 +27,7 @@ done
 
 Configuracion
 - Metadata local de muestras Ecuador: config/flu_filtrado.csv
-- Metadata contextual regional: config/final_metadata_50_per_country.tsv
+- Metadata contextual regional:config/final_metadata_50_per_country_isolates.tsv
 - Ruta base de runs MIRA: config/config.yml
 
 Ejecucion
@@ -42,10 +42,6 @@ snakemake --cores all --use-conda --rerun-incomplete all
 - Forzar recomputacion completa desde cero:
 
 snakemake --cores all --use-conda --forceall all
-
-- Construir solo el FASTA final combinado (sin filogenia):
-
-snakemake --cores 1 --use-conda data/final/H5N1_final.fasta
 
 Flujo de reglas
 1. build_ecuador_intermediate_input
@@ -65,18 +61,26 @@ Flujo de reglas
     - Las renombra al mismo formato de influenza usado para Ecuador
     - Une Ecuador + contexto en un unico FASTA final
 
-4. split_h5n1_final_by_segment
+4. build_h5n1_final_beast_fasta
+    - Lee data/final/H5N1_final.fasta
+    - Conserva solo muestras con 8 segmentos completos
+    - Concatena en orden fijo para BEAST: PB2 -> PB1 -> PA -> HA -> NP -> NA -> MP -> NS
+    - Genera:
+        - data/final/H5N1_final_beast.fasta
+        - data/final/H5N1_final_beast_summary.csv
+
+5. split_h5n1_final_by_segment
     - Divide data/final/H5N1_final.fasta en 8 FASTA (uno por segmento)
 
-5. mafft_align_per_segment
+6. mafft_align_per_segment
     - Alinea cada segmento con MAFFT
     - Salida por segmento en data/phylogeny/aligned/H5N1_{segment}.mafft
 
-6. raxml_ng_tree_per_segment
+7. raxml_ng_tree_per_segment
     - Ejecuta RAxML-NG con modelo GTR+G
     - Corre busqueda ML + bootstrap y calcula soporte FBP/TBE
 
-7. raxml_trees_all_segments
+8. raxml_trees_all_segments
     - Agregador final que exige soporte FBP para los 8 segmentos
 
 Estructura de salidas
@@ -97,6 +101,8 @@ Estructura de salidas
 
 - Salida final:
     - data/final/H5N1_final.fasta
+    - data/final/H5N1_final_beast.fasta
+    - data/final/H5N1_final_beast_summary.csv
 
 - Filogenia por segmento:
     - data/phylogeny/by_segment/
@@ -121,9 +127,11 @@ Graficos del workflow (DAG, rulegraph y filegraph)
 Notas
 - El FASTA final contiene primero Ecuador y despues el contexto regional.
 - Ejemplo de encabezado: Flu-0008/NS/SantaElena/2023
+- Para BEAST, cada header es solo sample_id y la secuencia es la concatenacion de 8 segmentos en orden fijo.
 - En contexto, el nombre de muestra se fuerza a ser unico anexando accession cuando existe isolate (isolate_accession) y usando accession cuando isolate falta.
 - La normalizacion del lugar se aplica igual a Ecuador y al contexto para evitar conteos dobles por variantes como Santa Elena, Santa_Elena o Santa-Elena.
 - La descarga contextual se hace en lotes desde NCBI para reducir tiempo de ejecucion.
-- Si cambia el archivo contextual, actualizar config/final_metadata_50_per_country.tsv o la ruta en config/config.yml.
+- Si cambia el archivo contextual, actualizar la ruta en config/config.yml.
+- El segmento NA se preserva explicitamente al leer data/assembled/ecuador_intermediate_audit.csv (evitando que pandas lo convierta a valor nulo).
 
 Corrido originalmente con MIRA v2.0.0.
