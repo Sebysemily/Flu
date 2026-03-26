@@ -61,23 +61,14 @@ def mira_header_to_sample_seg(header):
     sample_part, seg_part = header.split("|", 1)
     sample = norm_sample(sample_part)
 
-    parts = seg_part.split("_")
-    if len(parts) < 2:
-        return sample, None
+    seg_token = seg_part.strip().upper()
 
-    seg = parts[1].upper()
-    seg_map = {
-        "PB2": "PB2",
-        "PB1": "PB1",
-        "PA": "PA",
-        "HA": "HA",
-        "NP": "NP",
-        "NA": "NA",
-        "MP": "MP",
-        "NS": "NS",
-    }
+    # Accept forms like A_NA_N1, A_HA_H5, A_PB2, and other underscore-delimited variants.
+    for seg in ["PB2", "PB1", "PA", "HA", "NP", "NA", "MP", "NS"]:
+        if re.search(rf"(^|_){seg}(_|$)", seg_token):
+            return sample, seg
 
-    return sample, seg_map.get(seg)
+    return sample, None
 
 def best_expected_length(lengths):
     if not lengths:

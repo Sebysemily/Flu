@@ -186,7 +186,8 @@ def build_metadata_map(metadata_csv):
 
 
 def build_assembled_set(audit_csv):
-    audit_df = pd.read_csv(audit_csv, dtype=str)
+    # keep_default_na=False is critical so the segment label "NA" is not coerced to NaN.
+    audit_df = pd.read_csv(audit_csv, dtype=str, keep_default_na=False)
 
     sample_col = pick_column(audit_df, ["Codigo USFQ", "Código USFQ"])
     segment_col = pick_column(audit_df, ["segment"])

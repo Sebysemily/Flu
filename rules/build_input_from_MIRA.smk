@@ -64,3 +64,22 @@ rule build_h5n1_final_fasta:
             --context-summary-out {output.context_summary} \
             --final-fasta-out {output.final_fasta}
         """
+
+
+rule build_h5n1_final_beast_fasta:
+    input:
+        final_fasta="data/final/H5N1_final.fasta",
+        metadata_csv=FILTRADO_CSV,
+        context_metadata_tsv=config.get("context_metadata_tsv", "config/final_metadata_50_per_country.tsv")
+    output:
+        beast_fasta="data/final/H5N1_final_beast.fasta",
+        beast_summary="data/final/H5N1_final_beast_summary.csv"
+    shell:
+        r"""
+        python code/build_h5n1_beast_fasta.py \
+            --final-fasta {input.final_fasta} \
+            --flu-filtrado-csv {input.metadata_csv} \
+            --context-metadata-tsv {input.context_metadata_tsv} \
+            --output-fasta {output.beast_fasta} \
+            --output-summary {output.beast_summary}
+        """
