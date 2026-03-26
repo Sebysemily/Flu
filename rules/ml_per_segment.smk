@@ -5,7 +5,8 @@ rule split_h5n1_final_by_segment:
 	input:
 		final_fasta="data/final/H5N1_final.fasta"
 	output:
-		directory("data/phylogeny/by_segment"),
+		# produce one fasta file per segment plus a summary CSV
+		expand("data/phylogeny/by_segment/H5N1_{segment}.fasta", segment=PHYLO_SEGMENTS),
 		"data/phylogeny/by_segment_summary.csv"
 	shell:
 		r"""
@@ -47,8 +48,8 @@ rule raxml_ng_tree_per_segment:
 		prefix=lambda wildcards: f"results/phylogeny/raxml/{wildcards.segment}/H5N1_{wildcards.segment}",
 		model="GTR+G",
 		bs_trees=300,
-		extra="--bs-metric fbp,tbe"
-	threads: 12
+		extra="--bs-metric fbp,tbe --force perf_threads"
+	threads: 10
 	conda:
 		"../envs/ml_per_segment.yml"
 	shell:

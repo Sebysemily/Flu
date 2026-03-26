@@ -16,7 +16,7 @@ rule all:
         "data/exports/H5N1_context.fasta",
         "data/exports/H5N1_context_summary.csv",
         "data/final/H5N1_final.fasta",
-        "data/phylogeny/by_segment",
+        expand("data/phylogeny/by_segment/H5N1_{segment}.fasta", segment=["PB2", "PB1", "PA", "HA", "NP", "NA", "MP", "NS"]),
         "data/phylogeny/by_segment_summary.csv",
         expand(
             "results/phylogeny/raxml/{segment}/H5N1_{segment}.raxml.supportFBP",

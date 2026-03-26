@@ -106,6 +106,11 @@ def wrap_seq(seq, width=80):
     return "\n".join(seq[i : i + width] for i in range(0, len(seq), width))
 
 
+def sanitize_dna(seq):
+    """Normalize sequence to uppercase A/C/G/T/N with gaps preserved."""
+    return re.sub(r"[^ACGTN-]", "N", str(seq).upper())
+
+
 def read_fasta(path):
     header = None
     chunks = []
@@ -175,39 +180,55 @@ def fetch_ncbi_fasta_batch(accessions, retries=1, pause_seconds=0.15, timeout=15
             if not parsed:
                 raise ValueError("Respuesta FASTA invalida")
 
+            # Agrupar posibles múltiples registros devueltos por accession base
             by_accession = {}
             for header, seq in parsed:
-                seq = re.sub(r"[^ACGTN]", "N", seq.upper())
+                seq = sanitize_dna(seq).replace("-", "")
                 if not seq:
                     continue
 
                 token = header.split()[0]
                 token_base = token.split(".")[0]
-                by_accession[token] = (header, seq)
-                by_accession[token_base] = (header, seq)
+                by_accession.setdefault(token_base, []).append((header, seq))
 
             time.sleep(pause_seconds)
             result = {}
             for acc in accessions:
                 base = acc.split(".")[0]
-                hit = by_accession.get(acc) or by_accession.get(base)
-                if hit is None:
-                    result[acc] = (None, None, "No se encontro secuencia en respuesta de NCBI")
+                hits = by_accession.get(base, [])
+                if not hits:
+                    result[acc] = ([], "No se encontro secuencia en respuesta de NCBI")
                 else:
-                    result[acc] = (hit[0], hit[1], None)
+                    result[acc] = (hits, None)
             return result
 
         except (HTTPError, URLError, TimeoutError, ValueError) as exc:
             if attempt == retries:
-                return {acc: (None, None, str(exc)) for acc in accessions}
+                return {acc: ([], str(exc)) for acc in accessions}
             time.sleep(max(1.0, pause_seconds * 2))
 
-    return {acc: (None, None, "Fallo desconocido") for acc in accessions}
+    return {acc: ([], "Fallo desconocido") for acc in accessions}
 
 
 def normalize_segment(segment_value):
     raw = "" if segment_value is None else str(segment_value).strip().upper()
     return SEGMENT_MAP.get(raw, f"SEG_{clean_ascii(raw)}")
+
+
+def parse_accession_list(value):
+    text = "" if value is None else str(value).strip()
+    if not text:
+        return []
+    parts = re.split(r"[;,\s]+", text)
+    seen = set()
+    out = []
+    for part in parts:
+        token = part.strip()
+        if not token or token in seen:
+            continue
+        seen.add(token)
+        out.append(token)
+    return out
 
 
 def main():
@@ -235,12 +256,16 @@ def main():
     if missing:
         raise ValueError(f"Faltan columnas en metadata contextual: {', '.join(missing)}")
 
-    # Download all contextual accessions in batches to reduce runtime and HTTP overhead.
+    # Download all contextual accessions in batches using all_accessions as primary source.
     accessions = []
-    for v in df["accession"].fillna("").astype(str).tolist():
-        vv = v.strip()
-        if vv:
-            accessions.append(vv)
+    for _, row in df.iterrows():
+        row_accessions = parse_accession_list(row.get("all_accessions", ""))
+        primary_accession = str(row.get("accession", "")).strip()
+        if primary_accession and primary_accession not in row_accessions:
+            row_accessions.append(primary_accession)
+        if not row_accessions and primary_accession:
+            row_accessions = [primary_accession]
+        accessions.extend(row_accessions)
     unique_accessions = sorted(set(accessions))
 
     downloaded = {}
@@ -255,49 +280,126 @@ def main():
 
     records = []
     written = 0
+    written_headers = set()
 
     with open(args.context_fasta_out, "w") as out_ctx:
         for _, row in df.iterrows():
-            accession = str(row.get("accession", "")).strip()
-            if not accession:
+            primary_accession = str(row.get("accession", "")).strip()
+            if not primary_accession:
                 continue
 
+            row_accessions = parse_accession_list(row.get("all_accessions", ""))
+            if primary_accession and primary_accession not in row_accessions:
+                row_accessions.append(primary_accession)
+            if not row_accessions:
+                row_accessions = [primary_accession]
+
             isolate = clean_ascii(row.get("isolate", ""))
-            segment = normalize_segment(row.get("segment", ""))
+            # requested/annotated segment in TSV (fallback)
+            requested_segment = normalize_segment(row.get("segment", ""))
             year = parse_year(row.get("collection_date", ""))
 
             source_country = normalize_place(row.get("source_country", ""))
             country = normalize_place(row.get("country", ""))
             place = source_country if source_country != "UNKNOWN" else country
 
-            remote_header, seq, error = downloaded.get(accession, (None, None, "No descargado"))
-            status = "downloaded" if error is None else "failed"
-
             # Ensure sequence names are unique across context records.
-            display_isolate = accession if isolate == "UNKNOWN" else f"{isolate}_{accession}"
-            out_header = f"{display_isolate}/{segment}/{place}/{year}"
+            display_isolate = primary_accession if isolate == "UNKNOWN" else f"{isolate}_{primary_accession}"
 
-            if status == "downloaded":
-                out_ctx.write(f">{out_header}\n")
-                out_ctx.write(wrap_seq(seq) + "\n")
-                written += 1
+            expected_count = None
+            raw_segment_count = str(row.get("segment_count", "")).strip()
+            if raw_segment_count.isdigit():
+                expected_count = int(raw_segment_count)
 
-            records.append(
-                {
-                    "accession": accession,
-                    "status": status,
-                    "error": "" if error is None else error,
-                    "segment": segment,
-                    "isolate": isolate,
-                    "place": place,
-                    "year": year,
-                    "header": out_header,
-                    "length": 0 if seq is None else len(seq),
-                    "ncbi_header": "" if remote_header is None else remote_header,
-                }
-            )
+            downloaded_segments = set()
+            row_records_start = len(records)
 
-    pd.DataFrame(records).to_csv(args.context_summary_out, index=False)
+            for accession in row_accessions:
+                hits, error = downloaded.get(accession, ([], "No descargado"))
+                status = "downloaded" if error is None and hits else "failed"
+
+                if status == "downloaded":
+                    for hit_header, hit_seq in hits:
+                        # Deduce segment from returned header when possible
+                        seg_match = re.search(r"segment\s*(\d)", hit_header, re.IGNORECASE)
+                        gene_match = re.search(r"\b(PB2|PB1|PA|HA|NP|NA|MP|NS)\b", hit_header, re.IGNORECASE)
+                        if seg_match:
+                            seg = normalize_segment(seg_match.group(1))
+                        elif gene_match:
+                            seg = normalize_segment(gene_match.group(1).upper())
+                        else:
+                            seg = requested_segment
+
+                        out_header = f"{display_isolate}/{seg}/{place}/{year}"
+                        if out_header in written_headers:
+                            continue
+
+                        clean_hit_seq = sanitize_dna(hit_seq).replace("-", "")
+                        if not clean_hit_seq:
+                            continue
+
+                        out_ctx.write(f">{out_header}\n")
+                        out_ctx.write(wrap_seq(clean_hit_seq) + "\n")
+                        written += 1
+                        written_headers.add(out_header)
+                        downloaded_segments.add(seg)
+
+                        records.append(
+                            {
+                                "accession": accession,
+                                "primary_accession": primary_accession,
+                                "status": "downloaded",
+                                "error": "",
+                                "segment": seg,
+                                "isolate": isolate,
+                                "place": place,
+                                "year": year,
+                                "header": out_header,
+                                "length": len(clean_hit_seq),
+                                "ncbi_header": hit_header,
+                                "expected_segment_count": expected_count,
+                                "downloaded_segment_count": None,
+                                "count_match": None,
+                            }
+                        )
+                else:
+                    out_header = f"{display_isolate}/{requested_segment}/{place}/{year}"
+                    records.append(
+                        {
+                            "accession": accession,
+                            "primary_accession": primary_accession,
+                            "status": "failed",
+                            "error": "" if error is None else error,
+                            "segment": requested_segment,
+                            "isolate": isolate,
+                            "place": place,
+                            "year": year,
+                            "header": out_header,
+                            "length": 0,
+                            "ncbi_header": "",
+                            "expected_segment_count": expected_count,
+                            "downloaded_segment_count": None,
+                            "count_match": None,
+                        }
+                    )
+
+            downloaded_segment_count = len(downloaded_segments)
+            count_match = None if expected_count is None else (downloaded_segment_count == expected_count)
+            for i in range(row_records_start, len(records)):
+                records[i]["downloaded_segment_count"] = downloaded_segment_count
+                records[i]["count_match"] = count_match
+
+    summary_df = pd.DataFrame(records)
+    summary_df.to_csv(args.context_summary_out, index=False)
+
+    mismatch_count = 0
+    if not summary_df.empty and "count_match" in summary_df.columns:
+        row_level = (
+            summary_df[["primary_accession", "expected_segment_count", "downloaded_segment_count", "count_match"]]
+            .drop_duplicates(subset=["primary_accession"])
+            .dropna(subset=["expected_segment_count"])
+        )
+        mismatch_count = int((row_level["count_match"] == False).sum())
 
     # Final merge: Ecuador assembled FASTA + contextual FASTA.
     total_final = 0
@@ -306,14 +408,18 @@ def main():
             if not os.path.exists(src):
                 continue
             for header, seq in read_fasta(src):
+                clean_seq = sanitize_dna(seq).replace("-", "")
+                if not clean_seq:
+                    continue
                 out_final.write(f">{header}\n")
-                out_final.write(wrap_seq(seq) + "\n")
+                out_final.write(wrap_seq(clean_seq) + "\n")
                 total_final += 1
 
     print(f"Contexto descargado y formateado: {args.context_fasta_out}")
     print(f"Resumen de descarga: {args.context_summary_out}")
     print(f"FASTA final combinado: {args.final_fasta_out}")
     print(f"Registros de contexto escritos: {written}")
+    print(f"Filas con desajuste segment_count vs descargado: {mismatch_count}")
     print(f"Registros totales en FASTA final: {total_final}")
 
 
