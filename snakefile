@@ -1,7 +1,7 @@
 configfile: "config/config.yml"
 
 include: "rules/build_input_from_MIRA.smk"
-include: "rules/ml_per_segment.smk"
+include: "rules/01_ml_trees.smk"
 
 rule all:
     input:
@@ -18,8 +18,11 @@ rule all:
         "data/final/H5N1_final.fasta",
         "data/final/H5N1_final_beast.fasta",
         "data/final/H5N1_final_beast_summary.csv",
+        "data/phylogeny/aligned/H5N1_full_concat_beast.mafft",
         expand("data/phylogeny/by_segment/H5N1_{segment}.fasta", segment=["PB2", "PB1", "PA", "HA", "NP", "NA", "MP", "NS"]),
         "data/phylogeny/by_segment_summary.csv",
+        "results/phylogeny/raxml/full_concat/H5N1_full_concat_beast.raxml.supportFBP",
+        "results/phylogeny/raxml/full_concat/H5N1_full_concat_beast.raxml.supportTBE",
         expand(
             "results/phylogeny/raxml/{segment}/H5N1_{segment}.raxml.supportFBP",
             segment=["PB2", "PB1", "PA", "HA", "NP", "NA", "MP", "NS"],

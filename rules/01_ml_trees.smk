@@ -1,5 +1,9 @@
 PHYLO_SEGMENTS = ["PB2", "PB1", "PA", "HA", "NP", "NA", "MP", "NS"]
 
+FULL_CONCAT_FASTA = "data/final/H5N1_final_beast.fasta"
+FULL_CONCAT_ALIGNMENT = "data/phylogeny/aligned/H5N1_full_concat_beast.mafft"
+FULL_CONCAT_PREFIX = "results/phylogeny/raxml/full_concat/H5N1_full_concat_beast"
+
 
 rule split_h5n1_final_by_segment:
 	input:
@@ -37,6 +41,21 @@ rule align_all_segments:
 		expand("data/phylogeny/aligned/H5N1_{segment}.mafft", segment=PHYLO_SEGMENTS)
 
 
+rule mafft_align_full_concat_beast:
+	input:
+		fasta=FULL_CONCAT_FASTA
+	output:
+		aligned=FULL_CONCAT_ALIGNMENT
+	threads: 4
+	conda:
+		"../envs/ml_per_segment.yml"
+	shell:
+		r"""
+		mkdir -p data/phylogeny/aligned
+		mafft --auto --thread {threads} {input.fasta} > {output.aligned}
+		"""
+
+
 rule raxml_ng_tree_per_segment:
 	input:
 		alignment="data/phylogeny/aligned/H5N1_{segment}.mafft"
@@ -72,3 +91,38 @@ rule raxml_trees_all_segments:
 			"results/phylogeny/raxml/{segment}/H5N1_{segment}.raxml.supportFBP",
 			segment=PHYLO_SEGMENTS
 		)
+
+
+rule raxml_ng_tree_full_concat_beast:
+	input:
+		alignment=FULL_CONCAT_ALIGNMENT
+	output:
+		best_tree=f"{FULL_CONCAT_PREFIX}.raxml.bestTreeCollapsed",
+		support_fbp=f"{FULL_CONCAT_PREFIX}.raxml.supportFBP",
+		support_tbe=f"{FULL_CONCAT_PREFIX}.raxml.supportTBE"
+	params:
+		prefix=FULL_CONCAT_PREFIX,
+		model="GTR+G",
+		bs_trees=300,
+		extra="--bs-metric fbp,tbe --force perf_threads"
+	threads: 10
+	conda:
+		"../envs/ml_per_segment.yml"
+	shell:
+		r"""
+		mkdir -p results/phylogeny/raxml/full_concat
+		raxml-ng \
+			--all \
+			--msa {input.alignment} \
+			--model {params.model} \
+			--prefix {params.prefix} \
+			--threads {threads} \
+			--bs-trees {params.bs_trees} \
+			{params.extra}
+		"""
+
+
+rule raxml_tree_full_concat:
+	input:
+		f"{FULL_CONCAT_PREFIX}.raxml.supportFBP",
+		f"{FULL_CONCAT_PREFIX}.raxml.supportTBE"
