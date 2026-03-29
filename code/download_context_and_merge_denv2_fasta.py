@@ -231,6 +231,11 @@ def parse_accession_list(value):
     return out
 
 
+def normalize_selection_role(value):
+    role = clean_ascii(value)
+    return role if role != "UNKNOWN" else "unassigned"
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="Descarga secuencias contextuales por accession, las formatea con encabezado de influenza y combina con el FASTA de Ecuador"
@@ -305,6 +310,8 @@ def main():
 
             # Ensure sequence names are unique across context records.
             display_isolate = primary_accession if isolate == "UNKNOWN" else f"{isolate}_{primary_accession}"
+            selection_role = normalize_selection_role(row.get("selection_role", ""))
+            display_sample = f"{display_isolate}__{selection_role}"
 
             expected_count = None
             raw_segment_count = str(row.get("segment_count", "")).strip()
@@ -330,7 +337,7 @@ def main():
                         else:
                             seg = requested_segment
 
-                        out_header = f"{display_isolate}/{seg}/{place}/{year}"
+                        out_header = f"{display_sample}/{seg}/{place}/{year}"
                         if out_header in written_headers:
                             continue
 
@@ -354,6 +361,7 @@ def main():
                                 "isolate": isolate,
                                 "place": place,
                                 "year": year,
+                                "selection_role": selection_role,
                                 "header": out_header,
                                 "length": len(clean_hit_seq),
                                 "ncbi_header": hit_header,
@@ -363,7 +371,7 @@ def main():
                             }
                         )
                 else:
-                    out_header = f"{display_isolate}/{requested_segment}/{place}/{year}"
+                    out_header = f"{display_sample}/{requested_segment}/{place}/{year}"
                     records.append(
                         {
                             "accession": accession,
@@ -374,6 +382,7 @@ def main():
                             "isolate": isolate,
                             "place": place,
                             "year": year,
+                            "selection_role": selection_role,
                             "header": out_header,
                             "length": 0,
                             "ncbi_header": "",

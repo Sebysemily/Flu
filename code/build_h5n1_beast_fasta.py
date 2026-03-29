@@ -85,11 +85,17 @@ def read_context_complete_samples(path):
 
             accession = clean_id(row.get("accession", ""))
             isolate = clean_id(row.get("isolate", ""))
+            selection_role = clean_id(row.get("selection_role", ""))
+            role_suffix = f"__{selection_role}" if selection_role else ""
 
             if accession:
                 complete.add(accession)
+                if role_suffix:
+                    complete.add(f"{accession}{role_suffix}")
             if isolate and isolate.upper() != "UNKNOWN" and accession:
                 complete.add(f"{isolate}_{accession}")
+                if role_suffix:
+                    complete.add(f"{isolate}_{accession}{role_suffix}")
     return complete
 
 
