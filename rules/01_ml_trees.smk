@@ -1,8 +1,25 @@
 PHYLO_SEGMENTS = ["PB2", "PB1", "PA", "HA", "NP", "NA", "MP", "NS"]
+RANDOM_SEED = config.get("random_seed", 39809473)
+MAX_THREADS = int(config.get("max_threads", 20))
+MAFFT_THREADS = int(config.get("mafft_threads", MAX_THREADS))
+SEGMENT_RAXML_THREADS = int(config.get("raxml_segment_threads", MAX_THREADS))
+FULL_RAXML_THREADS = int(config.get("raxml_full_concat_threads", MAX_THREADS))
+RF_RAXML_THREADS = int(config.get("raxml_rf_threads", MAX_THREADS))
 
 FULL_CONCAT_FASTA = "data/final/H5N1_final_beast.fasta"
 FULL_CONCAT_ALIGNMENT = "data/phylogeny/aligned/H5N1_full_concat_beast.mafft"
+FULL_CONCAT_PARTITIONS = "data/phylogeny/H5N1_full_concat_beast.partitions"
 FULL_CONCAT_PREFIX = "results/phylogeny/raxml/full_concat/H5N1_full_concat_beast"
+
+RF_TMP_DIR = "tmp_rf_full_concat"
+RF_REP1_SEED = RANDOM_SEED + 1
+RF_REP2_SEED = RANDOM_SEED + 2
+RF_REP1_PREFIX = f"{RF_TMP_DIR}/H5N1_full_concat_beast_rep1"
+RF_REP2_PREFIX = f"{RF_TMP_DIR}/H5N1_full_concat_beast_rep2"
+RF_BASE_TREE = f"{FULL_CONCAT_PREFIX}.raxml.bestTreeCollapsed"
+RF_REP1_TREE = f"{RF_REP1_PREFIX}.raxml.bestTreeCollapsed"
+RF_REP2_TREE = f"{RF_REP2_PREFIX}.raxml.bestTreeCollapsed"
+RF_SUMMARY_TSV = f"{RF_TMP_DIR}/rf_summary.tsv"
 
 
 rule split_h5n1_final_by_segment:
@@ -26,7 +43,7 @@ rule mafft_align_per_segment:
 		fasta="data/phylogeny/by_segment/H5N1_{segment}.fasta"
 	output:
 		aligned="data/phylogeny/aligned/H5N1_{segment}.mafft"
-	threads: 4
+	threads: MAFFT_THREADS
 	conda:
 		"../envs/ml_per_segment.yml"
 	shell:
@@ -41,18 +58,21 @@ rule align_all_segments:
 		expand("data/phylogeny/aligned/H5N1_{segment}.mafft", segment=PHYLO_SEGMENTS)
 
 
-rule mafft_align_full_concat_beast:
+rule concat_aligned_segments_with_partitions:
 	input:
-		fasta=FULL_CONCAT_FASTA
+		alignments=expand("data/phylogeny/aligned/H5N1_{segment}.mafft", segment=PHYLO_SEGMENTS)
 	output:
-		aligned=FULL_CONCAT_ALIGNMENT
-	threads: 4
-	conda:
-		"../envs/ml_per_segment.yml"
+		aligned=FULL_CONCAT_ALIGNMENT,
+		partitions=FULL_CONCAT_PARTITIONS
+	params:
+		segment_order=",".join(PHYLO_SEGMENTS)
 	shell:
 		r"""
-		mkdir -p data/phylogeny/aligned
-		mafft --auto --thread {threads} {input.fasta} > {output.aligned}
+		python code/concat_aligned_segments_with_partitions.py \
+			--segment-order {params.segment_order} \
+			--output-alignment {output.aligned} \
+			--output-partitions {output.partitions} \
+			{input.alignments}
 		"""
 
 
@@ -61,14 +81,13 @@ rule raxml_ng_tree_per_segment:
 		alignment="data/phylogeny/aligned/H5N1_{segment}.mafft"
 	output:
 		best_tree="results/phylogeny/raxml/{segment}/H5N1_{segment}.raxml.bestTreeCollapsed",
-		support_fbp="results/phylogeny/raxml/{segment}/H5N1_{segment}.raxml.supportFBP",
 		support_tbe="results/phylogeny/raxml/{segment}/H5N1_{segment}.raxml.supportTBE"
 	params:
 		prefix=lambda wildcards: f"results/phylogeny/raxml/{wildcards.segment}/H5N1_{wildcards.segment}",
 		model="GTR+G",
-		bs_trees=300,
-		extra="--bs-metric fbp,tbe --force perf_threads"
-	threads: 10
+		bs_trees=1000,
+		extra=f"--seed {RANDOM_SEED} --bs-metric tbe --redo"
+	threads: SEGMENT_RAXML_THREADS
 	conda:
 		"../envs/ml_per_segment.yml"
 	shell:
@@ -88,24 +107,23 @@ rule raxml_ng_tree_per_segment:
 rule raxml_trees_all_segments:
 	input:
 		expand(
-			"results/phylogeny/raxml/{segment}/H5N1_{segment}.raxml.supportFBP",
+			"results/phylogeny/raxml/{segment}/H5N1_{segment}.raxml.supportTBE",
 			segment=PHYLO_SEGMENTS
 		)
 
 
 rule raxml_ng_tree_full_concat_beast:
 	input:
-		alignment=FULL_CONCAT_ALIGNMENT
+		alignment=FULL_CONCAT_ALIGNMENT,
+		partitions=FULL_CONCAT_PARTITIONS
 	output:
 		best_tree=f"{FULL_CONCAT_PREFIX}.raxml.bestTreeCollapsed",
-		support_fbp=f"{FULL_CONCAT_PREFIX}.raxml.supportFBP",
 		support_tbe=f"{FULL_CONCAT_PREFIX}.raxml.supportTBE"
 	params:
 		prefix=FULL_CONCAT_PREFIX,
-		model="GTR+G",
-		bs_trees=300,
-		extra="--bs-metric fbp,tbe --force perf_threads"
-	threads: 10
+		bs_trees=1000,
+		extra=lambda wildcards: f"--seed {RANDOM_SEED} --bs-metric tbe --redo --tree 'pars{{20}},rand{{20}}'"
+	threads: FULL_RAXML_THREADS
 	conda:
 		"../envs/ml_per_segment.yml"
 	shell:
@@ -114,7 +132,7 @@ rule raxml_ng_tree_full_concat_beast:
 		raxml-ng \
 			--all \
 			--msa {input.alignment} \
-			--model {params.model} \
+			--model {input.partitions} \
 			--prefix {params.prefix} \
 			--threads {threads} \
 			--bs-trees {params.bs_trees} \
@@ -124,5 +142,93 @@ rule raxml_ng_tree_full_concat_beast:
 
 rule raxml_tree_full_concat:
 	input:
-		f"{FULL_CONCAT_PREFIX}.raxml.supportFBP",
 		f"{FULL_CONCAT_PREFIX}.raxml.supportTBE"
+
+
+rule raxml_ng_tree_full_concat_rf_rep1:
+	input:
+		alignment=FULL_CONCAT_ALIGNMENT,
+		partitions=FULL_CONCAT_PARTITIONS,
+		base_tree=RF_BASE_TREE
+	output:
+		rep1_tree=RF_REP1_TREE
+	params:
+		rep1_prefix=RF_REP1_PREFIX,
+		bs_trees=1000,
+		extra=lambda wildcards: "--bs-metric tbe --redo --tree 'pars{20},rand{20}'"
+	threads: RF_RAXML_THREADS
+	conda:
+		"../envs/ml_per_segment.yml"
+	shell:
+		r"""
+		mkdir -p {RF_TMP_DIR}
+
+		raxml-ng \
+			--all \
+			--msa {input.alignment} \
+			--model {input.partitions} \
+			--prefix {params.rep1_prefix} \
+			--threads {threads} \
+			--bs-trees {params.bs_trees} \
+			--seed {RF_REP1_SEED} \
+			{params.extra}
+		"""
+
+
+rule raxml_ng_tree_full_concat_rf_rep2:
+	input:
+		alignment=FULL_CONCAT_ALIGNMENT,
+		partitions=FULL_CONCAT_PARTITIONS,
+		base_tree=RF_BASE_TREE,
+		rep1_tree=RF_REP1_TREE
+	output:
+		rep2_tree=RF_REP2_TREE
+	params:
+		rep2_prefix=RF_REP2_PREFIX,
+		bs_trees=1000,
+		extra=lambda wildcards: "--bs-metric tbe --redo --tree 'pars{20},rand{20}'"
+	threads: RF_RAXML_THREADS
+	conda:
+		"../envs/ml_per_segment.yml"
+	shell:
+		r"""
+		mkdir -p {RF_TMP_DIR}
+
+		raxml-ng \
+			--all \
+			--msa {input.alignment} \
+			--model {input.partitions} \
+			--prefix {params.rep2_prefix} \
+			--threads {threads} \
+			--bs-trees {params.bs_trees} \
+			--seed {RF_REP2_SEED} \
+			{params.extra}
+		"""
+
+
+rule summarize_full_concat_rf_instability:
+	input:
+		base_tree=RF_BASE_TREE,
+		rep1_tree=RF_REP1_TREE,
+		rep2_tree=RF_REP2_TREE
+	output:
+		rf_summary=RF_SUMMARY_TSV
+	params:
+		cutoff=0.05,
+		base_seed=RANDOM_SEED,
+		rep1_seed=RF_REP1_SEED,
+		rep2_seed=RF_REP2_SEED
+	conda:
+		"../envs/ml_per_segment.yml"
+	shell:
+		r"""
+		python code/rf_tree_instability_summary.py \
+			--base-tree {input.base_tree} \
+			--replicate-tree {input.rep1_tree} \
+			--replicate-tree {input.rep2_tree} \
+			--base-seed {params.base_seed} \
+			--replicate-seed {params.rep1_seed} \
+			--replicate-seed {params.rep2_seed} \
+			--cutoff {params.cutoff} \
+			--output {output.rf_summary}
+		"""

@@ -109,7 +109,6 @@ Estructura de salidas
     - data/phylogeny/by_segment_summary.csv
     - data/phylogeny/aligned/H5N1_*.mafft
     - results/phylogeny/raxml/{segment}/H5N1_{segment}.raxml.bestTreeCollapsed
-    - results/phylogeny/raxml/{segment}/H5N1_{segment}.raxml.supportFBP
     - results/phylogeny/raxml/{segment}/H5N1_{segment}.raxml.supportTBE
 
 Graficos del workflow (DAG, rulegraph y filegraph)

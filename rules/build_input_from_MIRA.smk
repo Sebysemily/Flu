@@ -8,6 +8,7 @@ MIRA_FASTAS += sorted(glob.glob(os.path.join(MIRA_BASE, "run_agro", "amended_con
 MIRA_FASTAS = sorted(set(MIRA_FASTAS))
  
 FILTRADO_CSV = config.get("flu_filtrado", "config/flu_filtrado.csv")
+ECUADOR_DATE_SOURCE = config.get("ecuador_date_source", "reception")
 
 rule build_ecuador_intermediate_input:
     input:
@@ -36,12 +37,15 @@ rule build_h5n1_ec_fasta:
     output:
         fasta="data/exports/H5N1_EC.fasta",
         summary="data/exports/H5N1_EC_summary.csv"
+    params:
+        ecuador_date_source=ECUADOR_DATE_SOURCE
     shell:
         r"""
         python code/build_denv2_style_fasta_from_assembled.py \
             --per-sample-dir {input.per_sample_fastas} \
             --audit-csv {input.audit_csv} \
             --metadata-csv {input.metadata_csv} \
+            --ecuador-date-source {params.ecuador_date_source} \
             --output-fasta {output.fasta} \
             --summary-csv {output.summary}
         """
@@ -74,12 +78,15 @@ rule build_h5n1_final_beast_fasta:
     output:
         beast_fasta="data/final/H5N1_final_beast.fasta",
         beast_summary="data/final/H5N1_final_beast_summary.csv"
+    params:
+        ecuador_date_source=ECUADOR_DATE_SOURCE
     shell:
         r"""
         python code/build_h5n1_beast_fasta.py \
             --final-fasta {input.final_fasta} \
             --flu-filtrado-csv {input.metadata_csv} \
             --context-metadata-tsv {input.context_metadata_tsv} \
+            --ecuador-date-source {params.ecuador_date_source} \
             --output-fasta {output.beast_fasta} \
             --output-summary {output.beast_summary}
         """

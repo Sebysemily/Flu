@@ -3,6 +3,8 @@ import csv
 import re
 from collections import defaultdict
 
+from date_normalization import parse_collection_date, pick_ecuador_date
+
 REQUIRED_ORDER = ["PB2", "PB1", "PA", "HA", "NP", "NA", "MP", "NS"]
 REQUIRED_SET = set(REQUIRED_ORDER)
 
@@ -14,6 +16,22 @@ def clean_id(text):
     text = re.sub(r"\s+", "_", text)
     text = re.sub(r"[^A-Za-z0-9_.-]", "", text)
     return text
+
+
+def clean_place(text):
+    text = "" if text is None else str(text).strip()
+    if not text:
+        return "UNKNOWN"
+    text = text.replace(" ", "")
+    text = text.replace("á", "a").replace("é", "e").replace("í", "i").replace("ó", "o").replace("ú", "u")
+    text = text.replace("Á", "A").replace("É", "E").replace("Í", "I").replace("Ó", "O").replace("Ú", "U")
+    text = text.replace("ñ", "n").replace("Ñ", "N")
+    text = re.sub(r"[^A-Za-z0-9_-]", "", text)
+    return text or "UNKNOWN"
+
+
+def normalize_date(text):
+    return parse_collection_date(text)
 
 
 def is_true_like(value):
@@ -74,6 +92,30 @@ def read_flu_complete_samples(path):
     return complete
 
 
+def read_flu_label_map(path, ecuador_date_source):
+    labels = {}
+    with open(path, "r", encoding="utf-8", newline="") as handle:
+        reader = csv.DictReader(handle)
+        for row in reader:
+            sample = row.get("Código USFQ") or row.get("Codigo USFQ") or row.get("codigo_usfq")
+            sample = clean_id(sample)
+            if not sample:
+                continue
+
+            place = clean_place(row.get("Provincia") or row.get("provincia") or row.get("province"))
+            date_value = normalize_date(
+                pick_ecuador_date(row, ecuador_date_source)
+                or row.get("year")
+                or row.get("año")
+                or row.get("anio")
+            )
+            if not date_value:
+                date_value = "UNKNOWN"
+
+            labels[sample] = f"{sample}/{place}/{date_value}"
+    return labels
+
+
 def read_context_complete_samples(path):
     complete = set()
     with open(path, "r", encoding="utf-8", newline="") as handle:
@@ -99,6 +141,37 @@ def read_context_complete_samples(path):
     return complete
 
 
+def read_context_label_map(path):
+    labels = {}
+    with open(path, "r", encoding="utf-8", newline="") as handle:
+        reader = csv.DictReader(handle, delimiter="\t")
+        for row in reader:
+            country = clean_place(row.get("country") or row.get("source_country") or "")
+            date_value = normalize_date(row.get("collection_date") or row.get("year") or row.get("strain"))
+            if not date_value:
+                date_value = "UNKNOWN"
+
+            accession = clean_id(row.get("accession", ""))
+            isolate = clean_id(row.get("isolate", ""))
+            selection_role = clean_id(row.get("selection_role", ""))
+            role_suffix = f"__{selection_role}" if selection_role else ""
+
+            if accession:
+                key = accession
+                labels[key] = f"{key}/{country}/{date_value}"
+                if role_suffix:
+                    key = f"{accession}{role_suffix}"
+                    labels[key] = f"{key}/{country}/{date_value}"
+
+            if isolate and isolate.upper() != "UNKNOWN" and accession:
+                key = f"{isolate}_{accession}"
+                labels[key] = f"{key}/{country}/{date_value}"
+                if role_suffix:
+                    key = f"{isolate}_{accession}{role_suffix}"
+                    labels[key] = f"{key}/{country}/{date_value}"
+    return labels
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="Build BEAST concatenated FASTA with complete 8-segment H5N1 samples"
@@ -106,12 +179,15 @@ def main():
     parser.add_argument("--final-fasta", required=True)
     parser.add_argument("--flu-filtrado-csv", required=True)
     parser.add_argument("--context-metadata-tsv", required=True)
+    parser.add_argument("--ecuador-date-source", default="reception")
     parser.add_argument("--output-fasta", required=True)
     parser.add_argument("--output-summary", required=True)
     args = parser.parse_args()
 
     flu_complete = read_flu_complete_samples(args.flu_filtrado_csv)
+    flu_label_map = read_flu_label_map(args.flu_filtrado_csv, args.ecuador_date_source)
     context_complete = read_context_complete_samples(args.context_metadata_tsv)
+    context_label_map = read_context_label_map(args.context_metadata_tsv)
 
     sample_segments = defaultdict(dict)
 
@@ -136,7 +212,13 @@ def main():
 
         if is_complete:
             concat = "".join(segs[s] for s in REQUIRED_ORDER)
-            selected.append((sample_id, concat))
+            # Preserve original Flu headers (already enriched with place/date from input FASTA);
+            # for context samples, use reconstructed label from metadata
+            if from_flu and sample_id.startswith("Flu-"):
+                output_header = sample_id
+            else:
+                output_header = context_label_map.get(sample_id, sample_id)
+            selected.append((sample_id, output_header, concat))
 
         rows.append(
             {
@@ -147,12 +229,13 @@ def main():
                 "in_flu_filtrado_complete": str(from_flu),
                 "in_context_metadata_segment8": str(from_context),
                 "selected_for_beast": str(is_complete),
+                "output_header": sample_id if (from_flu and sample_id.startswith("Flu-")) else context_label_map.get(sample_id, sample_id),
             }
         )
 
     with open(args.output_fasta, "w", encoding="utf-8") as out_fa:
-        for sample_id, seq in selected:
-            out_fa.write(f">{sample_id}\n")
+        for sample_id, output_header, seq in selected:
+            out_fa.write(f">{output_header}\n")
             out_fa.write(wrap_seq(seq) + "\n")
 
     with open(args.output_summary, "w", encoding="utf-8", newline="") as out_csv:
@@ -164,6 +247,7 @@ def main():
             "in_flu_filtrado_complete",
             "in_context_metadata_segment8",
             "selected_for_beast",
+            "output_header",
         ]
         writer = csv.DictWriter(out_csv, fieldnames=fieldnames)
         writer.writeheader()

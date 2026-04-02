@@ -36,11 +36,11 @@ def parse_header(header):
     if len(parts) != 4:
         return None
 
-    sample, segment, place, year = [part.strip() for part in parts]
-    if not sample or not segment or not place or not year:
+    sample, segment, place, date_value = [part.strip() for part in parts]
+    if not sample or not segment or not place or not date_value:
         return None
 
-    return sample, segment.upper(), place, year
+    return sample, segment.upper(), place, date_value
 
 
 def main():
@@ -64,8 +64,8 @@ def main():
             invalid_headers.append(header)
             continue
 
-        sample, segment, place, year = parsed
-        grouped[segment].append((f"{sample}/{place}/{year}", seq))
+        sample, segment, place, date_value = parsed
+        grouped[segment].append((f"{sample}/{place}/{date_value}", seq))
 
     counts = Counter()
     for segment in SEGMENTS:

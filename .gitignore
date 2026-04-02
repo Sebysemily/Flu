@@ -7,3 +7,4 @@ data/***
 .snakemake/*
 snakemake/*
 snakemake/**
+tmp_rf_full_concat/**

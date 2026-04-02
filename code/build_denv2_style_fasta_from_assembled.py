@@ -6,16 +6,20 @@ import yaml
 
 import pandas as pd
 
+from date_normalization import parse_collection_date, pick_ecuador_date
+
 
 DEFAULT_PER_SAMPLE_DIR = os.path.join("data", "assembled", "ecuador_intermediate_per_sample")
 DEFAULT_AUDIT_CSV = os.path.join("data", "assembled", "ecuador_intermediate_audit.csv")
 CONFIG_FILE = os.path.join("config", "config.yml")
 DEFAULT_METADATA_CSV = os.path.join("config", "flu_filtrado.csv")
+DEFAULT_ECUADOR_DATE_SOURCE = "reception"
 try:
     if os.path.exists(CONFIG_FILE):
         with open(CONFIG_FILE) as fh:
             _cfg = yaml.safe_load(fh) or {}
             DEFAULT_METADATA_CSV = _cfg.get("flu_filtrado", DEFAULT_METADATA_CSV)
+            DEFAULT_ECUADOR_DATE_SOURCE = _cfg.get("ecuador_date_source", DEFAULT_ECUADOR_DATE_SOURCE)
 except Exception:
     # Fall back to builtin default if config can't be read
     pass
@@ -87,21 +91,9 @@ def normalize_place(text):
     return "".join(token[:1].upper() + token[1:].lower() for token in tokens)
 
 
-def parse_year(date_value):
-    if pd.isna(date_value):
-        return "UNKNOWN"
-
-    date_str = str(date_value).strip()
-    if not date_str:
-        return "UNKNOWN"
-
-    # Try strict datetime parsing first; fall back to regex year extraction.
-    parsed = pd.to_datetime(date_str, errors="coerce", dayfirst=False)
-    if not pd.isna(parsed):
-        return str(parsed.year)
-
-    match = re.search(r"(19|20)\d{2}", date_str)
-    return match.group(0) if match else "UNKNOWN"
+def normalize_date(date_value):
+    parsed = parse_collection_date(date_value)
+    return parsed if parsed else "UNKNOWN"
 
 
 def read_fasta(path):
@@ -154,19 +146,20 @@ def parse_header_sample_segment(header):
     return sample, segment
 
 
-def build_metadata_map(metadata_csv):
+def build_metadata_map(metadata_csv, ecuador_date_source):
     df = pd.read_csv(metadata_csv, dtype=str)
 
     sample_col = pick_column(df, ["Codigo USFQ", "Código USFQ"])
     province_col = pick_column(df, ["Provincia"])
+    collection_col = pick_column(df, ["Fecha coleccion", "Fecha colección"])
     received_col = pick_column(df, ["Fecha recepcion", "Fecha recepción"])
 
     if sample_col is None:
         raise ValueError("No se encontro la columna de muestra (Codigo USFQ/Código USFQ) en metadata")
     if province_col is None:
         raise ValueError("No se encontro la columna Provincia en metadata")
-    if received_col is None:
-        raise ValueError("No se encontro la columna Fecha recepcion/Fecha recepción en metadata")
+    if collection_col is None and received_col is None:
+        raise ValueError("No se encontro columna de fecha util en metadata")
 
     metadata = {}
     for _, row in df.iterrows():
@@ -175,11 +168,12 @@ def build_metadata_map(metadata_csv):
             continue
 
         province = normalize_place(row.get(province_col, ""))
-        year = parse_year(row.get(received_col, ""))
+        date_value = normalize_date(pick_ecuador_date(row, ecuador_date_source))
 
         metadata[sample] = {
             "province": province,
-            "year": year,
+            "date": date_value,
+            "year": date_value[:4] if date_value != "UNKNOWN" else "UNKNOWN",
         }
 
     return metadata
@@ -213,6 +207,7 @@ def main():
     parser.add_argument("--per-sample-dir", default=DEFAULT_PER_SAMPLE_DIR)
     parser.add_argument("--audit-csv", default=DEFAULT_AUDIT_CSV)
     parser.add_argument("--metadata-csv", default=DEFAULT_METADATA_CSV)
+    parser.add_argument("--ecuador-date-source", default=DEFAULT_ECUADOR_DATE_SOURCE)
     parser.add_argument("--output-fasta", default=DEFAULT_OUTPUT_FASTA)
     parser.add_argument("--summary-csv", default=DEFAULT_SUMMARY_CSV)
     args = parser.parse_args()
@@ -220,7 +215,7 @@ def main():
     os.makedirs(os.path.dirname(args.output_fasta), exist_ok=True)
     os.makedirs(os.path.dirname(args.summary_csv), exist_ok=True)
 
-    metadata = build_metadata_map(args.metadata_csv)
+    metadata = build_metadata_map(args.metadata_csv, args.ecuador_date_source)
     assembled_set = build_assembled_set(args.audit_csv)
 
     fasta_files = sorted(
@@ -243,11 +238,11 @@ def main():
                 if (sample, segment) not in assembled_set:
                     continue
 
-                md = metadata.get(sample, {"province": "UNKNOWN", "year": "UNKNOWN"})
+                md = metadata.get(sample, {"province": "UNKNOWN", "date": "UNKNOWN", "year": "UNKNOWN"})
                 province = md["province"]
-                year = md["year"]
+                date_value = md["date"]
 
-                out_header = f"{sample}/{segment}/{province}/{year}"
+                out_header = f"{sample}/{segment}/{province}/{date_value}"
 
                 out.write(f">{out_header}\n")
                 out.write(wrap_seq(seq) + "\n")
@@ -258,7 +253,8 @@ def main():
                         "sample": sample,
                         "segment": segment,
                         "province": province,
-                        "year": year,
+                        "date": date_value,
+                        "year": md["year"],
                         "header": out_header,
                         "length": len(seq),
                     }

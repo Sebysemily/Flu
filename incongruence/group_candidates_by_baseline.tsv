@@ -1,0 +1,116 @@
+baseline_group	candidate_type	votes_in_group	sample_full_id	alert_in_other_group	secondary_group	secondary_group_votes	inconsistent_trees	inconsistent_trees_any_support	outside_main_groups_trees	present_trees
+flu2024	primary	8	Flu-0316/Cotopaxi/2023	no						PB2;PB1;PA;HA;NP;NA;MP;NS;concat
+flu2024	primary	8	Flu-0317/Cotopaxi/2023	no						PB2;PB1;PA;HA;NP;NA;MP;NS;concat
+flu2024	primary	8	Flu-0580/UNKNOWN/2024	no						PB2;PB1;PA;HA;NP;NA;MP;NS;concat
+flu2024	primary	8	Flu-0582/UNKNOWN/2024	no						PB2;PB1;PA;HA;NP;NA;MP;NS;concat
+flu2024	primary	8	Flu-0583/UNKNOWN/2024	no						PB2;PB1;PA;HA;NP;NA;MP;NS;concat
+flu2024	primary	8	Flu-0584/UNKNOWN/2024	no						PB2;PB1;PA;HA;NP;NA;MP;NS;concat
+flu2024	primary	8	Flu-0586/UNKNOWN/2024	no						PB2;PB1;PA;HA;NP;NA;MP;NS;concat
+flu2024	primary	8	Flu-0589/UNKNOWN/2024	no						PB2;PB1;PA;HA;NP;NA;MP;NS;concat
+flu2024	primary	8	Flu-0592/UNKNOWN/2024	no						PB2;PB1;PA;HA;NP;NA;MP;NS;concat
+flu2024	primary	8	Flu-0593/UNKNOWN/2024	no						PB2;PB1;PA;HA;NP;NA;MP;NS;concat
+flu2024	primary	8	Flu-0596/UNKNOWN/2024	no						PB2;PB1;PA;HA;NP;NA;MP;NS;concat
+flu2024	primary	8	Flu-0599/UNKNOWN/2024	no						PB2;PB1;PA;HA;NP;NA;MP;NS;concat
+flu2024	primary	8	Flu-0600/UNKNOWN/2024	no						PB2;PB1;PA;HA;NP;NA;MP;NS;concat
+flu2024	primary	8	Flu-0604/UNKNOWN/2024	no						PB2;PB1;PA;HA;NP;NA;MP;NS;concat
+flu2024	primary	8	Flu-0608/UNKNOWN/2024	no						PB2;PB1;PA;HA;NP;NA;MP;NS;concat
+flu2024	primary	8	Flu-0610/UNKNOWN/2024	no						PB2;PB1;PA;HA;NP;NA;MP;NS;concat
+flu2024	primary	8	Flu-0611/UNKNOWN/2024	no						PB2;PB1;PA;HA;NP;NA;MP;NS;concat
+flu2024	primary	8	Flu-0613/UNKNOWN/2024	no						PB2;PB1;PA;HA;NP;NA;MP;NS;concat
+flu2024	primary	8	Flu-0614/UNKNOWN/2024	no						PB2;PB1;PA;HA;NP;NA;MP;NS;concat
+flu2024	primary	8	Flu-0619/UNKNOWN/2024	no						PB2;PB1;PA;HA;NP;NA;MP;NS;concat
+flu2024	primary	8	Flu-0621/UNKNOWN/2024	no						PB2;PB1;PA;HA;NP;NA;MP;NS;concat
+flu2024	primary	8	Flu-0622/UNKNOWN/2024	no						PB2;PB1;PA;HA;NP;NA;MP;NS;concat
+flu2024	primary	8	Flu-0623/UNKNOWN/2024	no						PB2;PB1;PA;HA;NP;NA;MP;NS;concat
+flu2024	primary	8	Flu-0630/UNKNOWN/2024	no						PB2;PB1;PA;HA;NP;NA;MP;NS;concat
+flu2024	primary	8	Flu-0641/UNKNOWN/2024	no						PB2;PB1;PA;HA;NP;NA;MP;NS;concat
+flu2024	primary	8	Flu-0652/UNKNOWN/2024	no						PB2;PB1;PA;HA;NP;NA;MP;NS;concat
+flu2024	primary	8	Flu-0653/UNKNOWN/2024	no						PB2;PB1;PA;HA;NP;NA;MP;NS;concat
+flu2024	primary	8	Flu-0654/UNKNOWN/2024	no						PB2;PB1;PA;HA;NP;NA;MP;NS;concat
+flu2024	primary	7	Flu-0318/UNKNOWN/2023	no						PB2;PB1;PA;NP;NA;MP;NS
+flu2024	primary	7	Flu-0585/UNKNOWN/2024	no						PB2;PA;HA;NP;NA;MP;NS
+flu2024	primary	7	Flu-0587/UNKNOWN/2024	no						PB1;PA;HA;NP;NA;MP;NS
+flu2024	primary	7	Flu-0590/UNKNOWN/2024	no						PB2;PB1;PA;HA;NP;MP;NS
+flu2024	primary	7	Flu-0595/UNKNOWN/2024	no						PB2;PB1;PA;NP;NA;MP;NS
+flu2024	primary	7	Flu-0598/UNKNOWN/2024	no						PB2;PB1;PA;NP;NA;MP;NS
+flu2024	primary	7	Flu-0609/UNKNOWN/2024	no						PB2;PB1;PA;NP;NA;MP;NS
+flu2024	primary	7	Flu-0633/UNKNOWN/2024	no						PB2;PB1;PA;NP;NA;MP;NS
+flu2024	primary	7	Flu-0658/UNKNOWN/2024	no						PB2;PB1;PA;NP;NA;MP;NS
+flu2024	primary	6	Flu-0603/UNKNOWN/2024	no						PB2;PB1;PA;NP;MP;NS
+flu2024	primary	6	Flu-0615/UNKNOWN/2024	no						PB2;PB1;PA;NP;MP;NS
+flu2024	primary	6	Flu-0639/UNKNOWN/2024	no						PB2;PB1;HA;NP;MP;NS
+flu2024	primary	6	Flu-0694/UNKNOWN/UNKNOWN	no	pichincha0694	1	MP	MP		PB2;PA;HA;NP;NA;MP;NS
+flu2024	primary	5	Flu-0013/UNKNOWN/2023	no						HA;NP;NA;MP;NS
+flu2024	primary	5	Flu-0638/UNKNOWN/2024	no						HA;NP;NA;MP;NS
+flu2024	primary	4	Flu-0009/UNKNOWN/2023	no						NP;NA;MP;NS
+flu2024	primary	4	Flu-0597/UNKNOWN/2024	no						NP;NA;MP;NS
+flu2024	primary	4	Flu-0632/UNKNOWN/2024	no						NP;NA;MP;NS
+flu2024	primary	3	Flu-0023/Manabi/2023	yes	guayas2023	2	NP;MP	NP;MP		HA;NP;NA;MP;NS
+flu2024	primary	3	Flu-0035/Esmeraldas/2023	no						NP;MP;NS
+flu2024	primary	3	Flu-0314/Tungurahua/2023	no						NA;MP;NS
+flu2024	primary	3	Flu-0321/UNKNOWN/2023	no						NA;MP;NS
+flu2024	primary	3	Flu-0325/UNKNOWN/2023	no						NP;MP;NS
+flu2024	primary	3	Flu-0326/UNKNOWN/2023	no						NP;MP;NS
+flu2024	primary	3	Flu-0330/UNKNOWN/2023	no						NP;MP;NS
+flu2024	primary	3	Flu-0594/UNKNOWN/2024	no						NP;MP;NS
+flu2024	primary	3	Flu-0605/UNKNOWN/2024	no						NP;MP;NS
+flu2024	primary	3	Flu-0629/UNKNOWN/2024	no						NP;MP;NS
+flu2024	primary	3	Flu-0631/UNKNOWN/2024	no						NP;MP;NS
+flu2024	primary	3	Flu-0635/UNKNOWN/2024	no						NP;MP;NS
+flu2024	primary	3	Flu-0636/UNKNOWN/2024	no						NP;MP;NS
+flu2024	primary	3	Flu-0642/UNKNOWN/2024	no						NP;MP;NS
+flu2024	primary	3	Flu-0643/UNKNOWN/2024	no						NP;MP;NS
+flu2024	primary	3	Flu-0655/UNKNOWN/2024	no						NP;MP;NS
+flu2024	primary	3	Flu-0656/UNKNOWN/2024	no						NP;MP;NS
+flu2024	primary	3	Flu-0663/UNKNOWN/2024	no						NP;MP;NS
+flu2024	primary	3	Flu-0736/UNKNOWN/2025	no						NP;MP;NS
+flu2024	primary	3	Flu-0737/UNKNOWN/2025	no						NP;MP;NS
+flu2024	primary	3	Flu-0739/UNKNOWN/2025	no						NP;MP;NS
+flu2024	primary	3	Flu-0742/UNKNOWN/2025	no						NP;MP;NS
+flu2024	primary	2	Flu-0011/UNKNOWN/2023	no						MP;NS
+flu2024	primary	2	Flu-0027/SantaElena/2023	no						MP;NS
+flu2024	primary	2	Flu-0323/UNKNOWN/2023	no						MP;NS
+flu2024	primary	2	Flu-0640/UNKNOWN/2024	no						MP;NS
+flu2024	primary	2	Flu-0738/UNKNOWN/2025	no						MP;NS
+flu2024	primary	2	Flu-0741/UNKNOWN/2025	no						MP;NS
+flu2024	primary	1	Flu-0008/SantaElena/2023	no						NS
+flu2024	primary	1	Flu-0014/SantaElena/2023	no						NS
+flu2024	primary	1	Flu-0018/SantaElena/2023	no						NS
+flu2024	primary	1	Flu-0410/Guayas/2023	no						NS
+flu2024	primary	1	Flu-0418/Cotopaxi/2023	no						MP
+flu2024	primary	1	Flu-0423/Cotopaxi/2023	no						NS
+flu2024	primary	1	Flu-0440/Cotopaxi/2023	no						NA
+flu2024	primary	1	Flu-0451/Bolivar/2023	no						NS
+flu2024	primary	1	Flu-0457/Tungurahua/2023	no						MP
+flu2024	primary	1	Flu-0735/UNKNOWN/2025	no						NS
+flu2024	primary	1	Flu-0740/UNKNOWN/2025	no						MP
+flu2024	secondary	1	Flu-0679/UNKNOWN/2025	no	flu2024	1	NS	NS		MP;NS
+flu2024	secondary	1	Flu-0680/UNKNOWN/2025	no	flu2024	1	NS	NS		MP;NS
+flu2024	secondary	1	Flu-0688/UNKNOWN/2025	no	flu2024	1	NS	NS		MP;NS
+guayas2023	primary	8	Flu-0406/Guayas/2023	no						PB2;PB1;PA;HA;NP;NA;MP;NS;concat
+guayas2023	primary	7	Flu-0402/Guayas/2023	no						PB2;PB1;PA;HA;NA;MP;NS
+guayas2023	primary	7	Flu-0407/Guayas/2023	no						PB2;PB1;HA;NP;NA;MP;NS
+guayas2023	primary	5	Flu-0578/UNKNOWN/2023	no						PB1;HA;NA;MP;NS
+guayas2023	primary	2	Flu-0206/Guayas/2023	no						MP;NS
+guayas2023	primary	2	Flu-0450/Bolivar/2023	no						HA;NA
+guayas2023	primary	2	Flu-0472/Cotopaxi/2023	no						HA;NA
+guayas2023	primary	1	Flu-0055/Manabi/2023	no						MP
+guayas2023	primary	1	Flu-0205/Guayas/2023	no						MP
+guayas2023	primary	1	Flu-0403/Guayas/2023	no						MP
+guayas2023	primary	1	Flu-0413/Cotopaxi/2023	no						MP
+guayas2023	primary	1	Flu-0456/Tungurahua/2023	no						NA
+guayas2023	primary	1	Flu-0465/Pichincha/2023	no						HA
+guayas2023	secondary	2	Flu-0023/Manabi/2023	yes	guayas2023	2	NP;MP	NP;MP		HA;NP;NA;MP;NS
+pichincha0694	primary	4	Flu-0692/UNKNOWN/UNKNOWN	no						NP;NA;MP;NS
+pichincha0694	primary	4	Flu-0711/UNKNOWN/2025	no						NP;NA;MP;NS
+pichincha0694	primary	3	Flu-0693/UNKNOWN/UNKNOWN	no						NP;MP;NS
+pichincha0694	primary	2	Flu-0712/UNKNOWN/2025	no						MP;NS
+pichincha0694	primary	2	Flu-0714/Pichincha/2025	no						MP;NS
+pichincha0694	primary	1	Flu-0679/UNKNOWN/2025	no	flu2024	1	NS	NS		MP;NS
+pichincha0694	primary	1	Flu-0680/UNKNOWN/2025	no	flu2024	1	NS	NS		MP;NS
+pichincha0694	primary	1	Flu-0688/UNKNOWN/2025	no	flu2024	1	NS	NS		MP;NS
+pichincha0694	primary	1	Flu-0713/Pichincha/2025	no						MP
+pichincha0694	primary	1	Flu-0715/Pichincha/2025	no						MP
+pichincha0694	primary	1	Flu-0716/Pichincha/2025	no						MP
+pichincha0694	primary	1	Flu-0717/Pichincha/2025	no						MP
+pichincha0694	secondary	1	Flu-0694/UNKNOWN/UNKNOWN	no	pichincha0694	1	MP	MP		PB2;PA;HA;NP;NA;MP;NS

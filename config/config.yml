@@ -1,3 +1,6 @@
 mira_base_dir: ".."
 flu_filtrado: "config/flu_filtrado.csv"
 context_metadata_tsv: "config/final_metadata_50_per_country_isolates.tsv"
+ecuador_date_source: "reception"
+random_seed: 39809473
+max_threads: 20

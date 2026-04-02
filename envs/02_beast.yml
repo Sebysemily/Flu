@@ -1,0 +1,10 @@
+name: beast_pre_validation
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - python=3.11
+  - pandas
+  - biopython
+  - treetime
+  - graphviz

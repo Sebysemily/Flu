@@ -9,6 +9,8 @@ from urllib.request import urlopen
 
 import pandas as pd
 
+from date_normalization import parse_collection_date
+
 
 SEGMENT_MAP = {
     "1": "PB2",
@@ -91,15 +93,9 @@ def normalize_place(text):
     return "".join(token[:1].upper() + token[1:].lower() for token in tokens)
 
 
-def parse_year(value):
-    if value is None:
-        return "UNKNOWN"
-    text = str(value).strip()
-    if not text or text.lower() in {"nan", "none", "na", "n/a"}:
-        return "UNKNOWN"
-
-    found = re.search(r"(19|20)\d{2}", text)
-    return found.group(0) if found else "UNKNOWN"
+def normalize_date(value):
+    parsed = parse_collection_date(value)
+    return parsed if parsed else "UNKNOWN"
 
 
 def wrap_seq(seq, width=80):
@@ -302,7 +298,7 @@ def main():
             isolate = clean_ascii(row.get("isolate", ""))
             # requested/annotated segment in TSV (fallback)
             requested_segment = normalize_segment(row.get("segment", ""))
-            year = parse_year(row.get("collection_date", ""))
+            date_value = normalize_date(row.get("collection_date", ""))
 
             source_country = normalize_place(row.get("source_country", ""))
             country = normalize_place(row.get("country", ""))
@@ -337,7 +333,7 @@ def main():
                         else:
                             seg = requested_segment
 
-                        out_header = f"{display_sample}/{seg}/{place}/{year}"
+                        out_header = f"{display_sample}/{seg}/{place}/{date_value}"
                         if out_header in written_headers:
                             continue
 
@@ -360,7 +356,8 @@ def main():
                                 "segment": seg,
                                 "isolate": isolate,
                                 "place": place,
-                                "year": year,
+                                "date": date_value,
+                                "year": date_value[:4] if date_value != "UNKNOWN" else "UNKNOWN",
                                 "selection_role": selection_role,
                                 "header": out_header,
                                 "length": len(clean_hit_seq),
@@ -371,7 +368,7 @@ def main():
                             }
                         )
                 else:
-                    out_header = f"{display_sample}/{requested_segment}/{place}/{year}"
+                    out_header = f"{display_sample}/{requested_segment}/{place}/{date_value}"
                     records.append(
                         {
                             "accession": accession,
@@ -381,7 +378,8 @@ def main():
                             "segment": requested_segment,
                             "isolate": isolate,
                             "place": place,
-                            "year": year,
+                            "date": date_value,
+                            "year": date_value[:4] if date_value != "UNKNOWN" else "UNKNOWN",
                             "selection_role": selection_role,
                             "header": out_header,
                             "length": 0,
