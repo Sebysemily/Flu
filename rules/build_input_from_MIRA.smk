@@ -25,7 +25,7 @@ rule build_ecuador_intermediate_input:
         directory("data/assembled/ecuador_intermediate_per_sample")
     shell:
         r"""
-        python code/build_gisaid_input_from_mira.py
+        python code/build_input_from_MIRA/build_gisaid_input_from_mira.py
         """
 
 
@@ -41,7 +41,7 @@ rule build_h5n1_ec_fasta:
         ecuador_date_source=ECUADOR_DATE_SOURCE
     shell:
         r"""
-        python code/build_denv2_style_fasta_from_assembled.py \
+        python code/build_input_from_MIRA/build_denv2_style_fasta_from_assembled.py \
             --per-sample-dir {input.per_sample_fastas} \
             --audit-csv {input.audit_csv} \
             --metadata-csv {input.metadata_csv} \
@@ -61,7 +61,7 @@ rule build_h5n1_final_fasta:
         final_fasta="data/final/H5N1_final.fasta"
     shell:
         r"""
-        python code/download_context_and_merge_denv2_fasta.py \
+        python code/build_input_from_MIRA/download_context_and_merge_denv2_fasta.py \
             --ecuador-fasta {input.ecuador_fasta} \
             --context-metadata-tsv {input.context_metadata_tsv} \
             --context-fasta-out {output.context_fasta} \
@@ -82,7 +82,7 @@ rule build_h5n1_final_beast_fasta:
         ecuador_date_source=ECUADOR_DATE_SOURCE
     shell:
         r"""
-        python code/build_h5n1_beast_fasta.py \
+        python code/build_input_from_MIRA/build_h5n1_beast_fasta.py \
             --final-fasta {input.final_fasta} \
             --flu-filtrado-csv {input.metadata_csv} \
             --context-metadata-tsv {input.context_metadata_tsv} \

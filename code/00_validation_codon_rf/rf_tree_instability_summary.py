@@ -64,7 +64,10 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--replicate-tree", action="append", required=True)
     parser.add_argument("--base-seed", type=int, required=True)
     parser.add_argument("--replicate-seed", action="append", required=True, type=int)
+    parser.add_argument("--base-label", default="base")
+    parser.add_argument("--replicate-label", action="append", default=[])
     parser.add_argument("--cutoff", type=float, default=0.05)
+    parser.add_argument("--label", default="")
     parser.add_argument("--output", required=True)
     return parser.parse_args()
 
@@ -75,26 +78,33 @@ def main() -> None:
     if len(args.replicate_tree) != len(args.replicate_seed):
         raise ValueError("Number of --replicate-tree and --replicate-seed values must match")
 
-    labels: List[str] = ["base"] + [f"rep{i + 1}" for i in range(len(args.replicate_tree))]
-    tree_paths: Dict[str, str] = {"base": args.base_tree}
-    seed_map: Dict[str, int] = {"base": args.base_seed}
+    if args.replicate_label and len(args.replicate_label) != len(args.replicate_tree):
+        raise ValueError("Number of --replicate-label values must match number of --replicate-tree values")
 
-    for i, (path, seed) in enumerate(zip(args.replicate_tree, args.replicate_seed)):
-        label = f"rep{i + 1}"
+    replicate_labels = args.replicate_label or [f"rep{i + 1}" for i in range(len(args.replicate_tree))]
+    labels: List[str] = [args.base_label] + replicate_labels
+
+    if len(set(labels)) != len(labels):
+        raise ValueError("Tree labels must be unique across --base-label and --replicate-label values")
+
+    tree_paths: Dict[str, str] = {args.base_label: args.base_tree}
+    seed_map: Dict[str, int] = {args.base_label: args.base_seed}
+
+    for label, path, seed in zip(replicate_labels, args.replicate_tree, args.replicate_seed):
         tree_paths[label] = path
         seed_map[label] = seed
 
     trees = {label: read_tree(path) for label, path in tree_paths.items()}
 
-    reference_tips = tree_tip_set(trees["base"])
+    reference_tips = tree_tip_set(trees[args.base_label])
     for label in labels[1:]:
         tips = tree_tip_set(trees[label])
         if tips != reference_tips:
             only_ref = sorted(reference_tips - tips)
             only_other = sorted(tips - reference_tips)
             raise ValueError(
-                f"Tip mismatch between base and {label}. "
-                f"Only in base: {only_ref[:5]}{'...' if len(only_ref) > 5 else ''}; "
+                f"Tip mismatch between {args.base_label} and {label}. "
+                f"Only in {args.base_label}: {only_ref[:5]}{'...' if len(only_ref) > 5 else ''}; "
                 f"Only in {label}: {only_other[:5]}{'...' if len(only_other) > 5 else ''}"
             )
 
@@ -113,6 +123,7 @@ def main() -> None:
 
         rows.append(
             {
+                "run_label": args.label,
                 "tree_a": a,
                 "tree_b": b,
                 "seed_a": seed_map[a],
@@ -126,6 +137,7 @@ def main() -> None:
         )
 
     summary = {
+        "run_label": args.label,
         "tree_a": "__summary__",
         "tree_b": "max_pairwise",
         "seed_a": "",
@@ -142,6 +154,7 @@ def main() -> None:
         os.makedirs(out_dir, exist_ok=True)
 
     fieldnames = [
+        "run_label",
         "tree_a",
         "tree_b",
         "seed_a",

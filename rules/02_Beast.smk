@@ -23,7 +23,7 @@ rule build_beast_panels:
     shell:
         r"""
         mkdir -p data/beast_pre/panels
-        python code/build_beast_panels.py \
+        python code/02_Beast/build_beast_panels.py \
             --tree {input.tree} \
             --beast-summary {input.beast_summary} \
             --context-metadata {input.context_metadata} \
@@ -48,7 +48,7 @@ rule subset_alignment_and_prune_tree:
         "../envs/ml_per_segment.yml"
     shell:
         r"""
-        python code/subset_alignment_and_prune_tree.py \
+        python code/02_Beast/subset_alignment_and_prune_tree.py \
             --alignment {input.alignment} \
             --tree {input.tree} \
             --taxa {input.taxa} \
@@ -74,7 +74,7 @@ rule run_root_to_tip:
         "../envs/02_beast.yml"
     shell:
         r"""
-        python code/run_treetime_clock.py \
+        python code/02_Beast/run_treetime_clock.py \
             --tree {input.tree} \
             --aln {input.alignment} \
             --flu-filtrado-csv {input.flu_filtrado} \

@@ -11,16 +11,6 @@ FULL_CONCAT_ALIGNMENT = "data/phylogeny/aligned/H5N1_full_concat_beast.mafft"
 FULL_CONCAT_PARTITIONS = "data/phylogeny/H5N1_full_concat_beast.partitions"
 FULL_CONCAT_PREFIX = "results/phylogeny/raxml/full_concat/H5N1_full_concat_beast"
 
-RF_TMP_DIR = "tmp_rf_full_concat"
-RF_REP1_SEED = RANDOM_SEED + 1
-RF_REP2_SEED = RANDOM_SEED + 2
-RF_REP1_PREFIX = f"{RF_TMP_DIR}/H5N1_full_concat_beast_rep1"
-RF_REP2_PREFIX = f"{RF_TMP_DIR}/H5N1_full_concat_beast_rep2"
-RF_BASE_TREE = f"{FULL_CONCAT_PREFIX}.raxml.bestTreeCollapsed"
-RF_REP1_TREE = f"{RF_REP1_PREFIX}.raxml.bestTreeCollapsed"
-RF_REP2_TREE = f"{RF_REP2_PREFIX}.raxml.bestTreeCollapsed"
-RF_SUMMARY_TSV = f"{RF_TMP_DIR}/rf_summary.tsv"
-
 
 rule split_h5n1_final_by_segment:
 	input:
@@ -31,7 +21,7 @@ rule split_h5n1_final_by_segment:
 		"data/phylogeny/by_segment_summary.csv"
 	shell:
 		r"""
-		python code/split_final_fasta_by_segment.py \
+		python code/01_ml_trees/split_final_fasta_by_segment.py \
 			--input-fasta {input.final_fasta} \
 			--output-dir data/phylogeny/by_segment \
 			--summary-csv data/phylogeny/by_segment_summary.csv
@@ -60,7 +50,11 @@ rule align_all_segments:
 
 rule concat_aligned_segments_with_partitions:
 	input:
-		alignments=expand("data/phylogeny/aligned/H5N1_{segment}.mafft", segment=PHYLO_SEGMENTS)
+		alignments=expand("data/phylogeny/aligned/H5N1_{segment}.mafft", segment=PHYLO_SEGMENTS),
+		segment_trees=expand(
+			"results/phylogeny/raxml/{segment}/H5N1_{segment}.raxml.supportTBE",
+			segment=PHYLO_SEGMENTS,
+		)
 	output:
 		aligned=FULL_CONCAT_ALIGNMENT,
 		partitions=FULL_CONCAT_PARTITIONS
@@ -68,7 +62,7 @@ rule concat_aligned_segments_with_partitions:
 		segment_order=",".join(PHYLO_SEGMENTS)
 	shell:
 		r"""
-		python code/concat_aligned_segments_with_partitions.py \
+		python code/01_ml_trees/concat_aligned_segments_with_partitions.py \
 			--segment-order {params.segment_order} \
 			--output-alignment {output.aligned} \
 			--output-partitions {output.partitions} \
@@ -143,92 +137,3 @@ rule raxml_ng_tree_full_concat_beast:
 rule raxml_tree_full_concat:
 	input:
 		f"{FULL_CONCAT_PREFIX}.raxml.supportTBE"
-
-
-rule raxml_ng_tree_full_concat_rf_rep1:
-	input:
-		alignment=FULL_CONCAT_ALIGNMENT,
-		partitions=FULL_CONCAT_PARTITIONS,
-		base_tree=RF_BASE_TREE
-	output:
-		rep1_tree=RF_REP1_TREE
-	params:
-		rep1_prefix=RF_REP1_PREFIX,
-		bs_trees=1000,
-		extra=lambda wildcards: "--bs-metric tbe --redo --tree 'pars{20},rand{20}'"
-	threads: RF_RAXML_THREADS
-	conda:
-		"../envs/ml_per_segment.yml"
-	shell:
-		r"""
-		mkdir -p {RF_TMP_DIR}
-
-		raxml-ng \
-			--all \
-			--msa {input.alignment} \
-			--model {input.partitions} \
-			--prefix {params.rep1_prefix} \
-			--threads {threads} \
-			--bs-trees {params.bs_trees} \
-			--seed {RF_REP1_SEED} \
-			{params.extra}
-		"""
-
-
-rule raxml_ng_tree_full_concat_rf_rep2:
-	input:
-		alignment=FULL_CONCAT_ALIGNMENT,
-		partitions=FULL_CONCAT_PARTITIONS,
-		base_tree=RF_BASE_TREE,
-		rep1_tree=RF_REP1_TREE
-	output:
-		rep2_tree=RF_REP2_TREE
-	params:
-		rep2_prefix=RF_REP2_PREFIX,
-		bs_trees=1000,
-		extra=lambda wildcards: "--bs-metric tbe --redo --tree 'pars{20},rand{20}'"
-	threads: RF_RAXML_THREADS
-	conda:
-		"../envs/ml_per_segment.yml"
-	shell:
-		r"""
-		mkdir -p {RF_TMP_DIR}
-
-		raxml-ng \
-			--all \
-			--msa {input.alignment} \
-			--model {input.partitions} \
-			--prefix {params.rep2_prefix} \
-			--threads {threads} \
-			--bs-trees {params.bs_trees} \
-			--seed {RF_REP2_SEED} \
-			{params.extra}
-		"""
-
-
-rule summarize_full_concat_rf_instability:
-	input:
-		base_tree=RF_BASE_TREE,
-		rep1_tree=RF_REP1_TREE,
-		rep2_tree=RF_REP2_TREE
-	output:
-		rf_summary=RF_SUMMARY_TSV
-	params:
-		cutoff=0.05,
-		base_seed=RANDOM_SEED,
-		rep1_seed=RF_REP1_SEED,
-		rep2_seed=RF_REP2_SEED
-	conda:
-		"../envs/ml_per_segment.yml"
-	shell:
-		r"""
-		python code/rf_tree_instability_summary.py \
-			--base-tree {input.base_tree} \
-			--replicate-tree {input.rep1_tree} \
-			--replicate-tree {input.rep2_tree} \
-			--base-seed {params.base_seed} \
-			--replicate-seed {params.rep1_seed} \
-			--replicate-seed {params.rep2_seed} \
-			--cutoff {params.cutoff} \
-			--output {output.rf_summary}
-		"""

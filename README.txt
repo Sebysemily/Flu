@@ -31,17 +31,24 @@ Configuracion
 - Ruta base de runs MIRA: config/config.yml
 
 Ejecucion
-- Correr todo el pipeline (incluye alineamientos MAFFT y arboles ML por segmento):
+- Correr todo el pipeline principal:
 
-snakemake --cores all --use-conda all
+snakemake --cores all --use-conda 
 
-- Reintentar solo incompletos/fallidos:
 
-snakemake --cores all --use-conda --rerun-incomplete all
+- Correr la validacion codon+RF (opcional, para revision interna o reviewers):
 
-- Forzar recomputacion completa desde cero:
+snakemake --cores all --use-conda rf_validation
 
-snakemake --cores all --use-conda --forceall all
+    - Validacion con particiones codon en 6 segmentos (PB2, PB1, PA, HA, NP, NA):
+        - Alineacion concatenada codon-aware en results/validation/concat/
+        - Arbol base y 5 replicas RF sin bootstrap en results/validation/raxml/full_concat/ y results/validation/rf/
+        - Resumen de distancias RF en results/validation/rf/rf_summary/rf_summary.tsv (incluye columna run_label para trazabilidad)
+        - Arboles per-segment codon sin bootstrap en results/validation/per_segment/{segment}/
+    
+    - Validacion RF simple (GTR+G sin particiones codon) para 2 segmentos restantes (NS, MP):
+        - Arbol base y 5 replicas RF por segmento en results/validation/rf/
+        - Resumen de distancias RF por segmento en results/validation/rf/rf_summary_{segment}/rf_summary.tsv
 
 Flujo de reglas
 1. build_ecuador_intermediate_input
@@ -110,6 +117,14 @@ Estructura de salidas
     - data/phylogeny/aligned/H5N1_*.mafft
     - results/phylogeny/raxml/{segment}/H5N1_{segment}.raxml.bestTreeCollapsed
     - results/phylogeny/raxml/{segment}/H5N1_{segment}.raxml.supportTBE
+
+- Validacion secundaria codon+RF:
+    - results/validation/concat/
+    - results/validation/raxml/full_concat/
+    - results/validation/rf/rf_summary/rf_summary.tsv (6 segmentos con particiones codon)
+    - results/validation/rf/rf_summary_NS/rf_summary.tsv (NS simple RF)
+    - results/validation/rf/rf_summary_MP/rf_summary.tsv (MP simple RF)
+    - results/validation/per_segment/{segment}/H5N1_{segment}_codon_validation.raxml.bestTreeCollapsed
 
 Graficos del workflow (DAG, rulegraph y filegraph)
 - Generar graficos hasta la ultima regla (arboles ML):
