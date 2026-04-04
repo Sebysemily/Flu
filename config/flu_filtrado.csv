@@ -4,7 +4,7 @@ Flu-0009,BM-A-23-008,Aves de corral,Hisopado,,Para estandarización,2023-04-13,2
 Flu-0011,BM-23-2349,Aves de corral,Hisopado,,Para estandarización,2023-04-02,2023-05-19,,NAPO,,,,,,,,"Positivo (Ct 30,20)",Bandeo (M),Sin bandas,SIII-3P,1,,,,,,,SI,SI,2,,"MP,NS",2
 Flu-0013,BM-23-0534,Aves de corral,Hisopado,,Para estandarización,2023-01-20,2023-05-19,,TUNGURAHUA,,,,,,,,-,Bandeo (M),Posible positivo,SIII-3P,"1,2,3",,,,SI,SI,SI,SI,SI,5,,"HA,NP,NA,MP,NS",5
 Flu-0014,REMACOPSE-SALINAS,Sula nebouxii,Hisopado,,Kit Allplex SC-2/FLUA/FLUB/RSV Seegene,2023-05-27,2023-05-30,,SANTAELENA,Salinas,,,,,Lucia Luje,"Positivo (Ct 24,03)","Positivo (Ct 21,46; 1:10)",Bandeo (M),Indeterminado,H5N1,"2,3",,,,,,,,SI,1,,NS,1
-Flu-0018,Remape-2023-SU-MV-001,No determinado,Hisopado,,Faringea,2023-06-01,2023-06-05,,SANTA ELENA,Montañita,,,,,,Negativo,Negativo,Bandeo (M),Indeterminado,H5N1,3,,,,,,,,SI,1,,NS,1
+Flu-0018,Remape-2023-SU-MV-001,,Hisopado,,Faringea,2023-06-01,2023-06-05,,SANTA ELENA,Montañita,,,,,,Negativo,Negativo,Bandeo (M),Indeterminado,H5N1,3,,,,,,,,SI,1,,NS,1
 Flu-0023,PG-004-SL,Pardela gris,Hisopado,,Hisopado orofaríngeo,2023-06-02,2023-06-05,,MANABI,San Lorenzo,,,,,,Negativo,Negativo,Bandeo (M),Posible positivo,H5N1,"2,3",,,,SI,SI,SI,SI,SI,5,,"HA,NP,NA,MP,NS",5
 Flu-0027,,Puffinus sp.,Hisopado,,,2023-05-30,2023-06-02,,SANTA ELENA,Ayangue,,,,,,,Negativo,Bandeo (M),Sin bandas,Negativo,3,,,,,,,SI,SI,2,,"MP,NS",2
 Flu-0035,004/31-05/2023,Thalasseus elegans,Hisopado laringotraqueal,,Hisopado orofaríngeo; Playa Muisne,2023-05-31,2023-05-31,2023-06-06,ESMERALDAS,Muisne,Playa Muisne,Playa Muisne,,,Nelson López; Lucía Luje,Nelson López,Negativo,Bandeo (M),Sin bandas,Negativo,3,,,,,,,SI,SI,2,,"NP,MP,NS",3
@@ -91,9 +91,6 @@ Flu-0663,BM-23-2350,Aves de corral,Líquido en PBS y Shield,,26.89,2023-04-02,20
 Flu-0679,Oral #3,Condor,Hisopado laringotraqueal,,,2025-02-05,2025-02-19,,IMBABURA,,,,,,,,,Positivo,,H1N1,"26,agro",,,,,,,SI,SI,2,,"MP,NS",2
 Flu-0680,,Condor,Hisopado laringotraqueal,,,2025-02-05,2025-02-19,,IMBABURA,,,Curi,,,,,,Positivo,,H1N1,26,,,,,,,SI,SI,2,,"MP,NS",2
 Flu-0688,,Condor,Hisopado laringotraqueal,,,2025-02-05,2025-02-19,,IMBABURA,,,Pimampiro,,,,,,Positivo,,H1N1,26,,,,,,,SI,SI,2,,"MP,NS",2
-Flu-0692,SIV-37,,,,Muestras de Sully,,,,,,,,,,,,,Positivo,sully,H1N1,26,,,,,SI,SI,SI,SI,4,,"NP,NA,MP,NS",4
-Flu-0693,SIV-20,,,,Muestras de Sully,,,,,,,,,,,,,Positivo,,H1N1,26,,,,,SI,,SI,SI,3,,"NP,MP,NS",3
-Flu-0694,SN-38,,,,Muestras de Sully,,,,,,,,,,,,,Positivo,sully,H1N1,26,SI,,SI,SI,SI,SI,SI,SI,7,,"PB2,PA,HA,NP,NA,MP,NS",7
 Flu-0711,SP-CB-8,Gallinazo,Hisopado laringotraqueal,,,,2025-02-19,,IMBABURA,,,,,,,,,Negativo,,H1N1,26,,,,,SI,SI,SI,SI,4,,"NP,NA,MP,NS",4
 Flu-0713,Condor 1 Zoo,Condor,Hisopado cloacal,,,2025-02-24,2025-02-26,,PICHINCHA,Quito,Zoo Quito,Toa,,,,,,Negativo,,H1N1,26,,,,,,,SI,,1,,MP,1
 Flu-0714,Condor 1 Zoo,Condor,Hisopado laringotraqueal,,,2025-02-24,2025-02-26,,PICHINCHA,Quito,Zoo Quito,Toa,,,,,,Negativo,,H1N1,26,,,,,,,SI,SI,2,,"MP,NS",2

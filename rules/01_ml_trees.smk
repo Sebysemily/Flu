@@ -154,7 +154,7 @@ rule raxml_trees_all_segments:
 		)
 
 
-rule raxml_ng_tree_full_concat_beast:
+rule raxml_ng_tree_full_concat:
 	input:
 		alignment=FULL_CONCAT_ALIGNMENT,
 		partitions=FULL_CONCAT_PARTITIONS

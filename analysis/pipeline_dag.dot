@@ -2,96 +2,80 @@ digraph snakemake_dag {
     graph[bgcolor=white, margin=0];
     node[shape=box, style=rounded, fontname=sans,                 fontsize=10, penwidth=2];
     edge[penwidth=2, color=grey];
-	0[label = "all", color = "0.02 0.6 0.85", style="rounded"];
-	1[label = "build_h5n1_final_fasta", color = "0.13 0.6 0.85", style="rounded"];
-	2[label = "build_h5n1_ec_fasta", color = "0.09 0.6 0.85", style="rounded"];
-	3[label = "build_ecuador_intermediate_input", color = "0.04 0.6 0.85", style="rounded"];
-	4[label = "build_h5n1_final_beast_fasta", color = "0.11 0.6 0.85", style="rounded"];
-	5[label = "concat_aligned_segments_with_partitions", color = "0.17 0.6 0.85", style="rounded"];
-	6[label = "mafft_align_per_segment\nsegment: PB2", color = "0.22 0.6 0.85", style="rounded"];
-	7[label = "split_h5n1_final_by_segment", color = "0.52 0.6 0.85", style="rounded"];
-	8[label = "mafft_align_per_segment\nsegment: PB1", color = "0.22 0.6 0.85", style="rounded"];
-	9[label = "mafft_align_per_segment\nsegment: PA", color = "0.22 0.6 0.85", style="rounded"];
-	10[label = "mafft_align_per_segment\nsegment: HA", color = "0.22 0.6 0.85", style="rounded"];
-	11[label = "mafft_align_per_segment\nsegment: NP", color = "0.22 0.6 0.85", style="rounded"];
-	12[label = "mafft_align_per_segment\nsegment: NA", color = "0.22 0.6 0.85", style="rounded"];
-	13[label = "mafft_align_per_segment\nsegment: MP", color = "0.22 0.6 0.85", style="rounded"];
-	14[label = "mafft_align_per_segment\nsegment: NS", color = "0.22 0.6 0.85", style="rounded"];
-	15[label = "raxml_ng_tree_per_segment_codon", color = "0.30 0.6 0.85", style="rounded"];
-	16[label = "build_segment_codon_partitions", color = "0.15 0.6 0.85", style="rounded"];
-	17[label = "raxml_ng_tree_per_segment_codon", color = "0.30 0.6 0.85", style="rounded"];
-	18[label = "build_segment_codon_partitions", color = "0.15 0.6 0.85", style="rounded"];
-	19[label = "raxml_ng_tree_per_segment_codon", color = "0.30 0.6 0.85", style="rounded"];
-	20[label = "build_segment_codon_partitions", color = "0.15 0.6 0.85", style="rounded"];
-	21[label = "raxml_ng_tree_per_segment_codon", color = "0.30 0.6 0.85", style="rounded"];
-	22[label = "build_segment_codon_partitions", color = "0.15 0.6 0.85", style="rounded"];
-	23[label = "raxml_ng_tree_per_segment_codon", color = "0.30 0.6 0.85", style="rounded"];
-	24[label = "build_segment_codon_partitions", color = "0.15 0.6 0.85", style="rounded"];
-	25[label = "raxml_ng_tree_per_segment_codon", color = "0.30 0.6 0.85", style="rounded"];
-	26[label = "build_segment_codon_partitions", color = "0.15 0.6 0.85", style="rounded"];
-	27[label = "raxml_ng_tree_per_segment_simple", color = "0.34 0.6 0.85", style="rounded"];
-	28[label = "raxml_ng_tree_per_segment_simple", color = "0.34 0.6 0.85", style="rounded"];
-	29[label = "raxml_ng_tree_full_concat_beast", color = "0.24 0.6 0.85", style="rounded"];
+	0[label = "build_h5n1_final_fasta", color = "0.11 0.6 0.85", style="rounded"];
+	1[label = "build_h5n1_ec_fasta", color = "0.09 0.6 0.85", style="rounded"];
+	2[label = "build_ecuador_intermediate_input", color = "0.04 0.6 0.85", style="rounded"];
+	3[label = "split_h5n1_final_by_segment", color = "0.51 0.6 0.85", style="rounded"];
+	4[label = "raxml_ng_tree_per_segment_simple", color = "0.33 0.6 0.85", style="rounded"];
+	5[label = "mafft_align_per_segment\nsegment: NS", color = "0.20 0.6 0.85", style="rounded"];
+	6[label = "raxml_ng_tree_per_segment_simple", color = "0.33 0.6 0.85", style="rounded"];
+	7[label = "mafft_align_per_segment\nsegment: MP", color = "0.20 0.6 0.85", style="rounded"];
+	8[label = "raxml_ng_tree_per_segment_codon", color = "0.29 0.6 0.85", style="rounded"];
+	9[label = "mafft_align_per_segment\nsegment: PB2", color = "0.20 0.6 0.85", style="rounded"];
+	10[label = "build_segment_codon_partitions", color = "0.13 0.6 0.85", style="rounded"];
+	11[label = "raxml_ng_tree_per_segment_codon", color = "0.29 0.6 0.85", style="rounded"];
+	12[label = "mafft_align_per_segment\nsegment: HA", color = "0.20 0.6 0.85", style="rounded"];
+	13[label = "build_segment_codon_partitions", color = "0.13 0.6 0.85", style="rounded"];
+	14[label = "concat_aligned_segments_with_partitions", color = "0.16 0.6 0.85", style="rounded"];
+	15[label = "mafft_align_per_segment\nsegment: PB1", color = "0.20 0.6 0.85", style="rounded"];
+	16[label = "mafft_align_per_segment\nsegment: PA", color = "0.20 0.6 0.85", style="rounded"];
+	17[label = "mafft_align_per_segment\nsegment: NP", color = "0.20 0.6 0.85", style="rounded"];
+	18[label = "mafft_align_per_segment\nsegment: NA", color = "0.20 0.6 0.85", style="rounded"];
+	19[label = "raxml_ng_tree_per_segment_codon", color = "0.29 0.6 0.85", style="rounded"];
+	20[label = "build_segment_codon_partitions", color = "0.13 0.6 0.85", style="rounded"];
+	21[label = "raxml_ng_tree_per_segment_codon", color = "0.29 0.6 0.85", style="rounded"];
+	22[label = "build_segment_codon_partitions", color = "0.13 0.6 0.85", style="rounded"];
+	23[label = "raxml_ng_tree_per_segment_codon", color = "0.29 0.6 0.85", style="rounded"];
+	24[label = "build_segment_codon_partitions", color = "0.13 0.6 0.85", style="rounded"];
+	25[label = "raxml_ng_tree_per_segment_codon", color = "0.29 0.6 0.85", style="rounded"];
+	26[label = "build_segment_codon_partitions", color = "0.13 0.6 0.85", style="rounded"];
+	27[label = "raxml_ng_tree_full_concat", color = "0.22 0.6 0.85", style="rounded"];
 	1 -> 0
-	4 -> 0
-	5 -> 0
-	7 -> 0
-	29 -> 0
-	15 -> 0
-	17 -> 0
-	19 -> 0
-	21 -> 0
-	23 -> 0
-	25 -> 0
-	27 -> 0
-	28 -> 0
 	2 -> 1
-	3 -> 2
-	1 -> 4
-	6 -> 5
-	8 -> 5
-	9 -> 5
-	10 -> 5
-	11 -> 5
-	12 -> 5
-	13 -> 5
-	14 -> 5
-	15 -> 5
-	17 -> 5
-	19 -> 5
-	21 -> 5
-	23 -> 5
-	25 -> 5
-	27 -> 5
-	28 -> 5
+	0 -> 3
+	5 -> 4
+	3 -> 5
 	7 -> 6
-	1 -> 7
-	7 -> 8
-	7 -> 9
-	7 -> 10
-	7 -> 11
-	7 -> 12
-	7 -> 13
+	3 -> 7
+	9 -> 8
+	10 -> 8
+	3 -> 9
+	9 -> 10
+	12 -> 11
+	13 -> 11
+	3 -> 12
+	12 -> 13
+	9 -> 14
+	15 -> 14
+	16 -> 14
+	12 -> 14
+	17 -> 14
+	18 -> 14
 	7 -> 14
-	6 -> 15
-	16 -> 15
-	6 -> 16
-	8 -> 17
-	18 -> 17
-	8 -> 18
-	9 -> 19
+	5 -> 14
+	8 -> 14
+	19 -> 14
+	21 -> 14
+	11 -> 14
+	23 -> 14
+	25 -> 14
+	6 -> 14
+	4 -> 14
+	3 -> 15
+	3 -> 16
+	3 -> 17
+	3 -> 18
+	15 -> 19
 	20 -> 19
-	9 -> 20
-	10 -> 21
+	15 -> 20
+	16 -> 21
 	22 -> 21
-	10 -> 22
-	11 -> 23
+	16 -> 22
+	17 -> 23
 	24 -> 23
-	11 -> 24
-	12 -> 25
+	17 -> 24
+	18 -> 25
 	26 -> 25
-	12 -> 26
-	13 -> 27
-	14 -> 28
-	5 -> 29
+	18 -> 26
+	14 -> 27
 }            

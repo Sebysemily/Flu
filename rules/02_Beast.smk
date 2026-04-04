@@ -1,6 +1,5 @@
 CONCAT_TREE = "results/phylogeny/raxml/full_concat/H5N1_full_concat_beast.raxml.supportTBE"
 CONCAT_ALIGNMENT = "data/phylogeny/aligned/H5N1_full_concat_beast.mafft"
-BEAST_SUMMARY = "data/final/H5N1_final_beast_summary.csv"
 CONTEXT_META = config.get("context_metadata_tsv", "config/final_metadata_50_per_country_isolates.tsv")
 ECUADOR_DATE_SOURCE = config.get("ecuador_date_source", "reception")
 RANDOM_SEED = config.get("random_seed", 39809473)
