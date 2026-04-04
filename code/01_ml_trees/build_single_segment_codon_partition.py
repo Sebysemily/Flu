@@ -43,8 +43,8 @@ def main() -> None:
     if seg_len < 3:
         raise ValueError(f"Segment {args.segment} is too short for codon partitioning: {seg_len}")
 
-    cp12 = f"DNA, {args.segment}_cp12 = 1-{seg_len}\\3,2-{seg_len}\\3"
-    cp3 = f"DNA, {args.segment}_cp3 = 3-{seg_len}\\3"
+    cp12 = f"GTR+G, {args.segment}_cp12 = 1-{seg_len}\\3,2-{seg_len}\\3"
+    cp3 = f"GTR+G, {args.segment}_cp3 = 3-{seg_len}\\3"
 
     ensure_directory(args.output)
     with open(args.output, "w", encoding="utf-8") as handle:

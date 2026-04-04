@@ -1,64 +1,60 @@
 Building DAG of jobs...
 output_file	date	rule	log-file(s)	status	plan
-data/all_amended_fasta	Wed Apr  1 20:18:34 2026	build_ecuador_intermediate_input		ok	no update
-data/assembled/ecuador_intermediate_raw_segments.csv	Wed Apr  1 20:18:34 2026	build_ecuador_intermediate_input		ok	no update
-data/assembled/ecuador_intermediate_expected_lengths.csv	Wed Apr  1 20:18:34 2026	build_ecuador_intermediate_input		ok	no update
-data/assembled/ecuador_intermediate_summary.csv	Wed Apr  1 20:18:34 2026	build_ecuador_intermediate_input		ok	no update
-data/assembled/ecuador_intermediate_audit.csv	Wed Apr  1 20:18:34 2026	build_ecuador_intermediate_input		ok	no update
-data/assembled/ecuador_intermediate_issues.csv	Wed Apr  1 20:18:34 2026	build_ecuador_intermediate_input		ok	no update
-data/assembled/ecuador_intermediate_sequences.fasta	Wed Apr  1 20:18:34 2026	build_ecuador_intermediate_input		ok	no update
-data/assembled/ecuador_intermediate_per_sample	Wed Apr  1 20:18:34 2026	build_ecuador_intermediate_input		ok	no update
-data/exports/H5N1_EC.fasta	Wed Apr  1 20:18:34 2026	build_h5n1_ec_fasta		ok	no update
-data/exports/H5N1_EC_summary.csv	Wed Apr  1 20:18:34 2026	build_h5n1_ec_fasta		ok	no update
-data/exports/H5N1_context.fasta	Wed Apr  1 20:18:56 2026	build_h5n1_final_fasta		ok	no update
-data/exports/H5N1_context_summary.csv	Wed Apr  1 20:18:56 2026	build_h5n1_final_fasta		ok	no update
-data/final/H5N1_final.fasta	Wed Apr  1 20:18:56 2026	build_h5n1_final_fasta		ok	no update
-data/final/H5N1_final_beast.fasta	Wed Apr  1 20:18:56 2026	build_h5n1_final_beast_fasta		ok	no update
-data/final/H5N1_final_beast_summary.csv	Wed Apr  1 20:18:56 2026	build_h5n1_final_beast_fasta		ok	no update
-data/phylogeny/aligned/H5N1_full_concat_beast.mafft	Wed Apr  1 20:19:29 2026	concat_aligned_segments_with_partitions		ok	update pending
-data/phylogeny/H5N1_full_concat_beast.partitions	Wed Apr  1 20:19:29 2026	concat_aligned_segments_with_partitions		ok	update pending
-data/phylogeny/aligned/H5N1_PB2.mafft	Thu Apr  2 08:30:36 2026	mafft_align_per_segment		ok	update pending
-data/phylogeny/by_segment/H5N1_PB2.fasta	Wed Apr  1 20:18:56 2026	split_h5n1_final_by_segment		ok	no update
-data/phylogeny/by_segment/H5N1_PB1.fasta	Wed Apr  1 20:18:56 2026	split_h5n1_final_by_segment		ok	no update
-data/phylogeny/by_segment/H5N1_PA.fasta	Wed Apr  1 20:18:56 2026	split_h5n1_final_by_segment		ok	no update
-data/phylogeny/by_segment/H5N1_HA.fasta	Wed Apr  1 20:18:56 2026	split_h5n1_final_by_segment		ok	no update
-data/phylogeny/by_segment/H5N1_NP.fasta	Wed Apr  1 20:18:56 2026	split_h5n1_final_by_segment		ok	no update
-data/phylogeny/by_segment/H5N1_NA.fasta	Wed Apr  1 20:18:56 2026	split_h5n1_final_by_segment		ok	no update
-data/phylogeny/by_segment/H5N1_MP.fasta	Wed Apr  1 20:18:56 2026	split_h5n1_final_by_segment		ok	no update
-data/phylogeny/by_segment/H5N1_NS.fasta	Wed Apr  1 20:18:56 2026	split_h5n1_final_by_segment		ok	no update
-data/phylogeny/by_segment_summary.csv	Wed Apr  1 20:18:56 2026	split_h5n1_final_by_segment		ok	no update
-data/phylogeny/aligned/H5N1_PB1.mafft	Wed Apr  1 20:19:19 2026	mafft_align_per_segment		ok	update pending
-data/phylogeny/aligned/H5N1_PA.mafft	Wed Apr  1 20:19:29 2026	mafft_align_per_segment		ok	update pending
-data/phylogeny/aligned/H5N1_HA.mafft	Wed Apr  1 20:19:15 2026	mafft_align_per_segment		ok	update pending
-data/phylogeny/aligned/H5N1_NP.mafft	Wed Apr  1 20:19:29 2026	mafft_align_per_segment		ok	update pending
-data/phylogeny/aligned/H5N1_NA.mafft	Wed Apr  1 20:19:18 2026	mafft_align_per_segment		ok	update pending
-data/phylogeny/aligned/H5N1_MP.mafft	Wed Apr  1 20:19:20 2026	mafft_align_per_segment		ok	update pending
-data/phylogeny/aligned/H5N1_NS.mafft	Wed Apr  1 20:19:04 2026	mafft_align_per_segment		ok	update pending
-results/phylogeny/raxml/full_concat/H5N1_full_concat_beast.raxml.bestTreeCollapsed	Thu Apr  2 03:08:29 2026	raxml_ng_tree_full_concat_beast		ok	update pending
-results/phylogeny/raxml/full_concat/H5N1_full_concat_beast.raxml.supportTBE	Thu Apr  2 03:08:29 2026	raxml_ng_tree_full_concat_beast		ok	update pending
-tmp_rf_full_concat/rf_summary.tsv	-	summarize_full_concat_rf_instability	-	missing	update pending
-tmp_rf_full_concat/H5N1_full_concat_beast_rep1.raxml.bestTreeCollapsed	Thu Apr  2 06:54:14 2026	raxml_ng_tree_full_concat_rf_rep1	-	ok	update pending
-tmp_rf_full_concat/H5N1_full_concat_beast_rep2.raxml.bestTreeCollapsed	-	raxml_ng_tree_full_concat_rf_rep2	-	missing	update pending
-data/beast_pre/panels/panel_main_taxa.tsv	-	build_beast_panels		missing	update pending
-data/beast_pre/panels/panel_selection_audit.tsv	-	build_beast_panels		missing	update pending
-data/beast_pre/panels/panel_main.subset.mafft	-	subset_alignment_and_prune_tree		missing	update pending
-data/beast_pre/panels/panel_main.subset.nwk	-	subset_alignment_and_prune_tree		missing	update pending
-data/beast_pre/panels/panel_main.subset.audit.tsv	-	subset_alignment_and_prune_tree		missing	update pending
-data/beast_pre/root_to_tip/treetime_clock.log	-	run_root_to_tip		missing	update pending
-data/beast_pre/root_to_tip/treetime_clock.done	-	run_root_to_tip		missing	update pending
-results/phylogeny/raxml/PB2/H5N1_PB2.raxml.bestTreeCollapsed	Thu Apr  2 09:18:43 2026	raxml_ng_tree_per_segment		ok	update pending
-results/phylogeny/raxml/PB2/H5N1_PB2.raxml.supportTBE	Thu Apr  2 09:18:43 2026	raxml_ng_tree_per_segment		ok	update pending
-results/phylogeny/raxml/PB1/H5N1_PB1.raxml.bestTreeCollapsed	Thu Apr  2 08:30:29 2026	raxml_ng_tree_per_segment		ok	update pending
-results/phylogeny/raxml/PB1/H5N1_PB1.raxml.supportTBE	Thu Apr  2 08:30:29 2026	raxml_ng_tree_per_segment		ok	update pending
-results/phylogeny/raxml/PA/H5N1_PA.raxml.bestTreeCollapsed	Wed Apr  1 21:43:34 2026	raxml_ng_tree_per_segment		ok	update pending
-results/phylogeny/raxml/PA/H5N1_PA.raxml.supportTBE	Wed Apr  1 21:43:34 2026	raxml_ng_tree_per_segment		ok	update pending
-results/phylogeny/raxml/HA/H5N1_HA.raxml.bestTreeCollapsed	Thu Apr  2 03:29:26 2026	raxml_ng_tree_per_segment		ok	update pending
-results/phylogeny/raxml/HA/H5N1_HA.raxml.supportTBE	Thu Apr  2 03:29:26 2026	raxml_ng_tree_per_segment		ok	update pending
-results/phylogeny/raxml/NP/H5N1_NP.raxml.bestTreeCollapsed	Wed Apr  1 21:57:46 2026	raxml_ng_tree_per_segment		ok	update pending
-results/phylogeny/raxml/NP/H5N1_NP.raxml.supportTBE	Wed Apr  1 21:57:46 2026	raxml_ng_tree_per_segment		ok	update pending
-results/phylogeny/raxml/NA/H5N1_NA.raxml.bestTreeCollapsed	Thu Apr  2 03:50:22 2026	raxml_ng_tree_per_segment		ok	update pending
-results/phylogeny/raxml/NA/H5N1_NA.raxml.supportTBE	Thu Apr  2 03:50:22 2026	raxml_ng_tree_per_segment		ok	update pending
-results/phylogeny/raxml/MP/H5N1_MP.raxml.bestTreeCollapsed	Wed Apr  1 22:07:47 2026	raxml_ng_tree_per_segment		ok	update pending
-results/phylogeny/raxml/MP/H5N1_MP.raxml.supportTBE	Wed Apr  1 22:07:47 2026	raxml_ng_tree_per_segment		ok	update pending
-results/phylogeny/raxml/NS/H5N1_NS.raxml.bestTreeCollapsed	Thu Apr  2 08:45:32 2026	raxml_ng_tree_per_segment		ok	update pending
-results/phylogeny/raxml/NS/H5N1_NS.raxml.supportTBE	Thu Apr  2 08:45:32 2026	raxml_ng_tree_per_segment		ok	update pending
+data/input/H5N1_context.fasta	-	build_h5n1_final_fasta	-	missing	update pending
+data/input/H5N1_context_summary.csv	-	build_h5n1_final_fasta	-	missing	update pending
+data/final/H5N1_final.fasta	Fri Apr  3 13:37:31 2026	build_h5n1_final_fasta		rule implementation changed	update pending
+data/input/H5N1_EC.fasta	-	build_h5n1_ec_fasta	-	missing	update pending
+data/input/H5N1_EC_summary.csv	-	build_h5n1_ec_fasta	-	missing	update pending
+data/all_amended_fasta	Fri Apr  3 13:37:13 2026	build_ecuador_intermediate_input		updated input files	update pending
+data/assembled/ecuador_intermediate_raw_segments.csv	Fri Apr  3 13:37:13 2026	build_ecuador_intermediate_input		updated input files	update pending
+data/assembled/ecuador_intermediate_expected_lengths.csv	Fri Apr  3 13:37:13 2026	build_ecuador_intermediate_input		updated input files	update pending
+data/assembled/ecuador_intermediate_summary.csv	Fri Apr  3 13:37:13 2026	build_ecuador_intermediate_input		updated input files	update pending
+data/assembled/ecuador_intermediate_audit.csv	Fri Apr  3 13:37:13 2026	build_ecuador_intermediate_input		updated input files	update pending
+data/assembled/ecuador_intermediate_issues.csv	Fri Apr  3 13:37:13 2026	build_ecuador_intermediate_input		updated input files	update pending
+data/assembled/ecuador_intermediate_sequences.fasta	Fri Apr  3 13:37:13 2026	build_ecuador_intermediate_input		updated input files	update pending
+data/assembled/ecuador_intermediate_per_sample	Fri Apr  3 13:37:13 2026	build_ecuador_intermediate_input		updated input files	update pending
+data/final/H5N1_final_beast.fasta	Fri Apr  3 04:23:19 2026	build_h5n1_final_beast_fasta		rule implementation changed	update pending
+data/final/H5N1_final_beast_summary.csv	Fri Apr  3 04:23:19 2026	build_h5n1_final_beast_fasta		rule implementation changed	update pending
+data/phylogeny/aligned/H5N1_full_concat_beast.mafft	Fri Apr  3 07:09:54 2026	concat_aligned_segments_with_partitions		rule implementation changed	update pending
+data/phylogeny/H5N1_full_concat_beast.partitions	Fri Apr  3 07:09:54 2026	concat_aligned_segments_with_partitions		rule implementation changed	update pending
+data/phylogeny/aligned/H5N1_PB2.mafft	Fri Apr  3 04:48:37 2026	mafft_align_per_segment		ok	update pending
+data/phylogeny/by_segment/H5N1_PB2.fasta	Fri Apr  3 13:37:31 2026	split_h5n1_final_by_segment		ok	update pending
+data/phylogeny/by_segment/H5N1_PB1.fasta	Fri Apr  3 13:37:31 2026	split_h5n1_final_by_segment		ok	update pending
+data/phylogeny/by_segment/H5N1_PA.fasta	Fri Apr  3 13:37:31 2026	split_h5n1_final_by_segment		ok	update pending
+data/phylogeny/by_segment/H5N1_HA.fasta	Fri Apr  3 13:37:31 2026	split_h5n1_final_by_segment		ok	update pending
+data/phylogeny/by_segment/H5N1_NP.fasta	Fri Apr  3 13:37:31 2026	split_h5n1_final_by_segment		ok	update pending
+data/phylogeny/by_segment/H5N1_NA.fasta	Fri Apr  3 13:37:31 2026	split_h5n1_final_by_segment		ok	update pending
+data/phylogeny/by_segment/H5N1_MP.fasta	Fri Apr  3 13:37:31 2026	split_h5n1_final_by_segment		ok	update pending
+data/phylogeny/by_segment/H5N1_NS.fasta	Fri Apr  3 13:37:31 2026	split_h5n1_final_by_segment		ok	update pending
+data/phylogeny/by_segment_summary.csv	Fri Apr  3 13:37:31 2026	split_h5n1_final_by_segment		ok	update pending
+data/phylogeny/aligned/H5N1_PB1.mafft	Fri Apr  3 13:37:36 2026	mafft_align_per_segment		ok	update pending
+data/phylogeny/aligned/H5N1_PA.mafft	Fri Apr  3 04:23:26 2026	mafft_align_per_segment		ok	update pending
+data/phylogeny/aligned/H5N1_HA.mafft	Fri Apr  3 13:37:41 2026	mafft_align_per_segment		ok	update pending
+data/phylogeny/aligned/H5N1_NP.mafft	Fri Apr  3 05:22:36 2026	mafft_align_per_segment		ok	update pending
+data/phylogeny/aligned/H5N1_NA.mafft	Fri Apr  3 06:28:17 2026	mafft_align_per_segment		ok	update pending
+data/phylogeny/aligned/H5N1_MP.mafft	Fri Apr  3 05:37:23 2026	mafft_align_per_segment		ok	update pending
+data/phylogeny/aligned/H5N1_NS.mafft	Fri Apr  3 04:23:21 2026	mafft_align_per_segment		ok	update pending
+results/phylogeny/raxml/PB2/H5N1_PB2.raxml.bestTreeCollapsed	Fri Apr  3 05:22:33 2026	raxml_ng_tree_per_segment_codon		rule implementation changed	update pending
+results/phylogeny/raxml/PB2/H5N1_PB2.raxml.supportTBE	Fri Apr  3 05:22:33 2026	raxml_ng_tree_per_segment_codon		rule implementation changed	update pending
+data/phylogeny/codon_partitions/H5N1_PB2.codon.partitions	-	build_segment_codon_partitions	-	missing	update pending
+results/phylogeny/raxml/PB1/H5N1_PB1.raxml.bestTreeCollapsed	Fri Apr  3 06:28:12 2026	raxml_ng_tree_per_segment_codon		rule implementation changed	update pending
+results/phylogeny/raxml/PB1/H5N1_PB1.raxml.supportTBE	Fri Apr  3 06:28:12 2026	raxml_ng_tree_per_segment_codon		rule implementation changed	update pending
+data/phylogeny/codon_partitions/H5N1_PB1.codon.partitions	-	build_segment_codon_partitions	-	missing	update pending
+results/phylogeny/raxml/PA/H5N1_PA.raxml.bestTreeCollapsed	Fri Apr  3 04:48:30 2026	raxml_ng_tree_per_segment_codon		rule implementation changed	update pending
+results/phylogeny/raxml/PA/H5N1_PA.raxml.supportTBE	Fri Apr  3 04:48:30 2026	raxml_ng_tree_per_segment_codon		rule implementation changed	update pending
+data/phylogeny/codon_partitions/H5N1_PA.codon.partitions	-	build_segment_codon_partitions	-	missing	update pending
+results/phylogeny/raxml/HA/H5N1_HA.raxml.bestTreeCollapsed	-	raxml_ng_tree_per_segment_codon		missing	update pending
+results/phylogeny/raxml/HA/H5N1_HA.raxml.supportTBE	-	raxml_ng_tree_per_segment_codon		missing	update pending
+data/phylogeny/codon_partitions/H5N1_HA.codon.partitions	-	build_segment_codon_partitions	-	missing	update pending
+results/phylogeny/raxml/NP/H5N1_NP.raxml.bestTreeCollapsed	Fri Apr  3 05:37:16 2026	raxml_ng_tree_per_segment_codon		rule implementation changed	update pending
+results/phylogeny/raxml/NP/H5N1_NP.raxml.supportTBE	Fri Apr  3 05:37:16 2026	raxml_ng_tree_per_segment_codon		rule implementation changed	update pending
+data/phylogeny/codon_partitions/H5N1_NP.codon.partitions	-	build_segment_codon_partitions	-	missing	update pending
+results/phylogeny/raxml/NA/H5N1_NA.raxml.bestTreeCollapsed	Fri Apr  3 06:48:38 2026	raxml_ng_tree_per_segment_codon		rule implementation changed	update pending
+results/phylogeny/raxml/NA/H5N1_NA.raxml.supportTBE	Fri Apr  3 06:48:38 2026	raxml_ng_tree_per_segment_codon		rule implementation changed	update pending
+data/phylogeny/codon_partitions/H5N1_NA.codon.partitions	-	build_segment_codon_partitions	-	missing	update pending
+results/phylogeny/raxml/MP/H5N1_MP.raxml.bestTreeCollapsed	Fri Apr  3 14:35:34 2026	raxml_ng_tree_per_segment_simple		params changed	update pending
+results/phylogeny/raxml/MP/H5N1_MP.raxml.supportTBE	Fri Apr  3 14:35:34 2026	raxml_ng_tree_per_segment_simple		params changed	update pending
+results/phylogeny/raxml/NS/H5N1_NS.raxml.bestTreeCollapsed	Fri Apr  3 06:03:25 2026	raxml_ng_tree_per_segment_simple		rule implementation changed	update pending
+results/phylogeny/raxml/NS/H5N1_NS.raxml.supportTBE	Fri Apr  3 06:03:25 2026	raxml_ng_tree_per_segment_simple		rule implementation changed	update pending
+results/phylogeny/raxml/full_concat/H5N1_full_concat_beast.raxml.bestTreeCollapsed	Fri Apr  3 10:22:20 2026	raxml_ng_tree_full_concat_beast		rule implementation changed	update pending
+results/phylogeny/raxml/full_concat/H5N1_full_concat_beast.raxml.supportTBE	Fri Apr  3 10:22:20 2026	raxml_ng_tree_full_concat_beast		rule implementation changed	update pending

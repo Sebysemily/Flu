@@ -2,7 +2,7 @@
 import argparse
 import os
 import re
-from typing import Dict, List, Tuple
+from typing import Dict, List, Set, Tuple
 
 
 def read_fasta(path: str) -> Tuple[List[str], Dict[str, str]]:
@@ -47,8 +47,14 @@ def wrap_sequence(seq: str, width: int = 80) -> str:
     return "\n".join(seq[i : i + width] for i in range(0, len(seq), width))
 
 
+def ensure_directory(path: str) -> None:
+    out_dir = os.path.dirname(path)
+    if out_dir:
+        os.makedirs(out_dir, exist_ok=True)
+
+
 def find_segment_path(paths: List[str], segment: str) -> str:
-    pattern = re.compile(rf"(^|[_/\\]){re.escape(segment)}(?:\.|[_-])", re.IGNORECASE)
+    pattern = re.compile(rf"(^|[_/\\\\]){re.escape(segment)}(?:\.|[_-])", re.IGNORECASE)
     matches = [p for p in paths if pattern.search(p)]
     if len(matches) != 1:
         raise ValueError(
@@ -58,20 +64,19 @@ def find_segment_path(paths: List[str], segment: str) -> str:
     return matches[0]
 
 
-def ensure_directory(path: str) -> None:
-    out_dir = os.path.dirname(path)
-    if out_dir:
-        os.makedirs(out_dir, exist_ok=True)
-
-
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Concatenate per-segment aligned FASTA files and write RAxML partition ranges"
+        description="Build concatenated codon-aware partitions for the main ML workflow"
     )
     parser.add_argument(
         "--segment-order",
         required=True,
         help="Comma-separated segment order, e.g. PB2,PB1,PA,HA,NP,NA,MP,NS",
+    )
+    parser.add_argument(
+        "--codon-segments",
+        required=True,
+        help="Comma-separated segments that will use cp12/cp3 partitions",
     )
     parser.add_argument("--output-alignment", required=True)
     parser.add_argument("--output-partitions", required=True)
@@ -79,18 +84,25 @@ def main() -> None:
     args = parser.parse_args()
 
     segment_order = [s.strip() for s in args.segment_order.split(",") if s.strip()]
+    codon_segments: Set[str] = {s.strip() for s in args.codon_segments.split(",") if s.strip()}
+
     if not segment_order:
         raise ValueError("Segment order is empty")
+    if not codon_segments:
+        raise ValueError("Codon segments set is empty")
+
+    unknown = sorted(codon_segments - set(segment_order))
+    if unknown:
+        raise ValueError(f"Codon segments not in segment order: {unknown}")
 
     segment_paths = {segment: find_segment_path(args.alignments, segment) for segment in segment_order}
 
     per_segment: Dict[str, Dict[str, str]] = {}
     lengths_by_segment: Dict[str, int] = {}
-    ids_by_segment: Dict[str, set] = {}
+    ids_by_segment: Dict[str, Set[str]] = {}
 
     for segment in segment_order:
-        path = segment_paths[segment]
-        _, seg_seqs = read_fasta(path)
+        _, seg_seqs = read_fasta(segment_paths[segment])
         lengths = {len(seg_seqs[seq_id]) for seq_id in seg_seqs}
         if len(lengths) != 1:
             raise ValueError(f"Segment {segment} has non-uniform aligned lengths: {sorted(lengths)}")
@@ -112,13 +124,27 @@ def main() -> None:
     offset = 1
 
     for segment in segment_order:
-        seg_seqs = per_segment[segment]
         seg_len = lengths_by_segment[segment]
         start = offset
         end = offset + seg_len - 1
-        partition_lines.append(f"DNA, {segment} = {start}-{end}")
+
+        if segment in codon_segments:
+            cp1 = start
+            cp2 = start + 1
+            cp3 = start + 2
+            if cp3 > end:
+                raise ValueError(f"Segment {segment} is too short for codon partitioning ({seg_len} nt)")
+
+            partition_lines.append(
+                f"GTR+G, {segment}_cp12 = {cp1}-{end}\\3,{cp2}-{end}\\3"
+            )
+            partition_lines.append(f"GTR+G, {segment}_cp3 = {cp3}-{end}\\3")
+        else:
+            partition_lines.append(f"GTR+G, {segment} = {start}-{end}")
+
         offset = end + 1
 
+        seg_seqs = per_segment[segment]
         for seq_id in ids_order:
             concatenated[seq_id] += seg_seqs[seq_id]
 
@@ -133,10 +159,8 @@ def main() -> None:
         for line in partition_lines:
             handle.write(line + "\n")
 
-    total_len = len(concatenated[ids_order[0]])
     print(f"Wrote concatenated alignment: {args.output_alignment}")
-    print(f"Wrote partitions: {args.output_partitions}")
-    print(f"Sequences kept across all segments: {len(ids_order)} | Total aligned length: {total_len}")
+    print(f"Wrote codon-aware partitions: {args.output_partitions}")
 
 
 if __name__ == "__main__":

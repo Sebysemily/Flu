@@ -10,14 +10,14 @@ VALIDATION_SEGMENT_DIR = f"{VALIDATION_DIR}/per_segment"
 VALIDATION_CONCAT_ALIGNMENT = f"{VALIDATION_CONCAT_DIR}/H5N1_full_concat_codon_validation.mafft"
 VALIDATION_CONCAT_PARTITIONS = f"{VALIDATION_CONCAT_DIR}/H5N1_full_concat_codon_validation.partitions"
 VALIDATION_CONCAT_BASE_PREFIX = f"{VALIDATION_RAXML_DIR}/full_concat/H5N1_full_concat_codon_validation"
-VALIDATION_CONCAT_BASE_TREE = f"{VALIDATION_CONCAT_BASE_PREFIX}.raxml.bestTreeCollapsed"
+VALIDATION_CONCAT_BASE_TREE = f"{VALIDATION_CONCAT_BASE_PREFIX}.raxml.bestTree"
 
 VALIDATION_RF_REPLICATES = [1, 2, 3, 4, 5]
 VALIDATION_RF_REP_PREFIXES = {
     i: f"{VALIDATION_RF_DIR}/H5N1_full_concat_codon_validation_rep{i}" for i in VALIDATION_RF_REPLICATES
 }
 VALIDATION_RF_REP_TREES = {
-    i: f"{VALIDATION_RF_REP_PREFIXES[i]}.raxml.bestTreeCollapsed" for i in VALIDATION_RF_REPLICATES
+    i: f"{VALIDATION_RF_REP_PREFIXES[i]}.raxml.bestTree" for i in VALIDATION_RF_REPLICATES
 }
 VALIDATION_RF_SUMMARY_TSV = f"{VALIDATION_RF_DIR}/rf_summary/rf_summary.tsv"
 
@@ -41,11 +41,7 @@ VALIDATION_SIMPLE_RF_SUMMARY_PATHS = {
 
 rule concat_codon_validation_with_partitions:
     input:
-        alignments=expand("data/phylogeny/aligned/H5N1_{segment}.mafft", segment=PHYLO_SEGMENTS),
-        segment_trees=expand(
-            "results/phylogeny/raxml/{segment}/H5N1_{segment}.raxml.supportTBE",
-            segment=PHYLO_SEGMENTS,
-        )
+        alignments=expand("data/phylogeny/aligned/H5N1_{segment}.mafft", segment=PHYLO_SEGMENTS)
     output:
         aligned=VALIDATION_CONCAT_ALIGNMENT,
         partitions=VALIDATION_CONCAT_PARTITIONS
@@ -71,7 +67,7 @@ rule raxml_ng_tree_full_concat_codon_validation_base:
         best_tree=VALIDATION_CONCAT_BASE_TREE
     params:
         prefix=VALIDATION_CONCAT_BASE_PREFIX,
-        extra=lambda wildcards: f"--seed {RANDOM_SEED} --redo --tree 'pars{{20}},rand{{20}}'"
+        extra=lambda wildcards: f"--seed {RANDOM_SEED} --redo --force perf_threads --tree 'pars{{20}},rand{{20}}'"
     threads: FULL_RAXML_THREADS
     conda:
         "../envs/ml_per_segment.yml"
@@ -94,11 +90,11 @@ rule raxml_ng_tree_full_concat_codon_validation_rf_rep:
         partitions=VALIDATION_CONCAT_PARTITIONS,
         base_tree=VALIDATION_CONCAT_BASE_TREE
     output:
-        rep_tree=f"{VALIDATION_RF_DIR}/H5N1_full_concat_codon_validation_rep{{rep}}.raxml.bestTreeCollapsed"
+        rep_tree=f"{VALIDATION_RF_DIR}/H5N1_full_concat_codon_validation_rep{{rep}}.raxml.bestTree"
     params:
         rep_prefix=lambda wildcards: VALIDATION_RF_REP_PREFIXES[int(wildcards.rep)],
         seed=lambda wildcards: RANDOM_SEED + 100 + int(wildcards.rep),
-        extra=lambda wildcards: "--redo --tree 'pars{20},rand{20}'"
+        extra=lambda wildcards: "--redo --force perf_threads --tree 'pars{20},rand{20}'"
     threads: RF_RAXML_THREADS
     wildcard_constraints:
         rep="[1-5]"
@@ -122,7 +118,7 @@ rule summarize_full_concat_codon_validation_rf_instability:
     input:
         base_tree=VALIDATION_CONCAT_BASE_TREE,
         replicate_trees=expand(
-            f"{VALIDATION_RF_DIR}/H5N1_full_concat_codon_validation_rep{{rep}}.raxml.bestTreeCollapsed",
+            f"{VALIDATION_RF_DIR}/H5N1_full_concat_codon_validation_rep{{rep}}.raxml.bestTree",
             rep=VALIDATION_RF_REPLICATES,
         )
     output:
@@ -158,31 +154,15 @@ rule summarize_full_concat_codon_validation_rf_instability:
         """
 
 
-rule build_segment_codon_partitions_validation:
-    input:
-        alignment="data/phylogeny/aligned/H5N1_{segment}.mafft"
-    output:
-        partitions=f"{VALIDATION_SEGMENT_DIR}/{{segment}}/H5N1_{{segment}}.codon.partitions"
-    wildcard_constraints:
-        segment="PB2|PB1|PA|HA|NP|NA"
-    shell:
-        r"""
-        python code/00_validation_codon_rf/build_single_segment_codon_partition.py \
-            --alignment {input.alignment} \
-            --segment {wildcards.segment} \
-            --output {output.partitions}
-        """
-
-
 rule raxml_ng_tree_per_segment_codon_validation:
     input:
         alignment="data/phylogeny/aligned/H5N1_{segment}.mafft",
-        partitions=f"{VALIDATION_SEGMENT_DIR}/{{segment}}/H5N1_{{segment}}.codon.partitions"
+        partitions="data/phylogeny/codon_partitions/H5N1_{segment}.codon.partitions"
     output:
         best_tree=f"{VALIDATION_SEGMENT_DIR}/{{segment}}/H5N1_{{segment}}_codon_validation.raxml.bestTreeCollapsed"
     params:
         prefix=lambda wildcards: f"{VALIDATION_SEGMENT_DIR}/{wildcards.segment}/H5N1_{wildcards.segment}_codon_validation",
-        extra=lambda wildcards: f"--seed {RANDOM_SEED} --redo --tree 'pars{{20}},rand{{20}}'"
+        extra=lambda wildcards: f"--seed {RANDOM_SEED} --redo --force perf_threads --tree 'pars{{20}},rand{{20}}'"
     threads: SEGMENT_RAXML_THREADS
     wildcard_constraints:
         segment="PB2|PB1|PA|HA|NP|NA"
@@ -230,7 +210,7 @@ rule raxml_ng_tree_segment_simple_rf_base:
         best_tree=f"{VALIDATION_RF_DIR}/H5N1_{{segment}}_simple_rf_base.raxml.bestTreeCollapsed"
     params:
         prefix=lambda wildcards: f"{VALIDATION_RF_DIR}/H5N1_{wildcards.segment}_simple_rf_base",
-        extra=lambda wildcards: f"--seed {RANDOM_SEED} --redo --tree 'pars{{20}},rand{{20}}'"
+        extra=lambda wildcards: f"--seed {RANDOM_SEED} --redo --force perf_threads --tree 'pars{{20}},rand{{20}}'"
     threads: SEGMENT_RAXML_THREADS
     wildcard_constraints:
         segment="NS|MP"
@@ -259,7 +239,7 @@ rule raxml_ng_tree_segment_simple_rf_rep:
     params:
         rep_prefix=lambda wildcards: f"{VALIDATION_RF_DIR}/H5N1_{wildcards.segment}_simple_rf_rep{wildcards.rep}",
         seed=lambda wildcards: RANDOM_SEED + 100 + int(wildcards.rep),
-        extra=lambda wildcards: "--redo --tree 'pars{20},rand{20}'"
+        extra=lambda wildcards: "--redo --force perf_threads --tree 'pars{20},rand{20}'"
     threads: SEGMENT_RAXML_THREADS
     wildcard_constraints:
         segment="NS|MP",
@@ -323,11 +303,127 @@ rule summarize_segment_simple_rf_instability:
         """
 
 
-rule validation_rf_all_8_segments:
-    """Bundle all RF validation results (codon for 6 segments + simple for NS,MP)."""
+# ============================================================================
+# Codon RF Validation for PB2, PB1, PA, HA, NP, NA (codon partitions)
+# ============================================================================
+
+rule raxml_ng_tree_segment_codon_rf_base:
+    """RF validation base tree for codon segments (codon partitions)."""
     input:
-        # Codon+RF validation for 6 segments
+        alignment="data/phylogeny/aligned/H5N1_{segment}.mafft",
+        partitions="data/phylogeny/codon_partitions/H5N1_{segment}.codon.partitions"
+    output:
+        best_tree=f"{VALIDATION_RF_DIR}/H5N1_{{segment}}_codon_rf_base.raxml.bestTree"
+    params:
+        prefix=lambda wildcards: f"{VALIDATION_RF_DIR}/H5N1_{wildcards.segment}_codon_rf_base",
+        extra=lambda wildcards: f"--seed {RANDOM_SEED} --redo --force perf_threads --tree 'pars{{20}},rand{{20}}'"
+    threads: SEGMENT_RAXML_THREADS
+    wildcard_constraints:
+        segment="PB2|PB1|PA|HA|NP|NA"
+    conda:
+        "../envs/ml_per_segment.yml"
+    shell:
+        r"""
+        mkdir -p {VALIDATION_RF_DIR}
+        raxml-ng \
+            --search \
+            --msa {input.alignment} \
+            --model {input.partitions} \
+            --prefix {params.prefix} \
+            --threads {threads} \
+            {params.extra}
+        """
+
+
+rule raxml_ng_tree_segment_codon_rf_rep:
+    """RF validation replicate trees for codon segments (codon partitions)."""
+    input:
+        alignment="data/phylogeny/aligned/H5N1_{segment}.mafft",
+        partitions="data/phylogeny/codon_partitions/H5N1_{segment}.codon.partitions",
+        base_tree=f"{VALIDATION_RF_DIR}/H5N1_{{segment}}_codon_rf_base.raxml.bestTree"
+    output:
+        rep_tree=f"{VALIDATION_RF_DIR}/H5N1_{{segment}}_codon_rf_rep{{rep}}.raxml.bestTree"
+    params:
+        rep_prefix=lambda wildcards: f"{VALIDATION_RF_DIR}/H5N1_{wildcards.segment}_codon_rf_rep{wildcards.rep}",
+        seed=lambda wildcards: RANDOM_SEED + 100 + int(wildcards.rep),
+        extra=lambda wildcards: "--redo --force perf_threads --tree 'pars{20},rand{20}'"
+    threads: SEGMENT_RAXML_THREADS
+    wildcard_constraints:
+        segment="PB2|PB1|PA|HA|NP|NA",
+        rep="[1-5]"
+    conda:
+        "../envs/ml_per_segment.yml"
+    shell:
+        r"""
+        raxml-ng \
+            --search \
+            --msa {input.alignment} \
+            --model {input.partitions} \
+            --prefix {params.rep_prefix} \
+            --threads {threads} \
+            --seed {params.seed} \
+            {params.extra}
+        """
+
+
+rule summarize_segment_codon_rf_instability:
+    """Compute RF distances for codon segments per-segment validation."""
+    input:
+        base_tree=f"{VALIDATION_RF_DIR}/H5N1_{{segment}}_codon_rf_base.raxml.bestTree",
+        replicate_trees=expand(
+            f"{VALIDATION_RF_DIR}/H5N1_{{{{segment}}}}_codon_rf_rep{{rep}}.raxml.bestTree",
+            rep=VALIDATION_RF_REPLICATES,
+        )
+    output:
+        rf_summary=f"{VALIDATION_RF_DIR}/rf_summary_{{segment}}_codon/rf_summary.tsv"
+    params:
+        cutoff=0.05,
+        base_seed=RANDOM_SEED,
+        label=lambda wildcards: f"{wildcards.segment}_codon_rf",
+        base_label=lambda wildcards: f"{wildcards.segment}_codon_base",
+        replicate_tree_args=lambda wildcards, input: " ".join(
+            f"--replicate-tree {tree}" for tree in input.replicate_trees
+        ),
+        replicate_label_args=lambda wildcards: " ".join(
+            f"--replicate-label {wildcards.segment}_codon_rep{rep}" for rep in VALIDATION_RF_REPLICATES
+        ),
+        replicate_seed_args=" ".join(
+            f"--replicate-seed {RANDOM_SEED + 100 + rep}" for rep in VALIDATION_RF_REPLICATES
+        )
+    wildcard_constraints:
+        segment="PB2|PB1|PA|HA|NP|NA"
+    conda:
+        "../envs/ml_per_segment.yml"
+    shell:
+        r"""
+        mkdir -p $(dirname {output.rf_summary})
+        python code/00_validation_codon_rf/rf_tree_instability_summary.py \
+            --base-tree {input.base_tree} \
+            {params.replicate_tree_args} \
+            --base-seed {params.base_seed} \
+            --base-label {params.base_label} \
+            {params.replicate_label_args} \
+            {params.replicate_seed_args} \
+            --cutoff {params.cutoff} \
+            --label {params.label} \
+            --output {output.rf_summary}
+        """
+
+
+rule validation_rf_all_8_segments:
+    """Bundle all RF validation results:
+    - Concatenated codon partition RF
+    - Codon RF for 6 segments (PB2, PB1, PA, HA, NP, NA)
+    - Simple RF for 2 segments (NS, MP)
+    """
+    input:
+        # Concat codon+RF validation
         VALIDATION_RF_SUMMARY_TSV,
+        # Codon RF validation for 6 segments
+        expand(
+            f"{VALIDATION_RF_DIR}/rf_summary_{{segment}}_codon/rf_summary.tsv",
+            segment=VALIDATION_CODON_SEGMENTS,
+        ),
         # Simple RF validation for NS and MP
         expand(
             f"{VALIDATION_RF_DIR}/rf_summary_{{segment}}/rf_summary.tsv",

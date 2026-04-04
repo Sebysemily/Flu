@@ -24,8 +24,8 @@ except Exception:
     # Fall back to builtin default if config can't be read
     pass
 
-DEFAULT_OUTPUT_FASTA = os.path.join("data", "exports", "H5N1_EC.fasta")
-DEFAULT_SUMMARY_CSV = os.path.join("data", "exports", "H5N1_EC_summary.csv")
+DEFAULT_OUTPUT_FASTA = os.path.join("data", "input", "H5N1_EC.fasta")
+DEFAULT_SUMMARY_CSV = os.path.join("data", "input", "H5N1_EC_summary.csv")
 
 PLACE_ALIASES = {
     "azuay": "Azuay",

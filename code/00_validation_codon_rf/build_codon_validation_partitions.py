@@ -54,7 +54,7 @@ def ensure_directory(path: str) -> None:
 
 
 def find_segment_path(paths: List[str], segment: str) -> str:
-    pattern = re.compile(rf"(^|[_/\\\\]){re.escape(segment)}(?:\\.|[_-])", re.IGNORECASE)
+    pattern = re.compile(rf"(^|[_/\\\\]){re.escape(segment)}(?:\.|[_-])", re.IGNORECASE)
     matches = [p for p in paths if pattern.search(p)]
     if len(matches) != 1:
         raise ValueError(
