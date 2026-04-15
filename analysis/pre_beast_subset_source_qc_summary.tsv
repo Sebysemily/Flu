@@ -1,0 +1,16 @@
+metric	n_taxa_flagged
+subset_missing_segments_flag	0
+high_raw_n_fraction	2
+high_raw_ambiguous_fraction	0
+multiple_short_segments	0
+low_min_segment_length_ratio	1
+context_segment_count_mismatch	0
+ecuador_mira_incomplete_history	0
+high_subset_consensus_distance	4
+high_post_consensus_distance	4
+post_consensus_distance_increase	0
+high_post_singleton_burden	4
+atypical_post_gap_shift	0
+post_ungapped_sequence_changed	0
+any_outlier_flag	11
+n_taxa_total	62

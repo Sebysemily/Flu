@@ -1,162 +1,213 @@
-Pipeline del trabajo realizado para "" que consolida la filodinamica de influenza A en ecuador con contexto.
+Pipeline para consolidar filodinámica de influenza A H5N1 en Ecuador con contexto regional y un flujo pre-BEAST basado en el concatenado completo.
 
 Requisitos
-- snakemake
-- Conexion a internet si se quiere descargar el contexto regional desde NCBI
+- `snakemake`
+- `conda` o `mamba`
+- conexión a internet si se quiere descargar el contexto desde NCBI
 
-Ejecucion
-- Preparar inputs de Ecuador desde MIRA (stage 1, para construir desde raw):
+Ejecución
+- Preparar inputs de Ecuador desde MIRA:
 
+```bash
 snakemake --cores all --use-conda build_gisaid
+```
 
+- Correr el pipeline principal completo:
 
-- Correr todo el pipeline principal (stage 2, desde descarga de contexto y GISAID hasta arboles ML):
+```bash
+snakemake --cores all --use-conda
+```
 
-snakemake --cores all --use-conda 
+- Correr solo la parte pre-BEAST:
 
+```bash
+snakemake --cores all --use-conda results/beast_pre/model_test/panel_main_concat.best_model.txt
+```
 
-- Correr la validacion codon+RF (opcional, para revision interna o reviewers):
+- Correr la validación RF/codón:
 
+```bash
 snakemake --cores all --use-conda rf_validation
+```
 
-    - Validacion con particiones codon en 6 segmentos (PB2, PB1, PA, HA, NP, NA):
-        - Alineacion concatenada codon-aware en results/validation/concat/
-        - Arbol base y 5 replicas RF sin bootstrap en results/validation/raxml/full_concat/ y results/validation/rf/
-        - Resumen de distancias RF en results/validation/rf/rf_summary/rf_summary.tsv (incluye columna run_label para trazabilidad)
-        - Arboles per-segment codon sin bootstrap en results/validation/per_segment/{segment}/
-    
-    - Validacion RF simple (GTR+G sin particiones codon) para 2 segmentos restantes (NS, MP):
-        - Arbol base y 5 replicas RF por segmento en results/validation/rf/
-        - Resumen de distancias RF por segmento en results/validation/rf/rf_summary_{segment}/rf_summary.tsv
+Flujo actual
 
-Flujo de reglas
-Stage 1 (build_gisaid) — preparacion de inputs Ecuador desde MIRA
+Stage 1. Preparación de Ecuador desde MIRA
+1. `build_ecuador_intermediate_input`
+   - Copia y normaliza `amended_consensus.fasta` desde `run*/`
+   - Detecta segmentos disponibles por muestra
+   - Produce FASTA por muestra y tablas intermedias en `data/assembled/`
 
-1. build_ecuador_intermediate_input
-    - Copia los amended_consensus.fasta a data/all_amended_fasta
-    - Selecciona el mejor segmento por muestra
-    - Genera FASTA por muestra y archivos intermedios de Ecuador en data/assembled
+2. `build_h5n1_ec_fasta`
+   - Toma solo los segmentos ensamblados de Ecuador
+   - Usa `flu_filtrado.csv` para metadata
+   - Produce:
+     - `data/input/H5N1_EC.fasta`
+     - `data/input/H5N1_EC_summary.csv`
 
-2. build_h5n1_ec_fasta
-    - Toma solo segmentos realmente ensamblados de Ecuador
-    - Usa Provincia y Fecha recepcion de flu_filtrado
-    - Genera el FASTA de Ecuador: data/input/H5N1_EC.fasta
-    - Formato de encabezado: muestra/segmento/lugar/año
-    - El lugar se normaliza a una forma canonica sin espacios ni guiones, por ejemplo SantaElena
+Stage 2. Contexto, alineación y árboles ML
+3. `build_h5n1_final_fasta`
+   - Descarga secuencias contextuales por accession
+   - Renombra headers al mismo estilo usado en Ecuador
+   - Une Ecuador + contexto en:
+     - `data/input/H5N1_context.fasta`
+     - `data/input/H5N1_context_summary.csv`
+     - `data/final/H5N1_final.fasta`
 
-Stage 2 (pipeline principal) — contexto, alineacion y filogenia
+4. `split_h5n1_final_by_segment`
+   - Divide el FASTA final en 8 segmentos
 
-3. build_h5n1_final_fasta
-    - Descarga secuencias contextuales por accession desde NCBI
-    - Las renombra al mismo formato de influenza usado para Ecuador
-    - Une Ecuador + contexto:
-        - data/input/H5N1_context.fasta
-        - data/input/H5N1_context_summary.csv
-        - data/final/H5N1_final.fasta
+5. `mafft_align_per_segment`
+   - Alinea cada segmento con MAFFT
 
-4. split_h5n1_final_by_segment
-    - Divide data/final/H5N1_final.fasta en 8 FASTA por segmento
-    - Salida en data/phylogeny/by_segment/
+6. `build_segment_codon_partitions`
+   - Genera particiones codón para PB2, PB1, PA, HA, NP y NA
 
-5. mafft_align_per_segment
-    - Alinea cada segmento con MAFFT
-    - Salida por segmento en data/phylogeny/aligned/H5N1_{segment}.mafft
+7. `raxml_ng_tree_per_segment_codon`
+   - Corre ML + bootstrap + TBE para PB2, PB1, PA, HA, NP y NA
 
-6. build_segment_codon_partitions
-    - Genera particiones codon (cp12/cp3) para los 6 segmentos codificantes (PB2, PB1, PA, HA, NP, NA)
-    - Salida en data/phylogeny/aligned/partitions/
+8. `raxml_ng_tree_per_segment_simple`
+   - Corre ML + bootstrap + TBE para NS y MP
 
-7. raxml_ng_tree_per_segment_codon
-    - Arboles ML en RAxML-NG para PB2, PB1, PA, HA, NP, NA bajo un modelo nucleotidico con
-      particiones por posicion codon (posiciones 1+2 vs 3), con GTR+G asignado a cada particion
-    - Busqueda ML + bootstrap, calcula soporte TBE
+9. `concat_aligned_segments_with_partitions`
+   - Concatena los 8 segmentos y conserva las particiones
 
-8. raxml_ng_tree_per_segment_simple
-    - Arboles ML en RAxML-NG para NS y MP bajo un modelo GTR+G (sin particiones codon)
-    - Busqueda ML + bootstrap, calcula soporte TBE
+10. `raxml_ng_tree_full_concat`
+   - Corre el árbol ML concatenado completo con soporte TBE
 
-9. concat_aligned_segments_with_partitions
-    - Concatena alineaciones por segmento con particiones para arbol full-concat
-    - Salida: data/phylogeny/aligned/H5N1_full_concat_beast.mafft
+Stage 3. Pre-BEAST sobre el concatenado subseteado
+11. `build_beast_panels`
+   - Usa el árbol concatenado completo para elegir el panel principal
+   - El dataset por defecto es:
+     - `ecuador_core`
+     - `regional_context`
+     - `OQ968009`
+     - `1` `american_anchor` extra
+     - sin `usa_distal` por defecto
+   - Produce:
+     - `data/beast_pre/panels/panel_main_taxa.tsv`
+     - `data/beast_pre/panels/panel_selection_audit.tsv`
+     - `data/beast_pre/panels/panel_country_month_coverage.tsv`
 
-10. raxml_ng_tree_full_concat
-    - Arbol ML en RAxML-NG sobre el concatenado de los 8 segmentos bajo un modelo nucleotidico
-      con particiones por posicion codon (posiciones 1+2 vs 3), con GTR+G asignado a cada particion
-    - Salida: results/phylogeny/raxml/full_concat/H5N1_full_concat_beast.raxml.supportTBE
+12. `subset_panel_concat_alignment_and_prune_tree`
+   - Extrae del concatenado completo solo los taxa del panel
+   - Produce:
+     - `data/beast_pre/panels/panel_main_concat.subset.fasta`
+     - `data/beast_pre/panels/panel_main_concat.subset.nwk`
 
-Estructura de salidas
-- Intermedios de ensamblaje:
-    - data/all_amended_fasta/
-    - data/assembled/
-    - data/assembled/ecuador_intermediate_sequences.fasta
-    - data/assembled/ecuador_intermediate_summary.csv
-    - data/assembled/ecuador_intermediate_audit.csv
-    - data/assembled/ecuador_intermediate_issues.csv
-    - data/assembled/ecuador_intermediate_per_sample/
+13. `build_treetime_dates`
+   - Construye la tabla de fechas desde los headers
 
-- Build_inputs.smk:
-    - inputs: 
-        - data/input/H5N1_EC.fasta
-        - data/input/H5N1_EC_summary.csv
-        - data/input/H5N1_context.fasta
-        - data/input/H5N1_context_summary.csv
+14. `run_root_to_tip`
+   - Corre TreeTime root-to-tip sobre el subset final
 
-    - Salida final:
-        - data/final/H5N1_final.fasta
+15. `ensure_beast_model_selection_package`
+   - Instala el paquete `MODEL_SELECTION` en un directorio local de BEAST
 
-- 01_ml_trees:
-    -inputs:
-        - data/phylogeny/by_segment/
-        - data/phylogeny/by_segment_summary.csv
-        - data/phylogeny/aligned/H5N1_{segment}.mafft
-        - data/phylogeny/aligned/H5N1_full_concat_beast.mafft
-    -outputs:
-        - results/phylogeny/raxml/{segment}/H5N1_{segment}.raxml.supportTBE
-        - results/phylogeny/raxml/full_concat/H5N1_full_concat_beast.raxml.supportTBE
+16. `run_bets_scenario` y `summarize_bets`
+   - Ejecutan BETS a partir de XMLs externos si está habilitado
+   - Resumen en:
+     - `results/beast_pre/bets/bets_runs.tsv`
+     - `results/beast_pre/bets/bets_bayes_factors.tsv`
 
-- 00_validation_codon_rf:
-    - outputs:
-        - results/validation/concat/
-        - results/validation/raxml/full_concat/
-        - results/validation/rf/rf_summary/rf_summary.tsv (6 segmentos con particiones codon)
-        - results/validation/rf/rf_summary_NS/rf_summary.tsv (NS simple RF)
-        - results/validation/rf/rf_summary_MP/rf_summary.tsv (MP simple RF)
-        - results/validation/per_segment/{segment}/H5N1_{segment}_codon_validation.raxml.bestTreeCollapsed
+17. `build_concat_iqtree_partition_nexus`
+   - Convierte las particiones del concatenado a NEXUS para IQ-TREE
 
-Graficos del workflow (DAG, rulegraph y filegraph) guardados en analysis/.
+18. `iqtree_model_test_concat_subset`
+   - Corre ModelFinder de IQ-TREE sobre el subset final
+   - Produce:
+     - `results/beast_pre/model_test/panel_main_concat.iqtree`
+     - `results/beast_pre/model_test/panel_main_concat.best_model.txt`
 
-./scripts/gen_snakemake_graphs.sh all analysis
+Validación RF opcional
+- `rf_validation` genera comparaciones RF para:
+  - 6 segmentos con particiones codón
+  - NS y MP con un esquema simple
 
+Cómo funciona el modo “relajado” del subset pre-BEAST
+- Primero corre una selección estricta de `regional_context`:
+  - exige que el taxón comparta con `ecuador_core` un MRCA no raíz
+  - ese MRCA debe cumplir `min_mrca_support`
+  - además reparte la muestra por país y por mes usando `n_per_country`, `n_total` y `max_per_country_month`
+
+- Después, solo si `relaxed_fill > 0`, corre una segunda pasada:
+  - vuelve a mirar solo `regional_context`
+  - usa un umbral menor: `relaxed_min_mrca_support`
+  - añade hasta `relaxed_fill` taxones extra
+  - sigue respetando el tope por país `n_per_country`
+  - no reintroduce `usa_distal` ni anchors dentro de esa pasada
+
+Interpretación práctica
+- Si subes `relaxed_fill`, metes más contexto regional
+- Si bajas `relaxed_min_mrca_support`, permites clados algo menos robustos
+- Si dejas `usa_distal_quota: 0`, ese contexto extra sigue siendo regional y no distal USA
+
+Configuración
+
+El archivo central es `config/config.yml`.
+
+Variables globales
+- `mira_base_dir`: directorio base donde viven `run*/`
+- `flu_filtrado`: metadata/filtro de Ecuador
+- `context_metadata_tsv`: tabla curada del contexto regional
+- `ecuador_date_source`: fecha que se usa para Ecuador en headers y resúmenes
+- `random_seed`: semilla base reproducible
+- `max_threads`: techo general de hilos
+- `mafft_threads`: hilos para MAFFT
+- `raxml_segment_threads`: hilos para RAxML-NG por segmento
+- `raxml_full_concat_threads`: hilos para RAxML-NG concatenado
+- `raxml_rf_threads`: hilos para validación RF
+- `iqtree_modeltest_threads`: hilos para ModelFinder en pre-BEAST
+
+Variables de `beast_pre`
+- `ecuador_core_ids`: lista de muestras Ecuador que define el clado focal
+- `regional_blacklist_tokens`: substrings que excluyen taxa del pool `regional_context`
+- `max_cluster_dist`: parámetro heredado; hoy no controla la selección
+- `n_per_country`: máximo de `regional_context` por país en la pasada estricta
+- `n_total`: máximo total de `regional_context` en la pasada estricta
+- `min_mrca_support`: soporte TBE mínimo para aceptar candidatos regionales en la pasada estricta
+- `max_per_country_month`: máximo por combinación país-mes en la pasada estricta
+- `usa_distal_quota`: cuántos `usa_distal` agregar por distancia mínima a Ecuador
+- `forced_american_anchor_accession`: accession que siempre entra como `american_anchor` si está presente
+- `additional_american_anchor_quota`: anchors adicionales aparte del accession forzado
+- `relaxed_min_mrca_support`: soporte TBE mínimo de la pasada relajada
+- `relaxed_fill`: número de taxa extra que añade la pasada relajada
+
+Variables de `beast_pre.bets`
+- `enabled`: fuerza activar o desactivar BETS
+- `threads`: hilos usados por BEAST/BETS
+- `package_dir`: directorio local para instalar `MODEL_SELECTION`
+- `*_xml`: rutas a los XMLs ya preparados para cada escenario BETS
+
+Perfiles útiles del panel pre-BEAST
+
+Perfil actual por defecto
+- `usa_distal_quota: 0`
+- `forced_american_anchor_accession: "OQ968009"`
+- `additional_american_anchor_quota: 1`
+- `relaxed_fill: 0`
+
+Más contexto regional sin abrir mucho el panel
+- `relaxed_fill: 5`
+- `relaxed_min_mrca_support: 50.0`
+
+Más permisivo todavía
+- `relaxed_fill: 10`
+- `relaxed_min_mrca_support: 40.0`
+
+Salidas principales
+- `data/input/H5N1_EC.fasta`
+- `data/final/H5N1_final.fasta`
+- `data/phylogeny/aligned/H5N1_full_concat_beast.mafft`
+- `results/phylogeny/raxml/full_concat/H5N1_full_concat_beast.raxml.supportTBE`
+- `data/beast_pre/panels/panel_main_taxa.tsv`
+- `data/beast_pre/panels/panel_main_concat.subset.fasta`
+- `results/beast_pre/root_to_tip/treetime_clock.log`
+- `results/beast_pre/bets/bets_runs.tsv`
+- `results/beast_pre/model_test/panel_main_concat.best_model.txt`
 
 Notas
-- El FASTA final contiene primero Ecuador y despues el contexto regional.
-- Ejemplo de encabezado: Flu-0008/NS/SantaElena/2023
-- En contexto, el nombre de muestra se fuerza a ser unico anexando accession cuando existe isolate (isolate_accession) y usando accession cuando isolate falta.
-- La normalizacion del lugar se aplica igual a Ecuador y al contexto para evitar conteos dobles por variantes como Santa Elena, Santa_Elena o Santa-Elena.
-- La descarga contextual se hace en lotes desde NCBI para reducir tiempo de ejecucion.
-- opciones de cambio en config/config.yml
-    mira_base_dir: ".."
-    flu_filtrado: "config/flu_filtrado.csv"
-    context_metadata_tsv: "config/final_metadata_50_per_country_isolates.tsv"
-    ecuador_date_source: "collection"
-    random_seed: 39809473
-    max_threads: 20
--Preparacion de runs MIRA
-    1. Instalar y levantar el contenedor de MIRA.
-    2. Colocar cada run dentro de ~/MIRA_NGS/runX.
-    3. Asegurar que cada run tenga samplesheet.csv.
-    4. Ejecutar MIRA para cada run:
-
-    cd ~/MIRA_NGS
-    for run in run*; do
-            if [ -d "$run" ] && [ -f "$run/samplesheet.csv" ]; then
-                    echo "=== Reanudando $run ==="
-                    docker exec -w /data mira MIRA.sh \
-                            -s "$run/samplesheet.csv" \
-                            -r "$run" \
-                            -e Flu-ONT \
-                            > "$run/mira_batch_resume.out" \
-                            2> "$run/mira_batch_resume.err"
-            fi
-    done
-    Corrido originalmente con MIRA v2.0.0.
+- El FASTA final contiene primero Ecuador y luego el contexto.
+- El subset pre-BEAST se construye sobre el concatenado ya alineado; no se realinea.
+- `panel_selection_audit.tsv` resume cuántos taxa entraron por cada mecanismo.
+- `panel_country_month_coverage.tsv` ayuda a revisar si el contexto quedó balanceado en tiempo y país.

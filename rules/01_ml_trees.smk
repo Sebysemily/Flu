@@ -122,7 +122,6 @@ rule raxml_ng_tree_per_segment_simple:
 	input:
 		alignment="data/phylogeny/aligned/H5N1_{segment}.mafft"
 	output:
-		best_tree="results/phylogeny/raxml/{segment}/H5N1_{segment}.raxml.bestTreeCollapsed",
 		support_tbe="results/phylogeny/raxml/{segment}/H5N1_{segment}.raxml.supportTBE"
 	params:
 		prefix=lambda wildcards: f"results/phylogeny/raxml/{wildcards.segment}/H5N1_{wildcards.segment}",
@@ -159,7 +158,7 @@ rule raxml_ng_tree_full_concat:
 		alignment=FULL_CONCAT_ALIGNMENT,
 		partitions=FULL_CONCAT_PARTITIONS
 	output:
-		best_tree=f"{FULL_CONCAT_PREFIX}.raxml.bestTreeCollapsed",
+		best_tree=f"{FULL_CONCAT_PREFIX}.raxml.bestTree",
 		support_tbe=f"{FULL_CONCAT_PREFIX}.raxml.supportTBE"
 	params:
 		prefix=FULL_CONCAT_PREFIX,

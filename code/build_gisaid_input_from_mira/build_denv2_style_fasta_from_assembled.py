@@ -6,7 +6,11 @@ import yaml
 
 import pandas as pd
 
-from date_normalization import parse_collection_date, pick_ecuador_date
+from date_normalization import (
+    parse_collection_date,
+    pick_ecuador_date,
+    validate_no_missing_dates,
+)
 
 
 DEFAULT_PER_SAMPLE_DIR = os.path.join("data", "assembled", "ecuador_intermediate_per_sample")
@@ -160,6 +164,24 @@ def build_metadata_map(metadata_csv, ecuador_date_source):
         raise ValueError("No se encontro la columna Provincia en metadata")
     if collection_col is None and received_col is None:
         raise ValueError("No se encontro columna de fecha util en metadata")
+
+    validation_rows = []
+    for _, row in df.iterrows():
+        sample = str(row.get(sample_col, "")).strip()
+        if not sample:
+            continue
+        validation_rows.append(
+            {
+                "sample": sample,
+                "date_value": pick_ecuador_date(row, ecuador_date_source),
+            }
+        )
+    validate_no_missing_dates(
+        validation_rows,
+        label_key="sample",
+        date_key="date_value",
+        context="headers FASTA de Ecuador",
+    )
 
     metadata = {}
     for _, row in df.iterrows():

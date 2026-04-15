@@ -9,7 +9,7 @@ from urllib.request import urlopen
 
 import pandas as pd
 
-from date_normalization import parse_collection_date
+from date_normalization import parse_collection_date, validate_no_missing_dates
 
 
 SEGMENT_MAP = {
@@ -256,6 +256,24 @@ def main():
     missing = [c for c in required if c not in df.columns]
     if missing:
         raise ValueError(f"Faltan columnas en metadata contextual: {', '.join(missing)}")
+
+    validation_rows = []
+    for _, row in df.iterrows():
+        accession = str(row.get("accession", "")).strip()
+        if not accession:
+            continue
+        validation_rows.append(
+            {
+                "accession": accession,
+                "collection_date": row.get("collection_date", ""),
+            }
+        )
+    validate_no_missing_dates(
+        validation_rows,
+        label_key="accession",
+        date_key="collection_date",
+        context="headers FASTA de contexto",
+    )
 
     # Download all contextual accessions in batches using all_accessions as primary source.
     accessions = []

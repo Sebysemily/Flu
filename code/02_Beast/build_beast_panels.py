@@ -1,27 +1,41 @@
 #!/usr/bin/env python3
 import argparse
 import csv
+import json
 import os
 import re
+import sys
 from io import StringIO
 from typing import Dict, Iterable, List, Set, Tuple
 
 import pandas as pd
 from Bio import Phylo
 
+# Allow importing date_normalization from the parent code/ directory
+_CODE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if _CODE_DIR not in sys.path:
+    sys.path.insert(0, _CODE_DIR)
+from date_normalization import parse_collection_date  # noqa: E402
 
-ECUADOR_CORE = [
+
+ECUADOR_CORE_DEFAULT = [
     "Flu-0316", "Flu-0317", "Flu-0580", "Flu-0582", "Flu-0583", "Flu-0584", "Flu-0586",
     "Flu-0589", "Flu-0592", "Flu-0593", "Flu-0596", "Flu-0599", "Flu-0600", "Flu-0604", "Flu-0608",
     "Flu-0610", "Flu-0611", "Flu-0613", "Flu-0614", "Flu-0619", "Flu-0621", "Flu-0622", "Flu-0623",
     "Flu-0630", "Flu-0641", "Flu-0652", "Flu-0653", "Flu-0654",
 ]
 
-REGIONAL_BLACKLIST_TOKENS = [
+REGIONAL_BLACKLIST_TOKENS_DEFAULT = [
     "__eurasian_anchor", "__american_anchor", "__usa_",
 ]
 ACCESSION_RE = re.compile(r"([A-Z]{1,2}\d{5,8}\.\d+)")
-USA_DISTAL_QUOTA = 5
+USA_DISTAL_QUOTA_DEFAULT = 0
+ADDITIONAL_AMERICAN_ANCHOR_QUOTA_DEFAULT = 1
+FORCED_AMERICAN_ANCHOR_ACCESSION_DEFAULT = "OQ968009"
+MIN_MRCA_SUPPORT_DEFAULT = 70.0
+MAX_PER_COUNTRY_MONTH_DEFAULT = 2
+RELAXED_MRCA_SUPPORT_DEFAULT = 50.0
+RELAXED_FILL_DEFAULT = 0
 
 
 def read_tree(path: str):
@@ -30,13 +44,15 @@ def read_tree(path: str):
     return Phylo.read(StringIO(text), "newick")
 
 
-def read_complete_ids(path: str) -> Set[str]:
-    df = pd.read_csv(path)
-    # selected_for_beast uses True/False strings in this project
-    mask = df["selected_for_beast"].astype(str).str.lower() == "true"
-    # Use output_header column if available (tree tips match this format), fallback to sample_id
-    id_col = "output_header" if "output_header" in df.columns else "sample_id"
-    return set(df.loc[mask, id_col].astype(str))
+def canonical_tip(label: str) -> str:
+    """Lowercase only the country segment (second slash-delimited field) of a tip label
+    so that /USA/ and /Usa/ compare as equal."""
+    if not label:
+        return label
+    parts = label.split("/")
+    if len(parts) >= 2:
+        parts[1] = parts[1].lower()
+    return "/".join(parts)
 
 
 def get_terminals(tree) -> Set[str]:
@@ -50,10 +66,22 @@ def flu_base_id(label: str) -> str:
     return text.split("/", 1)[0]
 
 
-def is_regional_context(label: str) -> bool:
+def parse_json_string_list(raw: str, default: List[str], label: str) -> List[str]:
+    if raw is None:
+        return list(default)
+    try:
+        parsed = json.loads(raw)
+    except json.JSONDecodeError as exc:
+        raise SystemExit(f"{label} must be a JSON array of strings: {exc}") from exc
+    if not isinstance(parsed, list) or any(not isinstance(x, str) for x in parsed):
+        raise SystemExit(f"{label} must be a JSON array of strings")
+    return parsed
+
+
+def is_regional_context(label: str, blacklist_tokens: List[str]) -> bool:
     if "__regional_context" not in label:
         return False
-    for token in REGIONAL_BLACKLIST_TOKENS:
+    for token in blacklist_tokens:
         if token in label:
             return False
     return True
@@ -63,35 +91,79 @@ def is_usa_distal(label: str) -> bool:
     return "__usa_distal" in label
 
 
-def nearest_candidates(
+def is_american_anchor(label: str) -> bool:
+    return "__american_anchor" in label
+
+
+def normalize_support(v) -> float:
+    """Normalize TBE support to 0-100 scale regardless of whether source is 0-1 or 0-100."""
+    if v is None:
+        return 0.0
+    f = float(v)
+    return f * 100.0 if f <= 1.0 else f
+
+
+def clade_seed_fraction(clade, seeds_set: Set[str]) -> float:
+    """Fraction of clade terminals that are Ecuador core seeds."""
+    terminals = {t.name for t in clade.get_terminals() if t.name}
+    if not terminals:
+        return 0.0
+    return len(terminals & seeds_set) / len(terminals)
+
+
+def mrca_candidates(
     tree,
     seeds: Iterable[str],
     candidates: Iterable[str],
-    n_take: int,
+    min_support: float,
     exclude: Set[str],
-) -> List[Tuple[str, float, str]]:
-    seed_list = [s for s in seeds if s in get_terminals(tree)]
+) -> List[Tuple[str, float, float, str]]:
+    """Score each candidate by its MRCA with the seed set.
+
+    Returns list of (taxon, seed_fraction, patristic_dist_to_nearest_seed, nearest_seed)
+    sorted primary by seed_fraction DESC, tiebreak by patristic distance ASC.
+
+    Candidates are excluded when:
+    - Their shared MRCA with the seed set is the tree root (phylogenetically outside seed clade).
+    - Their shared MRCA has support < min_support.
+    """
+    tree_tips = get_terminals(tree)
+    seed_list = [s for s in seeds if s in tree_tips]
     if not seed_list:
         return []
+    seeds_set = set(seed_list)
 
-    scored: List[Tuple[str, float, str]] = []
+    scored: List[Tuple[str, float, float, str]] = []
     for cand in candidates:
-        if cand in exclude:
+        if cand in exclude or cand not in tree_tips:
             continue
-        # distance to nearest seed
-        dists = []
+        try:
+            mrca = tree.common_ancestor([cand] + seed_list)
+        except Exception:
+            continue
+        # Exclude candidates whose only shared ancestor with the seeds is the root
+        if mrca is tree.root:
+            continue
+        support_raw = getattr(mrca, "confidence", None)
+        if support_raw is not None and normalize_support(support_raw) < min_support:
+            continue
+        sf = clade_seed_fraction(mrca, seeds_set)
+        min_dist = float("inf")
+        nearest_seed = seed_list[0]
         for seed in seed_list:
             try:
-                dists.append(tree.distance(cand, seed))
+                d = tree.distance(cand, seed)
+                if d < min_dist:
+                    min_dist = d
+                    nearest_seed = seed
             except Exception:
                 continue
-        if not dists:
+        if min_dist == float("inf"):
             continue
-        nearest_seed = seed_list[dists.index(min(dists))]
-        scored.append((cand, min(dists), nearest_seed))
+        scored.append((cand, sf, min_dist, nearest_seed))
 
-    scored.sort(key=lambda x: x[1])
-    return scored[:n_take]
+    scored.sort(key=lambda x: (-x[1], x[2]))
+    return scored
 
 
 def write_panel(path: str, rows: List[Tuple[str, str, str, float]]) -> None:
@@ -127,16 +199,49 @@ def taxon_country(label: str, country_map: Dict[str, str]) -> str:
     return country_map.get(label, "UNKNOWN")
 
 
-def cluster_members(
+def read_date_map(path: str) -> Dict[str, str]:
+    """Returns accession -> normalized ISO YYYY-MM-DD from the context metadata TSV."""
+    df = pd.read_csv(path, sep=None, engine="python")
+    if "collection_date" not in df.columns or "accession" not in df.columns:
+        return {}
+    out: Dict[str, str] = {}
+    for _, row in df.iterrows():
+        acc = str(row["accession"]).strip()
+        raw_date = str(row.get("collection_date", "")).strip()
+        parsed = parse_collection_date(raw_date)
+        if acc and acc != "nan":
+            out[acc] = parsed or ""
+    return out
+
+
+def taxon_ym_bucket(label: str, date_map: Dict[str, str]) -> str:
+    """Returns YYYY-MM bucket for a taxon label using its GenBank accession, or 'UNKNOWN'."""
+    match = ACCESSION_RE.search(label)
+    if match:
+        iso = date_map.get(match.group(1), "")
+        if iso and len(iso) >= 7:
+            return iso[:7]
+    return "UNKNOWN"
+
+
+def nearest_candidates(
     tree,
     seeds: Iterable[str],
     candidates: Iterable[str],
-    max_cluster_dist: float,
+    n_take: int,
+    exclude: Set[str],
 ) -> List[Tuple[str, float, str]]:
-    seed_list = [s for s in seeds if s in get_terminals(tree)]
-    members: List[Tuple[str, float, str]] = []
+    """Distance-based selector used for out-of-clade groups (usa_distal, american_anchor)
+    where MRCA with Ecuador seeds is expected to be the root."""
+    tree_tips = get_terminals(tree)
+    seed_list = [s for s in seeds if s in tree_tips]
+    if not seed_list:
+        return []
+    scored: List[Tuple[str, float, str]] = []
     for cand in candidates:
-        dists: List[float] = []
+        if cand in exclude or cand not in tree_tips:
+            continue
+        dists = []
         for seed in seed_list:
             try:
                 dists.append(tree.distance(cand, seed))
@@ -144,30 +249,196 @@ def cluster_members(
                 continue
         if not dists:
             continue
-        min_dist = min(dists)
-        if min_dist <= max_cluster_dist:
-            nearest_seed = seed_list[dists.index(min_dist)]
-            members.append((cand, min_dist, nearest_seed))
-    members.sort(key=lambda x: x[1])
-    return members
+        nearest_seed = seed_list[dists.index(min(dists))]
+        scored.append((cand, min(dists), nearest_seed))
+    scored.sort(key=lambda x: x[1])
+    return scored[:n_take]
+
+
+def select_regional_context(
+    candidates_scored: List[Tuple[str, float, float, str]],
+    country_map: Dict[str, str],
+    date_map: Dict[str, str],
+    n_per_country: int,
+    n_total: int,
+    max_per_country_month: int,
+) -> List[Tuple[str, float, str, str]]:
+    """Select up to n_total regional context candidates with country/month spread.
+
+    Pass 1 – diversity: fill (country × YYYY-MM) buckets, respecting:
+      - n_per_country:         max samples per country.
+      - max_per_country_month: max samples per (country, YYYY-MM) bucket.
+
+    Pass 2 – fill by MRCA score while still respecting n_per_country,
+    relaxing only max_per_country_month.
+
+    Returns list of (taxon, dist, nearest_seed, reason).
+    """
+    selected: List[Tuple[str, float, str, str]] = []
+    selected_ids: Set[str] = set()
+    country_count: Dict[str, int] = {}
+    country_month_count: Dict[Tuple[str, str], int] = {}
+
+    # Pass 1: diversity (country + country/month caps)
+    for taxon, sf, dist, seed in candidates_scored:
+        if len(selected) >= n_total:
+            break
+        if taxon in selected_ids:
+            continue
+        country = taxon_country(taxon, country_map)
+        ym = taxon_ym_bucket(taxon, date_map)
+        if country_count.get(country, 0) >= n_per_country:
+            continue
+        if country_month_count.get((country, ym), 0) >= max_per_country_month:
+            continue
+        selected.append((taxon, dist, seed, "country_month_diversity"))
+        selected_ids.add(taxon)
+        country_count[country] = country_count.get(country, 0) + 1
+        country_month_count[(country, ym)] = country_month_count.get((country, ym), 0) + 1
+
+    # Pass 2: fill by MRCA score, still respecting n_per_country
+    for taxon, sf, dist, seed in candidates_scored:
+        if len(selected) >= n_total:
+            break
+        if taxon in selected_ids:
+            continue
+        country = taxon_country(taxon, country_map)
+        if country_count.get(country, 0) >= n_per_country:
+            continue
+        selected.append((taxon, dist, seed, "mrca_score_fill"))
+        selected_ids.add(taxon)
+        country_count[country] = country_count.get(country, 0) + 1
+
+    return selected
+
+
+def extend_regional_context_relaxed(
+    selected_context: List[Tuple[str, float, str, str]],
+    candidates_scored: List[Tuple[str, float, float, str]],
+    country_map: Dict[str, str],
+    n_per_country: int,
+    relaxed_fill: int,
+) -> List[Tuple[str, float, str, str]]:
+    """Optionally add extra regional taxa using a lower MRCA threshold.
+
+    This pass is intended to enrich temporal signal without bringing back the
+    broader out-of-clade context groups.
+    """
+    if relaxed_fill <= 0:
+        return selected_context
+
+    selected_ids = {taxon for taxon, _, _, _ in selected_context}
+    country_count: Dict[str, int] = {}
+    for taxon, _, _, _ in selected_context:
+        country = taxon_country(taxon, country_map)
+        country_count[country] = country_count.get(country, 0) + 1
+
+    relaxed_added = 0
+    extended = list(selected_context)
+    for taxon, sf, dist, seed in candidates_scored:
+        if relaxed_added >= relaxed_fill:
+            break
+        if taxon in selected_ids:
+            continue
+        country = taxon_country(taxon, country_map)
+        if country_count.get(country, 0) >= n_per_country:
+            continue
+        extended.append((taxon, dist, seed, "relaxed_mrca_fill"))
+        selected_ids.add(taxon)
+        country_count[country] = country_count.get(country, 0) + 1
+        relaxed_added += 1
+
+    return extended
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Build main BEAST panel from hybrid cluster/country selection")
+    parser = argparse.ArgumentParser(
+        description="Build main BEAST panel using MRCA-clade selection with country/month spread"
+    )
     parser.add_argument("--tree", required=True)
-    parser.add_argument("--beast-summary", required=True)
     parser.add_argument("--context-metadata", required=True)
     parser.add_argument("--panel-main-out", required=True)
     parser.add_argument("--audit-out", required=True)
+    parser.add_argument(
+        "--country-month-audit-out",
+        default=None,
+        help="Optional path for country/month coverage TSV (separate from main audit)",
+    )
+    # --max-cluster-dist kept for CLI backward-compatibility but no longer used for gating
     parser.add_argument("--max-cluster-dist", type=float, default=0.08)
     parser.add_argument("--n-per-country", type=int, default=4)
     parser.add_argument("--n-total", type=int, default=60)
+    parser.add_argument(
+        "--min-mrca-support",
+        type=float,
+        default=MIN_MRCA_SUPPORT_DEFAULT,
+        help="Minimum TBE support (0-100 scale) for accepted MRCA clades",
+    )
+    parser.add_argument(
+        "--max-per-country-month",
+        type=int,
+        default=MAX_PER_COUNTRY_MONTH_DEFAULT,
+        help="Max samples per (country, YYYY-MM) bucket in regional context selection",
+    )
+    parser.add_argument(
+        "--usa-distal-quota",
+        type=int,
+        default=USA_DISTAL_QUOTA_DEFAULT,
+        help="Number of usa_distal taxa to include in the main panel",
+    )
+    parser.add_argument(
+        "--additional-american-anchor-quota",
+        type=int,
+        default=ADDITIONAL_AMERICAN_ANCHOR_QUOTA_DEFAULT,
+        help="Number of extra american_anchor taxa to add besides any forced accession",
+    )
+    parser.add_argument(
+        "--forced-american-anchor-accession",
+        default=FORCED_AMERICAN_ANCHOR_ACCESSION_DEFAULT,
+        help="GenBank accession that must be kept as an american anchor when present",
+    )
+    parser.add_argument(
+        "--relaxed-min-mrca-support",
+        type=float,
+        default=RELAXED_MRCA_SUPPORT_DEFAULT,
+        help="Lower TBE support (0-100 scale) used only for optional relaxed regional fill",
+    )
+    parser.add_argument(
+        "--relaxed-fill",
+        type=int,
+        default=RELAXED_FILL_DEFAULT,
+        help="Number of extra regional_context taxa to add using relaxed MRCA support",
+    )
+    parser.add_argument(
+        "--ecuador-core-json",
+        default=None,
+        help="JSON array with the Ecuador core IDs to use as seeds",
+    )
+    parser.add_argument(
+        "--regional-blacklist-tokens-json",
+        default=None,
+        help="JSON array of tokens excluded from the regional_context pool",
+    )
     args = parser.parse_args()
 
     tree = read_tree(args.tree)
-    complete_ids = read_complete_ids(args.beast_summary)
     country_map = read_country_map(args.context_metadata)
+    date_map = read_date_map(args.context_metadata)
     tree_tips = get_terminals(tree)
+    ecuador_core = parse_json_string_list(
+        args.ecuador_core_json,
+        ECUADOR_CORE_DEFAULT,
+        "--ecuador-core-json",
+    )
+    regional_blacklist_tokens = parse_json_string_list(
+        args.regional_blacklist_tokens_json,
+        REGIONAL_BLACKLIST_TOKENS_DEFAULT,
+        "--regional-blacklist-tokens-json",
+    )
+
+    # Use all tree tips as candidates (concat tree already guarantees 8-segment completeness)
+    complete_ids = {canonical_tip(t) for t in tree_tips}
+    complete_filter_source = "tree_tips_all"
 
     flu_tip_map: Dict[str, str] = {}
     for tip in tree_tips:
@@ -176,75 +447,104 @@ def main() -> None:
 
     core_available = []
     core_missing = []
-    for core in ECUADOR_CORE:
+    for core in ecuador_core:
         tip_label = flu_tip_map.get(core, core)
-        if core in complete_ids and tip_label in tree_tips:
+        if tip_label in tree_tips:
             core_available.append(tip_label)
         else:
             core_missing.append(core)
 
     seed_main = list(core_available)
 
+    # ── Regional context: MRCA-scored + country/month spread ──────────────────
     regional_candidates = [
-        t for t in tree_tips
-        if t in complete_ids and is_regional_context(t)
+        t
+        for t in tree_tips
+        if canonical_tip(t) in complete_ids and is_regional_context(t, regional_blacklist_tokens)
     ]
-    usa_distal_candidates = [
-        t for t in tree_tips
-        if t in complete_ids and is_usa_distal(t)
-    ]
-
-    members = cluster_members(
+    regional_scored = mrca_candidates(
         tree=tree,
         seeds=seed_main,
         candidates=regional_candidates,
-        max_cluster_dist=args.max_cluster_dist,
+        min_support=args.min_mrca_support,
+        exclude=set(),
     )
+    selected_context = select_regional_context(
+        candidates_scored=regional_scored,
+        country_map=country_map,
+        date_map=date_map,
+        n_per_country=args.n_per_country,
+        n_total=args.n_total,
+        max_per_country_month=args.max_per_country_month,
+    )
+    relaxed_scored: List[Tuple[str, float, float, str]] = []
+    if args.relaxed_fill > 0:
+        relaxed_scored = mrca_candidates(
+            tree=tree,
+            seeds=seed_main,
+            candidates=regional_candidates,
+            min_support=args.relaxed_min_mrca_support,
+            exclude=set(),
+        )
+        selected_context = extend_regional_context_relaxed(
+            selected_context=selected_context,
+            candidates_scored=relaxed_scored,
+            country_map=country_map,
+            n_per_country=args.n_per_country,
+            relaxed_fill=args.relaxed_fill,
+        )
 
-    selected_context: List[Tuple[str, float, str, str]] = []
-    selected_ids: Set[str] = set()
-
-    # 1) Country diversity first.
-    by_country: Dict[str, List[Tuple[str, float, str]]] = {}
-    for taxon, dist, seed in members:
-        country = taxon_country(taxon, country_map)
-        by_country.setdefault(country, []).append((taxon, dist, seed))
-    for country in by_country:
-        by_country[country].sort(key=lambda x: x[1])
-
-    for country, rows in sorted(by_country.items(), key=lambda x: x[0]):
-        take = 0
-        for taxon, dist, seed in rows:
-            if taxon in selected_ids:
-                continue
-            if take >= args.n_per_country:
-                break
-            selected_context.append((taxon, dist, seed, "country_diversity"))
-            selected_ids.add(taxon)
-            take += 1
-            if len(selected_context) >= args.n_total:
-                break
-        if len(selected_context) >= args.n_total:
-            break
-
-    # 2) Complete by nearest phylogenetic distance.
-    if len(selected_context) < args.n_total:
-        for taxon, dist, seed in members:
-            if taxon in selected_ids:
-                continue
-            selected_context.append((taxon, dist, seed, "distance_only"))
-            selected_ids.add(taxon)
-            if len(selected_context) >= args.n_total:
-                break
-
+    # ── USA distal: distance-based (intentionally out-of-clade, MRCA would be root) ──
+    usa_distal_candidates = [
+        t for t in tree_tips if canonical_tip(t) in complete_ids and is_usa_distal(t)
+    ]
     selected_usa_distal = nearest_candidates(
         tree=tree,
         seeds=seed_main,
         candidates=usa_distal_candidates,
-        n_take=USA_DISTAL_QUOTA,
+        n_take=args.usa_distal_quota,
         exclude=set(),
     )
 
+    # ── American anchor: distance-based (same reason as usa_distal) ──────────
+    american_anchor_candidates = [
+        t for t in tree_tips if canonical_tip(t) in complete_ids and is_american_anchor(t)
+    ]
+    selected_american_anchor: List[Tuple[str, float, str]] = []
+
+    # Force the requested accession into american anchor regardless of distance rank.
+    forced_anchor = None
+    if args.forced_american_anchor_accession:
+        forced_anchor = next(
+            (
+                t
+                for t in american_anchor_candidates
+                if args.forced_american_anchor_accession in t
+            ),
+            None,
+        )
+    if forced_anchor:
+        forced_pick = nearest_candidates(
+            tree=tree,
+            seeds=seed_main,
+            candidates=[forced_anchor],
+            n_take=1,
+            exclude=set(),
+        )
+        if forced_pick:
+            selected_american_anchor.extend(forced_pick)
+
+    selected_american_anchor.extend(
+        nearest_candidates(
+            tree=tree,
+            seeds=seed_main,
+            candidates=american_anchor_candidates,
+            n_take=args.additional_american_anchor_quota,
+            exclude={taxon for taxon, _, _ in selected_american_anchor},
+        )
+    )
+
+    # ── Assemble panel rows ───────────────────────────────────────────────────
     panel_main_rows: List[Tuple[str, str, str, float]] = []
     for t in core_available:
         panel_main_rows.append((t, "ecuador_core", "main_cluster", None))
@@ -252,27 +552,71 @@ def main() -> None:
         panel_main_rows.append((taxon, "regional_context", reason, dist))
     for taxon, dist, seed in selected_usa_distal:
         panel_main_rows.append((taxon, "usa_distal", "distance_to_ecuador_core", dist))
+    for taxon, dist, seed in selected_american_anchor:
+        panel_main_rows.append((taxon, "american_anchor", "distance_to_ecuador_core", dist))
 
     write_panel(args.panel_main_out, panel_main_rows)
 
+    # ── Main audit ────────────────────────────────────────────────────────────
     audit_dir = os.path.dirname(args.audit_out)
     if audit_dir:
         os.makedirs(audit_dir, exist_ok=True)
     with open(args.audit_out, "w", encoding="utf-8", newline="") as handle:
         writer = csv.writer(handle, delimiter="\t")
         writer.writerow(["metric", "value"])
+        writer.writerow(["complete_filter_source", complete_filter_source])
+        writer.writerow(["tree_tips_total", len(tree_tips)])
+        writer.writerow(["ecuador_core_configured", len(ecuador_core)])
         writer.writerow(["core_available", len(core_available)])
         writer.writerow(["core_missing", len(core_missing)])
-        writer.writerow(["cluster_members", len(members)])
+        writer.writerow(["regional_candidates_total", len(regional_candidates)])
+        writer.writerow(["regional_candidates_passed_mrca", len(regional_scored)])
+        writer.writerow([
+            "regional_candidates_filtered_mrca",
+            len(regional_candidates) - len(regional_scored),
+        ])
         writer.writerow(["panel_main_total", len(panel_main_rows)])
-        writer.writerow(["max_cluster_dist", args.max_cluster_dist])
+        writer.writerow(["min_mrca_support", args.min_mrca_support])
+        writer.writerow(["max_per_country_month", args.max_per_country_month])
         writer.writerow(["n_per_country", args.n_per_country])
         writer.writerow(["n_total", args.n_total])
-        writer.writerow(["usa_distal_quota", USA_DISTAL_QUOTA])
-        writer.writerow(["selected_country_diversity", sum(1 for x in selected_context if x[3] == "country_diversity")])
-        writer.writerow(["selected_distance_only", sum(1 for x in selected_context if x[3] == "distance_only")])
+        writer.writerow(["relaxed_min_mrca_support", args.relaxed_min_mrca_support])
+        writer.writerow(["relaxed_fill", args.relaxed_fill])
+        writer.writerow(["usa_distal_quota", args.usa_distal_quota])
+        writer.writerow([
+            "additional_american_anchor_quota",
+            args.additional_american_anchor_quota,
+        ])
+        writer.writerow([
+            "forced_american_anchor_accession",
+            args.forced_american_anchor_accession,
+        ])
+        writer.writerow([
+            "regional_blacklist_tokens",
+            ";".join(regional_blacklist_tokens),
+        ])
+        writer.writerow([
+            "selected_country_month_diversity",
+            sum(1 for x in selected_context if x[3] == "country_month_diversity"),
+        ])
+        writer.writerow([
+            "selected_mrca_score_fill",
+            sum(1 for x in selected_context if x[3] == "mrca_score_fill"),
+        ])
+        writer.writerow([
+            "selected_relaxed_mrca_fill",
+            sum(1 for x in selected_context if x[3] == "relaxed_mrca_fill"),
+        ])
         writer.writerow(["selected_usa_distal", len(selected_usa_distal)])
-        # country coverage report
+        writer.writerow(["selected_american_anchor", len(selected_american_anchor)])
+        writer.writerow([
+            "forced_american_anchor_present",
+            any(
+                args.forced_american_anchor_accession
+                and args.forced_american_anchor_accession in taxon
+                for taxon, _, _ in selected_american_anchor
+            ),
+        ])
         country_counts: Dict[str, int] = {}
         for taxon, _, _, _ in selected_context:
             c = taxon_country(taxon, country_map)
@@ -281,6 +625,24 @@ def main() -> None:
             writer.writerow([f"country_count::{c}", n])
         if core_missing:
             writer.writerow(["core_missing_ids", ";".join(core_missing)])
+
+    # ── Country/month coverage audit (optional separate file) ─────────────────
+    cm_out = args.country_month_audit_out
+    if cm_out:
+        cm_dir = os.path.dirname(cm_out)
+        if cm_dir:
+            os.makedirs(cm_dir, exist_ok=True)
+        coverage: Dict[Tuple[str, str], int] = {}
+        for taxon, _, _, _ in selected_context:
+            country = taxon_country(taxon, country_map)
+            ym = taxon_ym_bucket(taxon, date_map)
+            key = (country, ym)
+            coverage[key] = coverage.get(key, 0) + 1
+        with open(cm_out, "w", encoding="utf-8", newline="") as handle:
+            writer = csv.writer(handle, delimiter="\t")
+            writer.writerow(["country", "month", "n_selected"])
+            for (country, month), n in sorted(coverage.items()):
+                writer.writerow([country, month, n])
 
 
 if __name__ == "__main__":

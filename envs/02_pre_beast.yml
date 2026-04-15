@@ -1,0 +1,13 @@
+name: 02_pre_beast
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - python=3.11
+  - pandas
+  - biopython
+  - treetime
+  - iqtree=2.*
+  - graphviz
+  - beast2
+  - openjdk

@@ -7,9 +7,9 @@ VALIDATION_RAXML_DIR = f"{VALIDATION_DIR}/raxml"
 VALIDATION_RF_DIR = f"{VALIDATION_DIR}/rf"
 VALIDATION_SEGMENT_DIR = f"{VALIDATION_DIR}/per_segment"
 
-VALIDATION_CONCAT_ALIGNMENT = f"{VALIDATION_CONCAT_DIR}/H5N1_full_concat_codon_validation.mafft"
-VALIDATION_CONCAT_PARTITIONS = f"{VALIDATION_CONCAT_DIR}/H5N1_full_concat_codon_validation.partitions"
-VALIDATION_CONCAT_BASE_PREFIX = f"{VALIDATION_RAXML_DIR}/full_concat/H5N1_full_concat_codon_validation"
+VALIDATION_CONCAT_ALIGNMENT = "data/phylogeny/aligned/H5N1_full_concat_beast.mafft"
+VALIDATION_CONCAT_PARTITIONS = "data/phylogeny/H5N1_full_concat_beast.partitions"
+VALIDATION_CONCAT_BASE_PREFIX = "results/phylogeny/raxml/full_concat/H5N1_full_concat_beast"
 VALIDATION_CONCAT_BASE_TREE = f"{VALIDATION_CONCAT_BASE_PREFIX}.raxml.bestTree"
 
 VALIDATION_RF_REPLICATES = [1, 2, 3, 4, 5]
@@ -38,50 +38,11 @@ VALIDATION_SIMPLE_RF_SUMMARY_PATHS = {
     segment: f"{VALIDATION_RF_DIR}/rf_summary_{segment}/rf_summary.tsv" for segment in VALIDATION_SIMPLE_RF_SEGMENTS
 }
 
-
-rule concat_codon_validation_with_partitions:
-    input:
-        alignments=expand("data/phylogeny/aligned/H5N1_{segment}.mafft", segment=PHYLO_SEGMENTS)
-    output:
-        aligned=VALIDATION_CONCAT_ALIGNMENT,
-        partitions=VALIDATION_CONCAT_PARTITIONS
-    params:
-        segment_order=",".join(PHYLO_SEGMENTS),
-        codon_segments=",".join(VALIDATION_CODON_SEGMENTS)
-    shell:
-        r"""
-        python code/00_validation_codon_rf/build_codon_validation_partitions.py \
-            --segment-order {params.segment_order} \
-            --codon-segments {params.codon_segments} \
-            --output-alignment {output.aligned} \
-            --output-partitions {output.partitions} \
-            {input.alignments}
-        """
+# Use the canonical full-concat alignment/partitions produced by the main ML rules
+# (results/phylogeny/raxml/full_concat/H5N1_full_concat_beast.*)
 
 
-rule raxml_ng_tree_full_concat_codon_validation_base:
-    input:
-        alignment=VALIDATION_CONCAT_ALIGNMENT,
-        partitions=VALIDATION_CONCAT_PARTITIONS
-    output:
-        best_tree=VALIDATION_CONCAT_BASE_TREE
-    params:
-        prefix=VALIDATION_CONCAT_BASE_PREFIX,
-        extra=lambda wildcards: f"--seed {RANDOM_SEED} --redo --force perf_threads --tree 'pars{{20}},rand{{20}}'"
-    threads: FULL_RAXML_THREADS
-    conda:
-        "../envs/ml_per_segment.yml"
-    shell:
-        r"""
-        mkdir -p {VALIDATION_RAXML_DIR}/full_concat
-        raxml-ng \
-            --search \
-            --msa {input.alignment} \
-            --model {input.partitions} \
-            --prefix {params.prefix} \
-            --threads {threads} \
-            {params.extra}
-        """
+# base concat tree is produced by main ML pipeline (`rules/01_ml_trees.smk`)
 
 
 rule raxml_ng_tree_full_concat_codon_validation_rf_rep:
@@ -154,37 +115,11 @@ rule summarize_full_concat_codon_validation_rf_instability:
         """
 
 
-rule raxml_ng_tree_per_segment_codon_validation:
-    input:
-        alignment="data/phylogeny/aligned/H5N1_{segment}.mafft",
-        partitions="data/phylogeny/codon_partitions/H5N1_{segment}.codon.partitions"
-    output:
-        best_tree=f"{VALIDATION_SEGMENT_DIR}/{{segment}}/H5N1_{{segment}}_codon_validation.raxml.bestTreeCollapsed"
-    params:
-        prefix=lambda wildcards: f"{VALIDATION_SEGMENT_DIR}/{wildcards.segment}/H5N1_{wildcards.segment}_codon_validation",
-        extra=lambda wildcards: f"--seed {RANDOM_SEED} --redo --force perf_threads --tree 'pars{{20}},rand{{20}}'"
-    threads: SEGMENT_RAXML_THREADS
-    wildcard_constraints:
-        segment="PB2|PB1|PA|HA|NP|NA"
-    conda:
-        "../envs/ml_per_segment.yml"
-    shell:
-        r"""
-        mkdir -p {VALIDATION_SEGMENT_DIR}/{wildcards.segment}
-        raxml-ng \
-            --search \
-            --msa {input.alignment} \
-            --model {input.partitions} \
-            --prefix {params.prefix} \
-            --threads {threads} \
-            {params.extra}
-        """
-
-
+# Per-segment ML trees are produced by the main ML rules (results/phylogeny/raxml/<segment>/...)
 rule validation_segment_codon_trees:
     input:
         expand(
-            f"{VALIDATION_SEGMENT_DIR}/{{segment}}/H5N1_{{segment}}_codon_validation.raxml.bestTreeCollapsed",
+            f"results/phylogeny/raxml/{{segment}}/H5N1_{{segment}}.raxml.bestTreeCollapsed",
             segment=VALIDATION_CODON_SEGMENTS,
         )
 
@@ -193,7 +128,7 @@ rule validation_codon_rf_bundle:
     input:
         VALIDATION_RF_SUMMARY_TSV,
         expand(
-            f"{VALIDATION_SEGMENT_DIR}/{{segment}}/H5N1_{{segment}}_codon_validation.raxml.bestTreeCollapsed",
+            f"results/phylogeny/raxml/{{segment}}/H5N1_{{segment}}.raxml.bestTreeCollapsed",
             segment=VALIDATION_CODON_SEGMENTS,
         )
 
@@ -202,38 +137,14 @@ rule validation_codon_rf_bundle:
 # Simple RF Validation for NS and MP (GTR+G, no codon partitions)
 # ============================================================================
 
-rule raxml_ng_tree_segment_simple_rf_base:
-    """RF validation base tree for NS/MP segments (GTR+G model)."""
-    input:
-        alignment="data/phylogeny/aligned/H5N1_{segment}.mafft"
-    output:
-        best_tree=f"{VALIDATION_RF_DIR}/H5N1_{{segment}}_simple_rf_base.raxml.bestTreeCollapsed"
-    params:
-        prefix=lambda wildcards: f"{VALIDATION_RF_DIR}/H5N1_{wildcards.segment}_simple_rf_base",
-        extra=lambda wildcards: f"--seed {RANDOM_SEED} --redo --force perf_threads --tree 'pars{{20}},rand{{20}}'"
-    threads: SEGMENT_RAXML_THREADS
-    wildcard_constraints:
-        segment="NS|MP"
-    conda:
-        "../envs/ml_per_segment.yml"
-    shell:
-        r"""
-        mkdir -p {VALIDATION_RF_DIR}
-        raxml-ng \
-            --search \
-            --msa {input.alignment} \
-            --model GTR+G \
-            --prefix {params.prefix} \
-            --threads {threads} \
-            {params.extra}
-        """
+# Base trees for NS/MP are produced by the main ML rules (results/phylogeny/raxml/<segment>/...)
 
 
 rule raxml_ng_tree_segment_simple_rf_rep:
     """RF validation replicate trees for NS/MP segments (GTR+G model)."""
     input:
         alignment="data/phylogeny/aligned/H5N1_{segment}.mafft",
-        base_tree=f"{VALIDATION_RF_DIR}/H5N1_{{segment}}_simple_rf_base.raxml.bestTreeCollapsed"
+        base_tree=f"results/phylogeny/raxml/{{segment}}/H5N1_{{segment}}.raxml.bestTreeCollapsed"
     output:
         rep_tree=f"{VALIDATION_RF_DIR}/H5N1_{{segment}}_simple_rf_rep{{rep}}.raxml.bestTreeCollapsed"
     params:
@@ -262,7 +173,7 @@ rule raxml_ng_tree_segment_simple_rf_rep:
 rule summarize_segment_simple_rf_instability:
     """Compute RF distances for NS/MP per-segment validation."""
     input:
-        base_tree=f"{VALIDATION_RF_DIR}/H5N1_{{segment}}_simple_rf_base.raxml.bestTreeCollapsed",
+        base_tree=f"results/phylogeny/raxml/{{segment}}/H5N1_{{segment}}.raxml.bestTreeCollapsed",
         replicate_trees=expand(
             f"{VALIDATION_RF_DIR}/H5N1_{{{{segment}}}}_simple_rf_rep{{rep}}.raxml.bestTreeCollapsed",
             rep=VALIDATION_RF_REPLICATES,
@@ -307,40 +218,13 @@ rule summarize_segment_simple_rf_instability:
 # Codon RF Validation for PB2, PB1, PA, HA, NP, NA (codon partitions)
 # ============================================================================
 
-rule raxml_ng_tree_segment_codon_rf_base:
-    """RF validation base tree for codon segments (codon partitions)."""
-    input:
-        alignment="data/phylogeny/aligned/H5N1_{segment}.mafft",
-        partitions="data/phylogeny/codon_partitions/H5N1_{segment}.codon.partitions"
-    output:
-        best_tree=f"{VALIDATION_RF_DIR}/H5N1_{{segment}}_codon_rf_base.raxml.bestTree"
-    params:
-        prefix=lambda wildcards: f"{VALIDATION_RF_DIR}/H5N1_{wildcards.segment}_codon_rf_base",
-        extra=lambda wildcards: f"--seed {RANDOM_SEED} --redo --force perf_threads --tree 'pars{{20}},rand{{20}}'"
-    threads: SEGMENT_RAXML_THREADS
-    wildcard_constraints:
-        segment="PB2|PB1|PA|HA|NP|NA"
-    conda:
-        "../envs/ml_per_segment.yml"
-    shell:
-        r"""
-        mkdir -p {VALIDATION_RF_DIR}
-        raxml-ng \
-            --search \
-            --msa {input.alignment} \
-            --model {input.partitions} \
-            --prefix {params.prefix} \
-            --threads {threads} \
-            {params.extra}
-        """
-
-
+# Per-segment codon RF base trees are produced by the main ML rules
 rule raxml_ng_tree_segment_codon_rf_rep:
     """RF validation replicate trees for codon segments (codon partitions)."""
     input:
         alignment="data/phylogeny/aligned/H5N1_{segment}.mafft",
         partitions="data/phylogeny/codon_partitions/H5N1_{segment}.codon.partitions",
-        base_tree=f"{VALIDATION_RF_DIR}/H5N1_{{segment}}_codon_rf_base.raxml.bestTree"
+        base_tree=f"results/phylogeny/raxml/{{segment}}/H5N1_{{segment}}.raxml.bestTreeCollapsed"
     output:
         rep_tree=f"{VALIDATION_RF_DIR}/H5N1_{{segment}}_codon_rf_rep{{rep}}.raxml.bestTree"
     params:
@@ -369,7 +253,7 @@ rule raxml_ng_tree_segment_codon_rf_rep:
 rule summarize_segment_codon_rf_instability:
     """Compute RF distances for codon segments per-segment validation."""
     input:
-        base_tree=f"{VALIDATION_RF_DIR}/H5N1_{{segment}}_codon_rf_base.raxml.bestTree",
+        base_tree=f"results/phylogeny/raxml/{{segment}}/H5N1_{{segment}}.raxml.bestTreeCollapsed",
         replicate_trees=expand(
             f"{VALIDATION_RF_DIR}/H5N1_{{{{segment}}}}_codon_rf_rep{{rep}}.raxml.bestTree",
             rep=VALIDATION_RF_REPLICATES,

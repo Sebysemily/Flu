@@ -1,6 +1,6 @@
 import re
 from datetime import datetime
-from typing import Mapping, Optional
+from typing import Mapping, Optional, Sequence
 
 import pandas as pd
 
@@ -17,6 +17,10 @@ def parse_collection_date(value: str) -> Optional[str]:
 
 	if re.match(r"^\d{4}-\d{2}-\d{2}$", text):
 		return text
+	if re.match(r"^\d{4}-\d{2}$", text):
+		return f"{text}-01"
+	if re.match(r"^\d{4}$", text):
+		return f"{text}-07-01"
 
 	for fmt in ("%d-%b-%Y", "%b-%Y"):
 		try:
@@ -43,6 +47,43 @@ def extract_year(value: str) -> Optional[str]:
 	if not parsed:
 		return None
 	return parsed[:4]
+
+
+def extract_header_date(header: str) -> Optional[str]:
+	if header is None:
+		return None
+	text = str(header).strip()
+	if not text:
+		return None
+	return parse_collection_date(text.rsplit("/", 1)[-1].strip())
+
+
+def validate_no_missing_dates(
+	rows: Sequence[Mapping[str, object]],
+	label_key: str,
+	date_key: str,
+	context: str,
+	max_examples: int = 8,
+) -> None:
+	missing = []
+	for row in rows:
+		date_value = parse_collection_date(row.get(date_key))
+		if date_value:
+			continue
+		label = str(row.get(label_key, "")).strip() or "UNKNOWN"
+		raw_date = str(row.get(date_key, "")).strip()
+		missing.append((label, raw_date))
+
+	if not missing:
+		return
+
+	examples = ", ".join(
+		f"{label} ({raw_date or 'sin_fecha'})"
+		for label, raw_date in missing[:max_examples]
+	)
+	raise ValueError(
+		f"Se encontraron {len(missing)} registros sin fecha valida para {context}: {examples}"
+	)
 
 
 def pick_ecuador_date(row: Mapping[str, object], source: str = "reception") -> Optional[str]:

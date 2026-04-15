@@ -2,7 +2,6 @@
 import argparse
 import csv
 import os
-import subprocess
 from copy import deepcopy
 from io import StringIO
 
@@ -24,7 +23,7 @@ def read_tree(path: str):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Subset alignment and prune tree to panel taxa")
+    parser = argparse.ArgumentParser(description="Subset an aligned FASTA and prune a tree to panel taxa")
     parser.add_argument("--alignment", required=True)
     parser.add_argument("--tree", required=True)
     parser.add_argument("--taxa", required=True)
@@ -41,19 +40,7 @@ def main():
     out_dir = os.path.dirname(args.out_alignment)
     if out_dir:
         os.makedirs(out_dir, exist_ok=True)
-    tmp_subset = args.out_alignment + ".subset_input.fasta"
-    SeqIO.write(kept, tmp_subset, "fasta")
-
-    # Realign panel subset to avoid slicing bias from full concat alignment.
-    mafft_cmd = ["mafft", "--auto", "--thread", "1", tmp_subset]
-    with open(args.out_alignment, "w", encoding="utf-8") as handle:
-        proc = subprocess.run(mafft_cmd, stdout=handle, stderr=subprocess.PIPE, text=True, check=False)
-    if proc.returncode != 0:
-        raise SystemExit(f"MAFFT failed ({proc.returncode}): {proc.stderr}")
-    try:
-        os.remove(tmp_subset)
-    except OSError:
-        pass
+    SeqIO.write(kept, args.out_alignment, "fasta")
 
     # Prune tree
     tree = read_tree(args.tree)

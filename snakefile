@@ -3,8 +3,17 @@ configfile: "config/config.yml"
 include: "rules/build_gisaid_input_from_mira.smk"
 include: "rules/build_inputs.smk"
 include: "rules/01_ml_trees.smk"
+include: "rules/02_pre_beast.smk"
+
 
 include: "rules/00_validation_codon_rf.smk"
+
+BETS_ALL_TARGETS = []
+if BETS_ENABLED:
+    BETS_ALL_TARGETS = [
+        PRE_BEAST_BETS_RUN_SUMMARY,
+        PRE_BEAST_BETS_BAYES_FACTORS,
+    ]
 
 rule all:
     input:
@@ -18,7 +27,11 @@ rule all:
         expand(
             "results/phylogeny/raxml/{segment}/H5N1_{segment}.raxml.supportTBE",
             segment=["PB2", "PB1", "PA", "HA", "NP", "NA", "MP", "NS"],
-        )
+        ),
+        PRE_BEAST_ROOT_TO_TIP_DONE,
+        *BETS_ALL_TARGETS,
+        PRE_BEAST_MODEL_TEST_SUMMARY,
+        PRE_BEAST_MODEL_TEST_BEST_MODEL
 
 
 rule build_gisaid:
