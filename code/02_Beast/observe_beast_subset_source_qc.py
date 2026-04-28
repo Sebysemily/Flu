@@ -313,8 +313,6 @@ def main():
     )
     parser.add_argument("--final-fasta", required=True)
     parser.add_argument("--panel-taxa", required=True)
-    parser.add_argument("--subset-alignment", required=True)
-    parser.add_argument("--post-mafft-alignment", default=None)
     parser.add_argument("--ecuador-summary", default=None)
     parser.add_argument("--context-summary", default=None)
     parser.add_argument("--ecuador-audit", default=None)
@@ -347,19 +345,6 @@ def main():
         for segment, lengths in segment_lengths.items()
         if lengths
     }
-
-    subset_alignment = read_alignment(args.subset_alignment)
-    if set(subset_alignment) != subset_taxa:
-        raise ValueError("El subset alignment no coincide exactamente con los taxa del panel")
-    subset_profile = build_alignment_profile(subset_alignment)
-
-    post_mafft_alignment = None
-    post_profile = None
-    if args.post_mafft_alignment:
-        post_mafft_alignment = read_alignment(args.post_mafft_alignment)
-        if set(post_mafft_alignment) != subset_taxa:
-            raise ValueError("El post-MAFFT alignment no coincide exactamente con los taxa del panel")
-        post_profile = build_alignment_profile(post_mafft_alignment)
 
     ecuador_summary = load_ecuador_summary(args.ecuador_summary)
     context_summary = load_context_summary(args.context_summary)
@@ -424,57 +409,6 @@ def main():
             "raw_high_ambiguous_segments": ",".join(high_ambig_segments),
         }
 
-        subset_basic = basic_alignment_metrics(subset_alignment[taxon])
-        row.update(
-            {
-                "subset_alignment_length": subset_basic["alignment_length"],
-                "subset_ungapped_length": subset_basic["ungapped_length"],
-                "subset_consensus_distance_fraction": subset_profile[taxon]["consensus_distance_fraction"],
-                "subset_rare_occupancy_fraction": subset_profile[taxon]["rare_occupancy_fraction"],
-                "subset_singleton_base_fraction": subset_profile[taxon]["singleton_base_fraction"],
-                "subset_gap_fraction": subset_basic["gap_fraction"],
-                "subset_internal_gap_fraction": subset_basic["internal_gap_fraction"],
-            }
-        )
-
-        if post_mafft_alignment:
-            post_basic = basic_alignment_metrics(post_mafft_alignment[taxon])
-            row.update(
-                {
-                    "post_alignment_length": post_basic["alignment_length"],
-                    "post_ungapped_length": post_basic["ungapped_length"],
-                    "post_consensus_distance_fraction": post_profile[taxon]["consensus_distance_fraction"],
-                    "post_rare_occupancy_fraction": post_profile[taxon]["rare_occupancy_fraction"],
-                    "post_singleton_base_fraction": post_profile[taxon]["singleton_base_fraction"],
-                    "post_gap_fraction": post_basic["gap_fraction"],
-                    "post_internal_gap_fraction": post_basic["internal_gap_fraction"],
-                    "post_ungapped_sequence_changed": int(
-                        subset_basic["ungapped_sequence"] != post_basic["ungapped_sequence"]
-                    ),
-                }
-            )
-            row["post_consensus_distance_increase"] = (
-                row["post_consensus_distance_fraction"] - row["subset_consensus_distance_fraction"]
-            )
-            row["post_internal_gap_shift"] = (
-                row["post_internal_gap_fraction"] - row["subset_internal_gap_fraction"]
-            )
-        else:
-            row.update(
-                {
-                    "post_alignment_length": "",
-                    "post_ungapped_length": "",
-                    "post_consensus_distance_fraction": 0.0,
-                    "post_rare_occupancy_fraction": 0.0,
-                    "post_singleton_base_fraction": 0.0,
-                    "post_gap_fraction": 0.0,
-                    "post_internal_gap_fraction": 0.0,
-                    "post_ungapped_sequence_changed": 0,
-                    "post_consensus_distance_increase": 0.0,
-                    "post_internal_gap_shift": 0.0,
-                }
-            )
-
         if origin == "ecuador":
             audit = ecuador_audit.get(source_sample, {"assembled": 0, "filled_with_N": 0, "other_status": 0})
             row["ecuador_mira_assembled_segments"] = audit["assembled"]
@@ -494,23 +428,10 @@ def main():
 
         rows.append(row)
 
-    if post_mafft_alignment:
-        median_gap_shift = statistics.median(row["post_internal_gap_shift"] for row in rows)
-        for row in rows:
-            row["post_internal_gap_shift_deviation"] = abs(row["post_internal_gap_shift"] - median_gap_shift)
-    else:
-        for row in rows:
-            row["post_internal_gap_shift_deviation"] = 0.0
-
     metrics_to_flag = [
         ("raw_total_n_fraction", "high_raw_n_fraction", 0.01),
         ("raw_total_ambiguous_fraction", "high_raw_ambiguous_fraction", 0.005),
         ("raw_short_segment_count", "multiple_short_segments", 1.0),
-        ("subset_consensus_distance_fraction", "high_subset_consensus_distance", 0.01),
-        ("post_consensus_distance_fraction", "high_post_consensus_distance", 0.01),
-        ("post_consensus_distance_increase", "post_consensus_distance_increase", 0.002),
-        ("post_singleton_base_fraction", "high_post_singleton_burden", 0.003),
-        ("post_internal_gap_shift_deviation", "atypical_post_gap_shift", 0.01),
     ]
 
     for metric, flag_name, min_value in metrics_to_flag:
@@ -542,27 +463,20 @@ def main():
             "low_min_segment_length_ratio",
             "context_segment_count_mismatch",
             "ecuador_mira_incomplete_history",
-            "high_subset_consensus_distance",
-            "high_post_consensus_distance",
-            "post_consensus_distance_increase",
-            "high_post_singleton_burden",
-            "atypical_post_gap_shift",
         ]:
             if row.get(key):
                 flags.append(key)
-        if row["post_ungapped_sequence_changed"]:
-            flags.append("post_ungapped_sequence_changed")
 
         row["flags"] = ",".join(flags)
         row["flag_count"] = len(flags)
-        row["outlier_score"] = row["flag_count"] + (3 if row["post_ungapped_sequence_changed"] else 0)
+        row["outlier_score"] = row["flag_count"]
 
     rows.sort(
         key=lambda row: (
             -row["outlier_score"],
             -row["flag_count"],
             -row["raw_total_n_fraction"],
-            -row["post_consensus_distance_fraction"],
+            -row["raw_short_segment_count"],
             row["taxon"],
         )
     )
@@ -593,20 +507,6 @@ def main():
         "ecuador_mira_assembled_segments",
         "ecuador_mira_filled_with_N_segments",
         "ecuador_mira_other_status_segments",
-        "subset_alignment_length",
-        "subset_ungapped_length",
-        "subset_consensus_distance_fraction",
-        "subset_rare_occupancy_fraction",
-        "subset_singleton_base_fraction",
-        "post_alignment_length",
-        "post_ungapped_length",
-        "post_consensus_distance_fraction",
-        "post_consensus_distance_increase",
-        "post_rare_occupancy_fraction",
-        "post_singleton_base_fraction",
-        "post_internal_gap_shift",
-        "post_internal_gap_shift_deviation",
-        "post_ungapped_sequence_changed",
         "subset_missing_segments_flag",
         "high_raw_n_fraction",
         "high_raw_n_fraction_score",
@@ -618,16 +518,6 @@ def main():
         "low_min_segment_length_ratio_score",
         "context_segment_count_mismatch",
         "ecuador_mira_incomplete_history",
-        "high_subset_consensus_distance",
-        "high_subset_consensus_distance_score",
-        "high_post_consensus_distance",
-        "high_post_consensus_distance_score",
-        "post_consensus_distance_increase",
-        "post_consensus_distance_increase_score",
-        "high_post_singleton_burden",
-        "high_post_singleton_burden_score",
-        "atypical_post_gap_shift",
-        "atypical_post_gap_shift_score",
     ]
 
     formatted_rows = []
@@ -649,10 +539,6 @@ def main():
         "raw_total_ambiguous_fraction",
         "raw_min_segment_length_ratio",
         "raw_short_segment_count",
-        "subset_consensus_distance_fraction",
-        "post_consensus_distance_fraction",
-        "post_consensus_distance_increase",
-        "post_singleton_base_fraction",
     ]
     formatted_outliers = []
     for row in outliers:
@@ -668,17 +554,11 @@ def main():
         "low_min_segment_length_ratio",
         "context_segment_count_mismatch",
         "ecuador_mira_incomplete_history",
-        "high_subset_consensus_distance",
-        "high_post_consensus_distance",
-        "post_consensus_distance_increase",
-        "high_post_singleton_burden",
-        "atypical_post_gap_shift",
     ]
     for flag in summary_flags:
         summary_rows.append({"metric": flag, "n_taxa_flagged": sum(row[flag] for row in rows)})
     summary_rows.extend(
         [
-            {"metric": "post_ungapped_sequence_changed", "n_taxa_flagged": sum(row["post_ungapped_sequence_changed"] for row in rows)},
             {"metric": "any_outlier_flag", "n_taxa_flagged": len(outliers)},
             {"metric": "n_taxa_total", "n_taxa_flagged": len(rows)},
         ]
@@ -693,9 +573,6 @@ def main():
         handle.write("## Inputs\n\n")
         handle.write(f"- Final FASTA: `{args.final_fasta}`\n")
         handle.write(f"- Panel taxa: `{args.panel_taxa}`\n")
-        handle.write(f"- Subset alignment: `{args.subset_alignment}`\n")
-        if args.post_mafft_alignment:
-            handle.write(f"- Post-MAFFT alignment: `{args.post_mafft_alignment}`\n")
         if args.ecuador_summary:
             handle.write(f"- Ecuador summary: `{args.ecuador_summary}`\n")
         if args.context_summary:
@@ -717,14 +594,14 @@ def main():
         if not outliers:
             handle.write("No se detectaron outliers con las reglas actuales.\n")
         else:
-            handle.write("| taxon | origin | role | score | flags | raw_N | subset_dist | post_dist |\n")
+            handle.write("| taxon | origin | role | score | flags | raw_N | short_segments | min_len_ratio |\n")
             handle.write("| --- | --- | --- | ---: | --- | ---: | ---: | ---: |\n")
             for row in outliers[:20]:
                 handle.write(
                     f"| {row['taxon']} | {row['origin']} | {row['role'] or '-'} | {row['outlier_score']} | "
                     f"{row['flags'] or '-'} | {row['raw_total_n_fraction']:.4f} | "
-                    f"{row['subset_consensus_distance_fraction']:.4f} | "
-                    f"{row['post_consensus_distance_fraction']:.4f} |\n"
+                    f"{row['raw_short_segment_count']} | "
+                    f"{row['raw_min_segment_length_ratio']:.4f} |\n"
                 )
 
 

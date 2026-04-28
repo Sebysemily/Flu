@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 import argparse
 import csv
-import json
 import os
 import re
 import sys
@@ -18,24 +17,28 @@ if _CODE_DIR not in sys.path:
 from date_normalization import parse_collection_date  # noqa: E402
 
 
-ECUADOR_CORE_DEFAULT = [
+ECUADOR_CORE = [
     "Flu-0316", "Flu-0317", "Flu-0580", "Flu-0582", "Flu-0583", "Flu-0584", "Flu-0586",
     "Flu-0589", "Flu-0592", "Flu-0593", "Flu-0596", "Flu-0599", "Flu-0600", "Flu-0604", "Flu-0608",
     "Flu-0610", "Flu-0611", "Flu-0613", "Flu-0614", "Flu-0619", "Flu-0621", "Flu-0622", "Flu-0623",
     "Flu-0630", "Flu-0641", "Flu-0652", "Flu-0653", "Flu-0654",
 ]
 
-REGIONAL_BLACKLIST_TOKENS_DEFAULT = [
+REGIONAL_BLACKLIST_TOKENS = [
     "__eurasian_anchor", "__american_anchor", "__usa_",
 ]
 ACCESSION_RE = re.compile(r"([A-Z]{1,2}\d{5,8}\.\d+)")
-USA_DISTAL_QUOTA_DEFAULT = 0
-ADDITIONAL_AMERICAN_ANCHOR_QUOTA_DEFAULT = 1
-FORCED_AMERICAN_ANCHOR_ACCESSION_DEFAULT = "OQ968009"
-MIN_MRCA_SUPPORT_DEFAULT = 70.0
-MAX_PER_COUNTRY_MONTH_DEFAULT = 2
-RELAXED_MRCA_SUPPORT_DEFAULT = 50.0
-RELAXED_FILL_DEFAULT = 0
+
+BEAST_PANEL_PROFILE = {
+    "label": "relaxed",
+    "n_per_country": 12,
+    "n_total": 110,
+    "min_mrca_support": 50.0,
+    "max_per_country_month": 4,
+    "usa_distal_quota": 0,
+    "additional_american_anchor_quota": 5,
+    "forced_american_anchor_accession": "OQ968009",
+}
 
 
 def read_tree(path: str):
@@ -66,22 +69,10 @@ def flu_base_id(label: str) -> str:
     return text.split("/", 1)[0]
 
 
-def parse_json_string_list(raw: str, default: List[str], label: str) -> List[str]:
-    if raw is None:
-        return list(default)
-    try:
-        parsed = json.loads(raw)
-    except json.JSONDecodeError as exc:
-        raise SystemExit(f"{label} must be a JSON array of strings: {exc}") from exc
-    if not isinstance(parsed, list) or any(not isinstance(x, str) for x in parsed):
-        raise SystemExit(f"{label} must be a JSON array of strings")
-    return parsed
-
-
-def is_regional_context(label: str, blacklist_tokens: List[str]) -> bool:
+def is_regional_context(label: str) -> bool:
     if "__regional_context" not in label:
         return False
-    for token in blacklist_tokens:
+    for token in REGIONAL_BLACKLIST_TOKENS:
         if token in label:
             return False
     return True
@@ -310,47 +301,6 @@ def select_regional_context(
         country_count[country] = country_count.get(country, 0) + 1
 
     return selected
-
-
-def extend_regional_context_relaxed(
-    selected_context: List[Tuple[str, float, str, str]],
-    candidates_scored: List[Tuple[str, float, float, str]],
-    country_map: Dict[str, str],
-    n_per_country: int,
-    relaxed_fill: int,
-) -> List[Tuple[str, float, str, str]]:
-    """Optionally add extra regional taxa using a lower MRCA threshold.
-
-    This pass is intended to enrich temporal signal without bringing back the
-    broader out-of-clade context groups.
-    """
-    if relaxed_fill <= 0:
-        return selected_context
-
-    selected_ids = {taxon for taxon, _, _, _ in selected_context}
-    country_count: Dict[str, int] = {}
-    for taxon, _, _, _ in selected_context:
-        country = taxon_country(taxon, country_map)
-        country_count[country] = country_count.get(country, 0) + 1
-
-    relaxed_added = 0
-    extended = list(selected_context)
-    for taxon, sf, dist, seed in candidates_scored:
-        if relaxed_added >= relaxed_fill:
-            break
-        if taxon in selected_ids:
-            continue
-        country = taxon_country(taxon, country_map)
-        if country_count.get(country, 0) >= n_per_country:
-            continue
-        extended.append((taxon, dist, seed, "relaxed_mrca_fill"))
-        selected_ids.add(taxon)
-        country_count[country] = country_count.get(country, 0) + 1
-        relaxed_added += 1
-
-    return extended
-
-
 def main() -> None:
     parser = argparse.ArgumentParser(
         description="Build main BEAST panel using MRCA-clade selection with country/month spread"
@@ -364,77 +314,13 @@ def main() -> None:
         default=None,
         help="Optional path for country/month coverage TSV (separate from main audit)",
     )
-    # --max-cluster-dist kept for CLI backward-compatibility but no longer used for gating
-    parser.add_argument("--max-cluster-dist", type=float, default=0.08)
-    parser.add_argument("--n-per-country", type=int, default=4)
-    parser.add_argument("--n-total", type=int, default=60)
-    parser.add_argument(
-        "--min-mrca-support",
-        type=float,
-        default=MIN_MRCA_SUPPORT_DEFAULT,
-        help="Minimum TBE support (0-100 scale) for accepted MRCA clades",
-    )
-    parser.add_argument(
-        "--max-per-country-month",
-        type=int,
-        default=MAX_PER_COUNTRY_MONTH_DEFAULT,
-        help="Max samples per (country, YYYY-MM) bucket in regional context selection",
-    )
-    parser.add_argument(
-        "--usa-distal-quota",
-        type=int,
-        default=USA_DISTAL_QUOTA_DEFAULT,
-        help="Number of usa_distal taxa to include in the main panel",
-    )
-    parser.add_argument(
-        "--additional-american-anchor-quota",
-        type=int,
-        default=ADDITIONAL_AMERICAN_ANCHOR_QUOTA_DEFAULT,
-        help="Number of extra american_anchor taxa to add besides any forced accession",
-    )
-    parser.add_argument(
-        "--forced-american-anchor-accession",
-        default=FORCED_AMERICAN_ANCHOR_ACCESSION_DEFAULT,
-        help="GenBank accession that must be kept as an american anchor when present",
-    )
-    parser.add_argument(
-        "--relaxed-min-mrca-support",
-        type=float,
-        default=RELAXED_MRCA_SUPPORT_DEFAULT,
-        help="Lower TBE support (0-100 scale) used only for optional relaxed regional fill",
-    )
-    parser.add_argument(
-        "--relaxed-fill",
-        type=int,
-        default=RELAXED_FILL_DEFAULT,
-        help="Number of extra regional_context taxa to add using relaxed MRCA support",
-    )
-    parser.add_argument(
-        "--ecuador-core-json",
-        default=None,
-        help="JSON array with the Ecuador core IDs to use as seeds",
-    )
-    parser.add_argument(
-        "--regional-blacklist-tokens-json",
-        default=None,
-        help="JSON array of tokens excluded from the regional_context pool",
-    )
     args = parser.parse_args()
 
     tree = read_tree(args.tree)
     country_map = read_country_map(args.context_metadata)
     date_map = read_date_map(args.context_metadata)
     tree_tips = get_terminals(tree)
-    ecuador_core = parse_json_string_list(
-        args.ecuador_core_json,
-        ECUADOR_CORE_DEFAULT,
-        "--ecuador-core-json",
-    )
-    regional_blacklist_tokens = parse_json_string_list(
-        args.regional_blacklist_tokens_json,
-        REGIONAL_BLACKLIST_TOKENS_DEFAULT,
-        "--regional-blacklist-tokens-json",
-    )
+    panel_profile = BEAST_PANEL_PROFILE
 
     # Use all tree tips as candidates (concat tree already guarantees 8-segment completeness)
     complete_ids = {canonical_tip(t) for t in tree_tips}
@@ -447,7 +333,7 @@ def main() -> None:
 
     core_available = []
     core_missing = []
-    for core in ecuador_core:
+    for core in ECUADOR_CORE:
         tip_label = flu_tip_map.get(core, core)
         if tip_label in tree_tips:
             core_available.append(tip_label)
@@ -460,39 +346,23 @@ def main() -> None:
     regional_candidates = [
         t
         for t in tree_tips
-        if canonical_tip(t) in complete_ids and is_regional_context(t, regional_blacklist_tokens)
+        if canonical_tip(t) in complete_ids and is_regional_context(t)
     ]
     regional_scored = mrca_candidates(
         tree=tree,
         seeds=seed_main,
         candidates=regional_candidates,
-        min_support=args.min_mrca_support,
+        min_support=panel_profile["min_mrca_support"],
         exclude=set(),
     )
     selected_context = select_regional_context(
         candidates_scored=regional_scored,
         country_map=country_map,
         date_map=date_map,
-        n_per_country=args.n_per_country,
-        n_total=args.n_total,
-        max_per_country_month=args.max_per_country_month,
+        n_per_country=panel_profile["n_per_country"],
+        n_total=panel_profile["n_total"],
+        max_per_country_month=panel_profile["max_per_country_month"],
     )
-    relaxed_scored: List[Tuple[str, float, float, str]] = []
-    if args.relaxed_fill > 0:
-        relaxed_scored = mrca_candidates(
-            tree=tree,
-            seeds=seed_main,
-            candidates=regional_candidates,
-            min_support=args.relaxed_min_mrca_support,
-            exclude=set(),
-        )
-        selected_context = extend_regional_context_relaxed(
-            selected_context=selected_context,
-            candidates_scored=relaxed_scored,
-            country_map=country_map,
-            n_per_country=args.n_per_country,
-            relaxed_fill=args.relaxed_fill,
-        )
 
     # ── USA distal: distance-based (intentionally out-of-clade, MRCA would be root) ──
     usa_distal_candidates = [
@@ -502,7 +372,7 @@ def main() -> None:
         tree=tree,
         seeds=seed_main,
         candidates=usa_distal_candidates,
-        n_take=args.usa_distal_quota,
+        n_take=panel_profile["usa_distal_quota"],
         exclude=set(),
     )
 
@@ -513,16 +383,11 @@ def main() -> None:
     selected_american_anchor: List[Tuple[str, float, str]] = []
 
     # Force the requested accession into american anchor regardless of distance rank.
-    forced_anchor = None
-    if args.forced_american_anchor_accession:
-        forced_anchor = next(
-            (
-                t
-                for t in american_anchor_candidates
-                if args.forced_american_anchor_accession in t
-            ),
-            None,
-        )
+    forced_anchor_accession = panel_profile["forced_american_anchor_accession"]
+    forced_anchor = next(
+        (t for t in american_anchor_candidates if forced_anchor_accession in t),
+        None,
+    )
     if forced_anchor:
         forced_pick = nearest_candidates(
             tree=tree,
@@ -539,7 +404,7 @@ def main() -> None:
             tree=tree,
             seeds=seed_main,
             candidates=american_anchor_candidates,
-            n_take=args.additional_american_anchor_quota,
+            n_take=panel_profile["additional_american_anchor_quota"],
             exclude={taxon for taxon, _, _ in selected_american_anchor},
         )
     )
@@ -566,7 +431,8 @@ def main() -> None:
         writer.writerow(["metric", "value"])
         writer.writerow(["complete_filter_source", complete_filter_source])
         writer.writerow(["tree_tips_total", len(tree_tips)])
-        writer.writerow(["ecuador_core_configured", len(ecuador_core)])
+        writer.writerow(["panel_profile", panel_profile["label"]])
+        writer.writerow(["ecuador_core_configured", len(ECUADOR_CORE)])
         writer.writerow(["core_available", len(core_available)])
         writer.writerow(["core_missing", len(core_missing)])
         writer.writerow(["regional_candidates_total", len(regional_candidates)])
@@ -576,24 +442,22 @@ def main() -> None:
             len(regional_candidates) - len(regional_scored),
         ])
         writer.writerow(["panel_main_total", len(panel_main_rows)])
-        writer.writerow(["min_mrca_support", args.min_mrca_support])
-        writer.writerow(["max_per_country_month", args.max_per_country_month])
-        writer.writerow(["n_per_country", args.n_per_country])
-        writer.writerow(["n_total", args.n_total])
-        writer.writerow(["relaxed_min_mrca_support", args.relaxed_min_mrca_support])
-        writer.writerow(["relaxed_fill", args.relaxed_fill])
-        writer.writerow(["usa_distal_quota", args.usa_distal_quota])
+        writer.writerow(["min_mrca_support", panel_profile["min_mrca_support"]])
+        writer.writerow(["max_per_country_month", panel_profile["max_per_country_month"]])
+        writer.writerow(["n_per_country", panel_profile["n_per_country"]])
+        writer.writerow(["n_total", panel_profile["n_total"]])
+        writer.writerow(["usa_distal_quota", panel_profile["usa_distal_quota"]])
         writer.writerow([
             "additional_american_anchor_quota",
-            args.additional_american_anchor_quota,
+            panel_profile["additional_american_anchor_quota"],
         ])
         writer.writerow([
             "forced_american_anchor_accession",
-            args.forced_american_anchor_accession,
+            forced_anchor_accession,
         ])
         writer.writerow([
             "regional_blacklist_tokens",
-            ";".join(regional_blacklist_tokens),
+            ";".join(REGIONAL_BLACKLIST_TOKENS),
         ])
         writer.writerow([
             "selected_country_month_diversity",
@@ -603,17 +467,13 @@ def main() -> None:
             "selected_mrca_score_fill",
             sum(1 for x in selected_context if x[3] == "mrca_score_fill"),
         ])
-        writer.writerow([
-            "selected_relaxed_mrca_fill",
-            sum(1 for x in selected_context if x[3] == "relaxed_mrca_fill"),
-        ])
         writer.writerow(["selected_usa_distal", len(selected_usa_distal)])
         writer.writerow(["selected_american_anchor", len(selected_american_anchor)])
         writer.writerow([
             "forced_american_anchor_present",
             any(
-                args.forced_american_anchor_accession
-                and args.forced_american_anchor_accession in taxon
+                forced_anchor_accession
+                and forced_anchor_accession in taxon
                 for taxon, _, _ in selected_american_anchor
             ),
         ])

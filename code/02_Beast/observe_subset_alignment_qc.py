@@ -223,7 +223,7 @@ def format_float(value):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Observational QC for subset alignments before and after MAFFT"
+        description="Observational QC for raw subset FASTA vs final aligned subset used in BEAST"
     )
     parser.add_argument("--before-alignment", required=True)
     parser.add_argument("--after-alignment", required=True)
@@ -248,7 +248,6 @@ def main():
         )
 
     annotations = load_taxon_annotations(args.taxa_tsv)
-    before_profile = build_alignment_profile(before_records)
     after_profile = build_alignment_profile(after_records)
 
     rows = []
@@ -286,11 +285,8 @@ def main():
             "after_gap_run_count": after_basic["gap_run_count"],
             "before_longest_gap_run": before_basic["longest_gap_run"],
             "after_longest_gap_run": after_basic["longest_gap_run"],
-            "before_consensus_distance_fraction": before_profile[taxon]["consensus_distance_fraction"],
             "after_consensus_distance_fraction": after_profile[taxon]["consensus_distance_fraction"],
-            "before_rare_occupancy_fraction": before_profile[taxon]["rare_occupancy_fraction"],
             "after_rare_occupancy_fraction": after_profile[taxon]["rare_occupancy_fraction"],
-            "before_singleton_base_fraction": before_profile[taxon]["singleton_base_fraction"],
             "after_singleton_base_fraction": after_profile[taxon]["singleton_base_fraction"],
         }
 
@@ -298,15 +294,8 @@ def main():
         row["delta_internal_gap_fraction"] = (
             row["after_internal_gap_fraction"] - row["before_internal_gap_fraction"]
         )
-        row["delta_consensus_distance_fraction"] = (
-            row["after_consensus_distance_fraction"] - row["before_consensus_distance_fraction"]
-        )
-        row["delta_rare_occupancy_fraction"] = (
-            row["after_rare_occupancy_fraction"] - row["before_rare_occupancy_fraction"]
-        )
-        row["delta_singleton_base_fraction"] = (
-            row["after_singleton_base_fraction"] - row["before_singleton_base_fraction"]
-        )
+        row["delta_n_fraction"] = row["after_n_fraction"] - row["before_n_fraction"]
+        row["delta_ambiguous_fraction"] = row["after_ambiguous_fraction"] - row["before_ambiguous_fraction"]
         rows.append(row)
 
     median_internal_gap_shift = metric_median(rows, "delta_internal_gap_fraction")
@@ -319,9 +308,7 @@ def main():
         ("after_n_fraction", "high_n_fraction", 0.01),
         ("after_ambiguous_fraction", "high_ambiguous_fraction", 0.005),
         ("after_consensus_distance_fraction", "high_consensus_distance_after", 0.01),
-        ("delta_consensus_distance_fraction", "consensus_distance_increase", 0.002),
         ("after_rare_occupancy_fraction", "high_private_insertion_burden_after", 0.005),
-        ("delta_rare_occupancy_fraction", "private_insertion_burden_increase", 0.002),
         ("after_singleton_base_fraction", "high_singleton_substitution_burden_after", 0.003),
         ("internal_gap_shift_deviation", "atypical_internal_gap_shift", 0.01),
     ]
@@ -355,9 +342,7 @@ def main():
             "high_ambiguous_fraction",
             "short_ungapped_length",
             "high_consensus_distance_after",
-            "consensus_distance_increase",
             "high_private_insertion_burden_after",
-            "private_insertion_burden_increase",
             "high_singleton_substitution_burden_after",
             "atypical_internal_gap_shift",
         ]:
@@ -411,15 +396,11 @@ def main():
         "after_gap_run_count",
         "before_longest_gap_run",
         "after_longest_gap_run",
-        "before_consensus_distance_fraction",
         "after_consensus_distance_fraction",
-        "delta_consensus_distance_fraction",
-        "before_rare_occupancy_fraction",
         "after_rare_occupancy_fraction",
-        "delta_rare_occupancy_fraction",
-        "before_singleton_base_fraction",
         "after_singleton_base_fraction",
-        "delta_singleton_base_fraction",
+        "delta_n_fraction",
+        "delta_ambiguous_fraction",
         "high_n_fraction",
         "high_n_fraction_score",
         "high_ambiguous_fraction",
@@ -428,12 +409,8 @@ def main():
         "short_ungapped_length_score",
         "high_consensus_distance_after",
         "high_consensus_distance_after_score",
-        "consensus_distance_increase",
-        "consensus_distance_increase_score",
         "high_private_insertion_burden_after",
         "high_private_insertion_burden_after_score",
-        "private_insertion_burden_increase",
-        "private_insertion_burden_increase_score",
         "high_singleton_substitution_burden_after",
         "high_singleton_substitution_burden_after_score",
         "internal_gap_shift_deviation",
@@ -461,9 +438,7 @@ def main():
         "after_n_fraction",
         "after_ambiguous_fraction",
         "after_consensus_distance_fraction",
-        "delta_consensus_distance_fraction",
         "after_rare_occupancy_fraction",
-        "delta_rare_occupancy_fraction",
         "after_singleton_base_fraction",
         "delta_internal_gap_fraction",
     ]
@@ -481,9 +456,7 @@ def main():
         "high_ambiguous_fraction",
         "short_ungapped_length",
         "high_consensus_distance_after",
-        "consensus_distance_increase",
         "high_private_insertion_burden_after",
-        "private_insertion_burden_increase",
         "high_singleton_substitution_burden_after",
         "atypical_internal_gap_shift",
     ]
@@ -499,7 +472,6 @@ def main():
             {"metric": "ungapped_sequence_changed", "n_taxa_flagged": sum(row["ungapped_sequence_changed"] for row in rows)},
             {"metric": "any_outlier_flag", "n_taxa_flagged": len(outliers)},
             {"metric": "n_taxa_total", "n_taxa_flagged": len(rows)},
-            {"metric": "before_alignment_length", "n_taxa_flagged": rows[0]["before_alignment_length"]},
             {"metric": "after_alignment_length", "n_taxa_flagged": rows[0]["after_alignment_length"]},
         ]
     )
@@ -507,16 +479,15 @@ def main():
 
     top_rows = outliers[:15]
     with open(args.out_report, "w", encoding="utf-8") as handle:
-        handle.write("# Observational QC: subset before vs after MAFFT\n\n")
+        handle.write("# Observational QC: raw subset vs final aligned subset\n\n")
         handle.write("## Inputs\n\n")
-        handle.write(f"- Before: `{args.before_alignment}`\n")
-        handle.write(f"- After: `{args.after_alignment}`\n")
+        handle.write(f"- Raw subset FASTA: `{args.before_alignment}`\n")
+        handle.write(f"- Final aligned subset used in BEAST: `{args.after_alignment}`\n")
         if args.taxa_tsv:
             handle.write(f"- Taxa annotations: `{args.taxa_tsv}`\n")
         handle.write("\n## Overview\n\n")
         handle.write(f"- Taxa compared: {len(rows)}\n")
-        handle.write(f"- Alignment length before: {rows[0]['before_alignment_length']}\n")
-        handle.write(f"- Alignment length after: {rows[0]['after_alignment_length']}\n")
+        handle.write(f"- Final alignment length: {rows[0]['after_alignment_length']}\n")
         handle.write(f"- Taxa with ungapped sequence changed: {sum(row['ungapped_sequence_changed'] for row in rows)}\n")
         handle.write(f"- Candidate outliers with >=1 flag: {len(outliers)}\n")
         handle.write("\n## Flag Counts\n\n")
@@ -527,7 +498,7 @@ def main():
         if not top_rows:
             handle.write("No se detectaron outliers con las reglas actuales.\n")
         else:
-            handle.write("| taxon | role | score | flags | after_consensus_distance | after_private_insertion | delta_consensus |\n")
+            handle.write("| taxon | role | score | flags | after_consensus_distance | after_private_insertion | internal_gap_delta |\n")
             handle.write("| --- | --- | ---: | --- | ---: | ---: | ---: |\n")
             for row in top_rows:
                 handle.write(
@@ -535,7 +506,7 @@ def main():
                     f"{row['flags'] or '-'} | "
                     f"{row['after_consensus_distance_fraction']:.4f} | "
                     f"{row['after_rare_occupancy_fraction']:.4f} | "
-                    f"{row['delta_consensus_distance_fraction']:.4f} |\n"
+                    f"{row['delta_internal_gap_fraction']:.4f} |\n"
                 )
 
 

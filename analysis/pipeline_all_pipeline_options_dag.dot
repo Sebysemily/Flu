@@ -2,341 +2,333 @@ digraph snakemake_dag {
     graph[bgcolor=white, margin=0];
     node[shape=box, style=rounded, fontname=sans,                 fontsize=10, penwidth=2];
     edge[penwidth=2, color=grey];
-	0[label = "split_h5n1_final_by_segment", color = "0.51 0.6 0.85", style="rounded"];
-	1[label = "build_h5n1_final_fasta", color = "0.11 0.6 0.85", style="rounded"];
-	2[label = "build_h5n1_ec_fasta", color = "0.09 0.6 0.85", style="rounded"];
-	3[label = "build_ecuador_intermediate_input", color = "0.04 0.6 0.85", style="rounded"];
-	4[label = "raxml_ng_tree_per_segment_codon", color = "0.29 0.6 0.85", style="rounded"];
-	5[label = "mafft_align_per_segment\nsegment: NP", color = "0.20 0.6 0.85", style="rounded"];
-	6[label = "build_segment_codon_partitions", color = "0.13 0.6 0.85", style="rounded"];
-	7[label = "raxml_ng_tree_per_segment_codon", color = "0.29 0.6 0.85", style="rounded"];
-	8[label = "mafft_align_per_segment\nsegment: HA", color = "0.20 0.6 0.85", style="rounded"];
-	9[label = "build_segment_codon_partitions", color = "0.13 0.6 0.85", style="rounded"];
-	10[label = "summarize_full_concat_codon_validation_rf_instability", color = "0.53 0.6 0.85", style="rounded"];
-	11[label = "raxml_ng_tree_full_concat_codon_validation_base", color = "0.24 0.6 0.85", style="rounded"];
-	12[label = "concat_codon_validation_with_partitions", color = "0.18 0.6 0.85", style="rounded"];
-	13[label = "mafft_align_per_segment\nsegment: PB2", color = "0.20 0.6 0.85", style="rounded"];
-	14[label = "mafft_align_per_segment\nsegment: PB1", color = "0.20 0.6 0.85", style="rounded"];
-	15[label = "mafft_align_per_segment\nsegment: PA", color = "0.20 0.6 0.85", style="rounded"];
-	16[label = "mafft_align_per_segment\nsegment: NA", color = "0.20 0.6 0.85", style="rounded"];
-	17[label = "mafft_align_per_segment\nsegment: MP", color = "0.20 0.6 0.85", style="rounded"];
-	18[label = "mafft_align_per_segment\nsegment: NS", color = "0.20 0.6 0.85", style="rounded"];
-	19[label = "raxml_ng_tree_full_concat_codon_validation_rf_rep\nrep: 1", color = "0.27 0.6 0.85", style="rounded"];
-	20[label = "raxml_ng_tree_full_concat_codon_validation_rf_rep\nrep: 2", color = "0.27 0.6 0.85", style="rounded"];
-	21[label = "raxml_ng_tree_full_concat_codon_validation_rf_rep\nrep: 3", color = "0.27 0.6 0.85", style="rounded"];
-	22[label = "raxml_ng_tree_full_concat_codon_validation_rf_rep\nrep: 4", color = "0.27 0.6 0.85", style="rounded"];
-	23[label = "raxml_ng_tree_full_concat_codon_validation_rf_rep\nrep: 5", color = "0.27 0.6 0.85", style="rounded"];
-	24[label = "summarize_segment_simple_rf_instability", color = "0.58 0.6 0.85", style="rounded"];
-	25[label = "raxml_ng_tree_segment_simple_rf_base", color = "0.40 0.6 0.85", style="rounded"];
-	26[label = "raxml_ng_tree_segment_simple_rf_rep\nrep: 1", color = "0.42 0.6 0.85", style="rounded"];
-	27[label = "raxml_ng_tree_segment_simple_rf_rep\nrep: 2", color = "0.42 0.6 0.85", style="rounded"];
-	28[label = "raxml_ng_tree_segment_simple_rf_rep\nrep: 3", color = "0.42 0.6 0.85", style="rounded"];
-	29[label = "raxml_ng_tree_segment_simple_rf_rep\nrep: 4", color = "0.42 0.6 0.85", style="rounded"];
-	30[label = "raxml_ng_tree_segment_simple_rf_rep\nrep: 5", color = "0.42 0.6 0.85", style="rounded"];
-	31[label = "summarize_segment_codon_rf_instability", color = "0.56 0.6 0.85", style="rounded"];
-	32[label = "raxml_ng_tree_segment_codon_rf_base", color = "0.36 0.6 0.85", style="rounded"];
-	33[label = "raxml_ng_tree_segment_codon_rf_rep\nrep: 1", color = "0.38 0.6 0.85", style="rounded"];
-	34[label = "raxml_ng_tree_segment_codon_rf_rep\nrep: 2", color = "0.38 0.6 0.85", style="rounded"];
-	35[label = "raxml_ng_tree_segment_codon_rf_rep\nrep: 3", color = "0.38 0.6 0.85", style="rounded"];
-	36[label = "raxml_ng_tree_segment_codon_rf_rep\nrep: 4", color = "0.38 0.6 0.85", style="rounded"];
-	37[label = "raxml_ng_tree_segment_codon_rf_rep\nrep: 5", color = "0.38 0.6 0.85", style="rounded"];
-	38[label = "raxml_ng_tree_per_segment_codon", color = "0.29 0.6 0.85", style="rounded"];
-	39[label = "build_segment_codon_partitions", color = "0.13 0.6 0.85", style="rounded"];
-	40[label = "raxml_ng_tree_per_segment_codon", color = "0.29 0.6 0.85", style="rounded"];
-	41[label = "build_segment_codon_partitions", color = "0.13 0.6 0.85", style="rounded"];
-	42[label = "summarize_segment_codon_rf_instability", color = "0.56 0.6 0.85", style="rounded"];
-	43[label = "raxml_ng_tree_segment_codon_rf_base", color = "0.36 0.6 0.85", style="rounded"];
-	44[label = "build_segment_codon_partitions", color = "0.13 0.6 0.85", style="rounded"];
-	45[label = "raxml_ng_tree_segment_codon_rf_rep\nrep: 1", color = "0.38 0.6 0.85", style="rounded"];
-	46[label = "raxml_ng_tree_segment_codon_rf_rep\nrep: 2", color = "0.38 0.6 0.85", style="rounded"];
-	47[label = "raxml_ng_tree_segment_codon_rf_rep\nrep: 3", color = "0.38 0.6 0.85", style="rounded"];
-	48[label = "raxml_ng_tree_segment_codon_rf_rep\nrep: 4", color = "0.38 0.6 0.85", style="rounded"];
-	49[label = "raxml_ng_tree_segment_codon_rf_rep\nrep: 5", color = "0.38 0.6 0.85", style="rounded"];
-	50[label = "summarize_segment_codon_rf_instability", color = "0.56 0.6 0.85", style="rounded"];
-	51[label = "raxml_ng_tree_segment_codon_rf_base", color = "0.36 0.6 0.85", style="rounded"];
-	52[label = "build_segment_codon_partitions", color = "0.13 0.6 0.85", style="rounded"];
-	53[label = "raxml_ng_tree_segment_codon_rf_rep\nrep: 1", color = "0.38 0.6 0.85", style="rounded"];
-	54[label = "raxml_ng_tree_segment_codon_rf_rep\nrep: 2", color = "0.38 0.6 0.85", style="rounded"];
-	55[label = "raxml_ng_tree_segment_codon_rf_rep\nrep: 3", color = "0.38 0.6 0.85", style="rounded"];
-	56[label = "raxml_ng_tree_segment_codon_rf_rep\nrep: 4", color = "0.38 0.6 0.85", style="rounded"];
-	57[label = "raxml_ng_tree_segment_codon_rf_rep\nrep: 5", color = "0.38 0.6 0.85", style="rounded"];
-	58[label = "raxml_ng_tree_full_concat", color = "0.22 0.6 0.85", style="rounded"];
-	59[label = "concat_aligned_segments_with_partitions", color = "0.16 0.6 0.85", style="rounded"];
-	60[label = "raxml_ng_tree_per_segment_codon", color = "0.29 0.6 0.85", style="rounded"];
-	61[label = "raxml_ng_tree_per_segment_codon", color = "0.29 0.6 0.85", style="rounded"];
-	62[label = "raxml_ng_tree_per_segment_simple", color = "0.33 0.6 0.85", style="rounded"];
-	63[label = "raxml_ng_tree_per_segment_simple", color = "0.33 0.6 0.85", style="rounded"];
-	64[label = "summarize_segment_codon_rf_instability", color = "0.56 0.6 0.85", style="rounded"];
-	65[label = "raxml_ng_tree_segment_codon_rf_base", color = "0.36 0.6 0.85", style="rounded"];
-	66[label = "raxml_ng_tree_segment_codon_rf_rep\nrep: 1", color = "0.38 0.6 0.85", style="rounded"];
-	67[label = "raxml_ng_tree_segment_codon_rf_rep\nrep: 2", color = "0.38 0.6 0.85", style="rounded"];
-	68[label = "raxml_ng_tree_segment_codon_rf_rep\nrep: 3", color = "0.38 0.6 0.85", style="rounded"];
-	69[label = "raxml_ng_tree_segment_codon_rf_rep\nrep: 4", color = "0.38 0.6 0.85", style="rounded"];
-	70[label = "raxml_ng_tree_segment_codon_rf_rep\nrep: 5", color = "0.38 0.6 0.85", style="rounded"];
-	71[label = "summarize_segment_codon_rf_instability", color = "0.56 0.6 0.85", style="rounded"];
-	72[label = "raxml_ng_tree_segment_codon_rf_base", color = "0.36 0.6 0.85", style="rounded"];
-	73[label = "raxml_ng_tree_segment_codon_rf_rep\nrep: 1", color = "0.38 0.6 0.85", style="rounded"];
-	74[label = "raxml_ng_tree_segment_codon_rf_rep\nrep: 2", color = "0.38 0.6 0.85", style="rounded"];
-	75[label = "raxml_ng_tree_segment_codon_rf_rep\nrep: 3", color = "0.38 0.6 0.85", style="rounded"];
-	76[label = "raxml_ng_tree_segment_codon_rf_rep\nrep: 4", color = "0.38 0.6 0.85", style="rounded"];
-	77[label = "raxml_ng_tree_segment_codon_rf_rep\nrep: 5", color = "0.38 0.6 0.85", style="rounded"];
-	78[label = "summarize_segment_codon_rf_instability", color = "0.56 0.6 0.85", style="rounded"];
-	79[label = "raxml_ng_tree_segment_codon_rf_base", color = "0.36 0.6 0.85", style="rounded"];
-	80[label = "raxml_ng_tree_segment_codon_rf_rep\nrep: 1", color = "0.38 0.6 0.85", style="rounded"];
-	81[label = "raxml_ng_tree_segment_codon_rf_rep\nrep: 2", color = "0.38 0.6 0.85", style="rounded"];
-	82[label = "raxml_ng_tree_segment_codon_rf_rep\nrep: 3", color = "0.38 0.6 0.85", style="rounded"];
-	83[label = "raxml_ng_tree_segment_codon_rf_rep\nrep: 4", color = "0.38 0.6 0.85", style="rounded"];
-	84[label = "raxml_ng_tree_segment_codon_rf_rep\nrep: 5", color = "0.38 0.6 0.85", style="rounded"];
-	85[label = "summarize_segment_simple_rf_instability", color = "0.58 0.6 0.85", style="rounded"];
-	86[label = "raxml_ng_tree_segment_simple_rf_base", color = "0.40 0.6 0.85", style="rounded"];
-	87[label = "raxml_ng_tree_segment_simple_rf_rep\nrep: 1", color = "0.42 0.6 0.85", style="rounded"];
-	88[label = "raxml_ng_tree_segment_simple_rf_rep\nrep: 2", color = "0.42 0.6 0.85", style="rounded"];
-	89[label = "raxml_ng_tree_segment_simple_rf_rep\nrep: 3", color = "0.42 0.6 0.85", style="rounded"];
-	90[label = "raxml_ng_tree_segment_simple_rf_rep\nrep: 4", color = "0.42 0.6 0.85", style="rounded"];
-	91[label = "raxml_ng_tree_segment_simple_rf_rep\nrep: 5", color = "0.42 0.6 0.85", style="rounded"];
+	0[label = "beast_runs", color = "0.05 0.6 0.85", style="rounded"];
+	1[label = "summarize_beast_run", color = "0.61 0.6 0.85", style="rounded"];
+	2[label = "run_beast_replicate\nreplicate: r1", color = "0.51 0.6 0.85", style="rounded"];
+	3[label = "prepare_beast_run_xml\nscenario: strict_constant", color = "0.39 0.6 0.85", style="rounded"];
+	4[label = "filter_beast_panel_by_rtt_outliers", color = "0.26 0.6 0.85", style="rounded"];
+	5[label = "filter_beast_panel_by_qc", color = "0.25 0.6 0.85", style="rounded"];
+	6[label = "build_beast_panels", color = "0.07 0.6 0.85", style="rounded"];
+	7[label = "raxml_ng_tree_full_concat", color = "0.42 0.6 0.85", style="rounded"];
+	8[label = "concat_aligned_segments_with_partitions", color = "0.23 0.6 0.85", style="rounded"];
+	9[label = "mafft_align_per_segment\nsegment: PB2", color = "0.28 0.6 0.85", style="rounded"];
+	10[label = "split_h5n1_final_by_segment", color = "0.54 0.6 0.85", style="rounded,dashed"];
+	11[label = "build_h5n1_final_fasta", color = "0.16 0.6 0.85", style="rounded,dashed"];
+	12[label = "build_h5n1_ec_fasta", color = "0.14 0.6 0.85", style="rounded,dashed"];
+	13[label = "build_ecuador_intermediate_input", color = "0.09 0.6 0.85", style="rounded,dashed"];
+	14[label = "mafft_align_per_segment\nsegment: PB1", color = "0.28 0.6 0.85", style="rounded"];
+	15[label = "mafft_align_per_segment\nsegment: PA", color = "0.28 0.6 0.85", style="rounded"];
+	16[label = "mafft_align_per_segment\nsegment: HA", color = "0.28 0.6 0.85", style="rounded"];
+	17[label = "mafft_align_per_segment\nsegment: NP", color = "0.28 0.6 0.85", style="rounded"];
+	18[label = "mafft_align_per_segment\nsegment: NA", color = "0.28 0.6 0.85", style="rounded"];
+	19[label = "mafft_align_per_segment\nsegment: MP", color = "0.28 0.6 0.85", style="rounded"];
+	20[label = "mafft_align_per_segment\nsegment: NS", color = "0.28 0.6 0.85", style="rounded"];
+	21[label = "raxml_ng_tree_per_segment_codon", color = "0.44 0.6 0.85", style="rounded"];
+	22[label = "build_segment_codon_partitions", color = "0.19 0.6 0.85", style="rounded"];
+	23[label = "raxml_ng_tree_per_segment_codon", color = "0.44 0.6 0.85", style="rounded"];
+	24[label = "build_segment_codon_partitions", color = "0.19 0.6 0.85", style="rounded"];
+	25[label = "raxml_ng_tree_per_segment_codon", color = "0.44 0.6 0.85", style="rounded"];
+	26[label = "build_segment_codon_partitions", color = "0.19 0.6 0.85", style="rounded"];
+	27[label = "raxml_ng_tree_per_segment_codon", color = "0.44 0.6 0.85", style="rounded"];
+	28[label = "build_segment_codon_partitions", color = "0.19 0.6 0.85", style="rounded"];
+	29[label = "raxml_ng_tree_per_segment_codon", color = "0.44 0.6 0.85", style="rounded"];
+	30[label = "build_segment_codon_partitions", color = "0.19 0.6 0.85", style="rounded"];
+	31[label = "raxml_ng_tree_per_segment_codon", color = "0.44 0.6 0.85", style="rounded"];
+	32[label = "build_segment_codon_partitions", color = "0.19 0.6 0.85", style="rounded"];
+	33[label = "raxml_ng_tree_per_segment_simple", color = "0.46 0.6 0.85", style="rounded"];
+	34[label = "raxml_ng_tree_per_segment_simple", color = "0.46 0.6 0.85", style="rounded"];
+	35[label = "observe_beast_subset_source_qc", color = "0.32 0.6 0.85", style="rounded"];
+	36[label = "run_root_to_tip", color = "0.53 0.6 0.85", style="rounded"];
+	37[label = "subset_filtered_panel_concat_alignment_and_prune_tree", color = "0.56 0.6 0.85", style="rounded"];
+	38[label = "build_treetime_dates", color = "0.21 0.6 0.85", style="rounded"];
+	39[label = "publish_final_panel_concat_alignment", color = "0.40 0.6 0.85", style="rounded"];
+	40[label = "validate_beast_xml", color = "0.65 0.6 0.85", style="rounded"];
+	41[label = "run_beast_replicate\nreplicate: r2", color = "0.51 0.6 0.85", style="rounded"];
+	42[label = "summarize_beast_run", color = "0.61 0.6 0.85", style="rounded"];
+	43[label = "run_beast_replicate\nreplicate: r1", color = "0.51 0.6 0.85", style="rounded"];
+	44[label = "prepare_beast_run_xml\nscenario: ucln_constant", color = "0.39 0.6 0.85", style="rounded"];
+	45[label = "validate_beast_xml", color = "0.65 0.6 0.85", style="rounded"];
+	46[label = "run_beast_replicate\nreplicate: r2", color = "0.51 0.6 0.85", style="rounded"];
+	47[label = "main_phylogeny", color = "0.30 0.6 0.85", style="rounded"];
+	48[label = "all_validation_outputs", color = "0.04 0.6 0.85", style="rounded"];
+	49[label = "observe_segment_alignment_qc", color = "0.33 0.6 0.85", style="rounded"];
+	50[label = "subset_filtered_raw_segment_fasta\nsegment: PB2", color = "0.58 0.6 0.85", style="rounded"];
+	51[label = "subset_filtered_segment_alignment", color = "0.60 0.6 0.85", style="rounded"];
+	52[label = "observe_segment_alignment_qc", color = "0.33 0.6 0.85", style="rounded"];
+	53[label = "subset_filtered_raw_segment_fasta\nsegment: PB1", color = "0.58 0.6 0.85", style="rounded"];
+	54[label = "subset_filtered_segment_alignment", color = "0.60 0.6 0.85", style="rounded"];
+	55[label = "observe_segment_alignment_qc", color = "0.33 0.6 0.85", style="rounded"];
+	56[label = "subset_filtered_raw_segment_fasta\nsegment: PA", color = "0.58 0.6 0.85", style="rounded"];
+	57[label = "subset_filtered_segment_alignment", color = "0.60 0.6 0.85", style="rounded"];
+	58[label = "observe_segment_alignment_qc", color = "0.33 0.6 0.85", style="rounded"];
+	59[label = "subset_filtered_raw_segment_fasta\nsegment: HA", color = "0.58 0.6 0.85", style="rounded"];
+	60[label = "subset_filtered_segment_alignment", color = "0.60 0.6 0.85", style="rounded"];
+	61[label = "observe_segment_alignment_qc", color = "0.33 0.6 0.85", style="rounded"];
+	62[label = "subset_filtered_raw_segment_fasta\nsegment: NP", color = "0.58 0.6 0.85", style="rounded"];
+	63[label = "subset_filtered_segment_alignment", color = "0.60 0.6 0.85", style="rounded"];
+	64[label = "observe_segment_alignment_qc", color = "0.33 0.6 0.85", style="rounded"];
+	65[label = "subset_filtered_raw_segment_fasta\nsegment: NA", color = "0.58 0.6 0.85", style="rounded"];
+	66[label = "subset_filtered_segment_alignment", color = "0.60 0.6 0.85", style="rounded"];
+	67[label = "observe_segment_alignment_qc", color = "0.33 0.6 0.85", style="rounded"];
+	68[label = "subset_filtered_raw_segment_fasta\nsegment: MP", color = "0.58 0.6 0.85", style="rounded"];
+	69[label = "subset_filtered_segment_alignment", color = "0.60 0.6 0.85", style="rounded"];
+	70[label = "observe_segment_alignment_qc", color = "0.33 0.6 0.85", style="rounded"];
+	71[label = "subset_filtered_raw_segment_fasta\nsegment: NS", color = "0.58 0.6 0.85", style="rounded"];
+	72[label = "subset_filtered_segment_alignment", color = "0.60 0.6 0.85", style="rounded"];
+	73[label = "summarize_final_segment_qc", color = "0.63 0.6 0.85", style="rounded"];
+	74[label = "build_gisaid_outputs", color = "0.12 0.6 0.85", style="rounded,dashed"];
+	75[label = "build_gisaid", color = "0.11 0.6 0.85", style="rounded,dashed"];
+	76[label = "paper_figures", color = "0.35 0.6 0.85", style="rounded"];
+	77[label = "pre_beast_outputs", color = "0.37 0.6 0.85", style="rounded"];
+	78[label = "build_inputs_outputs", color = "0.18 0.6 0.85", style="rounded,dashed"];
 	1 -> 0
+	42 -> 0
 	2 -> 1
+	41 -> 1
 	3 -> 2
+	40 -> 2
+	4 -> 3
+	39 -> 3
 	5 -> 4
-	6 -> 4
-	0 -> 5
-	5 -> 6
+	36 -> 4
+	38 -> 4
+	6 -> 5
+	35 -> 5
+	7 -> 6
 	8 -> 7
-	9 -> 7
-	0 -> 8
-	8 -> 9
+	9 -> 8
+	14 -> 8
+	15 -> 8
+	16 -> 8
+	17 -> 8
+	18 -> 8
+	19 -> 8
+	20 -> 8
+	21 -> 8
+	23 -> 8
+	25 -> 8
+	27 -> 8
+	29 -> 8
+	31 -> 8
+	33 -> 8
+	34 -> 8
+	10 -> 9
 	11 -> 10
-	19 -> 10
-	20 -> 10
-	21 -> 10
-	22 -> 10
-	23 -> 10
 	12 -> 11
 	13 -> 12
-	14 -> 12
-	15 -> 12
-	8 -> 12
-	5 -> 12
-	16 -> 12
-	17 -> 12
-	18 -> 12
-	0 -> 13
-	0 -> 14
-	0 -> 15
-	0 -> 16
-	0 -> 17
-	0 -> 18
-	12 -> 19
-	11 -> 19
-	12 -> 20
-	11 -> 20
-	12 -> 21
-	11 -> 21
-	12 -> 22
-	11 -> 22
-	12 -> 23
-	11 -> 23
-	25 -> 24
-	26 -> 24
-	27 -> 24
-	28 -> 24
-	29 -> 24
-	30 -> 24
-	18 -> 25
-	18 -> 26
-	25 -> 26
-	18 -> 27
-	25 -> 27
-	18 -> 28
-	25 -> 28
-	18 -> 29
-	25 -> 29
-	18 -> 30
-	25 -> 30
+	10 -> 14
+	10 -> 15
+	10 -> 16
+	10 -> 17
+	10 -> 18
+	10 -> 19
+	10 -> 20
+	9 -> 21
+	22 -> 21
+	9 -> 22
+	14 -> 23
+	24 -> 23
+	14 -> 24
+	15 -> 25
+	26 -> 25
+	15 -> 26
+	16 -> 27
+	28 -> 27
+	16 -> 28
+	17 -> 29
+	30 -> 29
+	17 -> 30
+	18 -> 31
 	32 -> 31
-	33 -> 31
-	34 -> 31
-	35 -> 31
-	36 -> 31
-	37 -> 31
-	5 -> 32
-	6 -> 32
-	5 -> 33
-	6 -> 33
-	32 -> 33
-	5 -> 34
-	6 -> 34
-	32 -> 34
-	5 -> 35
+	18 -> 32
+	19 -> 33
+	20 -> 34
+	11 -> 35
 	6 -> 35
-	32 -> 35
-	5 -> 36
-	6 -> 36
-	32 -> 36
+	12 -> 35
+	13 -> 35
+	37 -> 36
+	38 -> 36
+	8 -> 37
+	7 -> 37
 	5 -> 37
-	6 -> 37
-	32 -> 37
-	13 -> 38
-	39 -> 38
-	13 -> 39
-	15 -> 40
-	41 -> 40
-	15 -> 41
+	37 -> 38
+	37 -> 39
+	4 -> 39
+	3 -> 40
+	3 -> 41
+	40 -> 41
+	2 -> 41
 	43 -> 42
-	45 -> 42
 	46 -> 42
-	47 -> 42
-	48 -> 42
-	49 -> 42
-	14 -> 43
 	44 -> 43
-	14 -> 44
-	14 -> 45
+	45 -> 43
+	4 -> 44
+	39 -> 44
 	44 -> 45
-	43 -> 45
-	14 -> 46
 	44 -> 46
+	45 -> 46
 	43 -> 46
-	14 -> 47
-	44 -> 47
-	43 -> 47
-	14 -> 48
+	10 -> 47
+	8 -> 47
+	7 -> 47
+	21 -> 47
+	23 -> 47
+	25 -> 47
+	27 -> 47
+	29 -> 47
+	31 -> 47
+	33 -> 47
+	34 -> 47
+	11 -> 48
+	10 -> 48
+	8 -> 48
+	7 -> 48
+	21 -> 48
+	23 -> 48
+	25 -> 48
+	27 -> 48
+	29 -> 48
+	31 -> 48
+	33 -> 48
+	34 -> 48
+	35 -> 48
+	37 -> 48
+	38 -> 48
+	49 -> 48
+	52 -> 48
+	55 -> 48
+	58 -> 48
+	61 -> 48
+	64 -> 48
+	67 -> 48
+	70 -> 48
+	39 -> 48
+	73 -> 48
+	5 -> 48
+	4 -> 48
+	50 -> 48
+	53 -> 48
+	56 -> 48
+	59 -> 48
+	62 -> 48
+	65 -> 48
+	68 -> 48
+	71 -> 48
+	51 -> 48
+	54 -> 48
+	57 -> 48
+	60 -> 48
+	63 -> 48
+	66 -> 48
+	69 -> 48
+	72 -> 48
+	36 -> 48
+	3 -> 48
 	44 -> 48
-	43 -> 48
-	14 -> 49
-	44 -> 49
-	43 -> 49
-	51 -> 50
-	53 -> 50
-	54 -> 50
-	55 -> 50
-	56 -> 50
-	57 -> 50
-	16 -> 51
-	52 -> 51
-	16 -> 52
-	16 -> 53
-	52 -> 53
-	51 -> 53
-	16 -> 54
-	52 -> 54
-	51 -> 54
-	16 -> 55
-	52 -> 55
-	51 -> 55
-	16 -> 56
-	52 -> 56
-	51 -> 56
-	16 -> 57
-	52 -> 57
-	51 -> 57
+	1 -> 48
+	42 -> 48
+	50 -> 49
+	51 -> 49
+	4 -> 49
+	10 -> 50
+	4 -> 50
+	9 -> 51
+	4 -> 51
+	53 -> 52
+	54 -> 52
+	4 -> 52
+	10 -> 53
+	4 -> 53
+	14 -> 54
+	4 -> 54
+	56 -> 55
+	57 -> 55
+	4 -> 55
+	10 -> 56
+	4 -> 56
+	15 -> 57
+	4 -> 57
 	59 -> 58
-	13 -> 59
-	14 -> 59
-	15 -> 59
-	8 -> 59
-	5 -> 59
-	16 -> 59
-	17 -> 59
-	18 -> 59
-	38 -> 59
-	60 -> 59
-	40 -> 59
-	7 -> 59
+	60 -> 58
+	4 -> 58
+	10 -> 59
 	4 -> 59
-	61 -> 59
-	62 -> 59
-	63 -> 59
-	14 -> 60
-	44 -> 60
-	16 -> 61
-	52 -> 61
-	17 -> 62
-	18 -> 63
+	16 -> 60
+	4 -> 60
+	62 -> 61
+	63 -> 61
+	4 -> 61
+	10 -> 62
+	4 -> 62
+	17 -> 63
+	4 -> 63
 	65 -> 64
 	66 -> 64
-	67 -> 64
-	68 -> 64
-	69 -> 64
-	70 -> 64
-	15 -> 65
-	41 -> 65
-	15 -> 66
-	41 -> 66
-	65 -> 66
-	15 -> 67
-	41 -> 67
-	65 -> 67
-	15 -> 68
-	41 -> 68
-	65 -> 68
-	15 -> 69
-	41 -> 69
-	65 -> 69
-	15 -> 70
-	41 -> 70
-	65 -> 70
-	72 -> 71
-	73 -> 71
-	74 -> 71
-	75 -> 71
-	76 -> 71
-	77 -> 71
-	13 -> 72
-	39 -> 72
-	13 -> 73
-	39 -> 73
-	72 -> 73
+	4 -> 64
+	10 -> 65
+	4 -> 65
+	18 -> 66
+	4 -> 66
+	68 -> 67
+	69 -> 67
+	4 -> 67
+	10 -> 68
+	4 -> 68
+	19 -> 69
+	4 -> 69
+	71 -> 70
+	72 -> 70
+	4 -> 70
+	10 -> 71
+	4 -> 71
+	20 -> 72
+	4 -> 72
+	49 -> 73
+	52 -> 73
+	55 -> 73
+	58 -> 73
+	61 -> 73
+	64 -> 73
+	67 -> 73
+	70 -> 73
 	13 -> 74
-	39 -> 74
-	72 -> 74
+	12 -> 74
 	13 -> 75
-	39 -> 75
-	72 -> 75
-	13 -> 76
-	39 -> 76
-	72 -> 76
-	13 -> 77
+	12 -> 75
+	35 -> 77
+	37 -> 77
+	38 -> 77
+	49 -> 77
+	52 -> 77
+	55 -> 77
+	58 -> 77
+	61 -> 77
+	64 -> 77
+	67 -> 77
+	70 -> 77
 	39 -> 77
+	73 -> 77
+	5 -> 77
+	4 -> 77
+	50 -> 77
+	53 -> 77
+	56 -> 77
+	59 -> 77
+	62 -> 77
+	65 -> 77
+	68 -> 77
+	71 -> 77
+	51 -> 77
+	54 -> 77
+	57 -> 77
+	60 -> 77
+	63 -> 77
+	66 -> 77
+	69 -> 77
 	72 -> 77
-	79 -> 78
-	80 -> 78
-	81 -> 78
-	82 -> 78
-	83 -> 78
-	84 -> 78
-	8 -> 79
-	9 -> 79
-	8 -> 80
-	9 -> 80
-	79 -> 80
-	8 -> 81
-	9 -> 81
-	79 -> 81
-	8 -> 82
-	9 -> 82
-	79 -> 82
-	8 -> 83
-	9 -> 83
-	79 -> 83
-	8 -> 84
-	9 -> 84
-	79 -> 84
-	86 -> 85
-	87 -> 85
-	88 -> 85
-	89 -> 85
-	90 -> 85
-	91 -> 85
-	17 -> 86
-	17 -> 87
-	86 -> 87
-	17 -> 88
-	86 -> 88
-	17 -> 89
-	86 -> 89
-	17 -> 90
-	86 -> 90
-	17 -> 91
-	86 -> 91
+	36 -> 77
+	3 -> 77
+	44 -> 77
+	11 -> 78
 }            

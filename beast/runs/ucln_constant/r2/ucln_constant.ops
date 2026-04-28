@@ -1,0 +1,22 @@
+
+Operator analysis
+Operator                                          Tuning   Count      Time     Time/Op  Pr(accept) Smoothed_Pr(accept)
+scale(SRD06.CP1+2.kappa)                          0.599   173439     61040    0.35     0.2332      0.24        
+scale(SRD06.CP3.kappa)                            0.451   173384     44968    0.26     0.2346      0.21        
+deltaExchange(SRD06.CP1+2.frequencies)            0.024   172932     60506    0.35     0.2329      0.22        
+deltaExchange(SRD06.CP3.frequencies)              0.035   173660     45135    0.26     0.2339      0.23        
+scale(SRD06.CP1+2.alpha)                          0.327   172551     60035    0.35     0.2333      0.23        
+scale(SRD06.CP3.alpha)                            0.174   173443     44977    0.26     0.234       0.19        
+scale(H5N1_NS.kappa)                              0.309   173680     29012    0.17     0.2345      0.27        
+deltaExchange(H5N1_NS.frequencies)                0.06    172995     29250    0.17     0.2346      0.28        
+scale(H5N1_NS.alpha)                              0.117   173163     28391    0.16     0.2344      0.26        
+scale(ucld.mean)                                  0.863   520428     330681   0.64     0.234       0.23        
+scale(ucld.stdev)                                 0.659   518633     329071   0.63     0.2338      0.28        
+up:nodeHeights(treeModel) down:ucld.mean          0.997   518887     207340   0.4      0.234       0.23        
+swapOperator(branchRates.categories)                      1730191    229284   0.13     0.3683      0.25        
+uniformInteger(branchRates.categories)                    1730335    174374   0.1      0.5117      0.48        
+deltaExchange(allNus)                             0.069   518923     228064   0.44     0.2343      0.21        
+subtreeLeap(treeModel)                            0.086   11076754   1181746  0.11     0.234       0.24        
+subtreeJump(treeModel)                                    1107423    141195   0.13     0.029       0.01        
+scale(constant.popSize)                           0.524   519179     8363     0.02     0.2343      0.25        
+

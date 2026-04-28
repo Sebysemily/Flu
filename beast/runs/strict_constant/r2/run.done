@@ -1,0 +1,14 @@
+xml	/home/sebas/MIRA_NGS/flu_aviar/results/beast/xml/strict_constant.xml
+scenario	strict_constant
+replicate	r2
+beast_binary	/home/sebas/MIRA_NGS/flu_aviar/.snakemake/conda/1ebeddae1b5a1710d8d61e914e796075_/bin/beast
+beast_version	BEAST v10.5.0, 2002-2025
+seed	103980
+threads	18
+status	/home/sebas/MIRA_NGS/flu_aviar/results/beast/runs/strict_constant/r2/status.log
+stdout	/home/sebas/MIRA_NGS/flu_aviar/results/beast/runs/strict_constant/r2/stdout.log
+stderr	/home/sebas/MIRA_NGS/flu_aviar/results/beast/runs/strict_constant/r2/stderr.log
+replicate_dir	/home/sebas/MIRA_NGS/flu_aviar/results/beast/runs/strict_constant/r2
+output_prefix	results/beast/runs/strict_constant/strict_constant
+moved_outputs	/home/sebas/MIRA_NGS/flu_aviar/results/beast/runs/strict_constant/r2/strict_constant.log;/home/sebas/MIRA_NGS/flu_aviar/results/beast/runs/strict_constant/r2/strict_constant.trees;/home/sebas/MIRA_NGS/flu_aviar/results/beast/runs/strict_constant/r2/strict_constant.chkpt;/home/sebas/MIRA_NGS/flu_aviar/results/beast/runs/strict_constant/r2/strict_constant.ops
+missing_outputs	

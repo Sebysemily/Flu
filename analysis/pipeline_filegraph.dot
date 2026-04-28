@@ -2,7 +2,250 @@ digraph snakemake_dag {
     graph[bgcolor=white, margin=0];
     node[shape=box, style=rounded, fontname=sans,                 fontsize=10, penwidth=2];
     edge[penwidth=2, color=grey];
-0 [ shape=none, margin=0, label=<<table border="2" color="#57D0D9" cellspacing="3" cellborder="0">
+0 [ shape=none, margin=0, label=<<table border="2" color="#D96457" cellspacing="3" cellborder="0">
+<tr><td>
+<b><font point-size="18">all</font></b>
+</td></tr>
+<hr/>
+<tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
+<tr>
+<td align="left"><font face="monospace">results/beast/runs/strict_constant/run.done</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/beast/runs/ucln_constant/run.done</font></td>
+</tr>
+<hr/>
+<tr><td align="right">  </td> </tr>
+</table>>]
+1 [ shape=none, margin=0, label=<<table border="2" color="#5780D9" cellspacing="3" cellborder="0">
+<tr><td>
+<b><font point-size="18">summarize_beast_run</font></b>
+</td></tr>
+<hr/>
+<tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
+<tr>
+<td align="left"><font face="monospace">results/beast/runs/{scenario}/r1/run.done</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/beast/runs/{scenario}/r2/run.done</font></td>
+</tr>
+<hr/>
+<tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
+<tr>
+<td align="left"><font face="monospace">results/beast/runs/{scenario,strict_constant|ucln_constant}/run.done</font></td></tr>
+</table>>]
+2 [ shape=none, margin=0, label=<<table border="2" color="#57D2D9" cellspacing="3" cellborder="0">
+<tr><td>
+<b><font point-size="18">run_beast_replicate</font></b>
+</td></tr>
+<hr/>
+<tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
+<tr>
+<td align="left"><font face="monospace">&lt;input function&gt;</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">&lt;input function&gt;</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/beast/xml/{scenario}.validated</font></td>
+</tr>
+<hr/>
+<tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
+<tr>
+<td align="left"><font face="monospace">results/beast/runs/{scenario,strict_constant|ucln_constant}/{replicate,r1|r2}/run.done</font></td></tr>
+<tr>
+<td align="left"><font face="monospace">results/beast/runs/{scenario,strict_constant|ucln_constant}/{replicate,r1|r2}/status.log</font></td></tr>
+<tr>
+<td align="left"><font face="monospace">results/beast/runs/{scenario,strict_constant|ucln_constant}/{replicate,r1|r2}/stderr.log</font></td></tr>
+<tr>
+<td align="left"><font face="monospace">results/beast/runs/{scenario,strict_constant|ucln_constant}/{replicate,r1|r2}/stdout.log</font></td></tr>
+</table>>]
+3 [ shape=none, margin=0, label=<<table border="2" color="#57D980" cellspacing="3" cellborder="0">
+<tr><td>
+<b><font point-size="18">prepare_beast_run_xml</font></b>
+</td></tr>
+<hr/>
+<tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
+<tr>
+<td align="left"><font face="monospace">&lt;input function&gt;</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">data/beast/panel_main_concat.final.fasta</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">data/beast/panel_main_dates.final.tsv</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">data/beast/panel_main_taxa.final.tsv</font></td>
+</tr>
+<hr/>
+<tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
+<tr>
+<td align="left"><font face="monospace">results/beast/xml/{scenario,strict_constant|ucln_constant}.xml</font></td></tr>
+</table>>]
+4 [ shape=none, margin=0, label=<<table border="2" color="#8DD957" cellspacing="3" cellborder="0">
+<tr><td>
+<b><font point-size="18">filter_beast_panel_by_rtt_outliers</font></b>
+</td></tr>
+<hr/>
+<tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
+<tr>
+<td align="left"><font face="monospace">data/pre_beast/panels/panel_main_taxa.filtered.tsv</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/beast_pre/rtt/dates_from_headers.tsv</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/beast_pre/rtt/outliers.tsv</font></td>
+</tr>
+<hr/>
+<tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
+<tr>
+<td align="left"><font face="monospace">data/beast/panel_main_dates.final.tsv</font></td></tr>
+<tr>
+<td align="left"><font face="monospace">data/beast/panel_main_taxa.final.tsv</font></td></tr>
+<tr>
+<td align="left"><font face="monospace">results/beast_pre/qc_validation/rtt_outlier_exclusions.summary.tsv</font></td></tr>
+<tr>
+<td align="left"><font face="monospace">results/beast_pre/qc_validation/rtt_outlier_exclusions.tsv</font></td></tr>
+</table>>]
+5 [ shape=none, margin=0, label=<<table border="2" color="#9BD957" cellspacing="3" cellborder="0">
+<tr><td>
+<b><font point-size="18">filter_beast_panel_by_qc</font></b>
+</td></tr>
+<hr/>
+<tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
+<tr>
+<td align="left"><font face="monospace">data/pre_beast/panels/panel_main_taxa.tsv</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/beast_pre/qc_validation/source_panel_qc.metrics.tsv</font></td>
+</tr>
+<hr/>
+<tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
+<tr>
+<td align="left"><font face="monospace">data/pre_beast/panels/panel_main_taxa.filtered.tsv</font></td></tr>
+<tr>
+<td align="left"><font face="monospace">results/beast_pre/qc_validation/panel_exclusions.summary.tsv</font></td></tr>
+<tr>
+<td align="left"><font face="monospace">results/beast_pre/qc_validation/panel_exclusions.tsv</font></td></tr>
+</table>>]
+6 [ shape=none, margin=0, label=<<table border="2" color="#D98D57" cellspacing="3" cellborder="0">
+<tr><td>
+<b><font point-size="18">build_beast_panels</font></b>
+</td></tr>
+<hr/>
+<tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
+<tr>
+<td align="left"><font face="monospace">config/final_metadata_50_per_country_isolates.tsv</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/raxml/full_concat/H5N1_full_concat_beast.raxml.supportTBE</font></td>
+</tr>
+<hr/>
+<tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
+<tr>
+<td align="left"><font face="monospace">data/pre_beast/panels/panel_country_month_coverage.tsv</font></td></tr>
+<tr>
+<td align="left"><font face="monospace">data/pre_beast/panels/panel_main_taxa.tsv</font></td></tr>
+<tr>
+<td align="left"><font face="monospace">data/pre_beast/panels/panel_selection_audit.tsv</font></td></tr>
+</table>>]
+7 [ shape=none, margin=0, label=<<table border="2" color="#57D99B" cellspacing="3" cellborder="0">
+<tr><td>
+<b><font point-size="18">raxml_ng_tree_full_concat</font></b>
+</td></tr>
+<hr/>
+<tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
+<tr>
+<td align="left"><font face="monospace">data/phylogeny/H5N1_full_concat_beast.partitions</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">data/phylogeny/aligned/H5N1_full_concat_beast.mafft</font></td>
+</tr>
+<hr/>
+<tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/raxml/full_concat/H5N1_full_concat_beast.raxml.bestTree</font></td></tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/raxml/full_concat/H5N1_full_concat_beast.raxml.supportTBE</font></td></tr>
+</table>>]
+8 [ shape=none, margin=0, label=<<table border="2" color="#A9D957" cellspacing="3" cellborder="0">
+<tr><td>
+<b><font point-size="18">concat_aligned_segments_with_partitions</font></b>
+</td></tr>
+<hr/>
+<tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
+<tr>
+<td align="left"><font face="monospace">data/phylogeny/aligned/H5N1_HA.mafft</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">data/phylogeny/aligned/H5N1_MP.mafft</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">data/phylogeny/aligned/H5N1_NA.mafft</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">data/phylogeny/aligned/H5N1_NP.mafft</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">data/phylogeny/aligned/H5N1_NS.mafft</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">data/phylogeny/aligned/H5N1_PA.mafft</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">data/phylogeny/aligned/H5N1_PB1.mafft</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">data/phylogeny/aligned/H5N1_PB2.mafft</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/raxml/HA/H5N1_HA.raxml.supportTBE</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/raxml/MP/H5N1_MP.raxml.supportTBE</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/raxml/NA/H5N1_NA.raxml.supportTBE</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/raxml/NP/H5N1_NP.raxml.supportTBE</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/raxml/NS/H5N1_NS.raxml.supportTBE</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/raxml/PA/H5N1_PA.raxml.supportTBE</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/raxml/PB1/H5N1_PB1.raxml.supportTBE</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/raxml/PB2/H5N1_PB2.raxml.supportTBE</font></td>
+</tr>
+<hr/>
+<tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
+<tr>
+<td align="left"><font face="monospace">data/phylogeny/H5N1_full_concat_beast.partitions</font></td></tr>
+<tr>
+<td align="left"><font face="monospace">data/phylogeny/aligned/H5N1_full_concat_beast.mafft</font></td></tr>
+</table>>]
+9 [ shape=none, margin=0, label=<<table border="2" color="#80D957" cellspacing="3" cellborder="0">
+<tr><td>
+<b><font point-size="18">mafft_align_per_segment</font></b>
+</td></tr>
+<hr/>
+<tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
+<tr>
+<td align="left"><font face="monospace">data/phylogeny/by_segment/H5N1_{segment}.fasta</font></td>
+</tr>
+<hr/>
+<tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
+<tr>
+<td align="left"><font face="monospace">data/phylogeny/aligned/H5N1_{segment}.mafft</font></td></tr>
+</table>>]
+10 [ shape=none, margin=0, label=<<table border="2" color="#57B7D9" cellspacing="3" cellborder="0">
 <tr><td>
 <b><font point-size="18">split_h5n1_final_by_segment</font></b>
 </td></tr>
@@ -32,7 +275,7 @@ digraph snakemake_dag {
 <tr>
 <td align="left"><font face="monospace">data/phylogeny/by_segment_summary.csv</font></td></tr>
 </table>>]
-1 [ shape=none, margin=0, label=<<table border="2" color="#D9AD57" cellspacing="3" cellborder="0">
+11 [ shape=none, margin=0, label=<<table border="2" color="#D9D257" cellspacing="3" cellborder="0">
 <tr><td>
 <b><font point-size="18">build_h5n1_final_fasta</font></b>
 </td></tr>
@@ -53,7 +296,7 @@ digraph snakemake_dag {
 <tr>
 <td align="left"><font face="monospace">data/input/H5N1_context_summary.csv</font></td></tr>
 </table>>]
-2 [ shape=none, margin=0, label=<<table border="2" color="#D99C57" cellspacing="3" cellborder="0">
+12 [ shape=none, margin=0, label=<<table border="2" color="#D9C457" cellspacing="3" cellborder="0">
 <tr><td>
 <b><font point-size="18">build_h5n1_ec_fasta</font></b>
 </td></tr>
@@ -75,7 +318,7 @@ digraph snakemake_dag {
 <tr>
 <td align="left"><font face="monospace">data/input/H5N1_EC_summary.csv</font></td></tr>
 </table>>]
-3 [ shape=none, margin=0, label=<<table border="2" color="#D97957" cellspacing="3" cellborder="0">
+13 [ shape=none, margin=0, label=<<table border="2" color="#D99B57" cellspacing="3" cellborder="0">
 <tr><td>
 <b><font point-size="18">build_ecuador_intermediate_input</font></b>
 </td></tr>
@@ -151,7 +394,7 @@ digraph snakemake_dag {
 <tr>
 <td align="left"><font face="monospace">data/assembled/ecuador_intermediate_summary.csv</font></td></tr>
 </table>>]
-4 [ shape=none, margin=0, label=<<table border="2" color="#79D957" cellspacing="3" cellborder="0">
+14 [ shape=none, margin=0, label=<<table border="2" color="#57D9A9" cellspacing="3" cellborder="0">
 <tr><td>
 <b><font point-size="18">raxml_ng_tree_per_segment_codon</font></b>
 </td></tr>
@@ -170,21 +413,7 @@ digraph snakemake_dag {
 <tr>
 <td align="left"><font face="monospace">results/phylogeny/raxml/{segment,PB2|PB1|PA|HA|NP|NA}/H5N1_{segment}.raxml.supportTBE</font></td></tr>
 </table>>]
-5 [ shape=none, margin=0, label=<<table border="2" color="#BFD957" cellspacing="3" cellborder="0">
-<tr><td>
-<b><font point-size="18">mafft_align_per_segment</font></b>
-</td></tr>
-<hr/>
-<tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
-<tr>
-<td align="left"><font face="monospace">data/phylogeny/by_segment/H5N1_{segment}.fasta</font></td>
-</tr>
-<hr/>
-<tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
-<tr>
-<td align="left"><font face="monospace">data/phylogeny/aligned/H5N1_{segment}.mafft</font></td></tr>
-</table>>]
-6 [ shape=none, margin=0, label=<<table border="2" color="#D9BF57" cellspacing="3" cellborder="0">
+15 [ shape=none, margin=0, label=<<table border="2" color="#C4D957" cellspacing="3" cellborder="0">
 <tr><td>
 <b><font point-size="18">build_segment_codon_partitions</font></b>
 </td></tr>
@@ -198,87 +427,7 @@ digraph snakemake_dag {
 <tr>
 <td align="left"><font face="monospace">data/phylogeny/codon_partitions/H5N1_{segment,PB2|PB1|PA|HA|NP|NA}.codon.partitions</font></td></tr>
 </table>>]
-7 [ shape=none, margin=0, label=<<table border="2" color="#ADD957" cellspacing="3" cellborder="0">
-<tr><td>
-<b><font point-size="18">raxml_ng_tree_full_concat</font></b>
-</td></tr>
-<hr/>
-<tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
-<tr>
-<td align="left"><font face="monospace">data/phylogeny/H5N1_full_concat_beast.partitions</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">data/phylogeny/aligned/H5N1_full_concat_beast.mafft</font></td>
-</tr>
-<hr/>
-<tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/full_concat/H5N1_full_concat_beast.raxml.bestTreeCollapsed</font></td></tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/full_concat/H5N1_full_concat_beast.raxml.supportTBE</font></td></tr>
-</table>>]
-8 [ shape=none, margin=0, label=<<table border="2" color="#D9D057" cellspacing="3" cellborder="0">
-<tr><td>
-<b><font point-size="18">concat_aligned_segments_with_partitions</font></b>
-</td></tr>
-<hr/>
-<tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
-<tr>
-<td align="left"><font face="monospace">data/phylogeny/aligned/H5N1_HA.mafft</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">data/phylogeny/aligned/H5N1_MP.mafft</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">data/phylogeny/aligned/H5N1_NA.mafft</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">data/phylogeny/aligned/H5N1_NP.mafft</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">data/phylogeny/aligned/H5N1_NS.mafft</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">data/phylogeny/aligned/H5N1_PA.mafft</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">data/phylogeny/aligned/H5N1_PB1.mafft</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">data/phylogeny/aligned/H5N1_PB2.mafft</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/HA/H5N1_HA.raxml.supportTBE</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/MP/H5N1_MP.raxml.supportTBE</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/NA/H5N1_NA.raxml.supportTBE</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/NP/H5N1_NP.raxml.supportTBE</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/NS/H5N1_NS.raxml.supportTBE</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/PA/H5N1_PA.raxml.supportTBE</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/PB1/H5N1_PB1.raxml.supportTBE</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/PB2/H5N1_PB2.raxml.supportTBE</font></td>
-</tr>
-<hr/>
-<tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
-<tr>
-<td align="left"><font face="monospace">data/phylogeny/H5N1_full_concat_beast.partitions</font></td></tr>
-<tr>
-<td align="left"><font face="monospace">data/phylogeny/aligned/H5N1_full_concat_beast.mafft</font></td></tr>
-</table>>]
-9 [ shape=none, margin=0, label=<<table border="2" color="#57D957" cellspacing="3" cellborder="0">
+16 [ shape=none, margin=0, label=<<table border="2" color="#57D9B7" cellspacing="3" cellborder="0">
 <tr><td>
 <b><font point-size="18">raxml_ng_tree_per_segment_simple</font></b>
 </td></tr>
@@ -290,20 +439,171 @@ digraph snakemake_dag {
 <hr/>
 <tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
 <tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/{segment,NS|MP}/H5N1_{segment}.raxml.bestTreeCollapsed</font></td></tr>
-<tr>
 <td align="left"><font face="monospace">results/phylogeny/raxml/{segment,NS|MP}/H5N1_{segment}.raxml.supportTBE</font></td></tr>
+</table>>]
+17 [ shape=none, margin=0, label=<<table border="2" color="#64D957" cellspacing="3" cellborder="0">
+<tr><td>
+<b><font point-size="18">observe_beast_subset_source_qc</font></b>
+</td></tr>
+<hr/>
+<tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
+<tr>
+<td align="left"><font face="monospace">data/assembled/ecuador_intermediate_audit.csv</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">data/final/H5N1_final.fasta</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">data/input/H5N1_EC_summary.csv</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">data/input/H5N1_context_summary.csv</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">data/pre_beast/panels/panel_main_taxa.tsv</font></td>
+</tr>
+<hr/>
+<tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
+<tr>
+<td align="left"><font face="monospace">results/beast_pre/qc_validation/source_panel_qc.metrics.tsv</font></td></tr>
+<tr>
+<td align="left"><font face="monospace">results/beast_pre/qc_validation/source_panel_qc.outliers.tsv</font></td></tr>
+<tr>
+<td align="left"><font face="monospace">results/beast_pre/qc_validation/source_panel_qc.report.md</font></td></tr>
+<tr>
+<td align="left"><font face="monospace">results/beast_pre/qc_validation/source_panel_qc.summary.tsv</font></td></tr>
+</table>>]
+18 [ shape=none, margin=0, label=<<table border="2" color="#57C4D9" cellspacing="3" cellborder="0">
+<tr><td>
+<b><font point-size="18">run_root_to_tip</font></b>
+</td></tr>
+<hr/>
+<tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
+<tr>
+<td align="left"><font face="monospace">data/pre_beast/panels/panel_main_concat.filtered.fasta</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">data/pre_beast/panels/panel_main_concat.filtered.nwk</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/beast_pre/rtt/dates_from_headers.tsv</font></td>
+</tr>
+<hr/>
+<tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
+<tr>
+<td align="left"><font face="monospace">results/beast_pre/rtt/outliers.tsv</font></td></tr>
+<tr>
+<td align="left"><font face="monospace">results/beast_pre/rtt/treetime_clock.done</font></td></tr>
+<tr>
+<td align="left"><font face="monospace">results/beast_pre/rtt/treetime_clock.log</font></td></tr>
+</table>>]
+19 [ shape=none, margin=0, label=<<table border="2" color="#57A9D9" cellspacing="3" cellborder="0">
+<tr><td>
+<b><font point-size="18">subset_filtered_panel_concat_alignment_and_prune_tree</font></b>
+</td></tr>
+<hr/>
+<tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
+<tr>
+<td align="left"><font face="monospace">data/phylogeny/aligned/H5N1_full_concat_beast.mafft</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">data/pre_beast/panels/panel_main_taxa.filtered.tsv</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/raxml/full_concat/H5N1_full_concat_beast.raxml.supportTBE</font></td>
+</tr>
+<hr/>
+<tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
+<tr>
+<td align="left"><font face="monospace">data/pre_beast/panels/panel_main_concat.filtered.audit.tsv</font></td></tr>
+<tr>
+<td align="left"><font face="monospace">data/pre_beast/panels/panel_main_concat.filtered.fasta</font></td></tr>
+<tr>
+<td align="left"><font face="monospace">data/pre_beast/panels/panel_main_concat.filtered.nwk</font></td></tr>
+</table>>]
+20 [ shape=none, margin=0, label=<<table border="2" color="#B7D957" cellspacing="3" cellborder="0">
+<tr><td>
+<b><font point-size="18">build_treetime_dates</font></b>
+</td></tr>
+<hr/>
+<tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
+<tr>
+<td align="left"><font face="monospace">data/pre_beast/panels/panel_main_concat.filtered.fasta</font></td>
+</tr>
+<hr/>
+<tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
+<tr>
+<td align="left"><font face="monospace">results/beast_pre/rtt/dates_from_headers.tsv</font></td></tr>
+</table>>]
+21 [ shape=none, margin=0, label=<<table border="2" color="#57D98D" cellspacing="3" cellborder="0">
+<tr><td>
+<b><font point-size="18">publish_final_panel_concat_alignment</font></b>
+</td></tr>
+<hr/>
+<tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
+<tr>
+<td align="left"><font face="monospace">data/beast/panel_main_taxa.final.tsv</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">data/pre_beast/panels/panel_main_concat.filtered.fasta</font></td>
+</tr>
+<hr/>
+<tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
+<tr>
+<td align="left"><font face="monospace">data/beast/panel_main_concat.final.audit.tsv</font></td></tr>
+<tr>
+<td align="left"><font face="monospace">data/beast/panel_main_concat.final.fasta</font></td></tr>
+</table>>]
+22 [ shape=none, margin=0, label=<<table border="2" color="#5764D9" cellspacing="3" cellborder="0">
+<tr><td>
+<b><font point-size="18">validate_beast_xml</font></b>
+</td></tr>
+<hr/>
+<tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
+<tr>
+<td align="left"><font face="monospace">&lt;input function&gt;</font></td>
+</tr>
+<hr/>
+<tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
+<tr>
+<td align="left"><font face="monospace">results/beast/xml/{scenario,strict_constant|ucln_constant}.validated</font></td></tr>
 </table>>]
 	1 -> 0
 	2 -> 1
 	3 -> 2
-	6 -> 4
+	22 -> 2
+	2 -> 2
+	4 -> 3
+	21 -> 3
 	5 -> 4
-	0 -> 5
-	5 -> 6
+	20 -> 4
+	18 -> 4
+	17 -> 5
+	6 -> 5
+	7 -> 6
 	8 -> 7
+	14 -> 8
 	9 -> 8
-	5 -> 8
-	4 -> 8
-	5 -> 9
+	16 -> 8
+	10 -> 9
+	11 -> 10
+	12 -> 11
+	13 -> 12
+	15 -> 14
+	9 -> 14
+	9 -> 15
+	9 -> 16
+	12 -> 17
+	6 -> 17
+	13 -> 17
+	11 -> 17
+	19 -> 18
+	20 -> 18
+	8 -> 19
+	5 -> 19
+	7 -> 19
+	19 -> 20
+	4 -> 21
+	19 -> 21
+	3 -> 22
 }            

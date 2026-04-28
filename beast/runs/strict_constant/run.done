@@ -1,0 +1,4 @@
+scenario	strict_constant
+replicate_count	2
+run_done_files	/home/sebas/MIRA_NGS/flu_aviar/results/beast/runs/strict_constant/r1/run.done;/home/sebas/MIRA_NGS/flu_aviar/results/beast/runs/strict_constant/r2/run.done
+seeds	3980;103980

@@ -7,7 +7,3 @@ dependencies:
   - pandas
   - biopython
   - treetime
-  - iqtree=2.*
-  - graphviz
-  - beast2
-  - openjdk

@@ -1,0 +1,72 @@
+[2026-04-15T08:08:11+00:00] starting BEAST replicate
+[2026-04-15T08:08:11+00:00] run=ucln_constant/r1 status=running pid=252989 seed=9473
+WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::loadLibrary has been called by beagle.BeagleJNIWrapper in an unnamed module (file:/home/sebas/MIRA_NGS/flu_aviar/.snakemake/conda/1ebeddae1b5a1710d8d61e914e796075_/lib/beast.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+[2026-04-15T08:09:11+00:00] run=ucln_constant/r1 status=running pid=252989 seed=9473
+[2026-04-15T08:10:11+00:00] run=ucln_constant/r1 status=running pid=252989 seed=9473
+[2026-04-15T08:11:11+00:00] run=ucln_constant/r1 status=running pid=252989 seed=9473
+[2026-04-15T08:12:11+00:00] run=ucln_constant/r1 status=running pid=252989 seed=9473
+[2026-04-15T08:13:11+00:00] run=ucln_constant/r1 status=running pid=252989 seed=9473
+[2026-04-15T08:14:11+00:00] run=ucln_constant/r1 status=running pid=252989 seed=9473
+[2026-04-15T08:15:11+00:00] run=ucln_constant/r1 status=running pid=252989 seed=9473
+[2026-04-15T08:16:11+00:00] run=ucln_constant/r1 status=running pid=252989 seed=9473
+[2026-04-15T08:17:11+00:00] run=ucln_constant/r1 status=running pid=252989 seed=9473
+[2026-04-15T08:18:11+00:00] run=ucln_constant/r1 status=running pid=252989 seed=9473
+[2026-04-15T08:19:11+00:00] run=ucln_constant/r1 status=running pid=252989 seed=9473
+[2026-04-15T08:20:11+00:00] run=ucln_constant/r1 status=running pid=252989 seed=9473
+[2026-04-15T08:21:11+00:00] run=ucln_constant/r1 status=running pid=252989 seed=9473
+[2026-04-15T08:22:11+00:00] run=ucln_constant/r1 status=running pid=252989 seed=9473
+[2026-04-15T08:23:11+00:00] run=ucln_constant/r1 status=running pid=252989 seed=9473
+[2026-04-15T08:24:11+00:00] run=ucln_constant/r1 status=running pid=252989 seed=9473
+[2026-04-15T08:25:11+00:00] run=ucln_constant/r1 status=running pid=252989 seed=9473
+[2026-04-15T08:26:11+00:00] run=ucln_constant/r1 status=running pid=252989 seed=9473
+[2026-04-15T08:27:11+00:00] run=ucln_constant/r1 status=running pid=252989 seed=9473
+[2026-04-15T08:28:11+00:00] run=ucln_constant/r1 status=running pid=252989 seed=9473
+[2026-04-15T08:29:11+00:00] run=ucln_constant/r1 status=running pid=252989 seed=9473
+[2026-04-15T08:30:11+00:00] run=ucln_constant/r1 status=running pid=252989 seed=9473
+[2026-04-15T08:31:11+00:00] run=ucln_constant/r1 status=running pid=252989 seed=9473
+[2026-04-15T08:32:11+00:00] run=ucln_constant/r1 status=running pid=252989 seed=9473
+[2026-04-15T08:33:11+00:00] run=ucln_constant/r1 status=running pid=252989 seed=9473
+[2026-04-15T08:34:11+00:00] run=ucln_constant/r1 status=running pid=252989 seed=9473
+[2026-04-15T08:35:11+00:00] run=ucln_constant/r1 status=running pid=252989 seed=9473
+[2026-04-15T08:36:11+00:00] run=ucln_constant/r1 status=running pid=252989 seed=9473
+[2026-04-15T08:37:11+00:00] run=ucln_constant/r1 status=running pid=252989 seed=9473
+[2026-04-15T08:38:11+00:00] run=ucln_constant/r1 status=running pid=252989 seed=9473
+[2026-04-15T08:39:11+00:00] run=ucln_constant/r1 status=running pid=252989 seed=9473
+[2026-04-15T08:40:11+00:00] run=ucln_constant/r1 status=running pid=252989 seed=9473
+[2026-04-15T08:41:11+00:00] run=ucln_constant/r1 status=running pid=252989 seed=9473
+[2026-04-15T08:42:11+00:00] run=ucln_constant/r1 status=running pid=252989 seed=9473
+[2026-04-15T08:43:11+00:00] run=ucln_constant/r1 status=running pid=252989 seed=9473
+[2026-04-15T08:44:11+00:00] run=ucln_constant/r1 status=running pid=252989 seed=9473
+[2026-04-15T08:45:11+00:00] run=ucln_constant/r1 status=running pid=252989 seed=9473
+[2026-04-15T08:46:11+00:00] run=ucln_constant/r1 status=running pid=252989 seed=9473
+[2026-04-15T08:47:11+00:00] run=ucln_constant/r1 status=running pid=252989 seed=9473
+[2026-04-15T08:48:11+00:00] run=ucln_constant/r1 status=running pid=252989 seed=9473
+[2026-04-15T08:49:11+00:00] run=ucln_constant/r1 status=running pid=252989 seed=9473
+[2026-04-15T08:50:11+00:00] run=ucln_constant/r1 status=running pid=252989 seed=9473
+[2026-04-15T08:51:11+00:00] run=ucln_constant/r1 status=running pid=252989 seed=9473
+[2026-04-15T08:52:11+00:00] run=ucln_constant/r1 status=running pid=252989 seed=9473
+[2026-04-15T08:53:11+00:00] run=ucln_constant/r1 status=running pid=252989 seed=9473
+[2026-04-15T08:54:11+00:00] run=ucln_constant/r1 status=running pid=252989 seed=9473
+[2026-04-15T08:55:11+00:00] run=ucln_constant/r1 status=running pid=252989 seed=9473
+[2026-04-15T08:56:11+00:00] run=ucln_constant/r1 status=running pid=252989 seed=9473
+[2026-04-15T08:57:11+00:00] run=ucln_constant/r1 status=running pid=252989 seed=9473
+[2026-04-15T08:58:11+00:00] run=ucln_constant/r1 status=running pid=252989 seed=9473
+[2026-04-15T08:59:11+00:00] run=ucln_constant/r1 status=running pid=252989 seed=9473
+[2026-04-15T09:00:11+00:00] run=ucln_constant/r1 status=running pid=252989 seed=9473
+[2026-04-15T09:01:11+00:00] run=ucln_constant/r1 status=running pid=252989 seed=9473
+[2026-04-15T09:02:11+00:00] run=ucln_constant/r1 status=running pid=252989 seed=9473
+[2026-04-15T09:03:11+00:00] run=ucln_constant/r1 status=running pid=252989 seed=9473
+[2026-04-15T09:04:11+00:00] run=ucln_constant/r1 status=running pid=252989 seed=9473
+[2026-04-15T09:05:11+00:00] run=ucln_constant/r1 status=running pid=252989 seed=9473
+[2026-04-15T09:06:11+00:00] run=ucln_constant/r1 status=running pid=252989 seed=9473
+[2026-04-15T09:07:11+00:00] run=ucln_constant/r1 status=running pid=252989 seed=9473
+[2026-04-15T09:08:11+00:00] run=ucln_constant/r1 status=running pid=252989 seed=9473
+[2026-04-15T09:09:11+00:00] run=ucln_constant/r1 status=running pid=252989 seed=9473
+[2026-04-15T09:10:11+00:00] run=ucln_constant/r1 status=running pid=252989 seed=9473
+[2026-04-15T09:11:11+00:00] run=ucln_constant/r1 status=running pid=252989 seed=9473
+[2026-04-15T09:12:11+00:00] run=ucln_constant/r1 status=running pid=252989 seed=9473
+[2026-04-15T09:13:11+00:00] BEAST finished with exit_code=0

@@ -1,0 +1,14 @@
+xml	/home/sebas/MIRA_NGS/flu_aviar/results/beast/xml/ucln_constant.xml
+scenario	ucln_constant
+replicate	r1
+beast_binary	/home/sebas/MIRA_NGS/flu_aviar/.snakemake/conda/1ebeddae1b5a1710d8d61e914e796075_/bin/beast
+beast_version	BEAST v10.5.0, 2002-2025
+seed	9473
+threads	18
+status	/home/sebas/MIRA_NGS/flu_aviar/results/beast/runs/ucln_constant/r1/status.log
+stdout	/home/sebas/MIRA_NGS/flu_aviar/results/beast/runs/ucln_constant/r1/stdout.log
+stderr	/home/sebas/MIRA_NGS/flu_aviar/results/beast/runs/ucln_constant/r1/stderr.log
+replicate_dir	/home/sebas/MIRA_NGS/flu_aviar/results/beast/runs/ucln_constant/r1
+output_prefix	results/beast/runs/ucln_constant/ucln_constant
+moved_outputs	/home/sebas/MIRA_NGS/flu_aviar/results/beast/runs/ucln_constant/r1/ucln_constant.log;/home/sebas/MIRA_NGS/flu_aviar/results/beast/runs/ucln_constant/r1/ucln_constant.trees;/home/sebas/MIRA_NGS/flu_aviar/results/beast/runs/ucln_constant/r1/ucln_constant.chkpt;/home/sebas/MIRA_NGS/flu_aviar/results/beast/runs/ucln_constant/r1/ucln_constant.ops
+missing_outputs	

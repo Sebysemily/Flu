@@ -152,6 +152,7 @@ def parse_header_sample_segment(header):
 
 def build_metadata_map(metadata_csv, ecuador_date_source):
     df = pd.read_csv(metadata_csv, dtype=str)
+    source_value = (ecuador_date_source or "reception").strip().lower()
 
     sample_col = pick_column(df, ["Codigo USFQ", "Código USFQ"])
     province_col = pick_column(df, ["Provincia"])
@@ -162,8 +163,18 @@ def build_metadata_map(metadata_csv, ecuador_date_source):
         raise ValueError("No se encontro la columna de muestra (Codigo USFQ/Código USFQ) en metadata")
     if province_col is None:
         raise ValueError("No se encontro la columna Provincia en metadata")
-    if collection_col is None and received_col is None:
-        raise ValueError("No se encontro columna de fecha util en metadata")
+    if source_value == "collection" and collection_col is None:
+        raise ValueError(
+            "ecuador_date_source=collection pero no se encontro la columna Fecha colección/Fecha coleccion en metadata"
+        )
+    if source_value == "reception" and received_col is None:
+        raise ValueError(
+            "ecuador_date_source=reception pero no se encontro la columna Fecha recepción/Fecha recepcion en metadata"
+        )
+    if source_value not in {"collection", "reception"}:
+        raise ValueError(
+            f"ecuador_date_source invalido: {ecuador_date_source}. Usa 'collection' o 'reception'."
+        )
 
     validation_rows = []
     for _, row in df.iterrows():

@@ -1,0 +1,19 @@
+
+Operator analysis
+Operator                                          Tuning   Count      Time     Time/Op  Pr(accept) Smoothed_Pr(accept)
+scale(SRD06.CP1+2.kappa)                          0.577   216913     71641    0.33     0.2344      0.25        
+scale(SRD06.CP3.kappa)                            0.381   217681     51226    0.24     0.2342      0.15        
+deltaExchange(SRD06.CP1+2.frequencies)            0.028   216893     71370    0.33     0.2336      0.24        
+deltaExchange(SRD06.CP3.frequencies)              0.038   216271     50650    0.23     0.2329      0.28        
+scale(SRD06.CP1+2.alpha)                          0.34    216051     71427    0.33     0.2334      0.25        
+scale(SRD06.CP3.alpha)                            0.183   217094     51019    0.24     0.2347      0.27        
+scale(H5N1_NS.kappa)                              0.326   216915     34193    0.16     0.2337      0.22        
+deltaExchange(H5N1_NS.frequencies)                0.058   216829     34592    0.16     0.2342      0.22        
+scale(H5N1_NS.alpha)                              0.13    216551     33911    0.16     0.2339      0.31        
+scale(clock.rate)                                 0.757   649197     389375   0.6      0.234       0.28        
+up:nodeHeights(treeModel) down:clock.rate         0.997   650389     244143   0.38     0.234       0.21        
+deltaExchange(allNus)                             0.075   649516     266529   0.41     0.2337      0.24        
+subtreeLeap(treeModel)                            0.087   13864058   1586675  0.11     0.2339      0.29        
+subtreeJump(treeModel)                                    1386031    188882   0.14     0.0274      0.03        
+scale(constant.popSize)                           0.523   649611     10828    0.02     0.2342      0.21        
+

@@ -88,13 +88,14 @@ def validate_no_missing_dates(
 
 def pick_ecuador_date(row: Mapping[str, object], source: str = "reception") -> Optional[str]:
 	source_value = (source or "reception").strip().lower()
-	collection_date = parse_collection_date(
-		row.get("Fecha colección") or row.get("Fecha coleccion")
-	)
-	reception_date = parse_collection_date(
-		row.get("Fecha recepción") or row.get("Fecha recepcion")
-	)
-
 	if source_value == "collection":
-		return collection_date or reception_date
-	return reception_date or collection_date
+		return parse_collection_date(
+			row.get("Fecha colección") or row.get("Fecha coleccion")
+		)
+	if source_value == "reception":
+		return parse_collection_date(
+			row.get("Fecha recepción") or row.get("Fecha recepcion")
+		)
+	raise ValueError(
+		f"ecuador_date_source invalido: {source}. Usa 'collection' o 'reception'."
+	)

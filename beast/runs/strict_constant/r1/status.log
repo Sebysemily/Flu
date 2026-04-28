@@ -1,0 +1,70 @@
+[2026-04-15T08:08:11+00:00] run=strict_constant/r1 status=starting
+[2026-04-15T08:08:11+00:00] xml=/home/sebas/MIRA_NGS/flu_aviar/results/beast/xml/strict_constant.xml
+[2026-04-15T08:08:11+00:00] beast_binary=/home/sebas/MIRA_NGS/flu_aviar/.snakemake/conda/1ebeddae1b5a1710d8d61e914e796075_/bin/beast
+[2026-04-15T08:08:11+00:00] beast_version=BEAST v10.5.0, 2002-2025
+[2026-04-15T08:08:11+00:00] seed=3980
+[2026-04-15T08:08:11+00:00] threads=18
+[2026-04-15T08:08:11+00:00] replicate_dir=/home/sebas/MIRA_NGS/flu_aviar/results/beast/runs/strict_constant/r1
+[2026-04-15T08:08:11+00:00] command=/home/sebas/MIRA_NGS/flu_aviar/.snakemake/conda/1ebeddae1b5a1710d8d61e914e796075_/bin/beast -overwrite -threads 18 -seed 3980 /home/sebas/MIRA_NGS/flu_aviar/results/beast/xml/strict_constant.xml
+[2026-04-15T08:08:11+00:00] run=strict_constant/r1 status=running pid=252973
+[2026-04-15T08:08:11+00:00] run=strict_constant/r1 status=running pid=252973 seed=3980
+[2026-04-15T08:09:11+00:00] run=strict_constant/r1 status=running pid=252973 seed=3980
+[2026-04-15T08:10:11+00:00] run=strict_constant/r1 status=running pid=252973 seed=3980
+[2026-04-15T08:11:11+00:00] run=strict_constant/r1 status=running pid=252973 seed=3980
+[2026-04-15T08:12:11+00:00] run=strict_constant/r1 status=running pid=252973 seed=3980
+[2026-04-15T08:13:11+00:00] run=strict_constant/r1 status=running pid=252973 seed=3980
+[2026-04-15T08:14:11+00:00] run=strict_constant/r1 status=running pid=252973 seed=3980
+[2026-04-15T08:15:11+00:00] run=strict_constant/r1 status=running pid=252973 seed=3980
+[2026-04-15T08:16:11+00:00] run=strict_constant/r1 status=running pid=252973 seed=3980
+[2026-04-15T08:17:11+00:00] run=strict_constant/r1 status=running pid=252973 seed=3980
+[2026-04-15T08:18:11+00:00] run=strict_constant/r1 status=running pid=252973 seed=3980
+[2026-04-15T08:19:11+00:00] run=strict_constant/r1 status=running pid=252973 seed=3980
+[2026-04-15T08:20:11+00:00] run=strict_constant/r1 status=running pid=252973 seed=3980
+[2026-04-15T08:21:11+00:00] run=strict_constant/r1 status=running pid=252973 seed=3980
+[2026-04-15T08:22:11+00:00] run=strict_constant/r1 status=running pid=252973 seed=3980
+[2026-04-15T08:23:11+00:00] run=strict_constant/r1 status=running pid=252973 seed=3980
+[2026-04-15T08:24:11+00:00] run=strict_constant/r1 status=running pid=252973 seed=3980
+[2026-04-15T08:25:11+00:00] run=strict_constant/r1 status=running pid=252973 seed=3980
+[2026-04-15T08:26:11+00:00] run=strict_constant/r1 status=running pid=252973 seed=3980
+[2026-04-15T08:27:11+00:00] run=strict_constant/r1 status=running pid=252973 seed=3980
+[2026-04-15T08:28:11+00:00] run=strict_constant/r1 status=running pid=252973 seed=3980
+[2026-04-15T08:29:11+00:00] run=strict_constant/r1 status=running pid=252973 seed=3980
+[2026-04-15T08:30:11+00:00] run=strict_constant/r1 status=running pid=252973 seed=3980
+[2026-04-15T08:31:11+00:00] run=strict_constant/r1 status=running pid=252973 seed=3980
+[2026-04-15T08:32:11+00:00] run=strict_constant/r1 status=running pid=252973 seed=3980
+[2026-04-15T08:33:11+00:00] run=strict_constant/r1 status=running pid=252973 seed=3980
+[2026-04-15T08:34:11+00:00] run=strict_constant/r1 status=running pid=252973 seed=3980
+[2026-04-15T08:35:11+00:00] run=strict_constant/r1 status=running pid=252973 seed=3980
+[2026-04-15T08:36:11+00:00] run=strict_constant/r1 status=running pid=252973 seed=3980
+[2026-04-15T08:37:11+00:00] run=strict_constant/r1 status=running pid=252973 seed=3980
+[2026-04-15T08:38:11+00:00] run=strict_constant/r1 status=running pid=252973 seed=3980
+[2026-04-15T08:39:11+00:00] run=strict_constant/r1 status=running pid=252973 seed=3980
+[2026-04-15T08:40:11+00:00] run=strict_constant/r1 status=running pid=252973 seed=3980
+[2026-04-15T08:41:11+00:00] run=strict_constant/r1 status=running pid=252973 seed=3980
+[2026-04-15T08:42:11+00:00] run=strict_constant/r1 status=running pid=252973 seed=3980
+[2026-04-15T08:43:11+00:00] run=strict_constant/r1 status=running pid=252973 seed=3980
+[2026-04-15T08:44:11+00:00] run=strict_constant/r1 status=running pid=252973 seed=3980
+[2026-04-15T08:45:11+00:00] run=strict_constant/r1 status=running pid=252973 seed=3980
+[2026-04-15T08:46:11+00:00] run=strict_constant/r1 status=running pid=252973 seed=3980
+[2026-04-15T08:47:11+00:00] run=strict_constant/r1 status=running pid=252973 seed=3980
+[2026-04-15T08:48:11+00:00] run=strict_constant/r1 status=running pid=252973 seed=3980
+[2026-04-15T08:49:11+00:00] run=strict_constant/r1 status=running pid=252973 seed=3980
+[2026-04-15T08:50:11+00:00] run=strict_constant/r1 status=running pid=252973 seed=3980
+[2026-04-15T08:51:11+00:00] run=strict_constant/r1 status=running pid=252973 seed=3980
+[2026-04-15T08:52:11+00:00] run=strict_constant/r1 status=running pid=252973 seed=3980
+[2026-04-15T08:53:11+00:00] run=strict_constant/r1 status=running pid=252973 seed=3980
+[2026-04-15T08:54:11+00:00] run=strict_constant/r1 status=running pid=252973 seed=3980
+[2026-04-15T08:55:11+00:00] run=strict_constant/r1 status=running pid=252973 seed=3980
+[2026-04-15T08:56:11+00:00] run=strict_constant/r1 status=running pid=252973 seed=3980
+[2026-04-15T08:57:11+00:00] run=strict_constant/r1 status=running pid=252973 seed=3980
+[2026-04-15T08:58:11+00:00] run=strict_constant/r1 status=running pid=252973 seed=3980
+[2026-04-15T08:59:11+00:00] run=strict_constant/r1 status=running pid=252973 seed=3980
+[2026-04-15T09:00:11+00:00] run=strict_constant/r1 status=running pid=252973 seed=3980
+[2026-04-15T09:01:11+00:00] run=strict_constant/r1 status=running pid=252973 seed=3980
+[2026-04-15T09:02:11+00:00] run=strict_constant/r1 status=running pid=252973 seed=3980
+[2026-04-15T09:03:11+00:00] run=strict_constant/r1 status=running pid=252973 seed=3980
+[2026-04-15T09:04:11+00:00] run=strict_constant/r1 status=running pid=252973 seed=3980
+[2026-04-15T09:05:11+00:00] run=strict_constant/r1 status=running pid=252973 seed=3980
+[2026-04-15T09:06:11+00:00] run=strict_constant/r1 status=running pid=252973 seed=3980
+[2026-04-15T09:07:11+00:00] run=strict_constant/r1 status=running pid=252973 seed=3980
+[2026-04-15T09:08:11+00:00] run=strict_constant/r1 status=finished exit_code=0

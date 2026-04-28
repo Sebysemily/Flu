@@ -6,7 +6,6 @@ MAX_THREADS = int(config.get("max_threads", 20))
 MAFFT_THREADS = int(config.get("mafft_threads", MAX_THREADS))
 SEGMENT_RAXML_THREADS = int(config.get("raxml_segment_threads", MAX_THREADS))
 FULL_RAXML_THREADS = int(config.get("raxml_full_concat_threads", MAX_THREADS))
-RF_RAXML_THREADS = int(config.get("raxml_rf_threads", MAX_THREADS))
 
 FULL_CONCAT_FASTA = "data/final/H5N1_final_beast.fasta"
 FULL_CONCAT_ALIGNMENT = "data/phylogeny/aligned/H5N1_full_concat_beast.mafft"

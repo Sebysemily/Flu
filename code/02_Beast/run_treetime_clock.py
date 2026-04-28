@@ -31,6 +31,11 @@ def main() -> None:
     if proc.returncode != 0:
         raise SystemExit(proc.returncode)
 
+    outliers_path = os.path.join(args.outdir, "outliers.tsv")
+    if not os.path.exists(outliers_path):
+        with open(outliers_path, "w", encoding="utf-8") as handle:
+            handle.write("\tgiven_date\tapparent_date\tresidual\n")
+
     with open(args.done, "w", encoding="utf-8") as handle:
         handle.write("done\n")
 

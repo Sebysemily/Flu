@@ -1,7 +1,7 @@
 # -----------------------------
 # Inputs and metadata
 # -----------------------------
-mira_base_dir: ".."   # Base directory that contains run*/ and optionally run_agro/ from MIRA
+mira_base_dir: ".."   # Base directory that contains run*/ from MIRA
 flu_filtrado: "config/flu_filtrado.csv"   # Ecuador metadata/filter table used during assembly intake
 context_metadata_tsv: "config/final_metadata_50_per_country_isolates.tsv"   # Curated context accessions and labels
 ecuador_date_source: "collection"   # Which Ecuador date to use in FASTA headers: collection or reception
@@ -14,66 +14,36 @@ max_threads: 18         # Default thread cap reused when a tool-specific value i
 mafft_threads: 18       # Threads for MAFFT segment alignments
 raxml_segment_threads: 18   # Threads for per-segment RAxML-NG
 raxml_full_concat_threads: 18   # Threads for concatenated RAxML-NG
-raxml_rf_threads: 18    # Threads for RF validation RAxML-NG runs
-iqtree_modeltest_threads: 8   # Threads for IQ-TREE ModelFinder on the pre-BEAST concatenated subset
 
 # -----------------------------
-# Pre-BEAST panel selection
+# BEAST exploratory runs
 # -----------------------------
-beast_pre:
-  ecuador_core_ids:   # Ecuador seed taxa that define the focal clade for panel selection
-    - "Flu-0316"
-    - "Flu-0317"
-    - "Flu-0580"
-    - "Flu-0582"
-    - "Flu-0583"
-    - "Flu-0584"
-    - "Flu-0586"
-    - "Flu-0589"
-    - "Flu-0592"
-    - "Flu-0593"
-    - "Flu-0596"
-    - "Flu-0599"
-    - "Flu-0600"
-    - "Flu-0604"
-    - "Flu-0608"
-    - "Flu-0610"
-    - "Flu-0611"
-    - "Flu-0613"
-    - "Flu-0614"
-    - "Flu-0619"
-    - "Flu-0621"
-    - "Flu-0622"
-    - "Flu-0623"
-    - "Flu-0630"
-    - "Flu-0641"
-    - "Flu-0652"
-    - "Flu-0653"
-    - "Flu-0654"
-
-  regional_blacklist_tokens:   # Any regional tip containing one of these substrings is excluded from regional_context
-    - "__eurasian_anchor"
-    - "__american_anchor"
-    - "__usa_"
-
-  max_cluster_dist: 0.08   # Legacy compatibility knob; currently not used for gating
-  n_per_country: 8         # Strict regional pass: max selected regional_context taxa per country
-  n_total: 80              # Strict regional pass: max total regional_context taxa before anchors
-  min_mrca_support: 70.0   # Strict regional pass: minimum TBE support for the MRCA shared with Ecuador core
-  max_per_country_month: 2   # Strict regional pass: max taxa per (country, YYYY-MM) bucket
-
-  usa_distal_quota: 0      # Number of usa_distal taxa to add by nearest distance to Ecuador core
-  forced_american_anchor_accession: "OQ968009"   # Anchor accession that must be kept if present in the tree
-  additional_american_anchor_quota: 1   # Additional american_anchor taxa beyond the forced accession
-
-  relaxed_min_mrca_support: 50.0   # Lower TBE threshold used only in the relaxed extra regional pass
-  relaxed_fill: 0                  # Extra regional_context taxa to add after the strict pass using the relaxed threshold
-
-  bets:
-    enabled: false   # If true, run BETS even if XML presence auto-detection would skip it
-    threads: 4       # Threads passed to BEAST/BETS runs
-    package_dir: "results/beast_pre/bets/packages"   # Local BEAST package dir used to install MODEL_SELECTION
-    strict_constant_heterochronous_xml: "config/beast_pre/bets/strict_constant_heterochronous.xml"
-    strict_constant_isochronous_xml: "config/beast_pre/bets/strict_constant_isochronous.xml"
-    ucln_constant_heterochronous_xml: "config/beast_pre/bets/ucln_constant_heterochronous.xml"
-    ucln_constant_isochronous_xml: "config/beast_pre/bets/ucln_constant_isochronous.xml"
+beast:
+  enabled: true
+  binary: null
+  max_hours: 6
+  threads: 18
+  beagle:
+    mode: auto
+    vendor: amd
+    resource: gpu
+    platform: auto
+    precision: auto
+    scaling: default
+    fallback_to_cpu: false
+    info: true
+  chain_length:
+    strict_constant: 100000000
+    strict_constant_lugar: 100000000
+    ucln_constant: 120000000
+    strict_exp: 100000000
+    ucln_exp: 120000000
+  log_every: 10000
+  tree_every: 10000
+  echo_every: 10000
+  seeds:
+    strict_constant: 3980
+    strict_constant_lugar: 13980
+    ucln_constant: 9473
+    strict_exp: 10893
+    ucln_exp: 3749

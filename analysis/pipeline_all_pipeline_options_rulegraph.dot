@@ -2,54 +2,125 @@ digraph snakemake_dag {
     graph[bgcolor=white, margin=0];
     node[shape=box, style=rounded, fontname=sans,                 fontsize=10, penwidth=2];
     edge[penwidth=2, color=grey];
-	0[label = "split_h5n1_final_by_segment", color = "0.51 0.6 0.85", style="rounded"];
-	1[label = "build_h5n1_final_fasta", color = "0.11 0.6 0.85", style="rounded"];
-	2[label = "build_h5n1_ec_fasta", color = "0.09 0.6 0.85", style="rounded"];
-	3[label = "build_ecuador_intermediate_input", color = "0.04 0.6 0.85", style="rounded"];
-	4[label = "summarize_segment_codon_rf_instability", color = "0.56 0.6 0.85", style="rounded"];
-	5[label = "raxml_ng_tree_segment_codon_rf_base", color = "0.36 0.6 0.85", style="rounded"];
-	6[label = "mafft_align_per_segment", color = "0.20 0.6 0.85", style="rounded"];
-	7[label = "build_segment_codon_partitions", color = "0.13 0.6 0.85", style="rounded"];
-	8[label = "raxml_ng_tree_segment_codon_rf_rep", color = "0.38 0.6 0.85", style="rounded"];
-	9[label = "concat_aligned_segments_with_partitions", color = "0.16 0.6 0.85", style="rounded"];
-	10[label = "raxml_ng_tree_per_segment_codon", color = "0.29 0.6 0.85", style="rounded"];
-	11[label = "raxml_ng_tree_per_segment_simple", color = "0.33 0.6 0.85", style="rounded"];
-	12[label = "summarize_segment_simple_rf_instability", color = "0.58 0.6 0.85", style="rounded"];
-	13[label = "raxml_ng_tree_segment_simple_rf_base", color = "0.40 0.6 0.85", style="rounded"];
-	14[label = "raxml_ng_tree_segment_simple_rf_rep", color = "0.42 0.6 0.85", style="rounded"];
-	15[label = "raxml_ng_tree_full_concat", color = "0.22 0.6 0.85", style="rounded"];
-	16[label = "summarize_full_concat_codon_validation_rf_instability", color = "0.53 0.6 0.85", style="rounded"];
-	17[label = "raxml_ng_tree_full_concat_codon_validation_base", color = "0.24 0.6 0.85", style="rounded"];
-	18[label = "concat_codon_validation_with_partitions", color = "0.18 0.6 0.85", style="rounded"];
-	19[label = "raxml_ng_tree_full_concat_codon_validation_rf_rep", color = "0.27 0.6 0.85", style="rounded"];
+	0[label = "build_gisaid_outputs", color = "0.12 0.6 0.85", style="rounded"];
+	1[label = "build_ecuador_intermediate_input", color = "0.09 0.6 0.85", style="rounded"];
+	2[label = "build_h5n1_ec_fasta", color = "0.14 0.6 0.85", style="rounded"];
+	3[label = "paper_figures", color = "0.35 0.6 0.85", style="rounded"];
+	4[label = "build_inputs_outputs", color = "0.18 0.6 0.85", style="rounded"];
+	5[label = "build_h5n1_final_fasta", color = "0.16 0.6 0.85", style="rounded"];
+	6[label = "pre_beast_outputs", color = "0.37 0.6 0.85", style="rounded"];
+	7[label = "observe_beast_subset_source_qc", color = "0.32 0.6 0.85", style="rounded"];
+	8[label = "build_beast_panels", color = "0.07 0.6 0.85", style="rounded"];
+	9[label = "raxml_ng_tree_full_concat", color = "0.42 0.6 0.85", style="rounded"];
+	10[label = "concat_aligned_segments_with_partitions", color = "0.23 0.6 0.85", style="rounded"];
+	11[label = "mafft_align_per_segment", color = "0.28 0.6 0.85", style="rounded"];
+	12[label = "split_h5n1_final_by_segment", color = "0.54 0.6 0.85", style="rounded"];
+	13[label = "raxml_ng_tree_per_segment_codon", color = "0.44 0.6 0.85", style="rounded"];
+	14[label = "build_segment_codon_partitions", color = "0.19 0.6 0.85", style="rounded"];
+	15[label = "raxml_ng_tree_per_segment_simple", color = "0.46 0.6 0.85", style="rounded"];
+	16[label = "subset_filtered_panel_concat_alignment_and_prune_tree", color = "0.56 0.6 0.85", style="rounded"];
+	17[label = "filter_beast_panel_by_qc", color = "0.25 0.6 0.85", style="rounded"];
+	18[label = "build_treetime_dates", color = "0.21 0.6 0.85", style="rounded"];
+	19[label = "observe_segment_alignment_qc", color = "0.33 0.6 0.85", style="rounded"];
+	20[label = "subset_filtered_raw_segment_fasta", color = "0.58 0.6 0.85", style="rounded"];
+	21[label = "filter_beast_panel_by_rtt_outliers", color = "0.26 0.6 0.85", style="rounded"];
+	22[label = "run_root_to_tip", color = "0.53 0.6 0.85", style="rounded"];
+	23[label = "subset_filtered_segment_alignment", color = "0.60 0.6 0.85", style="rounded"];
+	24[label = "publish_final_panel_concat_alignment", color = "0.40 0.6 0.85", style="rounded"];
+	25[label = "summarize_final_segment_qc", color = "0.63 0.6 0.85", style="rounded"];
+	26[label = "prepare_beast_run_xml", color = "0.39 0.6 0.85", style="rounded"];
+	27[label = "beast_runs", color = "0.05 0.6 0.85", style="rounded"];
+	28[label = "summarize_beast_run", color = "0.61 0.6 0.85", style="rounded"];
+	29[label = "run_beast_replicate", color = "0.51 0.6 0.85", style="rounded"];
+	30[label = "validate_beast_xml", color = "0.65 0.6 0.85", style="rounded"];
+	31[label = "build_gisaid", color = "0.11 0.6 0.85", style="rounded"];
+	32[label = "main_phylogeny", color = "0.30 0.6 0.85", style="rounded"];
+	33[label = "all_validation_outputs", color = "0.04 0.6 0.85", style="rounded"];
+	2 -> 0
 	1 -> 0
-	2 -> 1
-	3 -> 2
+	1 -> 2
 	5 -> 4
-	8 -> 4
-	7 -> 5
-	6 -> 5
-	0 -> 6
-	6 -> 7
-	5 -> 8
-	7 -> 8
-	6 -> 8
-	11 -> 9
-	6 -> 9
+	2 -> 5
+	7 -> 6
+	17 -> 6
+	25 -> 6
+	16 -> 6
+	21 -> 6
+	24 -> 6
+	19 -> 6
+	20 -> 6
+	18 -> 6
+	23 -> 6
+	22 -> 6
+	26 -> 6
+	5 -> 7
+	8 -> 7
+	1 -> 7
+	2 -> 7
+	9 -> 8
 	10 -> 9
-	7 -> 10
-	6 -> 10
-	6 -> 11
-	14 -> 12
-	13 -> 12
-	6 -> 13
-	13 -> 14
-	6 -> 14
-	9 -> 15
+	11 -> 10
+	15 -> 10
+	13 -> 10
+	12 -> 11
+	5 -> 12
+	14 -> 13
+	11 -> 13
+	11 -> 14
+	11 -> 15
+	9 -> 16
+	10 -> 16
 	17 -> 16
-	19 -> 16
-	18 -> 17
-	6 -> 18
-	17 -> 19
-	18 -> 19
+	7 -> 17
+	8 -> 17
+	16 -> 18
+	23 -> 19
+	21 -> 19
+	20 -> 19
+	12 -> 20
+	21 -> 20
+	18 -> 21
+	22 -> 21
+	17 -> 21
+	18 -> 22
+	16 -> 22
+	11 -> 23
+	21 -> 23
+	21 -> 24
+	16 -> 24
+	19 -> 25
+	24 -> 26
+	21 -> 26
+	28 -> 27
+	29 -> 28
+	30 -> 29
+	26 -> 29
+	29 -> 29
+	26 -> 30
+	2 -> 31
+	1 -> 31
+	10 -> 32
+	15 -> 32
+	12 -> 32
+	9 -> 32
+	13 -> 32
+	10 -> 33
+	17 -> 33
+	15 -> 33
+	18 -> 33
+	28 -> 33
+	21 -> 33
+	16 -> 33
+	24 -> 33
+	19 -> 33
+	25 -> 33
+	5 -> 33
+	20 -> 33
+	12 -> 33
+	9 -> 33
+	23 -> 33
+	26 -> 33
+	22 -> 33
+	13 -> 33
+	7 -> 33
 }            
