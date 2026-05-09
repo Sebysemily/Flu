@@ -70,6 +70,65 @@ PRE_BEAST_ROOT_TO_TIP_LOG = f"{PRE_BEAST_RTT_DIR}/treetime_clock.log"
 PRE_BEAST_ROOT_TO_TIP_DONE = f"{PRE_BEAST_RTT_DIR}/treetime_clock.done"
 BEAST_FINAL_DATES = f"{BEAST_EXPORT_DIR}/panel_main_dates.final.tsv"
 
+NP_MP_NS_SENSITIVITY_CONFIG = config.get("np_mp_ns_sensitivity", {})
+NP_MP_NS_FORCED_AMERICAN_ANCHOR = NP_MP_NS_SENSITIVITY_CONFIG.get(
+    "forced_american_anchor_accession",
+    "OQ968009",
+)
+NP_MP_NS_AMERICAN_ANCHOR_TOTAL = int(
+    NP_MP_NS_SENSITIVITY_CONFIG.get("american_anchor_total", 6)
+)
+NP_MP_NS_SENSITIVITY_DATA_DIR = "data/pre_beast/sensitivity_np_mp_ns"
+NP_MP_NS_SENSITIVITY_RESULTS_DIR = f"{BEAST_PRE_RESULTS_DIR}/sensitivity_np_mp_ns"
+NP_MP_NS_SENSITIVITY_RTT_DIR = f"{NP_MP_NS_SENSITIVITY_RESULTS_DIR}/rtt"
+NP_MP_NS_SENSITIVITY_PANEL_TAXA = f"{NP_MP_NS_SENSITIVITY_DATA_DIR}/panel_taxa.tsv"
+NP_MP_NS_SENSITIVITY_PANEL_AUDIT = f"{NP_MP_NS_SENSITIVITY_DATA_DIR}/panel_audit.tsv"
+NP_MP_NS_SENSITIVITY_SUBSET_ALIGNMENT = (
+    f"{NP_MP_NS_SENSITIVITY_DATA_DIR}/panel_np_mp_ns.fasta"
+)
+NP_MP_NS_SENSITIVITY_SUBSET_TREE = (
+    f"{NP_MP_NS_SENSITIVITY_DATA_DIR}/panel_np_mp_ns.nwk"
+)
+NP_MP_NS_SENSITIVITY_SUBSET_AUDIT = (
+    f"{NP_MP_NS_SENSITIVITY_DATA_DIR}/panel_np_mp_ns.audit.tsv"
+)
+NP_MP_NS_SENSITIVITY_DATES = f"{NP_MP_NS_SENSITIVITY_RTT_DIR}/dates_from_headers.tsv"
+NP_MP_NS_SENSITIVITY_RTT_OUTLIERS = f"{NP_MP_NS_SENSITIVITY_RTT_DIR}/outliers.tsv"
+NP_MP_NS_SENSITIVITY_RTT_LOG = f"{NP_MP_NS_SENSITIVITY_RTT_DIR}/treetime_clock.log"
+NP_MP_NS_SENSITIVITY_RTT_DONE = f"{NP_MP_NS_SENSITIVITY_RTT_DIR}/treetime_clock.done"
+NP_MP_NS_SENSITIVITY_RTT_CSV = f"{NP_MP_NS_SENSITIVITY_RTT_DIR}/rtt.csv"
+NP_MP_NS_SENSITIVITY_RTT_PDF = (
+    f"{NP_MP_NS_SENSITIVITY_RTT_DIR}/root_to_tip_regression.pdf"
+)
+NP_MP_NS_SENSITIVITY_RTT_FILTERED_PANEL = (
+    f"{NP_MP_NS_SENSITIVITY_DATA_DIR}/panel_taxa.rtt_filtered.tsv"
+)
+NP_MP_NS_SENSITIVITY_RTT_FILTERED_DATES = (
+    f"{NP_MP_NS_SENSITIVITY_RTT_DIR}/dates.rtt_filtered.tsv"
+)
+NP_MP_NS_SENSITIVITY_RTT_EXCLUSIONS = (
+    f"{NP_MP_NS_SENSITIVITY_RTT_DIR}/rtt_outlier_exclusions.tsv"
+)
+NP_MP_NS_SENSITIVITY_RTT_SUMMARY = f"{NP_MP_NS_SENSITIVITY_RTT_DIR}/summary.tsv"
+
+NP_MP_NS_RTT_SENSITIVITY_TARGETS = [
+    NP_MP_NS_SENSITIVITY_PANEL_TAXA,
+    NP_MP_NS_SENSITIVITY_PANEL_AUDIT,
+    NP_MP_NS_SENSITIVITY_SUBSET_ALIGNMENT,
+    NP_MP_NS_SENSITIVITY_SUBSET_TREE,
+    NP_MP_NS_SENSITIVITY_SUBSET_AUDIT,
+    NP_MP_NS_SENSITIVITY_DATES,
+    NP_MP_NS_SENSITIVITY_RTT_OUTLIERS,
+    NP_MP_NS_SENSITIVITY_RTT_CSV,
+    NP_MP_NS_SENSITIVITY_RTT_PDF,
+    NP_MP_NS_SENSITIVITY_RTT_LOG,
+    NP_MP_NS_SENSITIVITY_RTT_DONE,
+    NP_MP_NS_SENSITIVITY_RTT_FILTERED_PANEL,
+    NP_MP_NS_SENSITIVITY_RTT_FILTERED_DATES,
+    NP_MP_NS_SENSITIVITY_RTT_EXCLUSIONS,
+    NP_MP_NS_SENSITIVITY_RTT_SUMMARY,
+]
+
 BEAST_CONFIG = config.get("beast", {})
 BEAST_LOG_EVERY = int(BEAST_CONFIG.get("log_every", 2000))
 BEAST_TREE_EVERY = int(BEAST_CONFIG.get("tree_every", BEAST_LOG_EVERY))
@@ -100,6 +159,122 @@ BEAST_PREPARED_XMLS = {
     for scenario in BEAST_TEMPLATE_XMLS
 }
 PREPARED_BEAST_XMLS = list(BEAST_PREPARED_XMLS.values())
+
+
+rule build_np_mp_ns_sensitivity_panel:
+    input:
+        tree=f"{NP_MP_NS_PREFIX}.raxml.supportTBE",
+    output:
+        panel=NP_MP_NS_SENSITIVITY_PANEL_TAXA,
+        audit=NP_MP_NS_SENSITIVITY_PANEL_AUDIT,
+    params:
+        forced_american_anchor=NP_MP_NS_FORCED_AMERICAN_ANCHOR,
+        american_anchor_total=NP_MP_NS_AMERICAN_ANCHOR_TOTAL,
+    conda:
+        "../envs/02_pre_beast.yml"
+    shell:
+        r"""
+        python code/02_Beast/build_np_mp_ns_sensitivity_panel.py \
+            --tree {input.tree} \
+            --panel-out {output.panel} \
+            --audit-out {output.audit} \
+            --forced-american-anchor-accession {params.forced_american_anchor} \
+            --american-anchor-total {params.american_anchor_total}
+        """
+
+
+rule subset_np_mp_ns_sensitivity_alignment_and_prune_tree:
+    input:
+        alignment=NP_MP_NS_ALIGNMENT,
+        tree=f"{NP_MP_NS_PREFIX}.raxml.supportTBE",
+        taxa=NP_MP_NS_SENSITIVITY_PANEL_TAXA,
+    output:
+        alignment=NP_MP_NS_SENSITIVITY_SUBSET_ALIGNMENT,
+        tree=NP_MP_NS_SENSITIVITY_SUBSET_TREE,
+        audit=NP_MP_NS_SENSITIVITY_SUBSET_AUDIT,
+    conda:
+        "../envs/ml_per_segment.yml"
+    shell:
+        r"""
+        python code/02_Beast/subset_alignment_and_prune_tree.py \
+            --alignment {input.alignment} \
+            --tree {input.tree} \
+            --taxa {input.taxa} \
+            --out-alignment {output.alignment} \
+            --out-tree {output.tree} \
+            --audit {output.audit}
+        """
+
+
+rule build_np_mp_ns_sensitivity_treetime_dates:
+    input:
+        alignment=NP_MP_NS_SENSITIVITY_SUBSET_ALIGNMENT,
+    output:
+        dates=NP_MP_NS_SENSITIVITY_DATES,
+    conda:
+        "../envs/02_pre_beast.yml"
+    shell:
+        r"""
+        mkdir -p $(dirname {output.dates})
+        python code/02_Beast/build_treetime_dates.py \
+            --aln {input.alignment} \
+            --out {output.dates}
+        """
+
+
+rule run_np_mp_ns_sensitivity_root_to_tip:
+    input:
+        tree=NP_MP_NS_SENSITIVITY_SUBSET_TREE,
+        alignment=NP_MP_NS_SENSITIVITY_SUBSET_ALIGNMENT,
+        dates=NP_MP_NS_SENSITIVITY_DATES,
+    output:
+        outliers=NP_MP_NS_SENSITIVITY_RTT_OUTLIERS,
+        rtt_csv=NP_MP_NS_SENSITIVITY_RTT_CSV,
+        rtt_pdf=NP_MP_NS_SENSITIVITY_RTT_PDF,
+        log=NP_MP_NS_SENSITIVITY_RTT_LOG,
+        done=NP_MP_NS_SENSITIVITY_RTT_DONE,
+    conda:
+        "../envs/02_pre_beast.yml"
+    shell:
+        r"""
+        python code/02_Beast/run_treetime_clock.py \
+            --tree {input.tree} \
+            --aln {input.alignment} \
+            --dates {input.dates} \
+            --outdir $(dirname {output.log}) \
+            --log {output.log} \
+            --done {output.done}
+        """
+
+
+rule filter_np_mp_ns_sensitivity_panel_by_rtt_outliers:
+    input:
+        panel_tsv=NP_MP_NS_SENSITIVITY_PANEL_TAXA,
+        rtt_outliers=NP_MP_NS_SENSITIVITY_RTT_OUTLIERS,
+        dates_in=NP_MP_NS_SENSITIVITY_DATES,
+    output:
+        filtered_panel=NP_MP_NS_SENSITIVITY_RTT_FILTERED_PANEL,
+        dates_out=NP_MP_NS_SENSITIVITY_RTT_FILTERED_DATES,
+        exclusions=NP_MP_NS_SENSITIVITY_RTT_EXCLUSIONS,
+        summary=NP_MP_NS_SENSITIVITY_RTT_SUMMARY,
+    conda:
+        "../envs/02_pre_beast.yml"
+    shell:
+        r"""
+        python code/02_Beast/filter_beast_panel_by_rtt_outliers.py \
+            --panel-taxa {input.panel_tsv} \
+            --rtt-outliers {input.rtt_outliers} \
+            --dates-in {input.dates_in} \
+            --dates-out {output.dates_out} \
+            --filtered-panel-out {output.filtered_panel} \
+            --exclusions-out {output.exclusions} \
+            --summary-out {output.summary}
+        """
+
+
+rule np_mp_ns_rtt_sensitivity:
+    input:
+        NP_MP_NS_RTT_SENSITIVITY_TARGETS
 
 
 rule build_beast_panels:

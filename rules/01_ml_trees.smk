@@ -1,6 +1,8 @@
 PHYLO_SEGMENTS = ["PB2", "PB1", "PA", "HA", "NP", "NA", "MP", "NS"]
 CODON_SEGMENTS = ["PB2", "PB1", "PA", "HA", "NP", "NA"]
 SIMPLE_SEGMENTS = ["NS", "MP"]
+NP_MP_NS_SEGMENTS = ["NP", "MP", "NS"]
+NP_MP_NS_CODON_SEGMENTS = ["NP"]
 RANDOM_SEED = config.get("random_seed", 39809473)
 MAX_THREADS = int(config.get("max_threads", 20))
 MAFFT_THREADS = int(config.get("mafft_threads", MAX_THREADS))
@@ -11,6 +13,9 @@ FULL_CONCAT_FASTA = "data/final/H5N1_final_beast.fasta"
 FULL_CONCAT_ALIGNMENT = "data/phylogeny/aligned/H5N1_full_concat_beast.mafft"
 FULL_CONCAT_PARTITIONS = "data/phylogeny/H5N1_full_concat_beast.partitions"
 FULL_CONCAT_PREFIX = "results/phylogeny/raxml/full_concat/H5N1_full_concat_beast"
+NP_MP_NS_ALIGNMENT = "data/phylogeny/aligned/H5N1_NP_MP_NS.mafft"
+NP_MP_NS_PARTITIONS = "data/phylogeny/H5N1_NP_MP_NS.partitions"
+NP_MP_NS_PREFIX = "results/phylogeny/raxml/np_mp_ns/H5N1_NP_MP_NS"
 
 
 rule split_h5n1_final_by_segment:
@@ -89,6 +94,30 @@ rule concat_aligned_segments_with_partitions:
 		"""
 
 
+rule concat_np_mp_ns_with_partitions:
+	input:
+		alignments=expand("data/phylogeny/aligned/H5N1_{segment}.mafft", segment=NP_MP_NS_SEGMENTS),
+		segment_trees=expand(
+			"results/phylogeny/raxml/{segment}/H5N1_{segment}.raxml.supportTBE",
+			segment=NP_MP_NS_SEGMENTS,
+		)
+	output:
+		aligned=NP_MP_NS_ALIGNMENT,
+		partitions=NP_MP_NS_PARTITIONS
+	params:
+		segment_order=",".join(NP_MP_NS_SEGMENTS),
+		codon_segments=",".join(NP_MP_NS_CODON_SEGMENTS)
+	shell:
+		r"""
+		python code/01_ml_trees/build_concat_codon_partitions.py \
+			--segment-order {params.segment_order} \
+			--codon-segments {params.codon_segments} \
+			--output-alignment {output.aligned} \
+			--output-partitions {output.partitions} \
+			{input.alignments}
+		"""
+
+
 rule raxml_ng_tree_per_segment_codon:
 	input:
 		alignment="data/phylogeny/aligned/H5N1_{segment}.mafft",
@@ -152,6 +181,32 @@ rule raxml_trees_all_segments:
 		)
 
 
+rule raxml_ng_tree_np_mp_ns:
+	input:
+		alignment=NP_MP_NS_ALIGNMENT,
+		partitions=NP_MP_NS_PARTITIONS
+	output:
+		best_tree=f"{NP_MP_NS_PREFIX}.raxml.bestTree",
+		support_tbe=f"{NP_MP_NS_PREFIX}.raxml.supportTBE"
+	params:
+		prefix=NP_MP_NS_PREFIX,
+		extra=lambda wildcards: f"--seed {RANDOM_SEED} --bs-metric tbe --force perf_threads --tree 'pars{{30}},rand{{30}}'"
+	threads: FULL_RAXML_THREADS
+	conda:
+		"../envs/ml_per_segment.yml"
+	shell:
+		r"""
+		mkdir -p results/phylogeny/raxml/np_mp_ns
+		raxml-ng \
+			--all \
+			--msa {input.alignment} \
+			--model {input.partitions} \
+			--prefix {params.prefix} \
+			--threads {threads} \
+			{params.extra}
+		"""
+
+
 rule raxml_ng_tree_full_concat:
 	input:
 		alignment=FULL_CONCAT_ALIGNMENT,
@@ -181,3 +236,8 @@ rule raxml_ng_tree_full_concat:
 rule raxml_tree_full_concat:
 	input:
 		f"{FULL_CONCAT_PREFIX}.raxml.supportTBE"
+
+
+rule raxml_tree_np_mp_ns:
+	input:
+		f"{NP_MP_NS_PREFIX}.raxml.supportTBE"
