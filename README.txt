@@ -7,6 +7,7 @@ Requisitos
 - `conda` o `mamba`
 - conexión a internet si se quiere descargar contexto desde NCBI
 - un binario compatible con BEAST 1 disponible en `PATH` o configurable con `config.beast.binary`
+- Docker con el contenedor `mira` corriendo si `ecuador_input_source: mira_raw`
 
 Ejecución
 - Preparar inputs de Ecuador desde MIRA:
@@ -14,6 +15,9 @@ Ejecución
 ```bash
 snakemake --cores all --use-conda build_gisaid
 ```
+
+  Por defecto `config.ecuador_input_source: assembled` consume los `amended_consensus.fasta` ya existentes bajo `mira_base_dir`.
+  Para empezar desde datos raw, usar `ecuador_input_source: mira_raw` o `mira_cli.enabled: true`; Snakemake correra MIRA CLI con Docker para cada `run*` con `samplesheet.csv` antes de construir los inputs de Ecuador. MIRA no se instala por conda: debe estar disponible como contenedor Docker, por ejemplo iniciado con `cd ~/MIRA_NGS && docker compose up -d`.
 
 - Correr el workflow principal hasta las corridas exploratorias de BEAST:
 
@@ -125,6 +129,7 @@ El archivo central es `config/config.yml`.
 
 Variables globales
 - `mira_base_dir`
+- `ecuador_input_source`
 - `flu_filtrado`
 - `context_metadata_tsv`
 - `ecuador_date_source`
@@ -133,6 +138,15 @@ Variables globales
 - `mafft_threads`
 - `raxml_segment_threads`
 - `raxml_full_concat_threads`
+
+Variables de `mira_cli`
+- `enabled`
+- `container_name`
+- `container_workdir`
+- `data_dir`
+- `experiment`
+- `run_glob`
+- `require_samplesheet`
 
 Variables de `beast_pre`
 - `relaxed_panel_mode`

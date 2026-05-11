@@ -17,7 +17,22 @@ with open(CONFIG_FILE) as fh:
 
 FILTRADO_CSV = config.get("flu_filtrado", "config/flu_filtrado.csv")
 
-MIRA_BASE = config.get("mira_base_dir", "..")
+ECUADOR_INPUT_SOURCE = config.get("ecuador_input_source", "assembled")
+VALID_ECUADOR_INPUT_SOURCES = {"assembled", "mira_raw"}
+if ECUADOR_INPUT_SOURCE not in VALID_ECUADOR_INPUT_SOURCES:
+    raise SystemExit(
+        "config.ecuador_input_source must be one of: "
+        + ", ".join(sorted(VALID_ECUADOR_INPUT_SOURCES))
+    )
+
+MIRA_CFG = config.get("mira_cli", {})
+MIRA_RAW_INPUT = ECUADOR_INPUT_SOURCE == "mira_raw" or bool(MIRA_CFG.get("enabled", False))
+MIRA_BASE = (
+    MIRA_CFG.get("data_dir", config.get("mira_base_dir", ".."))
+    if MIRA_RAW_INPUT
+    else config.get("mira_base_dir", "..")
+)
+MIRA_INCLUDE_RUN_AGRO = not MIRA_RAW_INPUT
 
 # Load valid samples from flu_filtrado.csv
 filtrado_df = pd.read_csv(FILTRADO_CSV)
@@ -92,7 +107,8 @@ os.makedirs(os.path.join(OUTDIR, "ecuador_intermediate_per_sample"), exist_ok=Tr
 print(f"Output directory ready: {OUTDIR}")
 
 mira_fastas = sorted(glob.glob(os.path.join(MIRA_BASE, "run*", "amended_consensus.fasta")))
-mira_fastas += sorted(glob.glob(os.path.join(MIRA_BASE, "run_agro", "amended_consensus.fasta")))
+if MIRA_INCLUDE_RUN_AGRO:
+    mira_fastas += sorted(glob.glob(os.path.join(MIRA_BASE, "run_agro", "amended_consensus.fasta")))
 mira_fastas = sorted(set(mira_fastas))
 
 print("FASTAs detectados:")
