@@ -13,9 +13,8 @@ from date_normalization import (
 )
 
 
-DEFAULT_PER_SAMPLE_DIR = os.path.join("data", "assembled", "ecuador_intermediate_per_sample")
-DEFAULT_AUDIT_CSV = os.path.join("data", "assembled", "ecuador_intermediate_audit.csv")
 CONFIG_FILE = os.path.join("config", "config.yml")
+DEFAULT_INPUT_FASTAS = [os.path.join("data", "assembled", "H5N1_EC_gisaid_from_mira.fasta")]
 DEFAULT_METADATA_CSV = os.path.join("config", "flu_filtrado.csv")
 DEFAULT_ECUADOR_DATE_SOURCE = "reception"
 try:
@@ -25,11 +24,12 @@ try:
             DEFAULT_METADATA_CSV = _cfg.get("flu_filtrado", DEFAULT_METADATA_CSV)
             DEFAULT_ECUADOR_DATE_SOURCE = _cfg.get("ecuador_date_source", DEFAULT_ECUADOR_DATE_SOURCE)
 except Exception:
-    # Fall back to builtin default if config can't be read
     pass
 
-DEFAULT_OUTPUT_FASTA = os.path.join("data", "input", "H5N1_EC.fasta")
-DEFAULT_SUMMARY_CSV = os.path.join("data", "input", "H5N1_EC_summary.csv")
+DEFAULT_OUTPUT_FASTA = os.path.join("data", "assembled", "H5N1_EC.fasta")
+DEFAULT_SUMMARY_CSV = os.path.join("data", "assembled", "H5N1_EC_summary.csv")
+
+SEGMENTS = {"PB2", "PB1", "PA", "HA", "NP", "NA", "MP", "NS"}
 
 PLACE_ALIASES = {
     "azuay": "Azuay",
@@ -100,6 +100,13 @@ def normalize_date(date_value):
     return parsed if parsed else "UNKNOWN"
 
 
+def normalize_sample_id(text):
+    match = re.search(r"Flu-0*(\d+)", str(text))
+    if not match:
+        return None
+    return f"Flu-{int(match.group(1)):04d}"
+
+
 def read_fasta(path):
     header = None
     chunks = []
@@ -134,24 +141,37 @@ def pick_column(df, candidates):
     return None
 
 
-def parse_header_sample_segment(header):
-    # Expected format from current pipeline: Flu-XXXX|A_SEG
-    if "|" not in header:
-        return None, None
+def parse_gisaid_header(header):
+    parts = [part.strip() for part in header.split("|")]
+    if len(parts) != 3:
+        return None
 
-    sample, right = header.split("|", 1)
-    sample = sample.strip()
+    virus_name, second, third = parts
+    sample = normalize_sample_id(virus_name)
+    if not sample:
+        return None
 
-    segment = None
-    m = re.search(r"_(PB2|PB1|PA|HA|NP|NA|MP|NS)$", right.strip().upper())
-    if m:
-        segment = m.group(1)
+    second_upper = second.upper()
+    third_upper = third.upper()
+    if second_upper in SEGMENTS and re.fullmatch(r"EPI_ISL_\d+", third):
+        segment = second_upper
+        epi_isl = third
+    elif re.fullmatch(r"EPI_ISL_\d+", second) and third_upper in SEGMENTS:
+        segment = third_upper
+        epi_isl = second
+    else:
+        return None
 
-    return sample, segment
+    return {
+        "sample": sample,
+        "segment": segment,
+        "epi_isl": epi_isl,
+        "virus_name": virus_name,
+    }
 
 
 def build_metadata_map(metadata_csv, ecuador_date_source):
-    df = pd.read_csv(metadata_csv, dtype=str)
+    df = pd.read_csv(metadata_csv, dtype=str, keep_default_na=False)
     source_value = (ecuador_date_source or "reception").strip().lower()
 
     sample_col = pick_column(df, ["Codigo USFQ", "Código USFQ"])
@@ -178,7 +198,7 @@ def build_metadata_map(metadata_csv, ecuador_date_source):
 
     validation_rows = []
     for _, row in df.iterrows():
-        sample = str(row.get(sample_col, "")).strip()
+        sample = normalize_sample_id(row.get(sample_col, ""))
         if not sample:
             continue
         validation_rows.append(
@@ -196,7 +216,7 @@ def build_metadata_map(metadata_csv, ecuador_date_source):
 
     metadata = {}
     for _, row in df.iterrows():
-        sample = str(row.get(sample_col, "")).strip()
+        sample = normalize_sample_id(row.get(sample_col, ""))
         if not sample:
             continue
 
@@ -212,33 +232,11 @@ def build_metadata_map(metadata_csv, ecuador_date_source):
     return metadata
 
 
-def build_assembled_set(audit_csv):
-    # keep_default_na=False is critical so the segment label "NA" is not coerced to NaN.
-    audit_df = pd.read_csv(audit_csv, dtype=str, keep_default_na=False)
-
-    sample_col = pick_column(audit_df, ["Codigo USFQ", "Código USFQ"])
-    segment_col = pick_column(audit_df, ["segment"])
-    status_col = pick_column(audit_df, ["status"])
-
-    if sample_col is None or segment_col is None or status_col is None:
-        raise ValueError("El archivo de auditoria no tiene las columnas requeridas: Código USFQ, segment, status")
-
-    assembled = set()
-    for _, row in audit_df.iterrows():
-        if str(row.get(status_col, "")).strip().lower() != "assembled":
-            continue
-        sample = str(row.get(sample_col, "")).strip()
-        segment = str(row.get(segment_col, "")).strip().upper()
-        if sample and segment:
-            assembled.add((sample, segment))
-
-    return assembled
-
-
 def main():
-    parser = argparse.ArgumentParser(description="Consolidar secuencias ensambladas de Ecuador con encabezado estilo influenza")
-    parser.add_argument("--per-sample-dir", default=DEFAULT_PER_SAMPLE_DIR)
-    parser.add_argument("--audit-csv", default=DEFAULT_AUDIT_CSV)
+    parser = argparse.ArgumentParser(
+        description="Construir FASTA de Ecuador con headers sample/segment/province/date desde un FASTA GISAID"
+    )
+    parser.add_argument("--input-fasta", nargs="+", default=DEFAULT_INPUT_FASTAS)
     parser.add_argument("--metadata-csv", default=DEFAULT_METADATA_CSV)
     parser.add_argument("--ecuador-date-source", default=DEFAULT_ECUADOR_DATE_SOURCE)
     parser.add_argument("--output-fasta", default=DEFAULT_OUTPUT_FASTA)
@@ -249,55 +247,84 @@ def main():
     os.makedirs(os.path.dirname(args.summary_csv), exist_ok=True)
 
     metadata = build_metadata_map(args.metadata_csv, args.ecuador_date_source)
-    assembled_set = build_assembled_set(args.audit_csv)
 
-    fasta_files = sorted(
-        f for f in os.listdir(args.per_sample_dir) if f.lower().endswith(".fasta")
-    )
+    parsed_records = {}
+    invalid_headers = []
+    missing_metadata = set()
+    conflicting_records = []
+    for fasta_path in args.input_fasta:
+        for header, seq in read_fasta(fasta_path):
+            parsed = parse_gisaid_header(header)
+            if parsed is None:
+                invalid_headers.append(f"{fasta_path}: {header}")
+                continue
+            if parsed["sample"] not in metadata:
+                missing_metadata.add(parsed["sample"])
+                continue
+
+            key = (parsed["sample"], parsed["segment"])
+            previous = parsed_records.get(key)
+            if previous is not None:
+                previous_parsed, previous_seq, previous_header, previous_path = previous
+                if previous_parsed["epi_isl"] != parsed["epi_isl"] or previous_seq.upper() != seq.upper():
+                    conflicting_records.append(
+                        f"{parsed['sample']} {parsed['segment']}: {previous_path} vs {fasta_path}"
+                    )
+                continue
+
+            parsed_records[key] = (parsed, seq, header, fasta_path)
+
+    if invalid_headers:
+        examples = "; ".join(invalid_headers[:5])
+        raise SystemExit(
+            "Headers invalidos en FASTA GISAID. Esperado: "
+            "virus_name|segment|EPI_ISL o virus_name|EPI_ISL|segment. Ejemplos: "
+            + examples
+        )
+    if missing_metadata:
+        raise SystemExit(
+            "Muestras del FASTA GISAID ausentes de flu_filtrado.csv: "
+            + ", ".join(sorted(missing_metadata))
+        )
+    if conflicting_records:
+        raise SystemExit(
+            "Secuencias GISAID duplicadas con conflicto por muestra/segmento: "
+            + "; ".join(sorted(conflicting_records)[:10])
+        )
+    if not parsed_records:
+        raise SystemExit("No se encontraron secuencias validas en: " + ", ".join(args.input_fasta))
 
     rows = []
-    total = 0
-
     with open(args.output_fasta, "w") as out:
-        for fasta_name in fasta_files:
-            fasta_path = os.path.join(args.per_sample_dir, fasta_name)
+        for key in sorted(parsed_records):
+            parsed, seq, source_header, source_file = parsed_records[key]
+            md = metadata[parsed["sample"]]
+            out_header = f"{parsed['sample']}/{parsed['segment']}/{md['province']}/{md['date']}"
 
-            for header, seq in read_fasta(fasta_path):
-                sample, segment = parse_header_sample_segment(header)
-                if not sample or not segment:
-                    continue
+            out.write(f">{out_header}\n")
+            out.write(wrap_seq(seq) + "\n")
 
-                # Keep only truly assembled segments (skip segments filled with N).
-                if (sample, segment) not in assembled_set:
-                    continue
-
-                md = metadata.get(sample, {"province": "UNKNOWN", "date": "UNKNOWN", "year": "UNKNOWN"})
-                province = md["province"]
-                date_value = md["date"]
-
-                out_header = f"{sample}/{segment}/{province}/{date_value}"
-
-                out.write(f">{out_header}\n")
-                out.write(wrap_seq(seq) + "\n")
-                total += 1
-
-                rows.append(
-                    {
-                        "sample": sample,
-                        "segment": segment,
-                        "province": province,
-                        "date": date_value,
-                        "year": md["year"],
-                        "header": out_header,
-                        "length": len(seq),
-                    }
-                )
+            rows.append(
+                {
+                    "sample": parsed["sample"],
+                    "segment": parsed["segment"],
+                    "epi_isl": parsed["epi_isl"],
+                    "virus_name": parsed["virus_name"],
+                    "province": md["province"],
+                    "date": md["date"],
+                    "year": md["year"],
+                    "header": out_header,
+                    "source_header": source_header,
+                    "source_file": source_file,
+                    "length": len(seq),
+                }
+            )
 
     pd.DataFrame(rows).to_csv(args.summary_csv, index=False)
 
     print(f"FASTA generado: {args.output_fasta}")
     print(f"Resumen generado: {args.summary_csv}")
-    print(f"Regiones ensambladas escritas: {total}")
+    print(f"Regiones escritas: {len(rows)}")
 
 
 if __name__ == "__main__":

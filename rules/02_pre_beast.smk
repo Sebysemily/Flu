@@ -303,8 +303,8 @@ rule observe_beast_subset_source_qc:
     input:
         final_fasta="data/final/H5N1_final.fasta",
         panel_tsv=BEAST_PANEL_TAXA,
-        ecuador_summary="data/input/H5N1_EC_summary.csv",
-        context_summary="data/input/H5N1_context_summary.csv",
+        ecuador_summary="data/assembled/H5N1_EC_summary.csv",
+        context_summary="data/assembled/H5N1_context_summary.csv",
         ecuador_audit="data/assembled/ecuador_intermediate_audit.csv",
     output:
         metrics=PRE_BEAST_SOURCE_QC_METRICS,

@@ -16,6 +16,20 @@ FULL_CONCAT_PREFIX = "results/phylogeny/raxml/full_concat/H5N1_full_concat_beast
 NP_MP_NS_ALIGNMENT = "data/phylogeny/aligned/H5N1_NP_MP_NS.mafft"
 NP_MP_NS_PARTITIONS = "data/phylogeny/H5N1_NP_MP_NS.partitions"
 NP_MP_NS_PREFIX = "results/phylogeny/raxml/np_mp_ns/H5N1_NP_MP_NS"
+ML_ITOL_OUTPUTS = [
+	*expand(
+		"results/phylogeny/raxml/{segment}/itol/H5N1_{segment}.itol_colorstrip_groups.txt",
+		segment=PHYLO_SEGMENTS,
+	),
+	*expand(
+		"results/phylogeny/raxml/{segment}/itol/H5N1_{segment}.itol_tree_colors.txt",
+		segment=PHYLO_SEGMENTS,
+	),
+	"results/phylogeny/raxml/full_concat/itol/H5N1_full_concat_beast.itol_colorstrip_groups.txt",
+	"results/phylogeny/raxml/full_concat/itol/H5N1_full_concat_beast.itol_tree_colors.txt",
+	"results/phylogeny/raxml/np_mp_ns/itol/H5N1_NP_MP_NS.itol_colorstrip_groups.txt",
+	"results/phylogeny/raxml/np_mp_ns/itol/H5N1_NP_MP_NS.itol_tree_colors.txt",
+]
 
 
 rule split_h5n1_final_by_segment:
@@ -241,3 +255,20 @@ rule raxml_tree_full_concat:
 rule raxml_tree_np_mp_ns:
 	input:
 		f"{NP_MP_NS_PREFIX}.raxml.supportTBE"
+
+
+rule build_ml_itol_colorstrips:
+	input:
+		segment_trees=expand(
+			"results/phylogeny/raxml/{segment}/H5N1_{segment}.raxml.supportTBE",
+			segment=PHYLO_SEGMENTS,
+		),
+		full_concat=f"{FULL_CONCAT_PREFIX}.raxml.supportTBE",
+		np_mp_ns=f"{NP_MP_NS_PREFIX}.raxml.supportTBE"
+	output:
+		ML_ITOL_OUTPUTS
+	shell:
+		r"""
+		python code/01_ml_trees/build_itol_colorstrips.py \
+			--metadata config/flu_filtrado.csv
+		"""

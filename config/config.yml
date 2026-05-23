@@ -2,19 +2,9 @@
 # Inputs and metadata
 # -----------------------------
 mira_base_dir: ".."   # Base directory that contains run*/ from MIRA
-ecuador_input_source: "assembled"   # Ecuador input source: assembled or mira_raw
 flu_filtrado: "config/flu_filtrado.csv"   # Ecuador metadata/filter table used during assembly intake
 context_metadata_tsv: "config/final_metadata_50_per_country_isolates.tsv"   # Curated context accessions and labels
 ecuador_date_source: "collection"   # Which Ecuador date to use in FASTA headers: collection or reception
-
-mira_cli:
-  enabled: false
-  container_name: "mira"
-  container_workdir: "/data"
-  data_dir: ".."
-  experiment: "Flu-ONT"
-  run_glob: "run*"
-  require_samplesheet: true
 
 # -----------------------------
 # Reproducibility and resources

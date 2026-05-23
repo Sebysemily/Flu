@@ -1,184 +1,69 @@
-Pipeline para consolidar filodinámica de influenza A H5N1 en Ecuador con contexto regional.
+Pipeline H5N1 Ecuador
+=====================
 
-El flujo usa el concatenado solo como artefacto interno para selección de panel, QC y root-to-tip. Los alineamientos finales para revisión manual siguen siendo los FASTA por segmento en `data/beast/final_panel_segment/`, y ahora el workflow además prepara y corre cuatro escenarios exploratorios de BEAST a partir de templates XML versionados.
-
+Workflow Snakemake para consolidar genomas de influenza A H5N1 de Ecuador con contexto regional, construir arboles ML por segmento y concatenado, seleccionar un panel para BEAST, hacer QC/root-to-tip, preparar XML de BEAST 1 y correr/combinar escenarios exploratorios. 
 Requisitos
-- `snakemake`
-- `conda` o `mamba`
-- conexión a internet si se quiere descargar contexto desde NCBI
-- un binario compatible con BEAST 1 disponible en `PATH` o configurable con `config.beast.binary`
-- Docker con el contenedor `mira` corriendo si `ecuador_input_source: mira_raw`
+----------
+- `snakemake` con `conda` o `mamba`.
+- Internet si se reconstruye el contexto desde NCBI.
+- BEAST 1, `logcombiner` y `treeannotator` en `PATH`, o `config.beast.binary` definido.
 
-Ejecución
-- Preparar inputs de Ecuador desde MIRA:
-
+Comandos utiles
+---------------
 ```bash
+# Construir/normalizar inputs de Ecuador y luego headers con fechas.
 snakemake --cores all --use-conda build_gisaid
-```
 
-  Por defecto `config.ecuador_input_source: assembled` consume los `amended_consensus.fasta` ya existentes bajo `mira_base_dir`.
-  Para empezar desde datos raw, usar `ecuador_input_source: mira_raw` o `mira_cli.enabled: true`; Snakemake correra MIRA CLI con Docker para cada `run*` con `samplesheet.csv` antes de construir los inputs de Ecuador. MIRA no se instala por conda: debe estar disponible como contenedor Docker, por ejemplo iniciado con `cd ~/MIRA_NGS && docker compose up -d`.
+# Descargar/mezclar contexto, alinear, arboles ML por segmento y concatenado.
+snakemake --cores all --use-conda main_phylogeny
 
-- Correr el workflow principal hasta las corridas exploratorias de BEAST:
-
-```bash
-snakemake --cores all --use-conda
-```
-
-- Correr solo el flujo pre-BEAST con XML preparados:
-
-```bash
+# Seleccion/QC del panel, root-to-tip, FASTA finales por segmento y XML de BEAST.
 snakemake --cores all --use-conda pre_beast_outputs
-```
 
-- Correr solo las corridas exploratorias de BEAST:
-
-```bash
+# Flujo principal completo hasta corridas BEAST y arboles finales combinados.
 snakemake --cores all --use-conda beast_runs
 ```
 
-Resumen del flujo
+Nota: `snakemake --cores all --use-conda` puede incluir targets historicos de sensibilidad NP/MP/NS definidos en `rule all`. Para reproducir el flujo principal actual sin ese subset, usar `beast_runs`.
 
-Stage 1. Preparación de Ecuador desde MIRA
-1. `build_ecuador_intermediate_input`
-2. `build_h5n1_ec_fasta`
+Flujo actual
+------------
+1. Entrada Ecuador: `data/input/` queda reservado para FASTA descargados de GISAID. Puede contener uno o varios archivos con nombres libres (`*.fasta`, `*.fa`, `*.fna`, `*.fas`). Si no hay FASTA en esa carpeta, el pipeline puede construir uno equivalente desde `run*/amended_consensus.fasta` bajo `mira_base_dir` y lo escribe como `data/assembled/H5N1_EC_gisaid_from_mira.fasta`.
+2. Headers de trabajo: `build_standard_date_headers.py` toma los FASTA tipo GISAID y genera `data/assembled/H5N1_EC.fasta`/`data/assembled/H5N1_EC_summary.csv` con headers `Flu-XXXX/segment/province/date`.
+3. Contexto regional: usa `config/final_metadata_50_per_country_isolates.tsv`, descarga secuencias de contexto y produce `data/assembled/H5N1_context.fasta`, `data/assembled/H5N1_context_summary.csv` y `data/final/H5N1_final.fasta`.
+4. Filogenia ML: separa los 8 segmentos (`PB2`, `PB1`, `PA`, `HA`, `NP`, `NA`, `MP`, `NS`), alinea con MAFFT, construye particiones por codon para `PB2/PB1/PA/HA/NP/NA`, usa `GTR+G` simple para `MP/NS`, corre RAxML-NG por segmento y arma el concatenado completo `data/phylogeny/aligned/H5N1_full_concat_beast.mafft` con `results/phylogeny/raxml/full_concat/H5N1_full_concat_beast.raxml.supportTBE`.
+5. Pre-BEAST: selecciona panel desde el arbol concatenado, valida calidad de fuentes, filtra outliers por QC, poda alineamiento/arbol, extrae fechas de headers y ejecuta TreeTime root-to-tip. Luego filtra outliers RTT y publica el panel final.
+6. Entregables pre-BEAST: genera `data/beast/panel_main_taxa.final.tsv`, `data/beast/panel_main_dates.final.tsv`, `data/beast/panel_main_concat.final.fasta`, `data/beast/panel_main_concat.final.audit.tsv` y FASTA finales alineados por segmento en `data/beast/final_panel_segment/`.
+7. XML BEAST: parametriza templates versionados en `template_beast/` y escribe XML en `results/beast/xml/` para `strict_constant`, `strict_constant_lugar`, `ucln_constant`, `strict_exp` y `ucln_exp`.
+8. Corridas BEAST: valida cada XML, corre dos replicas (`r1`, `r2`) por escenario con seeds de `config.beast.seeds` y `seed + 100000` para `r2`, guarda logs/trees/chkpt/ops en `results/beast/runs/<scenario>/<replicate>/` y resume cada escenario con `results/beast/runs/<scenario>/run.done`.
+9. Finales combinados: combina las dos replicas de `strict_constant` y `strict_constant_lugar` con 10% de burn-in y anota arbol MCC con alturas medias. Salidas: `results/beast/final/time/strict_constant.*` y `results/beast/final/geography/strict_constant_lugar.*`.
 
-Stage 2. Contexto, alineación y árboles ML
-3. `build_h5n1_final_fasta`
-4. `split_h5n1_final_by_segment`
-5. `mafft_align_per_segment`
-6. `build_segment_codon_partitions`
-7. `raxml_ng_tree_per_segment_codon`
-8. `raxml_ng_tree_per_segment_simple`
-9. `concat_aligned_segments_with_partitions`
-10. `raxml_ng_tree_full_concat`
+Salidas principales
+-------------------
+- Entrada GISAID fuente: FASTA descargados por el usuario en `data/input/`.
+- FASTA derivados: `data/assembled/H5N1_EC_gisaid_from_mira.fasta`, `data/assembled/H5N1_EC.fasta`, `data/assembled/H5N1_context.fasta`, `data/final/H5N1_final.fasta`.
+- Arboles ML: `results/phylogeny/raxml/<segment>/H5N1_<segment>.raxml.supportTBE` y `results/phylogeny/raxml/full_concat/H5N1_full_concat_beast.raxml.supportTBE`.
+- QC y RTT: `results/beast_pre/qc_validation/source_panel_qc.*`, `results/beast_pre/qc_validation/final_segment_panel_qc.*`, `results/beast_pre/rtt/treetime_clock.done`, `results/beast_pre/rtt/root_to_tip_regression.pdf`.
+- Panel final: `data/beast/panel_main_taxa.final.tsv`, `data/beast/panel_main_dates.final.tsv`, `data/beast/panel_main_concat.final.fasta`, `data/beast/final_panel_segment/H5N1_{PB2,PB1,PA,HA,NP,NA,MP,NS}.fasta`.
+- XML: `results/beast/xml/{strict_constant,strict_constant_lugar,ucln_constant,strict_exp,ucln_exp}.xml`.
+- BEAST: `results/beast/runs/<scenario>/r{1,2}/` y `results/beast/runs/<scenario>/run.done`.
+- Finales BEAST: `results/beast/final/time/strict_constant.combined.{log,trees}`, `results/beast/final/time/strict_constant.mcc.mean.tree`, `results/beast/final/geography/strict_constant_lugar.combined.{log,trees}`, `results/beast/final/geography/strict_constant_lugar.mcc.mean.tree`.
 
-Stage 3. Pre-BEAST con panel, QC y root-to-tip
-11. `build_beast_panels`
-12. `observe_beast_subset_source_qc`
-13. `filter_beast_panel_by_qc`
-14. `subset_filtered_panel_concat_alignment_and_prune_tree`
-15. `build_treetime_dates` y `run_root_to_tip`
-   - Generan un unico RTT visible en `results/beast_pre/rtt/`
-16. `filter_beast_panel_by_rtt_outliers`
-   - Usa el RTT para excluir outliers y escribir el TSV final de fechas
-17. `publish_final_panel_concat_alignment`
-18. `subset_filtered_raw_segment_fasta`
-19. `subset_filtered_segment_alignment`
-20. `observe_segment_alignment_qc`
-21. `summarize_final_segment_qc`
-22. `prepare_beast_run_xml`
-   - Genera:
-     - `results/beast/xml/strict_constant.xml`
-     - `results/beast/xml/ucln_constant.xml`
-     - `results/beast/xml/strict_exp.xml`
-     - `results/beast/xml/ucln_exp.xml`
-
-Stage 4. Corridas exploratorias de BEAST
-23. `validate_beast_xml`
-24. `run_beast_replicate`
-   - Corre cada escenario por duplicado (`r1`, `r2`)
-   - Usa seed base y seed base `+100000`
-25. `summarize_beast_run`
-   - Genera:
-     - `results/beast/runs/strict_constant/run.done`
-     - `results/beast/runs/ucln_constant/run.done`
-     - `results/beast/runs/strict_exp/run.done`
-     - `results/beast/runs/ucln_exp/run.done`
-
-Outputs principales
-
-QC y root-to-tip
-- `results/beast_pre/qc_validation/source_panel_qc.metrics.tsv`
-- `results/beast_pre/qc_validation/source_panel_qc.summary.tsv`
-- `results/beast_pre/qc_validation/final_segment_panel_qc.summary.tsv`
-- `results/beast_pre/rtt/treetime_clock.done`
-- `data/beast/panel_main_dates.final.tsv`
-
-Entregables finales por segmento
-- `data/beast/final_panel_segment/H5N1_PB2.fasta`
-- `data/beast/final_panel_segment/H5N1_PB1.fasta`
-- `data/beast/final_panel_segment/H5N1_PA.fasta`
-- `data/beast/final_panel_segment/H5N1_HA.fasta`
-- `data/beast/final_panel_segment/H5N1_NP.fasta`
-- `data/beast/final_panel_segment/H5N1_NA.fasta`
-- `data/beast/final_panel_segment/H5N1_MP.fasta`
-- `data/beast/final_panel_segment/H5N1_NS.fasta`
-
-XML y corridas exploratorias de BEAST
-- `results/beast/xml/strict_constant.xml`
-- `results/beast/xml/ucln_constant.xml`
-- `results/beast/xml/strict_exp.xml`
-- `results/beast/xml/ucln_exp.xml`
-- `results/beast/runs/strict_constant/r1/run.done`
-- `results/beast/runs/strict_constant/r2/run.done`
-- `results/beast/runs/strict_constant/run.done`
-- `results/beast/runs/ucln_constant/r1/run.done`
-- `results/beast/runs/ucln_constant/r2/run.done`
-- `results/beast/runs/ucln_constant/run.done`
-- `results/beast/runs/strict_exp/r1/run.done`
-- `results/beast/runs/strict_exp/r2/run.done`
-- `results/beast/runs/strict_exp/run.done`
-- `results/beast/runs/ucln_exp/r1/run.done`
-- `results/beast/runs/ucln_exp/r2/run.done`
-- `results/beast/runs/ucln_exp/run.done`
-
-Configuración
-
+Configuracion
+-------------
 El archivo central es `config/config.yml`.
 
-Variables globales
-- `mira_base_dir`
-- `ecuador_input_source`
-- `flu_filtrado`
-- `context_metadata_tsv`
-- `ecuador_date_source`
-- `random_seed`
-- `max_threads`
-- `mafft_threads`
-- `raxml_segment_threads`
-- `raxml_full_concat_threads`
+- Entradas: `mira_base_dir`, `flu_filtrado`, `context_metadata_tsv`, `ecuador_date_source`.
+- `flu_filtrado` debe incluir `EPI_ISL` para cada `Código USFQ`; las columnas `PB2`, `PB1`, `PA`, `HA`, `NP`, `NA`, `MP`, `NS` son la fuente simple de segmentos esperados.
+- Recursos/reproducibilidad: `random_seed`, `max_threads`, `mafft_threads`, `raxml_segment_threads`, `raxml_full_concat_threads`.
+- BEAST: `beast.enabled`, `binary`, `max_hours`, `threads`, `chain_length`, `log_every`, `tree_every`, `echo_every`, `seeds` y bloque `beagle`.
 
-Variables de `mira_cli`
-- `enabled`
-- `container_name`
-- `container_workdir`
-- `data_dir`
-- `experiment`
-- `run_glob`
-- `require_samplesheet`
-
-Variables de `beast_pre`
-- `relaxed_panel_mode`
-
-Variables de `beast`
-- `enabled`
-- `binary`
-- `max_hours`
-- `threads`
-- `beagle.mode`
-- `beagle.vendor`
-- `beagle.resource`
-- `beagle.platform`
-- `beagle.precision`
-- `beagle.scaling`
-- `beagle.fallback_to_cpu`
-- `beagle.info`
-- `chain_length`
-- `log_every`
-- `tree_every`
-- `echo_every`
-- `seeds.strict_constant`
-- `seeds.ucln_constant`
-- `seeds.strict_exp`
-- `seeds.ucln_exp`
-
-Notas
-- Los templates XML base viven en `template_beast/` y son la fuente versionada para las corridas exploratorias.
-- El script `prepare_beast_run_xml.py` solo parametriza la corrida; no reescribe el contenido científico del template.
-- El scheduler del workflow aplica el tope operativo de tiempo por corrida con `resources.runtime`; el XML no se corta por tiempo.
-- `config.beast.beagle.mode` acepta `off`, `auto` o `force`.
-- Con `mode: auto`, el runner consulta `beast -beagle_info` y solo agrega BEAGLE si detecta un recurso compatible; si no, corre sin BEAGLE.
-- `config.beast.beagle.vendor` permite preferir `amd`, `nvidia` o `any`; con `platform: auto`, `amd` favorece `opencl` y `nvidia` favorece `cuda`.
-- `config.beast.seeds` define la seed base por escenario; la repeticion `r2` se deriva automaticamente como `seed_base + 100000`.
-- Si el binario de BEAST 1 no está en `PATH`, define `config.beast.binary`.
+Notas operativas
+----------------
+- Para usar descargas directas de GISAID, poner uno o varios FASTA en `data/input/`. Esa carpeta no debe usarse para archivos generados por el pipeline.
+- El FASTA GISAID-standard de Ecuador usa headers `virus_name|segment|EPI_ISL`, por ejemplo `A/chicken/Ecuador/Flu-0610/2023|NP|EPI_ISL_20450104`.
+- `build_standard_date_headers.py` acepta FASTA descargados de GISAID si los headers vienen como `virus_name|segment|EPI_ISL` o `virus_name|EPI_ISL|segment`. No acepta el formato viejo `Flu-XXXX|A_SEG`.
+- Los templates de BEAST viven en `template_beast/`; `prepare_beast_run_xml.py` solo actualiza parametros de corrida y nombres de salida.
+- `beast.max_hours` se aplica como recurso de Snakemake; no corta el XML por tiempo.
+- `beast.beagle.mode` acepta `off`, `auto` o `force`. En `auto`, el runner consulta `beast -beagle_info` y usa BEAGLE solo si detecta recurso compatible.
+- Para GPU, `beast.beagle.vendor: amd` favorece OpenCL con `platform: auto`; `nvidia` favorece CUDA. Si no hay recurso compatible y `fallback_to_cpu: false`, la corrida falla en vez de cambiar silenciosamente a CPU.

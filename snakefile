@@ -1,24 +1,25 @@
 configfile: "config/config.yml"
 
-include: "rules/build_gisaid_input_from_mira.smk"
 include: "rules/build_inputs.smk"
 include: "rules/01_ml_trees.smk"
 include: "rules/02_pre_beast.smk"
 include: "rules/03_beast.smk"
 
 BUILD_GISAID_TARGETS = [
-    "data/all_amended_fasta",
-    "data/assembled/ecuador_intermediate_summary.csv",
-    "data/assembled/ecuador_intermediate_audit.csv",
-    "data/assembled/ecuador_intermediate_issues.csv",
-    "data/assembled/ecuador_intermediate_sequences.fasta",
-    "data/assembled/ecuador_intermediate_per_sample",
-    "data/input/H5N1_EC.fasta",
-    "data/input/H5N1_EC_summary.csv",
+    "data/assembled/H5N1_EC.fasta",
+    "data/assembled/H5N1_EC_summary.csv",
 ]
+if not GISAID_INPUT_FASTAS:
+    BUILD_GISAID_TARGETS = [
+        "data/assembled/ecuador_intermediate_summary.csv",
+        "data/assembled/ecuador_intermediate_audit.csv",
+        "data/assembled/ecuador_intermediate_issues.csv",
+        "data/assembled/H5N1_EC_gisaid_from_mira.fasta",
+        *BUILD_GISAID_TARGETS,
+    ]
 
-INPUT_CONTEXT_FASTA = "data/input/H5N1_context.fasta"
-INPUT_CONTEXT_SUMMARY = "data/input/H5N1_context_summary.csv"
+INPUT_CONTEXT_FASTA = "data/assembled/H5N1_context.fasta"
+INPUT_CONTEXT_SUMMARY = "data/assembled/H5N1_context_summary.csv"
 FINAL_FASTA = "data/final/H5N1_final.fasta"
 BUILD_INPUTS_TARGETS = [
     INPUT_CONTEXT_FASTA,
@@ -43,6 +44,7 @@ MAIN_PHYLOGENY_TARGETS = [
     NP_MP_NS_ALIGNMENT,
     NP_MP_NS_PREFIX + ".raxml.supportTBE",
     *SEGMENT_TREE_SUPPORTS,
+    *ML_ITOL_OUTPUTS,
 ]
 
 PRE_BEAST_TARGETS = [

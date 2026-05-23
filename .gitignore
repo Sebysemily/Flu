@@ -4,6 +4,9 @@ results/***
 data/*
 data/**
 data/***
+!data/
+!data/input/
+!data/input/**
 .snakemake/*
 snakemake/*
 snakemake/**

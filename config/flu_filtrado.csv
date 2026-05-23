@@ -1,107 +1,107 @@
-Código USFQ,Código procedencia,Especie,Tipo de muestra,Estado salud animal,observaciones,Fecha colección,Fecha recepción,Semana Epidemiológica,Provincia,Ciudad,Localidad,Nombre_animal,Género,Edad,MÉDICO CONTACTO,Diagnóstico Kit Allplex,Diagnóstico Kit Bioperfectuss/LunaSARS,RT-PCR gen M,Gel amplicon sequencing,Secuenciamiento,run,PB2,PB1,PA,HA,NP,NA,MP,NS,n_regions_assembled,has_8_regions,confirmed_segments,n_confirmed_segments
-Flu-0008,Piquero-002,Piquero peruano,Hisopado,,Kit Allplex SC-2/FLUA/FLUB/RSV Seegene,2023-05-10,2023-05-17,,SANTAELENA,La_Milina,,,,,,"Positivo (Ct 39,37)",-,Bandeo (M),,H5N1 Clado 2.3.4.4 ,1,,,,,,,,SI,1,,NS,1
-Flu-0009,BM-A-23-008,Aves de corral,Hisopado,,Para estandarización,2023-04-13,2023-05-19,,MORONA SANTIAGO,,,,,,,,"Positivo (Ct 28,78)",Bandeo (M),Sin bandas,SIII-3P,"1,3",,,,,SI,SI,SI,SI,4,,"NP,NA,MP,NS",4
-Flu-0011,BM-23-2349,Aves de corral,Hisopado,,Para estandarización,2023-04-02,2023-05-19,,NAPO,,,,,,,,"Positivo (Ct 30,20)",Bandeo (M),Sin bandas,SIII-3P,1,,,,,,,SI,SI,2,,"MP,NS",2
-Flu-0013,BM-23-0534,Aves de corral,Hisopado,,Para estandarización,2023-01-20,2023-05-19,,TUNGURAHUA,,,,,,,,-,Bandeo (M),Posible positivo,SIII-3P,"1,2,3",,,,SI,SI,SI,SI,SI,5,,"HA,NP,NA,MP,NS",5
-Flu-0014,REMACOPSE-SALINAS,Sula nebouxii,Hisopado,,Kit Allplex SC-2/FLUA/FLUB/RSV Seegene,2023-05-27,2023-05-30,,SANTAELENA,Salinas,,,,,Lucia Luje,"Positivo (Ct 24,03)","Positivo (Ct 21,46; 1:10)",Bandeo (M),Indeterminado,H5N1,"2,3",,,,,,,,SI,1,,NS,1
-Flu-0018,Remape-2023-SU-MV-001,,Hisopado,,Faringea,2023-06-01,2023-06-05,,SANTA ELENA,Montañita,,,,,,Negativo,Negativo,Bandeo (M),Indeterminado,H5N1,3,,,,,,,,SI,1,,NS,1
-Flu-0023,PG-004-SL,Pardela gris,Hisopado,,Hisopado orofaríngeo,2023-06-02,2023-06-05,,MANABI,San Lorenzo,,,,,,Negativo,Negativo,Bandeo (M),Posible positivo,H5N1,"2,3",,,,SI,SI,SI,SI,SI,5,,"HA,NP,NA,MP,NS",5
-Flu-0027,,Puffinus sp.,Hisopado,,,2023-05-30,2023-06-02,,SANTA ELENA,Ayangue,,,,,,,Negativo,Bandeo (M),Sin bandas,Negativo,3,,,,,,,SI,SI,2,,"MP,NS",2
-Flu-0035,004/31-05/2023,Thalasseus elegans,Hisopado laringotraqueal,,Hisopado orofaríngeo; Playa Muisne,2023-05-31,2023-05-31,2023-06-06,ESMERALDAS,Muisne,Playa Muisne,Playa Muisne,,,Nelson López; Lucía Luje,Nelson López,Negativo,Bandeo (M),Sin bandas,Negativo,3,,,,,,,SI,SI,2,,"NP,MP,NS",3
-Flu-0055,PG-002-SL,Pardela gris,Hisopado laringotraqueal,,Orofaringeo,2023-06-06,2023-06-06,,MANABI,Manta,Playa San Lorenzo,,,,,"Negativo (CI 29,74)",Negativo,Bandeo (M),Posible positivo,H5N1,"2,3",,,,,,,SI,,1,,MP,1
-Flu-0205,GU1-005-HF,Ardenna grisea,Hisopado Faríngeo,Muerto,"Se equivocaron al diferenciar cuál es el hisopado cloacal, por lo que hay dos muestras etiquetadas como hisopados faringeo",2023-07-11,2023-07-14,,GUAYAS,Puerto Engabao,,,,,,,,Bandeo (M),,Influenza A: H5N1*,"8,10,14",,,,,,,SI,,1,,MP,1
-Flu-0206,GU1-005-HF,Ardenna grisea,Hisopado Faríngeo,Muerto,,2023-07-11,2023-07-14,,GUAYAS,Puerto Engabao,,PIDEN METAGENOMA,,,,,,Bandeo (M),,Influenza A: H5N1*,"8,10",,,,,,,SI,SI,2,,"MP,NS",2
-Flu-0314,BM-IA-06,Patos,Pool hisopados,,"Cq 34,02",2023-07-24,2023-08-01,,TUNGURAHUA,Ambato,Parroquia Santa Rosa,,,,,,,Positivo,4,Influenza A: H5N1; 2.3.4.4b,9,,,,,,SI,SI,SI,3,,"NA,MP,NS",3
-Flu-0316,BM-IA-08,Aves de corral,Pool hisopados,,"Cq 18,37",2023-07-28,2023-08-01,,COTOPAXI,Salcedo, Parroquia Antonio José Holguin,,,,,,,Positivo,3,Influenza A: H5N1; 2.3.4.4b,9,SI,SI,SI,SI,SI,SI,SI,SI,8,SI,"PB2,PB1,PA,HA,NP,NA,MP,NS",8
-Flu-0317,BM-IA-09,Aves de corral,Pool hisopados,,"Cq 19,34",2023-07-28,2023-08-01,,COTOPAXI,Salcedo, Parroquia Antonio José Holguin,,,,,,,Positivo,3,Influenza A: H5N1; 2.3.4.4b,9,SI,SI,SI,SI,SI,SI,SI,SI,8,SI,"PB2,PB1,PA,HA,NP,NA,MP,NS",8
-Flu-0318,BM-IA-10,Aves de corral,Pool hisopados,,"Cq 27,49",2023-07-24,2023-08-03,,TUNGURAHUA,,,,,,,,,,,Influenza A: H5N1; 2.3.4.4b,10,SI,SI,SI,,SI,SI,SI,SI,7,,"PB2,PB1,PA,NP,NA,MP,NS",7
-Flu-0321,BM-IA-13,Aves de corral,Pool hisopados,,"Cq 27,94",2023-07-28,2023-08-03,,COTOPAXI,,,,,,,,,,,Influenza A: H5N1; 2.3.4.4b,10,,,,,,SI,SI,SI,3,,"NA,MP,NS",3
-Flu-0323,BM-IA-15,Aves de corral,Hisopado,,"Cq 22,63",2023-08-03,2023-08-21,,PICHINCHA,,,,,,,,,,,Influenza A: H5N1; 2.3.4.4b,12,,,,,,,SI,SI,2,,"MP,NS",2
-Flu-0325,BM-IA-17,Aves de corral,Hisopado,,"Cq 21,27",2023-08-03,2023-08-21,,PICHINCHA,,,,,,,,,,,Influenza A: H5N1; 2.3.4.4b,12,,,,,SI,,SI,SI,3,,"NP,MP,NS",3
-Flu-0326,BM-IA-18,Aves de corral,Hisopado,,"Cq 15,9",2023-08-03,2023-08-21,,PICHINCHA,,,,,,,,,,,Influenza A: H5N1; 2.3.4.4b,12,,,,,SI,,SI,SI,3,,"NP,MP,NS",3
-Flu-0330,BM-IA-22,Aves de corral,Hisopado,,---,2023-08-17,2023-08-21,,GUAYAS,,,,,,,,,,,Influenza A: H5N1; 2.3.4.4b,12,,,,,SI,,SI,SI,3,,"NP,MP,NS",3
-Flu-0402,M1-IP,Fragata,Hisopado Faríngeo,,,2023-10-31,2023-11-01,,GUAYAS,Guayaquil,Isla Manglecito,Fragata Magnificans,,Juvenil,Oscar Vasconez,18.44,15.61,Positivo,,H5N1,17,SI,SI,SI,SI,,SI,SI,SI,7,,"PB2,PB1,PA,HA,NA,MP,NS",7
-Flu-0403,M1-IP,Fragata,hisopado Cloacal,,,2023-10-31,2023-11-01,,GUAYAS,Guayaquil,Isla Manglecito,Fragata Magnificans,,Juvenil,Oscar Vasconez,34.25,29.75,Positivo,,H5N1,17,,,,,,,SI,,1,,MP,1
-Flu-0406,M3-IP,Fragata,Hisopado Faríngeo,,,2023-10-31,2023-11-01,,GUAYAS,Guayaquil,Isla Manglecito,Fragata Magnificans,Hembra,Adulto,Oscar Vasconez,22.14,18.72,Positivo,,H5N1,17,SI,SI,SI,SI,SI,SI,SI,SI,8,SI,"PB2,PB1,PA,HA,NP,NA,MP,NS",8
-Flu-0407,M3-IP,Fragata,hisopado Cloacal,,,2023-10-31,2023-11-01,,GUAYAS,Guayaquil,Isla Manglecito,Fragata Magnificans,Hembra,Adulto,Oscar Vasconez,23.64,19.97,Positivo,,H5N1,17,SI,SI,,SI,SI,SI,SI,SI,7,,"PB2,PB1,HA,NP,NA,MP,NS",7
-Flu-0410,M5-IP,Fragata,Hisopado Faríngeo,,,2023-10-31,2023-11-01,,GUAYAS,Guayaquil,Isla Manglecito,Fragata Magnificans,Fragata Magnificans,Juvenil,Oscar Vasconez,Oscar Vasconez,31.55,Negativo,Negativo,-,17,,,,,,,,SI,1,,NS,1
-Flu-0413,BM-22-2070,Aves de corral,Líquido en PBS y Shield,,"Cq  20,6",2022-11-25,2023-11-10,,COTOPAXI,,,,,,,,,Positivo,,Influenza A: H5N1,17,,,,,,,SI,,1,,MP,1
-Flu-0418,BM-22-2075,Aves de corral,Líquido en PBS y Shield,,"Cq  19,61",2022-11-25,2023-11-10,,COTOPAXI,,,,,,,,,Positivo,,Influenza A: H5N1,17,,,,,,,SI,,1,,MP,1
-Flu-0423,BM-22-2132,Aves de corral,Líquido en PBS y Shield,,"Cq H5  *38,01",2022-12-16,2023-11-10,,COTOPAXI,,,,,,,,,Positivo,,,17,,,,,,,,SI,1,,NS,1
-Flu-0440,BM-22-2672,Aves de corral,Líquido en PBS y Shield,,"Cq  17,38",2022-12-16,2023-11-10,,COTOPAXI,,,,,,,,,Positivo,,Influenza A: H5N1,17,,,,,,SI,,,1,,,1
-Flu-0450,BM-23-0134,Aves de corral,Líquido en PBS y Shield,,"Cq  34,55",2023-01-08,2023-11-10,,BOLIVAR,,,,,,,,,Positivo,,Influenza A: H5N1,17,,,,SI,,SI,,,2,,"HA,NA",2
-Flu-0451,BM-23-0139,PATO,Líquido en PBS y Shield,,"Cq  24,89",2023-01-08,2023-11-10,,BOLIVAR,,,,,,,,,Positivo,,,17,,,,,,,,SI,1,,NS,1
-Flu-0456,BM-23-0300,Aves de corral,Líquido en PBS y Shield,,"Cq  28,88",2023-01-13,2023-11-10,,TUNGURAHUA,,,,,,,,,Positivo,,Influenza A: H5N1,17,,,,,,SI,,,1,,,1
-Flu-0457,BM-23-0305,Aves de corral,Líquido en PBS y Shield,,"Cq  27,07",2023-01-13,2023-11-10,,TUNGURAHUA,,,,,,,,,Negativo,,,20,,,,,,,SI,,1,,MP,1
-Flu-0465,BM-23-0437,Aves de corral,Líquido en PBS y Shield,,"Cq  15,19",2023-01-18,2023-11-10,,PICHINCHA,,,,,,,,,Positivo,,Influenza A: H5N1,17,,,,SI,,,,,1,,HA,1
-Flu-0472,BM-23-0444,Aves de corral,Líquido en PBS y Shield,,"Cq  17,02",2023-01-19,2023-11-10,,COTOPAXI,,,,,,,,,Positivo,,Influenza A: H5N1,17,,,,SI,,SI,,,2,,"HA,NA",2
-Flu-0578,M014,Fregata magnificens,Hisopado,,,2023-12-06,2023-12-19,,MANABI,,-,,,,,,,Positivo,,AIV(H5N1),20,,SI,,SI,,SI,SI,SI,5,,"PB1,HA,NA,MP,NS",5
-Flu-0580,BM-22-2070,Aves de corral,Líquido en PBS y Shield,,"Cq 23,87; Extracción Agro R1",2022-11-25,2024-02-20,,COTOPAXI,,,,,,,,,,,AIV(H5N1),23,SI,SI,SI,SI,SI,SI,SI,SI,8,SI,"PB2,PB1,PA,HA,NP,NA,MP,NS",8
-Flu-0582,BM-22-2075,Aves de corral,Líquido en PBS y Shield,,21.39,2022-11-25,2024-02-20,,COTOPAXI,,,,,,,,,,,AIV(H5N1),23,SI,SI,SI,SI,SI,SI,SI,SI,8,SI,"PB2,PB1,PA,HA,NP,NA,MP,NS",8
-Flu-0583,BM-22-2134,Aves de corral,Líquido en PBS y Shield,,22.24,2022-12-02,2024-02-20,,COTOPAXI,,,,,,,,,,,AIV(H5N1),23,SI,SI,SI,SI,SI,SI,SI,SI,8,SI,"PB2,PB1,PA,HA,NP,NA,MP,NS",8
-Flu-0584,BM-22-2135,Aves de corral,Líquido en PBS y Shield,,"17,2; Extracción Agro R5",2022-12-02,2024-02-20,,COTOPAXI,,,,,,,,,,,AIV(H5N1),21,SI,SI,SI,SI,SI,SI,SI,SI,8,SI,"PB2,PB1,PA,HA,NP,NA,MP,NS",8
-Flu-0585,BM-22-2136,Aves de corral,Líquido en PBS y Shield,,21.17,2022-12-02,2024-02-20,,COTOPAXI,,,,,,,,,,,Negativo,23,SI,,SI,SI,SI,SI,SI,SI,7,,"PB2,PA,HA,NP,NA,MP,NS",7
-Flu-0586,BM-22-2512,Aves de corral,Líquido en PBS y Shield,,23.43,2022-12-13,2024-02-20,,COTOPAXI,,,,,,,,,,,AIV(H5N1),22,SI,SI,SI,SI,SI,SI,SI,SI,8,SI,"PB2,PB1,PA,HA,NP,NA,MP,NS",8
-Flu-0587,BM-22-2517,Aves de corral,Líquido en PBS y Shield,,22.47,2022-12-13,2024-02-20,,COTOPAXI,,,,,,,,,,,AIV(H5N1),21,,SI,SI,SI,SI,SI,SI,SI,7,,"PB1,PA,HA,NP,NA,MP,NS",7
-Flu-0589,BM-22-2524,Aves de corral,Líquido en PBS y Shield,,24.52,2022-12-13,2024-02-20,,COTOPAXI,,,,,,,,,,,AIV(H5N1),22,SI,SI,SI,SI,SI,SI,SI,SI,8,SI,"PB2,PB1,PA,HA,NP,NA,MP,NS",8
-Flu-0590,BM-22-2530,Aves de corral,Líquido en PBS y Shield,,22.3,2022-12-13,2024-02-20,,COTOPAXI,,,,,,,,,,,AIV(H5N1),23,SI,SI,SI,SI,SI,,SI,SI,7,,"PB2,PB1,PA,HA,NP,MP,NS",7
-Flu-0592,BM-22-2667,Aves de corral,Líquido en PBS y Shield,,20.38,2022-12-14,2024-02-20,,COTOPAXI,,,,,,,,,,,AIV(H5N1),21,SI,SI,SI,SI,SI,SI,SI,SI,8,SI,"PB2,PB1,PA,HA,NP,NA,MP,NS",8
-Flu-0593,BM-22-2672,Aves de corral,Líquido en PBS y Shield,,17.95,2022-12-14,2024-02-20,,COTOPAXI,,,,,,,,,,,AIV(H5N1),21,SI,SI,SI,SI,SI,SI,SI,SI,8,SI,"PB2,PB1,PA,HA,NP,NA,MP,NS",8
-Flu-0594,BM-23-0121,Aves de corral,Líquido en PBS y Shield,,21.64,2023-12-28,2024-02-20,,BOLIVAR,,,,,,,,,,,Negativo,22,,,,,SI,,SI,SI,3,,"NP,MP,NS",3
-Flu-0595,BM-23-0125,Aves de corral,Líquido en PBS y Shield,,16.7,2023-01-07,2024-02-20,,COTOPAXI,,,,,,,,,,,Negativo,23,SI,SI,SI,,SI,SI,SI,SI,7,,"PB2,PB1,PA,NP,NA,MP,NS",7
-Flu-0596,BM-23-0126,Aves de corral,Líquido en PBS y Shield,,14.52,2023-01-07,2024-02-20,,COTOPAXI,,,,,,,,,,,AIV(H5N1),23,SI,SI,SI,SI,SI,SI,SI,SI,8,SI,"PB2,PB1,PA,HA,NP,NA,MP,NS",8
-Flu-0597,BM-23-0127,Aves de corral,Líquido en PBS y Shield,,20.67,2023-01-07,2024-02-20,,COTOPAXI,,,,,,,,,,,Negativo,22,,,,,SI,SI,SI,SI,4,,"NP,NA,MP,NS",4
-Flu-0598,BM-23-0130,Aves de corral,Líquido en PBS y Shield,,16.43,2023-01-07,2024-02-20,,COTOPAXI,,,,,,,,,,,Negativo,21,SI,SI,SI,,SI,SI,SI,SI,7,,"PB2,PB1,PA,NP,NA,MP,NS",7
-Flu-0599,BM-23-0131,Aves de corral,Líquido en PBS y Shield,,19.73,2023-01-07,2024-02-20,,COTOPAXI,,,,,,,,,,,AIV(H5N1),23,SI,SI,SI,SI,SI,SI,SI,SI,8,SI,"PB2,PB1,PA,HA,NP,NA,MP,NS",8
-Flu-0600,BM-23-0132,Aves de corral,Líquido en PBS y Shield,,19.32,2023-01-07,2024-02-20,,COTOPAXI,,,,,,,,,,,AIV(H5N1),22,SI,SI,SI,SI,SI,SI,SI,SI,8,SI,"PB2,PB1,PA,HA,NP,NA,MP,NS",8
-Flu-0603,BM-23-0139,Aves de corral,Líquido en PBS y Shield,,23.42,2023-01-07,2024-02-20,,BOLIVAR,,,,,,,,,,,Negativo,21,SI,SI,SI,,SI,,SI,SI,6,,"PB2,PB1,PA,NP,MP,NS",6
-Flu-0604,BM-23-0289,Aves de corral,Líquido en PBS y Shield,,19.05,2023-01-12,2024-02-20,,TUNGURAHUA,,,,,,,,,,,Negativo,23,SI,SI,SI,SI,SI,SI,SI,SI,8,SI,"PB2,PB1,PA,HA,NP,NA,MP,NS",8
-Flu-0605,BM-23-0290,Aves de corral,Líquido en PBS y Shield,,20.71,2023-01-12,2024-02-20,,TUNGURAHUA,,,,,,,,,,,Negativo,22,,,,,SI,,SI,SI,3,,"NP,MP,NS",3
-Flu-0608,BM-23-0305,Aves de corral,Líquido en PBS y Shield,,23.47,2023-01-12,2024-02-20,,TUNGURAHUA,,,,,,,,,,,AIV(H5N1),23,SI,SI,SI,SI,SI,SI,SI,SI,8,SI,"PB2,PB1,PA,HA,NP,NA,MP,NS",8
-Flu-0609,BM-23-0360,Aves de corral,Líquido en PBS y Shield,,20.04,2023-01-16,2024-02-20,,TUNGURAHUA,,,,,,,,,,,Negativo,23,SI,SI,SI,,SI,SI,SI,SI,7,,"PB2,PB1,PA,NP,NA,MP,NS",7
-Flu-0610,BM-23-0361,Aves de corral,Líquido en PBS y Shield,,22.54,2023-01-16,2024-02-20,,TUNGURAHUA,,,,,,,,,,,AIV(H5N1),22,SI,SI,SI,SI,SI,SI,SI,SI,8,SI,"PB2,PB1,PA,HA,NP,NA,MP,NS",8
-Flu-0611,BM-23-0432,Aves de corral,Líquido en PBS y Shield,,17.5,2023-01-18,2024-02-20,,PICHINCHA,,,,,,,,,,,AIV(H5N1),22,SI,SI,SI,SI,SI,SI,SI,SI,8,SI,"PB2,PB1,PA,HA,NP,NA,MP,NS",8
-Flu-0613,BM-23-0434,Aves de corral,Líquido en PBS y Shield,,22.57,2023-01-18,2024-02-20,,PICHINCHA,,,,,,,,,,,AIV(H5N1),22,SI,SI,SI,SI,SI,SI,SI,SI,8,SI,"PB2,PB1,PA,HA,NP,NA,MP,NS",8
-Flu-0614,BM-23-0435,Aves de corral,Líquido en PBS y Shield,,17.28,2023-01-18,2024-02-20,,PICHINCHA,,,,,,,,,,,AIV(H5N1),23,SI,SI,SI,SI,SI,SI,SI,SI,8,SI,"PB2,PB1,PA,HA,NP,NA,MP,NS",8
-Flu-0615,BM-23-0437,Aves de corral,Líquido en PBS y Shield,,16.04,2023-01-18,2024-02-20,,PICHINCHA,,,,,,,,,,,AIV(H5N1),23,SI,SI,SI,,SI,,SI,SI,6,,"PB2,PB1,PA,NP,MP,NS",6
-Flu-0619,BM-23-0442,Aves de corral,Líquido en PBS y Shield,,20.07,2023-01-19,2024-02-20,,COTOPAXI,,,,,,,,,,,AIV(H5N1),21,SI,SI,SI,SI,SI,SI,SI,SI,8,SI,"PB2,PB1,PA,HA,NP,NA,MP,NS",8
-Flu-0621,BM-23-0445,Aves de corral,Líquido en PBS y Shield,,23.14,2023-01-19,2024-02-20,,COTOPAXI,,,,,,,,,,,AIV(H5N1),22,SI,SI,SI,SI,SI,SI,SI,SI,8,SI,"PB2,PB1,PA,HA,NP,NA,MP,NS",8
-Flu-0622,BM-23-0446,Aves de corral,Líquido en PBS y Shield,,20.98,2023-01-19,2024-02-20,,COTOPAXI,,,,,,,,,,,AIV(H5N1),21,SI,SI,SI,SI,SI,SI,SI,SI,8,SI,"PB2,PB1,PA,HA,NP,NA,MP,NS",8
-Flu-0623,BM-23-0447,Aves de corral,Líquido en PBS y Shield,,16.14,2023-01-19,2024-02-20,,COTOPAXI,,,,,,,,,,,AIV(H5N1),22,SI,SI,SI,SI,SI,SI,SI,SI,8,SI,"PB2,PB1,PA,HA,NP,NA,MP,NS",8
-Flu-0629,BM-24-071,Aves de corral,Líquido en PBS y Shield,,21.13,2024-02-27,2024-02-29,,PASTAZA,,,,,,,,,,,Negativo,22,,,,,SI,,SI,SI,3,,"NP,MP,NS",3
-Flu-0630,BM-23-0449,Aves de corral,Líquido en PBS y Shield,,18.06,2023-01-19,2024-04-23,,COTOPAXI,,,,,,,,,,,AIV(H5N1) 2.3.4.4B,"24,25",SI,SI,SI,SI,SI,SI,SI,SI,8,SI,"PB2,PB1,PA,HA,NP,NA,MP,NS",8
-Flu-0631,BM-23-0450,Aves de corral,Líquido en PBS y Shield,,23.56,2023-01-19,2024-04-23,,COTOPAXI,,,,,,,,,,,Negativo,"24,25",,,,,SI,,SI,SI,3,,"NP,MP,NS",3
-Flu-0632,BM-23-0451,Aves de corral,Líquido en PBS y Shield,,20.49,2023-01-19,2024-04-23,,COTOPAXI,,,,,,,,,,,Negativo,24,,,,,SI,SI,SI,SI,4,,"NP,NA,MP,NS",4
-Flu-0633,BM-23-0454,Aves de corral,Líquido en PBS y Shield,,21.02,2023-01-19,2024-04-23,,COTOPAXI,,,,,,,,,,,Negativo,24,SI,SI,SI,,SI,SI,SI,SI,7,,"PB2,PB1,PA,NP,NA,MP,NS",7
-Flu-0635,BM-23-0456,Aves de corral,Líquido en PBS y Shield,,25.05,2023-01-19,2024-04-23,,COTOPAXI,,,,,,,,,,,Negativo,25,,,,,SI,,SI,SI,3,,"NP,MP,NS",3
-Flu-0636,BM-23-0459,Aves de corral,Líquido en PBS y Shield,,25.69,2023-01-19,2024-04-23,,COTOPAXI,,,,,,,,,,,Negativo,25,,,,,SI,,SI,SI,3,,"NP,MP,NS",3
-Flu-0638,BM-23-0533,Aves de corral,Líquido en PBS y Shield,,23.25,2023-01-20,2024-04-23,,TUNGURAHUA,,,,,,,,,,,AIV(H5N1) 2.3.4.4B,24,,,,SI,SI,SI,SI,SI,5,,"HA,NP,NA,MP,NS",5
-Flu-0639,BM-23-0534,Aves de corral,Líquido en PBS y Shield,,24.18,2023-01-20,2024-04-23,,TUNGURAHUA,,,,,,,,,,,AIV(H5N1)  2.3.4.4B,24,SI,SI,,SI,SI,,SI,SI,6,,"PB2,PB1,HA,NP,MP,NS",6
-Flu-0640,BM-23-0536,Aves de corral,Líquido en PBS y Shield,,26.96,2023-01-20,2024-04-23,,TUNGURAHUA,,,,,,,,,,,Negativo,24,,,,, ,,SI,SI,2,,"MP,NS",2
-Flu-0641,BM-23-0537,Aves de corral,Líquido en PBS y Shield,,24.22,2023-01-20,2024-04-23,,TUNGURAHUA,,,,,,,,,,,AIV(H5N1)  2.3.4.4B,24,SI,SI,SI,SI,SI,SI,SI,SI,8,SI,"PB2,PB1,PA,HA,NP,NA,MP,NS",8
-Flu-0642,BM-23-0570,Aves de corral,Líquido en PBS y Shield,,20.95,2023-01-24,2024-04-23,,TUNGURAHUA,,,,,,,,,,,Negativo,25,,,,,SI,,SI,SI,3,,"NP,MP,NS",3
-Flu-0643,BM-23-0571,Aves de corral,Líquido en PBS y Shield,,27.59,2023-01-24,2024-04-23,,TUNGURAHUA,,,,,,,,,,,Negativo,25,,,,,SI,,SI,SI,3,,"NP,MP,NS",3
-Flu-0652,BM-23-1400,Aves de corral,Líquido en PBS y Shield,,20.77,2023-02-19,2024-04-23,,AZUAY,,,,,,,,,,,AIV(H5N1)  2.3.4.4B,24,SI,SI,SI,SI,SI,SI,SI,SI,8,SI,"PB2,PB1,PA,HA,NP,NA,MP,NS",8
-Flu-0653,BM-23-1401,Aves de corral,Líquido en PBS y Shield,,20.51,2023-02-19,2024-04-23,,AZUAY,,,,,,,,,,,AIV(H5N1)  2.3.4.4B,"24,25",SI,SI,SI,SI,SI,SI,SI,SI,8,SI,"PB2,PB1,PA,HA,NP,NA,MP,NS",8
-Flu-0654,BM-23-1402,Aves de corral,Líquido en PBS y Shield,,21.78,2023-02-19,2024-04-23,,AZUAY,,,,,,,,,,,AIV(H5N1),24,SI,SI,SI,SI,SI,SI,SI,SI,8,SI,"PB2,PB1,PA,HA,NP,NA,MP,NS",8
-Flu-0655,BM-23-1593,Aves de corral,Líquido en PBS y Shield,,24.21,2023-02-27,2024-04-23,,COTOPAXI,,,,,,,,,,,Negativo,25,,,,,SI,,SI,SI,3,,"NP,MP,NS",3
-Flu-0656,BM-23-1594,Aves de corral,Líquido en PBS y Shield,,28.06,2023-02-27,2024-04-23,,COTOPAXI,,,,,,,,,,,Negativo,25,,,,,SI,,SI,SI,3,,"NP,MP,NS",3
-Flu-0658,BM-23-2136,Aves de corral,Líquido en PBS y Shield,,20.39,2023-03-22,2024-04-23,,PASTAZA,,,,,,,,,,,AIV(H5N1) 2.3.4.4B,24,SI,SI,SI,,SI,SI,SI,SI,7,,"PB2,PB1,PA,NP,NA,MP,NS",7
-Flu-0663,BM-23-2350,Aves de corral,Líquido en PBS y Shield,,26.89,2023-04-02,2024-04-23,,NAPO,,,,,,,,,,,Negativo,24,,,,,SI,,SI,SI,3,,"NP,MP,NS",3
-Flu-0679,Oral #3,Condor,Hisopado laringotraqueal,,,2025-02-05,2025-02-19,,IMBABURA,,,,,,,,,Positivo,,H1N1,"26,agro",,,,,,,SI,SI,2,,"MP,NS",2
-Flu-0680,,Condor,Hisopado laringotraqueal,,,2025-02-05,2025-02-19,,IMBABURA,,,Curi,,,,,,Positivo,,H1N1,26,,,,,,,SI,SI,2,,"MP,NS",2
-Flu-0688,,Condor,Hisopado laringotraqueal,,,2025-02-05,2025-02-19,,IMBABURA,,,Pimampiro,,,,,,Positivo,,H1N1,26,,,,,,,SI,SI,2,,"MP,NS",2
-Flu-0711,SP-CB-8,Gallinazo,Hisopado laringotraqueal,,,2025-02-05,2025-02-19,,IMBABURA,,,,,,,,,Negativo,,H1N1,26,,,,,SI,SI,SI,SI,4,,"NP,NA,MP,NS",4
-Flu-0713,Condor 1 Zoo,Condor,Hisopado cloacal,,,2025-02-24,2025-02-26,,PICHINCHA,Quito,Zoo Quito,Toa,,,,,,Negativo,,H1N1,26,,,,,,,SI,,1,,MP,1
-Flu-0714,Condor 1 Zoo,Condor,Hisopado laringotraqueal,,,2025-02-24,2025-02-26,,PICHINCHA,Quito,Zoo Quito,Toa,,,,,,Negativo,,H1N1,26,,,,,,,SI,SI,2,,"MP,NS",2
-Flu-0715,Condor 3 Zoo,Condor,Hisopado laringotraqueal,,,2025-02-24,2025-02-26,,PICHINCHA,Quito,Zoo Quito,Kayambi,,,,,,Negativo,,H1N1,26,,,,,,,SI,,1,,MP,1
-Flu-0716,Condor 3 Zoo,Condor,Hisopado cloacal,,,2025-02-24,2025-02-26,,PICHINCHA,Quito,Zoo Quito,Kayambi,,,,,,Negativo,,H1N1,26,,,,,,,SI,,1,,MP,1
-Flu-0717,Condor 4 Zoo,Condor,Hisopado laringotraqueal,,,2025-02-24,2025-02-26,,PICHINCHA,Quito,Zoo Quito,Chitacnaca,,,,,,Negativo,,H1N1,26,,,,,,,SI,,1,,MP,1
-Flu-0736,BM-A-23-983,Aves de corral,Líquido en PBS y Shield,,21.38,2023-07-28,2025-02-26,,COTOPAXI,,,,,,,,,,,Influenza A: H5N1; 2.3.4.4b,agro,,,,,SI,,SI,SI,3,,"NP,MP,NS",3
-Flu-0738,BM-A-23-986,Aves de corral,Líquido en PBS y Shield,,31.36,2023-07-28,2025-02-26,,COTOPAXI,,,,,,,,,,,Influenza A: H5N1; 2.3.4.4b,agro,,,,,,,SI,SI,2,,"MP,NS",2
-Flu-0739,BM-A-23-1149,Aves de corral,Líquido en PBS y Shield,,26.45,2023-08-17,2025-02-26,,GUAYAS,,,,,,,,,,,Influenza A: H5N1; 2.3.4.4b,agro,,,,,SI,,SI,SI,3,,"NP,MP,NS",3
-Flu-0735,BM-A-23-927,Aves de corral,Líquido en PBS y Shield,,28.72,2023-07-24,2025-02-26,,TUNGURAHUA,,,,,,,,,,,,agro,,,,,,,,SI,1,,NS,1
-Flu-0737,BM-A-23-984,Aves de corral,Líquido en PBS y Shield,,20.69,2023-07-28,2025-02-26,,COTOPAXI,,,,,,,,,,,,agro,,,,,SI,,SI,SI,3,,"NP,MP,NS",3
-Flu-0740,BM-A-24-068,Aves de corral,Líquido en PBS y Shield,,31.43,2024-02-27,2025-02-26,,PASTAZA,,,,,,,,,,,,agro,,,,,,,SI,,1,,MP,1
-Flu-0741,BM-A-24-070,Aves de corral,Líquido en PBS y Shield,,21.15,2024-02-27,2025-02-26,,PASTAZA,,,,,,,,,,,,agro,,,,,,,SI,SI,2,,"MP,NS",2
-Flu-0742,BM-A-24-071,Aves de corral,Líquido en PBS y Shield,,28.03,2024-02-27,2025-02-26,,PASTAZA,,,,,,,,,,,,agro,,,,,SI,,SI,SI,3,,"NP,MP,NS",3
+Código USFQ,EPI_ISL,Código procedencia,Especie,Tipo de muestra,Estado salud animal,observaciones,Fecha colección,Fecha recepción,Semana Epidemiológica,Provincia,Ciudad,Localidad,Nombre_animal,Género,Edad,MÉDICO CONTACTO,Diagnóstico Kit Allplex,Diagnóstico Kit Bioperfectuss/LunaSARS,RT-PCR gen M,Gel amplicon sequencing,Secuenciamiento,run,PB2,PB1,PA,HA,NP,NA,MP,NS
+Flu-0008,EPI_ISL_20450066,Piquero-002,Piquero peruano,Hisopado,,Kit Allplex SC-2/FLUA/FLUB/RSV Seegene,2023-05-10,2023-05-17,,SANTAELENA,La_Milina,,,,,,"Positivo (Ct 39,37)",-,Bandeo (M),,H5N1 Clado 2.3.4.4 ,1,,,,,,,,SI
+Flu-0009,EPI_ISL_20450053,BM-A-23-008,Aves de corral,Hisopado,,Para estandarización,2023-04-13,2023-05-19,,MORONA SANTIAGO,,,,,,,,"Positivo (Ct 28,78)",Bandeo (M),Sin bandas,SIII-3P,"1,3",,,,,SI,SI,SI,SI
+Flu-0011,EPI_ISL_20450054,BM-23-2349,Aves de corral,Hisopado,,Para estandarización,2023-04-02,2023-05-19,,NAPO,,,,,,,,"Positivo (Ct 30,20)",Bandeo (M),Sin bandas,SIII-3P,1,,,,,,,SI,SI
+Flu-0013,EPI_ISL_20450055,BM-23-0534,Aves de corral,Hisopado,,Para estandarización,2023-01-20,2023-05-19,,TUNGURAHUA,,,,,,,,-,Bandeo (M),Posible positivo,SIII-3P,"1,2,3",,,,SI,SI,SI,SI,SI
+Flu-0014,EPI_ISL_20450067,REMACOPSE-SALINAS,Sula nebouxii,Hisopado,,Kit Allplex SC-2/FLUA/FLUB/RSV Seegene,2023-05-27,2023-05-30,,SANTAELENA,Salinas,,,,,Lucia Luje,"Positivo (Ct 24,03)","Positivo (Ct 21,46; 1:10)",Bandeo (M),Indeterminado,H5N1,"2,3",,,,,,,,SI
+Flu-0018,EPI_ISL_20450056,Remape-2023-SU-MV-001,,Hisopado,,Faringea,2023-06-01,2023-06-05,,SANTA ELENA,Montañita,,,,,,Negativo,Negativo,Bandeo (M),Indeterminado,H5N1,3,,,,,,,,SI
+Flu-0023,EPI_ISL_20450068,PG-004-SL,Pardela gris,Hisopado,,Hisopado orofaríngeo,2023-06-02,2023-06-05,,MANABI,San Lorenzo,,,,,,Negativo,Negativo,Bandeo (M),Posible positivo,H5N1,"2,3",,,,SI,SI,SI,SI,SI
+Flu-0027,EPI_ISL_20450069,,Puffinus sp.,Hisopado,,,2023-05-30,2023-06-02,,SANTA ELENA,Ayangue,,,,,,,Negativo,Bandeo (M),Sin bandas,Negativo,3,,,,,,,SI,SI
+Flu-0035,EPI_ISL_20450070,004/31-05/2023,Thalasseus elegans,Hisopado laringotraqueal,,Hisopado orofaríngeo; Playa Muisne,2023-05-31,2023-05-31,2023-06-06,ESMERALDAS,Muisne,Playa Muisne,Playa Muisne,,,Nelson López; Lucía Luje,Nelson López,Negativo,Bandeo (M),Sin bandas,Negativo,3,,,,,,,SI,SI
+Flu-0055,EPI_ISL_20450071,PG-002-SL,Pardela gris,Hisopado laringotraqueal,,Orofaringeo,2023-06-06,2023-06-06,,MANABI,Manta,Playa San Lorenzo,,,,,"Negativo (CI 29,74)",Negativo,Bandeo (M),Posible positivo,H5N1,"2,3",,,,,,,SI,
+Flu-0205,EPI_ISL_20450072,GU1-005-HF,Ardenna grisea,Hisopado Faríngeo,Muerto,"Se equivocaron al diferenciar cuál es el hisopado cloacal, por lo que hay dos muestras etiquetadas como hisopados faringeo",2023-07-11,2023-07-14,,GUAYAS,Puerto Engabao,,,,,,,,Bandeo (M),,Influenza A: H5N1*,"8,10,14",,,,,,,SI,
+Flu-0206,EPI_ISL_20450073,GU1-005-HF,Ardenna grisea,Hisopado Faríngeo,Muerto,,2023-07-11,2023-07-14,,GUAYAS,Puerto Engabao,,PIDEN METAGENOMA,,,,,,Bandeo (M),,Influenza A: H5N1*,"8,10",,,,,,,SI,SI
+Flu-0314,EPI_ISL_20450057,BM-IA-06,Patos,Pool hisopados,,"Cq 34,02",2023-07-24,2023-08-01,,TUNGURAHUA,Ambato,Parroquia Santa Rosa,,,,,,,Positivo,4,Influenza A: H5N1; 2.3.4.4b,9,,,,,,SI,SI,SI
+Flu-0316,EPI_ISL_20450058,BM-IA-08,Aves de corral,Pool hisopados,,"Cq 18,37",2023-07-28,2023-08-01,,COTOPAXI,Salcedo, Parroquia Antonio José Holguin,,,,,,,Positivo,3,Influenza A: H5N1; 2.3.4.4b,9,SI,SI,SI,SI,SI,SI,SI,SI
+Flu-0317,EPI_ISL_20450059,BM-IA-09,Aves de corral,Pool hisopados,,"Cq 19,34",2023-07-28,2023-08-01,,COTOPAXI,Salcedo, Parroquia Antonio José Holguin,,,,,,,Positivo,3,Influenza A: H5N1; 2.3.4.4b,9,SI,SI,SI,SI,SI,SI,SI,SI
+Flu-0318,EPI_ISL_20450060,BM-IA-10,Aves de corral,Pool hisopados,,"Cq 27,49",2023-07-24,2023-08-03,,TUNGURAHUA,,,,,,,,,,,Influenza A: H5N1; 2.3.4.4b,10,SI,SI,SI,,SI,SI,SI,SI
+Flu-0321,EPI_ISL_20450061,BM-IA-13,Aves de corral,Pool hisopados,,"Cq 27,94",2023-07-28,2023-08-03,,COTOPAXI,,,,,,,,,,,Influenza A: H5N1; 2.3.4.4b,10,,,,,,SI,SI,SI
+Flu-0323,EPI_ISL_20450062,BM-IA-15,Aves de corral,Hisopado,,"Cq 22,63",2023-08-03,2023-08-21,,PICHINCHA,,,,,,,,,,,Influenza A: H5N1; 2.3.4.4b,12,,,,,,,SI,SI
+Flu-0325,EPI_ISL_20450063,BM-IA-17,Aves de corral,Hisopado,,"Cq 21,27",2023-08-03,2023-08-21,,PICHINCHA,,,,,,,,,,,Influenza A: H5N1; 2.3.4.4b,12,,,,,SI,,SI,SI
+Flu-0326,EPI_ISL_20450064,BM-IA-18,Aves de corral,Hisopado,,"Cq 15,9",2023-08-03,2023-08-21,,PICHINCHA,,,,,,,,,,,Influenza A: H5N1; 2.3.4.4b,12,,,,,SI,,SI,SI
+Flu-0330,EPI_ISL_20450065,BM-IA-22,Aves de corral,Hisopado,,---,2023-08-17,2023-08-21,,GUAYAS,,,,,,,,,,,Influenza A: H5N1; 2.3.4.4b,12,,,,,SI,,SI,SI
+Flu-0402,EPI_ISL_20450074,M1-IP,Fragata,Hisopado Faríngeo,,,2023-10-31,2023-11-01,,GUAYAS,Guayaquil,Isla Manglecito,Fragata Magnificans,,Juvenil,Oscar Vasconez,18.44,15.61,Positivo,,H5N1,17,SI,SI,SI,SI,,SI,SI,SI
+Flu-0403,EPI_ISL_20450075,M1-IP,Fragata,hisopado Cloacal,,,2023-10-31,2023-11-01,,GUAYAS,Guayaquil,Isla Manglecito,Fragata Magnificans,,Juvenil,Oscar Vasconez,34.25,29.75,Positivo,,H5N1,17,,,,,,,SI,
+Flu-0406,EPI_ISL_20450076,M3-IP,Fragata,Hisopado Faríngeo,,,2023-10-31,2023-11-01,,GUAYAS,Guayaquil,Isla Manglecito,Fragata Magnificans,Hembra,Adulto,Oscar Vasconez,22.14,18.72,Positivo,,H5N1,17,SI,SI,SI,SI,SI,SI,SI,SI
+Flu-0407,EPI_ISL_20450096,M3-IP,Fragata,hisopado Cloacal,,,2023-10-31,2023-11-01,,GUAYAS,Guayaquil,Isla Manglecito,Fragata Magnificans,Hembra,Adulto,Oscar Vasconez,23.64,19.97,Positivo,,H5N1,17,SI,SI,,SI,SI,SI,SI,SI
+Flu-0410,EPI_ISL_20450097,M5-IP,Fragata,Hisopado Faríngeo,,,2023-10-31,2023-11-01,,GUAYAS,Guayaquil,Isla Manglecito,Fragata Magnificans,Fragata Magnificans,Juvenil,Oscar Vasconez,Oscar Vasconez,31.55,Negativo,Negativo,-,17,,,,,,,,SI
+Flu-0413,EPI_ISL_20450077,BM-22-2070,Aves de corral,Líquido en PBS y Shield,,"Cq  20,6",2022-11-25,2023-11-10,,COTOPAXI,,,,,,,,,Positivo,,Influenza A: H5N1,17,,,,,,,SI,
+Flu-0418,EPI_ISL_20450078,BM-22-2075,Aves de corral,Líquido en PBS y Shield,,"Cq  19,61",2022-11-25,2023-11-10,,COTOPAXI,,,,,,,,,Positivo,,Influenza A: H5N1,17,,,,,,,SI,
+Flu-0423,EPI_ISL_20450079,BM-22-2132,Aves de corral,Líquido en PBS y Shield,,"Cq H5  *38,01",2022-12-16,2023-11-10,,COTOPAXI,,,,,,,,,Positivo,,,17,,,,,,,,SI
+Flu-0440,EPI_ISL_20450080,BM-22-2672,Aves de corral,Líquido en PBS y Shield,,"Cq  17,38",2022-12-16,2023-11-10,,COTOPAXI,,,,,,,,,Positivo,,Influenza A: H5N1,17,,,,,,SI,,
+Flu-0450,EPI_ISL_20450081,BM-23-0134,Aves de corral,Líquido en PBS y Shield,,"Cq  34,55",2023-01-08,2023-11-10,,BOLIVAR,,,,,,,,,Positivo,,Influenza A: H5N1,17,,,,SI,,SI,,
+Flu-0451,EPI_ISL_20450098,BM-23-0139,PATO,Líquido en PBS y Shield,,"Cq  24,89",2023-01-08,2023-11-10,,BOLIVAR,,,,,,,,,Positivo,,,17,,,,,,,,SI
+Flu-0456,EPI_ISL_20450082,BM-23-0300,Aves de corral,Líquido en PBS y Shield,,"Cq  28,88",2023-01-13,2023-11-10,,TUNGURAHUA,,,,,,,,,Positivo,,Influenza A: H5N1,17,,,,,,SI,,
+Flu-0457,EPI_ISL_20450083,BM-23-0305,Aves de corral,Líquido en PBS y Shield,,"Cq  27,07",2023-01-13,2023-11-10,,TUNGURAHUA,,,,,,,,,Negativo,,,20,,,,,,,SI,
+Flu-0465,EPI_ISL_20450084,BM-23-0437,Aves de corral,Líquido en PBS y Shield,,"Cq  15,19",2023-01-18,2023-11-10,,PICHINCHA,,,,,,,,,Positivo,,Influenza A: H5N1,17,,,,SI,,,,
+Flu-0472,EPI_ISL_20450085,BM-23-0444,Aves de corral,Líquido en PBS y Shield,,"Cq  17,02",2023-01-19,2023-11-10,,COTOPAXI,,,,,,,,,Positivo,,Influenza A: H5N1,17,,,,SI,,SI,,
+Flu-0578,EPI_ISL_20450099,M014,Fregata magnificens,Hisopado,,,2023-12-06,2023-12-19,,MANABI,,-,,,,,,,Positivo,,AIV(H5N1),20,,SI,,SI,,SI,SI,SI
+Flu-0580,EPI_ISL_20450086,BM-22-2070,Aves de corral,Líquido en PBS y Shield,,"Cq 23,87; Extracción Agro R1",2022-11-25,2024-02-20,,COTOPAXI,,,,,,,,,,,AIV(H5N1),23,SI,SI,SI,SI,SI,SI,SI,SI
+Flu-0582,EPI_ISL_20450087,BM-22-2075,Aves de corral,Líquido en PBS y Shield,,21.39,2022-11-25,2024-02-20,,COTOPAXI,,,,,,,,,,,AIV(H5N1),23,SI,SI,SI,SI,SI,SI,SI,SI
+Flu-0583,EPI_ISL_20387860,BM-22-2134,Aves de corral,Líquido en PBS y Shield,,22.24,2022-12-02,2024-02-20,,COTOPAXI,,,,,,,,,,,AIV(H5N1),23,SI,SI,SI,SI,SI,SI,SI,SI
+Flu-0584,EPI_ISL_20387861,BM-22-2135,Aves de corral,Líquido en PBS y Shield,,"17,2; Extracción Agro R5",2022-12-02,2024-02-20,,COTOPAXI,,,,,,,,,,,AIV(H5N1),21,SI,SI,SI,SI,SI,SI,SI,SI
+Flu-0585,EPI_ISL_20450088,BM-22-2136,Aves de corral,Líquido en PBS y Shield,,21.17,2022-12-02,2024-02-20,,COTOPAXI,,,,,,,,,,,Negativo,23,SI,,SI,SI,SI,SI,SI,SI
+Flu-0586,EPI_ISL_20387862,BM-22-2512,Aves de corral,Líquido en PBS y Shield,,23.43,2022-12-13,2024-02-20,,COTOPAXI,,,,,,,,,,,AIV(H5N1),22,SI,SI,SI,SI,SI,SI,SI,SI
+Flu-0587,EPI_ISL_20450089,BM-22-2517,Aves de corral,Líquido en PBS y Shield,,22.47,2022-12-13,2024-02-20,,COTOPAXI,,,,,,,,,,,AIV(H5N1),21,,SI,SI,SI,SI,SI,SI,SI
+Flu-0589,EPI_ISL_20387863,BM-22-2524,Aves de corral,Líquido en PBS y Shield,,24.52,2022-12-13,2024-02-20,,COTOPAXI,,,,,,,,,,,AIV(H5N1),22,SI,SI,SI,SI,SI,SI,SI,SI
+Flu-0590,EPI_ISL_20450090,BM-22-2530,Aves de corral,Líquido en PBS y Shield,,22.3,2022-12-13,2024-02-20,,COTOPAXI,,,,,,,,,,,AIV(H5N1),23,SI,SI,SI,SI,SI,,SI,SI
+Flu-0592,EPI_ISL_20387864,BM-22-2667,Aves de corral,Líquido en PBS y Shield,,20.38,2022-12-14,2024-02-20,,COTOPAXI,,,,,,,,,,,AIV(H5N1),21,SI,SI,SI,SI,SI,SI,SI,SI
+Flu-0593,EPI_ISL_20387865,BM-22-2672,Aves de corral,Líquido en PBS y Shield,,17.95,2022-12-14,2024-02-20,,COTOPAXI,,,,,,,,,,,AIV(H5N1),21,SI,SI,SI,SI,SI,SI,SI,SI
+Flu-0594,EPI_ISL_20450091,BM-23-0121,Aves de corral,Líquido en PBS y Shield,,21.64,2023-12-28,2024-02-20,,BOLIVAR,,,,,,,,,,,Negativo,22,,,,,SI,,SI,SI
+Flu-0595,EPI_ISL_20450092,BM-23-0125,Aves de corral,Líquido en PBS y Shield,,16.7,2023-01-07,2024-02-20,,COTOPAXI,,,,,,,,,,,Negativo,23,SI,SI,SI,,SI,SI,SI,SI
+Flu-0596,EPI_ISL_20387866,BM-23-0126,Aves de corral,Líquido en PBS y Shield,,14.52,2023-01-07,2024-02-20,,COTOPAXI,,,,,,,,,,,AIV(H5N1),23,SI,SI,SI,SI,SI,SI,SI,SI
+Flu-0597,EPI_ISL_20450093,BM-23-0127,Aves de corral,Líquido en PBS y Shield,,20.67,2023-01-07,2024-02-20,,COTOPAXI,,,,,,,,,,,Negativo,22,,,,,SI,SI,SI,SI
+Flu-0598,EPI_ISL_20450094,BM-23-0130,Aves de corral,Líquido en PBS y Shield,,16.43,2023-01-07,2024-02-20,,COTOPAXI,,,,,,,,,,,Negativo,21,SI,SI,SI,,SI,SI,SI,SI
+Flu-0599,EPI_ISL_20387867,BM-23-0131,Aves de corral,Líquido en PBS y Shield,,19.73,2023-01-07,2024-02-20,,COTOPAXI,,,,,,,,,,,AIV(H5N1),23,SI,SI,SI,SI,SI,SI,SI,SI
+Flu-0600,EPI_ISL_20450095,BM-23-0132,Aves de corral,Líquido en PBS y Shield,,19.32,2023-01-07,2024-02-20,,COTOPAXI,,,,,,,,,,,AIV(H5N1),22,SI,SI,SI,SI,SI,SI,SI,SI
+Flu-0603,EPI_ISL_20450100,BM-23-0139,Aves de corral,Líquido en PBS y Shield,,23.42,2023-01-07,2024-02-20,,BOLIVAR,,,,,,,,,,,Negativo,21,SI,SI,SI,,SI,,SI,SI
+Flu-0604,EPI_ISL_20450101,BM-23-0289,Aves de corral,Líquido en PBS y Shield,,19.05,2023-01-12,2024-02-20,,TUNGURAHUA,,,,,,,,,,,Negativo,23,SI,SI,SI,SI,SI,SI,SI,SI
+Flu-0605,EPI_ISL_20450102,BM-23-0290,Aves de corral,Líquido en PBS y Shield,,20.71,2023-01-12,2024-02-20,,TUNGURAHUA,,,,,,,,,,,Negativo,22,,,,,SI,,SI,SI
+Flu-0608,EPI_ISL_20387868,BM-23-0305,Aves de corral,Líquido en PBS y Shield,,23.47,2023-01-12,2024-02-20,,TUNGURAHUA,,,,,,,,,,,AIV(H5N1),23,SI,SI,SI,SI,SI,SI,SI,SI
+Flu-0609,EPI_ISL_20450103,BM-23-0360,Aves de corral,Líquido en PBS y Shield,,20.04,2023-01-16,2024-02-20,,TUNGURAHUA,,,,,,,,,,,Negativo,23,SI,SI,SI,,SI,SI,SI,SI
+Flu-0610,EPI_ISL_20450104,BM-23-0361,Aves de corral,Líquido en PBS y Shield,,22.54,2023-01-16,2024-02-20,,TUNGURAHUA,,,,,,,,,,,AIV(H5N1),22,SI,SI,SI,SI,SI,SI,SI,SI
+Flu-0611,EPI_ISL_20387869,BM-23-0432,Aves de corral,Líquido en PBS y Shield,,17.5,2023-01-18,2024-02-20,,PICHINCHA,,,,,,,,,,,AIV(H5N1),22,SI,SI,SI,SI,SI,SI,SI,SI
+Flu-0613,EPI_ISL_20387870,BM-23-0434,Aves de corral,Líquido en PBS y Shield,,22.57,2023-01-18,2024-02-20,,PICHINCHA,,,,,,,,,,,AIV(H5N1),22,SI,SI,SI,SI,SI,SI,SI,SI
+Flu-0614,EPI_ISL_20387871,BM-23-0435,Aves de corral,Líquido en PBS y Shield,,17.28,2023-01-18,2024-02-20,,PICHINCHA,,,,,,,,,,,AIV(H5N1),23,SI,SI,SI,SI,SI,SI,SI,SI
+Flu-0615,EPI_ISL_20387872,BM-23-0437,Aves de corral,Líquido en PBS y Shield,,16.04,2023-01-18,2024-02-20,,PICHINCHA,,,,,,,,,,,AIV(H5N1),23,SI,SI,SI,,SI,,SI,SI
+Flu-0619,EPI_ISL_20387873,BM-23-0442,Aves de corral,Líquido en PBS y Shield,,20.07,2023-01-19,2024-02-20,,COTOPAXI,,,,,,,,,,,AIV(H5N1),21,SI,SI,SI,SI,SI,SI,SI,SI
+Flu-0621,EPI_ISL_20387874,BM-23-0445,Aves de corral,Líquido en PBS y Shield,,23.14,2023-01-19,2024-02-20,,COTOPAXI,,,,,,,,,,,AIV(H5N1),22,SI,SI,SI,SI,SI,SI,SI,SI
+Flu-0622,EPI_ISL_20387875,BM-23-0446,Aves de corral,Líquido en PBS y Shield,,20.98,2023-01-19,2024-02-20,,COTOPAXI,,,,,,,,,,,AIV(H5N1),21,SI,SI,SI,SI,SI,SI,SI,SI
+Flu-0623,EPI_ISL_20387876,BM-23-0447,Aves de corral,Líquido en PBS y Shield,,16.14,2023-01-19,2024-02-20,,COTOPAXI,,,,,,,,,,,AIV(H5N1),22,SI,SI,SI,SI,SI,SI,SI,SI
+Flu-0629,EPI_ISL_20450105,BM-24-071,Aves de corral,Líquido en PBS y Shield,,21.13,2024-02-27,2024-02-29,,PASTAZA,,,,,,,,,,,Negativo,22,,,,,SI,,SI,SI
+Flu-0630,EPI_ISL_20450106,BM-23-0449,Aves de corral,Líquido en PBS y Shield,,18.06,2023-01-19,2024-04-23,,COTOPAXI,,,,,,,,,,,AIV(H5N1) 2.3.4.4B,"24,25",SI,SI,SI,SI,SI,SI,SI,SI
+Flu-0631,EPI_ISL_20450107,BM-23-0450,Aves de corral,Líquido en PBS y Shield,,23.56,2023-01-19,2024-04-23,,COTOPAXI,,,,,,,,,,,Negativo,"24,25",,,,,SI,,SI,SI
+Flu-0632,EPI_ISL_20450108,BM-23-0451,Aves de corral,Líquido en PBS y Shield,,20.49,2023-01-19,2024-04-23,,COTOPAXI,,,,,,,,,,,Negativo,24,,,,,SI,SI,SI,SI
+Flu-0633,EPI_ISL_20450109,BM-23-0454,Aves de corral,Líquido en PBS y Shield,,21.02,2023-01-19,2024-04-23,,COTOPAXI,,,,,,,,,,,Negativo,24,SI,SI,SI,,SI,SI,SI,SI
+Flu-0635,EPI_ISL_20450110,BM-23-0456,Aves de corral,Líquido en PBS y Shield,,25.05,2023-01-19,2024-04-23,,COTOPAXI,,,,,,,,,,,Negativo,25,,,,,SI,,SI,SI
+Flu-0636,EPI_ISL_20450111,BM-23-0459,Aves de corral,Líquido en PBS y Shield,,25.69,2023-01-19,2024-04-23,,COTOPAXI,,,,,,,,,,,Negativo,25,,,,,SI,,SI,SI
+Flu-0638,EPI_ISL_20450112,BM-23-0533,Aves de corral,Líquido en PBS y Shield,,23.25,2023-01-20,2024-04-23,,TUNGURAHUA,,,,,,,,,,,AIV(H5N1) 2.3.4.4B,24,,,,SI,SI,SI,SI,SI
+Flu-0639,EPI_ISL_20450113,BM-23-0534,Aves de corral,Líquido en PBS y Shield,,24.18,2023-01-20,2024-04-23,,TUNGURAHUA,,,,,,,,,,,AIV(H5N1)  2.3.4.4B,24,SI,SI,,SI,SI,,SI,SI
+Flu-0640,EPI_ISL_20450114,BM-23-0536,Aves de corral,Líquido en PBS y Shield,,26.96,2023-01-20,2024-04-23,,TUNGURAHUA,,,,,,,,,,,Negativo,24,,,,, ,,SI,SI
+Flu-0641,EPI_ISL_20386477,BM-23-0537,Aves de corral,Líquido en PBS y Shield,,24.22,2023-01-20,2024-04-23,,TUNGURAHUA,,,,,,,,,,,AIV(H5N1)  2.3.4.4B,24,SI,SI,SI,SI,SI,SI,SI,SI
+Flu-0642,EPI_ISL_20450115,BM-23-0570,Aves de corral,Líquido en PBS y Shield,,20.95,2023-01-24,2024-04-23,,TUNGURAHUA,,,,,,,,,,,Negativo,25,,,,,SI,,SI,SI
+Flu-0643,EPI_ISL_20450116,BM-23-0571,Aves de corral,Líquido en PBS y Shield,,27.59,2023-01-24,2024-04-23,,TUNGURAHUA,,,,,,,,,,,Negativo,25,,,,,SI,,SI,SI
+Flu-0652,EPI_ISL_20387877,BM-23-1400,Aves de corral,Líquido en PBS y Shield,,20.77,2023-02-19,2024-04-23,,AZUAY,,,,,,,,,,,AIV(H5N1)  2.3.4.4B,24,SI,SI,SI,SI,SI,SI,SI,SI
+Flu-0653,EPI_ISL_20450117,BM-23-1401,Aves de corral,Líquido en PBS y Shield,,20.51,2023-02-19,2024-04-23,,AZUAY,,,,,,,,,,,AIV(H5N1)  2.3.4.4B,"24,25",SI,SI,SI,SI,SI,SI,SI,SI
+Flu-0654,EPI_ISL_20387878,BM-23-1402,Aves de corral,Líquido en PBS y Shield,,21.78,2023-02-19,2024-04-23,,AZUAY,,,,,,,,,,,AIV(H5N1),24,SI,SI,SI,SI,SI,SI,SI,SI
+Flu-0655,EPI_ISL_20450118,BM-23-1593,Aves de corral,Líquido en PBS y Shield,,24.21,2023-02-27,2024-04-23,,COTOPAXI,,,,,,,,,,,Negativo,25,,,,,SI,,SI,SI
+Flu-0656,EPI_ISL_20450119,BM-23-1594,Aves de corral,Líquido en PBS y Shield,,28.06,2023-02-27,2024-04-23,,COTOPAXI,,,,,,,,,,,Negativo,25,,,,,SI,,SI,SI
+Flu-0658,EPI_ISL_20387879,BM-23-2136,Aves de corral,Líquido en PBS y Shield,,20.39,2023-03-22,2024-04-23,,PASTAZA,,,,,,,,,,,AIV(H5N1) 2.3.4.4B,24,SI,SI,SI,,SI,SI,SI,SI
+Flu-0663,EPI_ISL_20450120,BM-23-2350,Aves de corral,Líquido en PBS y Shield,,26.89,2023-04-02,2024-04-23,,NAPO,,,,,,,,,,,Negativo,24,,,,,SI,,SI,SI
+Flu-0679,EPI_ISL_20450121,Oral #3,Condor,Hisopado laringotraqueal,,,2025-02-05,2025-02-19,,IMBABURA,,,,,,,,,Positivo,,H1N1,"26,agro",,,,,,,SI,SI
+Flu-0680,EPI_ISL_20450122,,Condor,Hisopado laringotraqueal,,,2025-02-05,2025-02-19,,IMBABURA,,,Curi,,,,,,Positivo,,H1N1,26,,,,,,,SI,SI
+Flu-0688,EPI_ISL_20450123,,Condor,Hisopado laringotraqueal,,,2025-02-05,2025-02-19,,IMBABURA,,,Pimampiro,,,,,,Positivo,,H1N1,26,,,,,,,SI,SI
+Flu-0711,EPI_ISL_20450124,SP-CB-8,Gallinazo,Hisopado laringotraqueal,,,2025-02-05,2025-02-19,,IMBABURA,,,,,,,,,Negativo,,H1N1,26,,,,,SI,SI,SI,SI
+Flu-0713,EPI_ISL_20450128,Condor 1 Zoo,Condor,Hisopado cloacal,,,2025-02-24,2025-02-26,,PICHINCHA,Quito,Zoo Quito,Toa,,,,,,Negativo,,H1N1,26,,,,,,,SI,
+Flu-0714,EPI_ISL_20450130,Condor 1 Zoo,Condor,Hisopado laringotraqueal,,,2025-02-24,2025-02-26,,PICHINCHA,Quito,Zoo Quito,Toa,,,,,,Negativo,,H1N1,26,,,,,,,SI,SI
+Flu-0715,EPI_ISL_20450131,Condor 3 Zoo,Condor,Hisopado laringotraqueal,,,2025-02-24,2025-02-26,,PICHINCHA,Quito,Zoo Quito,Kayambi,,,,,,Negativo,,H1N1,26,,,,,,,SI,
+Flu-0716,EPI_ISL_20450132,Condor 3 Zoo,Condor,Hisopado cloacal,,,2025-02-24,2025-02-26,,PICHINCHA,Quito,Zoo Quito,Kayambi,,,,,,Negativo,,H1N1,26,,,,,,,SI,
+Flu-0717,EPI_ISL_20450133,Condor 4 Zoo,Condor,Hisopado laringotraqueal,,,2025-02-24,2025-02-26,,PICHINCHA,Quito,Zoo Quito,Chitacnaca,,,,,,Negativo,,H1N1,26,,,,,,,SI,
+Flu-0736,EPI_ISL_20450135,BM-A-23-983,Aves de corral,Líquido en PBS y Shield,,21.38,2023-07-28,2025-02-26,,COTOPAXI,,,,,,,,,,,Influenza A: H5N1; 2.3.4.4b,agro,,,,,SI,,SI,SI
+Flu-0738,EPI_ISL_20450136,BM-A-23-986,Aves de corral,Líquido en PBS y Shield,,31.36,2023-07-28,2025-02-26,,COTOPAXI,,,,,,,,,,,Influenza A: H5N1; 2.3.4.4b,agro,,,,,,,SI,SI
+Flu-0739,EPI_ISL_20450137,BM-A-23-1149,Aves de corral,Líquido en PBS y Shield,,26.45,2023-08-17,2025-02-26,,GUAYAS,,,,,,,,,,,Influenza A: H5N1; 2.3.4.4b,agro,,,,,SI,,SI,SI
+Flu-0735,EPI_ISL_20450139,BM-A-23-927,Aves de corral,Líquido en PBS y Shield,,28.72,2023-07-24,2025-02-26,,TUNGURAHUA,,,,,,,,,,,,agro,,,,,,,,SI
+Flu-0737,EPI_ISL_20450140,BM-A-23-984,Aves de corral,Líquido en PBS y Shield,,20.69,2023-07-28,2025-02-26,,COTOPAXI,,,,,,,,,,,,agro,,,,,SI,,SI,SI
+Flu-0740,EPI_ISL_20450142,BM-A-24-068,Aves de corral,Líquido en PBS y Shield,,31.43,2024-02-27,2025-02-26,,PASTAZA,,,,,,,,,,,,agro,,,,,,,SI,
+Flu-0741,EPI_ISL_20450143,BM-A-24-070,Aves de corral,Líquido en PBS y Shield,,21.15,2024-02-27,2025-02-26,,PASTAZA,,,,,,,,,,,,agro,,,,,,,SI,SI
+Flu-0742,EPI_ISL_20450144,BM-A-24-071,Aves de corral,Líquido en PBS y Shield,,28.03,2024-02-27,2025-02-26,,PASTAZA,,,,,,,,,,,,agro,,,,,SI,,SI,SI
