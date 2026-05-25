@@ -2,249 +2,59 @@ digraph snakemake_dag {
     graph[bgcolor=white, margin=0];
     node[shape=box, style=rounded, fontname=sans,                 fontsize=10, penwidth=2];
     edge[penwidth=2, color=grey];
-	0[label = "beast_runs", color = "0.06 0.6 0.85", style="rounded"];
-	1[label = "summarize_beast_run", color = "0.61 0.6 0.85", style="rounded"];
-	2[label = "run_beast_replicate\nreplicate: r1", color = "0.50 0.6 0.85", style="rounded"];
-	3[label = "prepare_beast_run_xml\nscenario: strict_constant", color = "0.39 0.6 0.85", style="rounded"];
-	4[label = "filter_beast_panel_by_rtt_outliers", color = "0.29 0.6 0.85", style="rounded"];
-	5[label = "filter_beast_panel_by_qc", color = "0.27 0.6 0.85", style="rounded"];
-	6[label = "build_beast_panels", color = "0.07 0.6 0.85", style="rounded"];
-	7[label = "raxml_ng_tree_full_concat", color = "0.42 0.6 0.85", style="rounded"];
-	8[label = "concat_aligned_segments_with_partitions", color = "0.25 0.6 0.85", style="rounded"];
-	9[label = "mafft_align_per_segment\nsegment: PB2", color = "0.31 0.6 0.85", style="rounded"];
-	10[label = "split_h5n1_final_by_segment", color = "0.55 0.6 0.85", style="rounded"];
-	11[label = "build_h5n1_final_fasta", color = "0.13 0.6 0.85", style="rounded"];
-	12[label = "build_h5n1_ec_fasta", color = "0.12 0.6 0.85", style="rounded"];
-	13[label = "build_ecuador_intermediate_input", color = "0.08 0.6 0.85", style="rounded"];
-	14[label = "run_mira_cli_for_run\nrun_id: run1", color = "0.51 0.6 0.85", style="rounded,dashed"];
-	15[label = "run_mira_cli_for_run\nrun_id: run10", color = "0.51 0.6 0.85", style="rounded,dashed"];
-	16[label = "run_mira_cli_for_run\nrun_id: run12", color = "0.51 0.6 0.85", style="rounded,dashed"];
-	17[label = "run_mira_cli_for_run\nrun_id: run17", color = "0.51 0.6 0.85", style="rounded,dashed"];
-	18[label = "run_mira_cli_for_run\nrun_id: run2", color = "0.51 0.6 0.85", style="rounded,dashed"];
-	19[label = "run_mira_cli_for_run\nrun_id: run20", color = "0.51 0.6 0.85", style="rounded,dashed"];
-	20[label = "run_mira_cli_for_run\nrun_id: run21", color = "0.51 0.6 0.85", style="rounded,dashed"];
-	21[label = "run_mira_cli_for_run\nrun_id: run22", color = "0.51 0.6 0.85", style="rounded,dashed"];
-	22[label = "run_mira_cli_for_run\nrun_id: run23", color = "0.51 0.6 0.85", style="rounded,dashed"];
-	23[label = "run_mira_cli_for_run\nrun_id: run24", color = "0.51 0.6 0.85", style="rounded,dashed"];
-	24[label = "run_mira_cli_for_run\nrun_id: run25", color = "0.51 0.6 0.85", style="rounded,dashed"];
-	25[label = "run_mira_cli_for_run\nrun_id: run26", color = "0.51 0.6 0.85", style="rounded,dashed"];
-	26[label = "run_mira_cli_for_run\nrun_id: run3", color = "0.51 0.6 0.85", style="rounded,dashed"];
-	27[label = "run_mira_cli_for_run\nrun_id: run8", color = "0.51 0.6 0.85", style="rounded,dashed"];
-	28[label = "run_mira_cli_for_run\nrun_id: run9", color = "0.51 0.6 0.85", style="rounded,dashed"];
-	29[label = "run_mira_cli_for_run\nrun_id: run_agro", color = "0.51 0.6 0.85", style="rounded,dashed"];
-	30[label = "mafft_align_per_segment\nsegment: PB1", color = "0.31 0.6 0.85", style="rounded"];
-	31[label = "mafft_align_per_segment\nsegment: PA", color = "0.31 0.6 0.85", style="rounded"];
-	32[label = "mafft_align_per_segment\nsegment: HA", color = "0.31 0.6 0.85", style="rounded"];
-	33[label = "mafft_align_per_segment\nsegment: NP", color = "0.31 0.6 0.85", style="rounded"];
-	34[label = "mafft_align_per_segment\nsegment: NA", color = "0.31 0.6 0.85", style="rounded"];
-	35[label = "mafft_align_per_segment\nsegment: MP", color = "0.31 0.6 0.85", style="rounded"];
-	36[label = "mafft_align_per_segment\nsegment: NS", color = "0.31 0.6 0.85", style="rounded"];
-	37[label = "raxml_ng_tree_per_segment_codon", color = "0.44 0.6 0.85", style="rounded"];
-	38[label = "build_segment_codon_partitions", color = "0.18 0.6 0.85", style="rounded"];
-	39[label = "raxml_ng_tree_per_segment_codon", color = "0.44 0.6 0.85", style="rounded"];
-	40[label = "build_segment_codon_partitions", color = "0.18 0.6 0.85", style="rounded"];
-	41[label = "raxml_ng_tree_per_segment_codon", color = "0.44 0.6 0.85", style="rounded"];
-	42[label = "build_segment_codon_partitions", color = "0.18 0.6 0.85", style="rounded"];
-	43[label = "raxml_ng_tree_per_segment_codon", color = "0.44 0.6 0.85", style="rounded"];
-	44[label = "build_segment_codon_partitions", color = "0.18 0.6 0.85", style="rounded"];
-	45[label = "raxml_ng_tree_per_segment_codon", color = "0.44 0.6 0.85", style="rounded"];
-	46[label = "build_segment_codon_partitions", color = "0.18 0.6 0.85", style="rounded"];
-	47[label = "raxml_ng_tree_per_segment_codon", color = "0.44 0.6 0.85", style="rounded"];
-	48[label = "build_segment_codon_partitions", color = "0.18 0.6 0.85", style="rounded"];
-	49[label = "raxml_ng_tree_per_segment_simple", color = "0.45 0.6 0.85", style="rounded"];
-	50[label = "raxml_ng_tree_per_segment_simple", color = "0.45 0.6 0.85", style="rounded"];
-	51[label = "observe_beast_subset_source_qc", color = "0.35 0.6 0.85", style="rounded"];
-	52[label = "run_root_to_tip", color = "0.54 0.6 0.85", style="rounded"];
-	53[label = "subset_filtered_panel_concat_alignment_and_prune_tree", color = "0.56 0.6 0.85", style="rounded"];
-	54[label = "build_treetime_dates", color = "0.19 0.6 0.85", style="rounded"];
-	55[label = "publish_final_panel_concat_alignment", color = "0.40 0.6 0.85", style="rounded"];
-	56[label = "validate_beast_xml", color = "0.65 0.6 0.85", style="rounded"];
-	57[label = "run_beast_replicate\nreplicate: r2", color = "0.50 0.6 0.85", style="rounded"];
-	58[label = "summarize_beast_run", color = "0.61 0.6 0.85", style="rounded"];
-	59[label = "run_beast_replicate\nreplicate: r1", color = "0.50 0.6 0.85", style="rounded"];
-	60[label = "prepare_beast_run_xml\nscenario: strict_constant_lugar", color = "0.39 0.6 0.85", style="rounded"];
-	61[label = "validate_beast_xml", color = "0.65 0.6 0.85", style="rounded"];
-	62[label = "run_beast_replicate\nreplicate: r2", color = "0.50 0.6 0.85", style="rounded"];
-	63[label = "summarize_beast_run", color = "0.61 0.6 0.85", style="rounded"];
-	64[label = "run_beast_replicate\nreplicate: r1", color = "0.50 0.6 0.85", style="rounded"];
-	65[label = "prepare_beast_run_xml\nscenario: ucln_constant", color = "0.39 0.6 0.85", style="rounded"];
-	66[label = "validate_beast_xml", color = "0.65 0.6 0.85", style="rounded"];
-	67[label = "run_beast_replicate\nreplicate: r2", color = "0.50 0.6 0.85", style="rounded"];
-	68[label = "summarize_beast_run", color = "0.61 0.6 0.85", style="rounded"];
-	69[label = "run_beast_replicate\nreplicate: r1", color = "0.50 0.6 0.85", style="rounded"];
-	70[label = "prepare_beast_run_xml\nscenario: strict_exp", color = "0.39 0.6 0.85", style="rounded"];
-	71[label = "validate_beast_xml", color = "0.65 0.6 0.85", style="rounded"];
-	72[label = "run_beast_replicate\nreplicate: r2", color = "0.50 0.6 0.85", style="rounded"];
-	73[label = "summarize_beast_run", color = "0.61 0.6 0.85", style="rounded"];
-	74[label = "run_beast_replicate\nreplicate: r1", color = "0.50 0.6 0.85", style="rounded"];
-	75[label = "prepare_beast_run_xml\nscenario: ucln_exp", color = "0.39 0.6 0.85", style="rounded"];
-	76[label = "validate_beast_xml", color = "0.65 0.6 0.85", style="rounded"];
-	77[label = "run_beast_replicate\nreplicate: r2", color = "0.50 0.6 0.85", style="rounded"];
-	78[label = "summarize_strict_constant_final_time", color = "0.63 0.6 0.85", style="rounded"];
-	79[label = "combine_strict_constant_logs", color = "0.20 0.6 0.85", style="rounded"];
-	80[label = "combine_strict_constant_trees", color = "0.24 0.6 0.85", style="rounded"];
-	81[label = "annotate_strict_constant_final_tree", color = "0.04 0.6 0.85", style="rounded"];
-	82[label = "summarize_strict_constant_lugar_final_geography", color = "0.64 0.6 0.85", style="rounded"];
-	83[label = "combine_strict_constant_lugar_logs", color = "0.21 0.6 0.85", style="rounded"];
-	84[label = "combine_strict_constant_lugar_trees", color = "0.23 0.6 0.85", style="rounded"];
-	85[label = "annotate_strict_constant_lugar_final_tree", color = "0.05 0.6 0.85", style="rounded"];
+	0[label = "all", color = "0.01 0.6 0.85", style="rounded"];
+	1[label = "prune_tree_by_distance_to_core", color = "0.43 0.6 0.85", style="rounded"];
+	2[label = "concat_aligned_segments_with_partitions", color = "0.27 0.6 0.85", style="rounded"];
+	3[label = "codon_qc_trim_per_segment", color = "0.21 0.6 0.85", style="rounded"];
+	4[label = "mafft_align_per_segment\nsegment: PB2", color = "0.35 0.6 0.85", style="rounded"];
+	5[label = "split_h5n1_final_by_segment", color = "0.56 0.6 0.85", style="rounded,dashed"];
+	6[label = "build_standard_headers_for_gisaid_context", color = "0.19 0.6 0.85", style="rounded,dashed"];
+	7[label = "build_standard_date_headers", color = "0.17 0.6 0.85", style="rounded,dashed"];
+	8[label = "build_gisaid_input_from_mira", color = "0.09 0.6 0.85", style="rounded,dashed"];
+	9[label = "codon_qc_trim_per_segment", color = "0.21 0.6 0.85", style="rounded"];
+	10[label = "mafft_align_per_segment\nsegment: PB1", color = "0.35 0.6 0.85", style="rounded"];
+	11[label = "codon_qc_trim_per_segment", color = "0.21 0.6 0.85", style="rounded"];
+	12[label = "mafft_align_per_segment\nsegment: PA", color = "0.35 0.6 0.85", style="rounded"];
+	13[label = "codon_qc_trim_per_segment", color = "0.21 0.6 0.85", style="rounded"];
+	14[label = "mafft_align_per_segment\nsegment: HA", color = "0.35 0.6 0.85", style="rounded"];
+	15[label = "codon_qc_trim_per_segment", color = "0.21 0.6 0.85", style="rounded"];
+	16[label = "mafft_align_per_segment\nsegment: NP", color = "0.35 0.6 0.85", style="rounded"];
+	17[label = "codon_qc_trim_per_segment", color = "0.21 0.6 0.85", style="rounded"];
+	18[label = "mafft_align_per_segment\nsegment: NA", color = "0.35 0.6 0.85", style="rounded"];
+	19[label = "codon_qc_trim_per_segment", color = "0.21 0.6 0.85", style="rounded"];
+	20[label = "mafft_align_per_segment\nsegment: MP", color = "0.35 0.6 0.85", style="rounded"];
+	21[label = "codon_qc_trim_per_segment", color = "0.21 0.6 0.85", style="rounded"];
+	22[label = "mafft_align_per_segment\nsegment: NS", color = "0.35 0.6 0.85", style="rounded"];
+	23[label = "iqtree_full_concat", color = "0.32 0.6 0.85", style="rounded"];
 	1 -> 0
-	58 -> 0
-	63 -> 0
-	68 -> 0
-	73 -> 0
-	78 -> 0
-	82 -> 0
 	2 -> 1
-	57 -> 1
+	23 -> 1
 	3 -> 2
-	56 -> 2
+	9 -> 2
+	11 -> 2
+	13 -> 2
+	15 -> 2
+	17 -> 2
+	19 -> 2
+	21 -> 2
 	4 -> 3
-	55 -> 3
 	5 -> 4
-	52 -> 4
-	54 -> 4
 	6 -> 5
-	51 -> 5
 	7 -> 6
 	8 -> 7
-	9 -> 8
-	30 -> 8
-	31 -> 8
-	32 -> 8
-	33 -> 8
-	34 -> 8
-	35 -> 8
-	36 -> 8
-	37 -> 8
-	39 -> 8
-	41 -> 8
-	43 -> 8
-	45 -> 8
-	47 -> 8
-	49 -> 8
-	50 -> 8
 	10 -> 9
-	11 -> 10
+	5 -> 10
 	12 -> 11
-	13 -> 12
+	5 -> 12
 	14 -> 13
-	15 -> 13
-	16 -> 13
-	17 -> 13
-	18 -> 13
-	19 -> 13
-	20 -> 13
-	21 -> 13
-	22 -> 13
-	23 -> 13
-	24 -> 13
-	25 -> 13
-	26 -> 13
-	27 -> 13
-	28 -> 13
-	29 -> 13
-	10 -> 30
-	10 -> 31
-	10 -> 32
-	10 -> 33
-	10 -> 34
-	10 -> 35
-	10 -> 36
-	9 -> 37
-	38 -> 37
-	9 -> 38
-	30 -> 39
-	40 -> 39
-	30 -> 40
-	31 -> 41
-	42 -> 41
-	31 -> 42
-	32 -> 43
-	44 -> 43
-	32 -> 44
-	33 -> 45
-	46 -> 45
-	33 -> 46
-	34 -> 47
-	48 -> 47
-	34 -> 48
-	35 -> 49
-	36 -> 50
-	11 -> 51
-	6 -> 51
-	12 -> 51
-	13 -> 51
-	53 -> 52
-	54 -> 52
-	8 -> 53
-	7 -> 53
-	5 -> 53
-	53 -> 54
-	53 -> 55
-	4 -> 55
-	3 -> 56
-	3 -> 57
-	56 -> 57
-	2 -> 57
-	59 -> 58
-	62 -> 58
-	60 -> 59
-	61 -> 59
-	4 -> 60
-	55 -> 60
-	60 -> 61
-	60 -> 62
-	61 -> 62
-	59 -> 62
-	64 -> 63
-	67 -> 63
-	65 -> 64
-	66 -> 64
-	4 -> 65
-	55 -> 65
-	65 -> 66
-	65 -> 67
-	66 -> 67
-	64 -> 67
-	69 -> 68
-	72 -> 68
-	70 -> 69
-	71 -> 69
-	4 -> 70
-	55 -> 70
-	70 -> 71
-	70 -> 72
-	71 -> 72
-	69 -> 72
-	74 -> 73
-	77 -> 73
-	75 -> 74
-	76 -> 74
-	4 -> 75
-	55 -> 75
-	75 -> 76
-	75 -> 77
-	76 -> 77
-	74 -> 77
-	79 -> 78
-	80 -> 78
-	81 -> 78
-	1 -> 79
-	2 -> 79
-	57 -> 79
-	1 -> 80
-	2 -> 80
-	57 -> 80
-	80 -> 81
-	83 -> 82
-	84 -> 82
-	85 -> 82
-	58 -> 83
-	59 -> 83
-	62 -> 83
-	58 -> 84
-	59 -> 84
-	62 -> 84
-	84 -> 85
+	5 -> 14
+	16 -> 15
+	5 -> 16
+	18 -> 17
+	5 -> 18
+	20 -> 19
+	5 -> 20
+	22 -> 21
+	5 -> 22
+	2 -> 23
 }            

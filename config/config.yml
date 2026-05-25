@@ -1,20 +1,13 @@
 # -----------------------------
 # Inputs and metadata
 # -----------------------------
-mira_base_dir: ".."   # Base directory that contains run*/ from MIRA
-flu_filtrado: "config/flu_filtrado.csv"   # Ecuador metadata/filter table used during assembly intake
-context_metadata_tsv: "config/final_metadata_50_per_country_isolates.tsv"   # Curated context accessions and labels
-ecuador_date_source: "collection"   # Which Ecuador date to use in FASTA headers: collection or reception
-
+mira_base_dir: "../../../MIRA_NGS"   # Base directory that contains run*/ from MIRA to import into gisaid format
+flu_filtrado: "config/flu_filtrado.csv"   # Ecuador main metadata table
 # -----------------------------
 # Reproducibility and resources
 # -----------------------------
-random_seed: 39809473   # Base seed reused across ML tree searches and RF validation
-max_threads: 18         # Default thread cap reused when a tool-specific value is not set
-mafft_threads: 18       # Threads for MAFFT segment alignments
-raxml_segment_threads: 18   # Threads for per-segment RAxML-NG
-raxml_full_concat_threads: 18   # Threads for concatenated RAxML-NG
-
+random_seed: 39809473   # Base seed reused across steps that require randomization, to ensure reproducibility.
+max_threads: 18         # Default thread cap 
 # -----------------------------
 # BEAST exploratory runs
 # -----------------------------
@@ -47,3 +40,8 @@ beast:
     ucln_constant: 9473
     strict_exp: 10893
     ucln_exp: 3749
+
+beast_panel:
+  n_closest: 200
+  max_distance: 0.08
+  protect_anchors_count: 10

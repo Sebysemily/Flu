@@ -4,6 +4,8 @@ channels:
   - bioconda
 dependencies:
   - python=3.11
+  - pandas
   - biopython
   - mafft
   - raxml-ng
+  - iqtree

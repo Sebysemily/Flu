@@ -14,7 +14,7 @@ from date_normalization import (
 
 
 CONFIG_FILE = os.path.join("config", "config.yml")
-DEFAULT_INPUT_FASTAS = [os.path.join("data", "assembled", "H5N1_EC_gisaid_from_mira.fasta")]
+DEFAULT_INPUT_FASTAS = [os.path.join("data", "input", "H5N1_EC_gisaid_from_mira.fasta")]
 DEFAULT_METADATA_CSV = os.path.join("config", "flu_filtrado.csv")
 DEFAULT_ECUADOR_DATE_SOURCE = "reception"
 try:
@@ -26,8 +26,8 @@ try:
 except Exception:
     pass
 
-DEFAULT_OUTPUT_FASTA = os.path.join("data", "assembled", "H5N1_EC.fasta")
-DEFAULT_SUMMARY_CSV = os.path.join("data", "assembled", "H5N1_EC_summary.csv")
+DEFAULT_OUTPUT_FASTA = os.path.join("data", "standard_header_input_fasta", "H5N1_EC.fasta")
+DEFAULT_SUMMARY_CSV = None
 
 SEGMENTS = {"PB2", "PB1", "PA", "HA", "NP", "NA", "MP", "NS"}
 
@@ -101,10 +101,15 @@ def normalize_date(date_value):
 
 
 def normalize_sample_id(text):
-    match = re.search(r"Flu-0*(\d+)", str(text))
-    if not match:
-        return None
-    return f"Flu-{int(match.group(1)):04d}"
+    # Match numbered IDs: Flu-0743 → Flu-0743
+    match_num = re.search(r"Flu-0*(\d+)", str(text))
+    if match_num:
+        return f"Flu-{int(match_num.group(1)):04d}"
+    # Match GISAID-key IDs: Flu-EPI_ISL_17973443 → Flu-EPI_ISL_17973443
+    match_gisaid = re.search(r"(Flu-EPI_ISL_\d+)", str(text))
+    if match_gisaid:
+        return match_gisaid.group(1)
+    return None
 
 
 def read_fasta(path):
@@ -244,7 +249,8 @@ def main():
     args = parser.parse_args()
 
     os.makedirs(os.path.dirname(args.output_fasta), exist_ok=True)
-    os.makedirs(os.path.dirname(args.summary_csv), exist_ok=True)
+    if args.summary_csv:
+        os.makedirs(os.path.dirname(args.summary_csv), exist_ok=True)
 
     metadata = build_metadata_map(args.metadata_csv, args.ecuador_date_source)
 
@@ -320,10 +326,12 @@ def main():
                 }
             )
 
-    pd.DataFrame(rows).to_csv(args.summary_csv, index=False)
+    if args.summary_csv:
+        pd.DataFrame(rows).to_csv(args.summary_csv, index=False)
 
     print(f"FASTA generado: {args.output_fasta}")
-    print(f"Resumen generado: {args.summary_csv}")
+    if args.summary_csv:
+        print(f"Resumen generado: {args.summary_csv}")
     print(f"Regiones escritas: {len(rows)}")
 
 

@@ -1,26 +1,3 @@
-CONCAT_TREE = "results/phylogeny/raxml/full_concat/H5N1_full_concat_beast.raxml.supportTBE"
-CONCAT_ALIGNMENT = "data/phylogeny/aligned/H5N1_full_concat_beast.mafft"
-CONTEXT_META = config.get("context_metadata_tsv", "config/final_metadata_50_per_country_isolates.tsv")
-
-PRE_BEAST_SEGMENTS = ["PB2", "PB1", "PA", "HA", "NP", "NA", "MP", "NS"]
-
-BEAST_PRE_DATA_DIR = "data/pre_beast/panels"
-BEAST_EXPORT_DIR = "data/beast"
-BEAST_FINAL_DATA_DIR = f"{BEAST_EXPORT_DIR}/final_panel_segment"
-BEAST_RAW_FINAL_SEGMENT_DIR = f"{BEAST_PRE_DATA_DIR}/raw_segment_subset"
-BEAST_PRE_RESULTS_DIR = "results/beast_pre"
-BEAST_PRE_QC_DIR = f"{BEAST_PRE_RESULTS_DIR}/qc_validation"
-BEAST_SEGMENT_QC_DIR = f"{BEAST_PRE_QC_DIR}/segment_alignment"
-
-BEAST_PANEL_TAXA = f"{BEAST_PRE_DATA_DIR}/panel_main_taxa.tsv"
-BEAST_PANEL_FILTERED_TAXA = f"{BEAST_PRE_DATA_DIR}/panel_main_taxa.filtered.tsv"
-BEAST_PANEL_RTT_FILTERED_TAXA = f"{BEAST_EXPORT_DIR}/panel_main_taxa.final.tsv"
-
-BEAST_FILTERED_SUBSET_ALIGNMENT = f"{BEAST_PRE_DATA_DIR}/panel_main_concat.filtered.fasta"
-BEAST_FILTERED_SUBSET_TREE = f"{BEAST_PRE_DATA_DIR}/panel_main_concat.filtered.nwk"
-BEAST_FILTERED_SUBSET_AUDIT = f"{BEAST_PRE_DATA_DIR}/panel_main_concat.filtered.audit.tsv"
-BEAST_FINAL_SUBSET_ALIGNMENT = f"{BEAST_EXPORT_DIR}/panel_main_concat.final.fasta"
-BEAST_FINAL_SUBSET_AUDIT = f"{BEAST_EXPORT_DIR}/panel_main_concat.final.audit.tsv"
 
 PRE_BEAST_RAW_FINAL_SEGMENT_FASTAS = expand(
     f"{BEAST_RAW_FINAL_SEGMENT_DIR}/H5N1_{{segment}}.fasta",
@@ -163,7 +140,7 @@ PREPARED_BEAST_XMLS = list(BEAST_PREPARED_XMLS.values())
 
 rule build_np_mp_ns_sensitivity_panel:
     input:
-        tree=f"{NP_MP_NS_PREFIX}.raxml.supportTBE",
+        tree=f"{NP_MP_NS_PREFIX}.treefile",
     output:
         panel=NP_MP_NS_SENSITIVITY_PANEL_TAXA,
         audit=NP_MP_NS_SENSITIVITY_PANEL_AUDIT,
@@ -186,14 +163,14 @@ rule build_np_mp_ns_sensitivity_panel:
 rule subset_np_mp_ns_sensitivity_alignment_and_prune_tree:
     input:
         alignment=NP_MP_NS_ALIGNMENT,
-        tree=f"{NP_MP_NS_PREFIX}.raxml.supportTBE",
+        tree=f"{NP_MP_NS_PREFIX}.treefile",
         taxa=NP_MP_NS_SENSITIVITY_PANEL_TAXA,
     output:
         alignment=NP_MP_NS_SENSITIVITY_SUBSET_ALIGNMENT,
         tree=NP_MP_NS_SENSITIVITY_SUBSET_TREE,
         audit=NP_MP_NS_SENSITIVITY_SUBSET_AUDIT,
     conda:
-        "../envs/ml_per_segment.yml"
+        "../envs/01_ml_trees.yml"
     shell:
         r"""
         python code/02_Beast/subset_alignment_and_prune_tree.py \
@@ -277,55 +254,7 @@ rule np_mp_ns_rtt_sensitivity:
         NP_MP_NS_RTT_SENSITIVITY_TARGETS
 
 
-rule build_beast_panels:
-    input:
-        tree=CONCAT_TREE,
-        context_metadata=CONTEXT_META,
-    output:
-        panel_main=BEAST_PANEL_TAXA,
-        audit=f"{BEAST_PRE_DATA_DIR}/panel_selection_audit.tsv",
-        country_month_audit=f"{BEAST_PRE_DATA_DIR}/panel_country_month_coverage.tsv",
-    conda:
-        "../envs/02_pre_beast.yml"
-    shell:
-        r"""
-        mkdir -p {BEAST_PRE_DATA_DIR}
-        python code/02_Beast/build_beast_panels.py \
-            --tree {input.tree} \
-            --context-metadata {input.context_metadata} \
-            --panel-main-out {output.panel_main} \
-            --audit-out {output.audit} \
-            --country-month-audit-out {output.country_month_audit}
-        """
 
-
-rule observe_beast_subset_source_qc:
-    input:
-        final_fasta="data/final/H5N1_final.fasta",
-        panel_tsv=BEAST_PANEL_TAXA,
-        ecuador_summary="data/assembled/H5N1_EC_summary.csv",
-        context_summary="data/assembled/H5N1_context_summary.csv",
-        ecuador_audit="data/assembled/ecuador_intermediate_audit.csv",
-    output:
-        metrics=PRE_BEAST_SOURCE_QC_METRICS,
-        outliers=PRE_BEAST_SOURCE_QC_OUTLIERS,
-        summary=PRE_BEAST_SOURCE_QC_SUMMARY,
-        report=PRE_BEAST_SOURCE_QC_REPORT,
-    conda:
-        "../envs/02_pre_beast.yml"
-    shell:
-        r"""
-        python code/02_Beast/observe_beast_subset_source_qc.py \
-            --final-fasta {input.final_fasta} \
-            --panel-taxa {input.panel_tsv} \
-            --ecuador-summary {input.ecuador_summary} \
-            --context-summary {input.context_summary} \
-            --ecuador-audit {input.ecuador_audit} \
-            --out-metrics {output.metrics} \
-            --out-outliers {output.outliers} \
-            --out-summary {output.summary} \
-            --out-report {output.report}
-        """
 
 
 rule subset_filtered_raw_segment_fasta:
@@ -337,7 +266,7 @@ rule subset_filtered_raw_segment_fasta:
     wildcard_constraints:
         segment="|".join(PRE_BEAST_SEGMENTS),
     conda:
-        "../envs/ml_per_segment.yml"
+        "../envs/01_ml_trees.yml"
     shell:
         r"""
         python code/02_Beast/subset_alignment_by_taxa.py \
@@ -347,48 +276,7 @@ rule subset_filtered_raw_segment_fasta:
         """
 
 
-rule filter_beast_panel_by_qc:
-    input:
-        panel_tsv=BEAST_PANEL_TAXA,
-        source_qc_metrics=PRE_BEAST_SOURCE_QC_METRICS,
-    output:
-        filtered_panel=BEAST_PANEL_FILTERED_TAXA,
-        exclusions=PRE_BEAST_PANEL_EXCLUSIONS,
-        summary=PRE_BEAST_PANEL_EXCLUSIONS_SUMMARY,
-    conda:
-        "../envs/02_pre_beast.yml"
-    shell:
-        r"""
-        python code/02_Beast/filter_beast_panel_by_qc.py \
-            --panel-taxa {input.panel_tsv} \
-            --source-qc-metrics {input.source_qc_metrics} \
-            --filtered-panel-out {output.filtered_panel} \
-            --exclusions-out {output.exclusions} \
-            --summary-out {output.summary}
-        """
 
-
-rule subset_filtered_panel_concat_alignment_and_prune_tree:
-    input:
-        alignment=CONCAT_ALIGNMENT,
-        tree=CONCAT_TREE,
-        taxa=BEAST_PANEL_FILTERED_TAXA,
-    output:
-        alignment=BEAST_FILTERED_SUBSET_ALIGNMENT,
-        tree=BEAST_FILTERED_SUBSET_TREE,
-        audit=BEAST_FILTERED_SUBSET_AUDIT,
-    conda:
-        "../envs/ml_per_segment.yml"
-    shell:
-        r"""
-        python code/02_Beast/subset_alignment_and_prune_tree.py \
-            --alignment {input.alignment} \
-            --tree {input.tree} \
-            --taxa {input.taxa} \
-            --out-alignment {output.alignment} \
-            --out-tree {output.tree} \
-            --audit {output.audit}
-        """
 
 
 rule build_treetime_dates:
@@ -463,7 +351,7 @@ rule publish_final_panel_concat_alignment:
         alignment=BEAST_FINAL_SUBSET_ALIGNMENT,
         audit=BEAST_FINAL_SUBSET_AUDIT,
     conda:
-        "../envs/ml_per_segment.yml"
+        "../envs/01_ml_trees.yml"
     shell:
         r"""
         python code/02_Beast/subset_alignment_by_taxa.py \
@@ -483,7 +371,7 @@ rule subset_filtered_segment_alignment:
     wildcard_constraints:
         segment="|".join(PRE_BEAST_SEGMENTS),
     conda:
-        "../envs/ml_per_segment.yml"
+        "../envs/01_ml_trees.yml"
     shell:
         r"""
         python code/02_Beast/subset_alignment_by_taxa.py \
@@ -571,4 +459,19 @@ rule prepare_beast_run_xml:
             --log-every {params.log_every} \
             --tree-every {params.tree_every} \
             --echo-every {params.echo_every}
+        """
+
+
+rule generate_main_analysis_panel_statistics:
+    input:
+        panel_tsv=BEAST_PANEL_RTT_FILTERED_TAXA,
+        metadata_csv=config["flu_filtrado"],
+    output:
+        csv="results/qc_metrics/phylogeny/main_analysis_panel.csv",
+        summary="results/qc_metrics/phylogeny/main_analysis_panel_summary.txt",
+    conda:
+        "../envs/02_pre_beast.yml"
+    shell:
+        r"""
+        python code/02_Beast/generate_panel_statistics.py {input.panel_tsv} {output.csv}
         """

@@ -8,8 +8,8 @@ import yaml
 
 
 CONFIG_FILE = "config/config.yml"
-OUTDIR = os.path.join("data", "assembled")
-STANDARD_GISAID_FASTA = os.path.join(OUTDIR, "H5N1_EC_gisaid_from_mira.fasta")
+OUTDIR = os.path.join("data", "standard_header_input_fasta")
+STANDARD_GISAID_FASTA = os.path.join("data", "input", "H5N1_EC_gisaid_from_mira.fasta")
 
 SEGMENTS = ["PB2", "PB1", "PA", "HA", "NP", "NA", "MP", "NS"]
 SEGMENT_SET = set(SEGMENTS)
@@ -25,10 +25,15 @@ def pick_column(df, candidates):
 
 
 def normalize_sample_id(text):
-    match = re.search(r"Flu-0*(\d+)", str(text))
-    if not match:
-        return None
-    return f"Flu-{int(match.group(1)):04d}"
+    # Match numbered IDs: Flu-0743 → Flu-0743
+    match_num = re.search(r"Flu-0*(\d+)", str(text))
+    if match_num:
+        return f"Flu-{int(match_num.group(1)):04d}"
+    # Match GISAID-key IDs: Flu-EPI_ISL_17973443 → Flu-EPI_ISL_17973443
+    match_gisaid = re.search(r"(Flu-EPI_ISL_\d+)", str(text))
+    if match_gisaid:
+        return match_gisaid.group(1)
+    return None
 
 
 def clean_header_token(text):
@@ -227,8 +232,9 @@ def main():
                     "non_n_bases": non_n,
                 }
 
+
     raw_df = pd.DataFrame(raw_rows)
-    raw_df.to_csv(os.path.join(OUTDIR, "ecuador_intermediate_raw_segments.csv"), index=False)
+    # raw_df.to_csv(os.path.join(OUTDIR, "ecuador_intermediate_raw_segments.csv"), index=False)
 
     summary_rows = []
     audit_rows = []
@@ -338,7 +344,7 @@ def main():
         "n_segments_assembled",
     ]
     summary_df = summary_df.reindex(columns=summary_columns)
-    summary_df.to_csv(os.path.join(OUTDIR, "ecuador_intermediate_summary.csv"), index=False)
+    # summary_df.to_csv(os.path.join(OUTDIR, "ecuador_intermediate_summary.csv"), index=False)
     audit_columns = [
         "Código USFQ",
         "EPI_ISL",
@@ -357,14 +363,14 @@ def main():
         "missing_segments",
         "filled_with_Ns",
     ]
-    pd.DataFrame(audit_rows, columns=audit_columns).to_csv(
-        os.path.join(OUTDIR, "ecuador_intermediate_audit.csv"),
-        index=False,
-    )
-    pd.DataFrame(issue_rows, columns=issue_columns).to_csv(
-        os.path.join(OUTDIR, "ecuador_intermediate_issues.csv"),
-        index=False,
-    )
+    # pd.DataFrame(audit_rows, columns=audit_columns).to_csv(
+    #     os.path.join(OUTDIR, "ecuador_intermediate_audit.csv"),
+    #     index=False,
+    # )
+    # pd.DataFrame(issue_rows, columns=issue_columns).to_csv(
+    #     os.path.join(OUTDIR, "ecuador_intermediate_issues.csv"),
+    #     index=False,
+    # )
 
     with open(STANDARD_GISAID_FASTA, "w") as out:
         for header, seq in standard_records:
@@ -373,10 +379,6 @@ def main():
 
     print("Listo.")
     print("Archivos generados:")
-    print(" - data/assembled/ecuador_intermediate_raw_segments.csv")
-    print(" - data/assembled/ecuador_intermediate_summary.csv")
-    print(" - data/assembled/ecuador_intermediate_audit.csv")
-    print(" - data/assembled/ecuador_intermediate_issues.csv")
     print(f" - {STANDARD_GISAID_FASTA}")
     print()
     print("RESUMEN DE VALIDACION:")

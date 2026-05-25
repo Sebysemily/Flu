@@ -1,0 +1,4 @@
+data_combined_context_ecuador: "data/standard_header_input_fasta"
+data_phylogeny: "data/phylogeny"
+data_pre_beast: "data/pre_beast"
+results_phylogeny: "results/phylogeny"

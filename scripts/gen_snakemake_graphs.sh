@@ -3,7 +3,7 @@ set -euo pipefail
 
 # Usage: ./scripts/gen_snakemake_graphs.sh [TARGET] [OUTDIR]
 # Example (full pipeline, including ML trees): ./scripts/gen_snakemake_graphs.sh all analysis
-# Example (only until final FASTA): ./scripts/gen_snakemake_graphs.sh data/final/H5N1_final.fasta analysis
+# Example (only until final FASTA): ./scripts/gen_snakemake_graphs.sh data/standard_header_input_fasta/H5N1_final.fasta analysis
 
 
 TARGET=${1:-all}
@@ -84,15 +84,84 @@ with open(fname, 'w') as fh:
 PY
 }
 
+generate_logical_flow_graph() {
+  local in_dot="$1"
+  local out_dot="$2"
+  python3 - "$in_dot" "$out_dot" <<'PY'
+import sys
+import re
+
+in_file = sys.argv[1]
+out_file = sys.argv[2]
+
+# The logical flow rules we want to keep
+KEEP_RULES = {
+    "build_gisaid_input_from_mira",
+    "build_standard_date_headers",
+    "build_standard_headers_for_gisaid_context",
+    "split_h5n1_final_by_segment",
+    "mafft_align_per_segment",
+    "codon_qc_trim_per_segment",
+    "concat_aligned_segments_with_partitions",
+    "iqtree_full_concat",
+    "prune_tree_by_distance_to_core",
+    "build_treetime_dates",
+    "run_root_to_tip",
+    "filter_beast_panel_by_rtt_outliers",
+    "prepare_beast_run_xml",
+    "run_beast_replicate",
+    "combine_strict_constant_logs",
+    "combine_strict_constant_trees",
+    "annotate_strict_constant_final_tree"
+}
+
+with open(in_file, 'r') as fh:
+    lines = fh.readlines()
+
+# 1. Parse node IDs and their labels (rule names)
+id_to_rule = {}
+for line in lines:
+    node_match = re.match(r'^\s*(\d+)\s*\[\s*label\s*=\s*"([A-Za-z0-9_]+)"', line.strip())
+    if node_match:
+        node_id = node_match.group(1)
+        rule_name = node_match.group(2)
+        id_to_rule[node_id] = rule_name
+
+keep_ids = {node_id for node_id, rule in id_to_rule.items() if rule in KEEP_RULES}
+
+new_lines = []
+for line in lines:
+    # Check if edge line (ID_A -> ID_B)
+    edge_match = re.search(r'^\s*(\d+)\s*->\s*(\d+)', line.strip())
+    if edge_match:
+        id_a = edge_match.group(1)
+        id_b = edge_match.group(2)
+        if id_a in keep_ids and id_b in keep_ids:
+            new_lines.append(line)
+        continue
+
+    # Check if node definition line
+    node_match = re.match(r'^\s*(\d+)\s*\[', line.strip())
+    if node_match:
+        node_id = node_match.group(1)
+        if node_id in keep_ids:
+            new_lines.append(line)
+        continue
+
+    # Keep structural lines
+    if 'digraph' in line or line.strip() == '}' or 'node[' in line or 'edge[' in line or 'graph[' in line:
+        new_lines.append(line)
+
+with open(out_file, 'w') as fh:
+    fh.writelines(new_lines)
+PY
+}
+
 generate_dot --dag "$OUTDIR/pipeline_dag.dot"
 generate_dot --rulegraph "$OUTDIR/pipeline_rulegraph.dot"
 generate_dot --filegraph "$OUTDIR/pipeline_filegraph.dot"
 
-if [[ $STRIP_ROOT_ALL -eq 1 ]]; then
-  strip_rule_all_node "$OUTDIR/pipeline_dag.dot"
-  strip_rule_all_node "$OUTDIR/pipeline_rulegraph.dot"
-  strip_rule_all_node "$OUTDIR/pipeline_filegraph.dot"
-fi
+generate_logical_flow_graph "$OUTDIR/pipeline_rulegraph.dot" "$OUTDIR/pipeline_logical_flow.dot"
 
 # Build an additional "all pipeline options" graph from all top-level rules
 # defined in snakefile (exclude the controller rule 'all' to avoid a cluttered final edge).
@@ -133,6 +202,7 @@ if command -v dot >/dev/null 2>&1; then
   dot -Tsvg "$OUTDIR/pipeline_dag.dot" -o "$OUTDIR/pipeline_dag.svg"
   dot -Tsvg "$OUTDIR/pipeline_rulegraph.dot" -o "$OUTDIR/pipeline_rulegraph.svg"
   dot -Tsvg "$OUTDIR/pipeline_filegraph.dot" -o "$OUTDIR/pipeline_filegraph.svg"
+  dot -Tsvg "$OUTDIR/pipeline_logical_flow.dot" -o "$OUTDIR/pipeline_logical_flow.svg"
   if [[ -s "$OUTDIR/pipeline_all_pipeline_options_dag.dot" ]]; then
     dot -Tsvg "$OUTDIR/pipeline_all_pipeline_options_dag.dot" -o "$OUTDIR/pipeline_all_pipeline_options_dag.svg"
     dot -Tsvg "$OUTDIR/pipeline_all_pipeline_options_rulegraph.dot" -o "$OUTDIR/pipeline_all_pipeline_options_rulegraph.svg"

@@ -2,190 +2,178 @@ digraph snakemake_dag {
     graph[bgcolor=white, margin=0];
     node[shape=box, style=rounded, fontname=sans,                 fontsize=10, penwidth=2];
     edge[penwidth=2, color=grey];
-	0[label = "build_gisaid", color = "0.10 0.6 0.85", style="rounded"];
-	1[label = "build_ecuador_intermediate_input", color = "0.08 0.6 0.85", style="rounded"];
-	2[label = "run_mira_cli_for_run", color = "0.51 0.6 0.85", style="rounded"];
-	3[label = "build_h5n1_ec_fasta", color = "0.12 0.6 0.85", style="rounded"];
-	4[label = "paper_figures", color = "0.37 0.6 0.85", style="rounded"];
-	5[label = "build_gisaid_outputs", color = "0.11 0.6 0.85", style="rounded"];
-	6[label = "pre_beast_outputs", color = "0.38 0.6 0.85", style="rounded"];
-	7[label = "observe_beast_subset_source_qc", color = "0.35 0.6 0.85", style="rounded"];
-	8[label = "build_h5n1_final_fasta", color = "0.13 0.6 0.85", style="rounded"];
-	9[label = "build_beast_panels", color = "0.07 0.6 0.85", style="rounded"];
-	10[label = "raxml_ng_tree_full_concat", color = "0.42 0.6 0.85", style="rounded"];
-	11[label = "concat_aligned_segments_with_partitions", color = "0.25 0.6 0.85", style="rounded"];
-	12[label = "mafft_align_per_segment", color = "0.31 0.6 0.85", style="rounded"];
-	13[label = "split_h5n1_final_by_segment", color = "0.55 0.6 0.85", style="rounded"];
-	14[label = "raxml_ng_tree_per_segment_codon", color = "0.44 0.6 0.85", style="rounded"];
-	15[label = "build_segment_codon_partitions", color = "0.18 0.6 0.85", style="rounded"];
-	16[label = "raxml_ng_tree_per_segment_simple", color = "0.45 0.6 0.85", style="rounded"];
-	17[label = "subset_filtered_panel_concat_alignment_and_prune_tree", color = "0.56 0.6 0.85", style="rounded"];
-	18[label = "filter_beast_panel_by_qc", color = "0.27 0.6 0.85", style="rounded"];
-	19[label = "build_treetime_dates", color = "0.19 0.6 0.85", style="rounded"];
-	20[label = "observe_segment_alignment_qc", color = "0.36 0.6 0.85", style="rounded"];
+	0[label = "paper_figures", color = "0.40 0.6 0.85", style="rounded"];
+	1[label = "build_gisaid", color = "0.07 0.6 0.85", style="rounded"];
+	2[label = "build_gisaid_input_from_mira", color = "0.09 0.6 0.85", style="rounded"];
+	3[label = "build_standard_date_headers", color = "0.17 0.6 0.85", style="rounded"];
+	4[label = "build_gisaid_outputs", color = "0.10 0.6 0.85", style="rounded"];
+	5[label = "all_validation_outputs", color = "0.02 0.6 0.85", style="rounded"];
+	6[label = "build_standard_headers_for_gisaid_context", color = "0.19 0.6 0.85", style="rounded"];
+	7[label = "split_h5n1_final_by_segment", color = "0.56 0.6 0.85", style="rounded"];
+	8[label = "concat_aligned_segments_with_partitions", color = "0.27 0.6 0.85", style="rounded"];
+	9[label = "codon_qc_trim_per_segment", color = "0.21 0.6 0.85", style="rounded"];
+	10[label = "mafft_align_per_segment", color = "0.35 0.6 0.85", style="rounded"];
+	11[label = "iqtree_full_concat", color = "0.32 0.6 0.85", style="rounded"];
+	12[label = "concat_np_mp_ns_with_partitions", color = "0.28 0.6 0.85", style="rounded"];
+	13[label = "iqtree_np_mp_ns", color = "0.33 0.6 0.85", style="rounded"];
+	14[label = "raxml_ng_tree_per_segment_codon", color = "0.46 0.6 0.85", style="rounded"];
+	15[label = "build_segment_codon_partitions", color = "0.16 0.6 0.85", style="rounded"];
+	16[label = "raxml_ng_tree_per_segment_simple", color = "0.47 0.6 0.85", style="rounded"];
+	17[label = "build_ml_itol_colorstrips", color = "0.12 0.6 0.85", style="rounded"];
+	18[label = "prune_tree_by_distance_to_core", color = "0.43 0.6 0.85", style="rounded"];
+	19[label = "build_treetime_dates", color = "0.20 0.6 0.85", style="rounded"];
+	20[label = "observe_segment_alignment_qc", color = "0.38 0.6 0.85", style="rounded"];
 	21[label = "subset_filtered_raw_segment_fasta", color = "0.57 0.6 0.85", style="rounded"];
-	22[label = "filter_beast_panel_by_rtt_outliers", color = "0.29 0.6 0.85", style="rounded"];
+	22[label = "filter_beast_panel_by_rtt_outliers", color = "0.30 0.6 0.85", style="rounded"];
 	23[label = "run_root_to_tip", color = "0.54 0.6 0.85", style="rounded"];
 	24[label = "subset_filtered_segment_alignment", color = "0.58 0.6 0.85", style="rounded"];
-	25[label = "publish_final_panel_concat_alignment", color = "0.40 0.6 0.85", style="rounded"];
+	25[label = "publish_final_panel_concat_alignment", color = "0.44 0.6 0.85", style="rounded"];
 	26[label = "summarize_final_segment_qc", color = "0.62 0.6 0.85", style="rounded"];
-	27[label = "build_np_mp_ns_sensitivity_panel", color = "0.15 0.6 0.85", style="rounded"];
-	28[label = "raxml_ng_tree_np_mp_ns", color = "0.43 0.6 0.85", style="rounded"];
-	29[label = "concat_np_mp_ns_with_partitions", color = "0.26 0.6 0.85", style="rounded"];
-	30[label = "subset_np_mp_ns_sensitivity_alignment_and_prune_tree", color = "0.60 0.6 0.85", style="rounded"];
-	31[label = "build_np_mp_ns_sensitivity_treetime_dates", color = "0.17 0.6 0.85", style="rounded"];
-	32[label = "run_np_mp_ns_sensitivity_root_to_tip", color = "0.52 0.6 0.85", style="rounded"];
-	33[label = "filter_np_mp_ns_sensitivity_panel_by_rtt_outliers", color = "0.30 0.6 0.85", style="rounded"];
-	34[label = "prepare_beast_run_xml", color = "0.39 0.6 0.85", style="rounded"];
-	35[label = "build_inputs_outputs", color = "0.14 0.6 0.85", style="rounded"];
-	36[label = "all_validation_outputs", color = "0.02 0.6 0.85", style="rounded"];
-	37[label = "summarize_beast_run", color = "0.61 0.6 0.85", style="rounded"];
-	38[label = "run_beast_replicate", color = "0.50 0.6 0.85", style="rounded"];
-	39[label = "validate_beast_xml", color = "0.65 0.6 0.85", style="rounded"];
-	40[label = "summarize_strict_constant_final_time", color = "0.63 0.6 0.85", style="rounded"];
-	41[label = "combine_strict_constant_logs", color = "0.20 0.6 0.85", style="rounded"];
-	42[label = "combine_strict_constant_trees", color = "0.24 0.6 0.85", style="rounded"];
-	43[label = "annotate_strict_constant_final_tree", color = "0.04 0.6 0.85", style="rounded"];
-	44[label = "summarize_strict_constant_lugar_final_geography", color = "0.64 0.6 0.85", style="rounded"];
-	45[label = "combine_strict_constant_lugar_logs", color = "0.21 0.6 0.85", style="rounded"];
-	46[label = "combine_strict_constant_lugar_trees", color = "0.23 0.6 0.85", style="rounded"];
-	47[label = "annotate_strict_constant_lugar_final_tree", color = "0.05 0.6 0.85", style="rounded"];
-	48[label = "main_phylogeny", color = "0.32 0.6 0.85", style="rounded"];
-	49[label = "beast_runs", color = "0.06 0.6 0.85", style="rounded"];
-	1 -> 0
-	3 -> 0
+	27[label = "build_np_mp_ns_sensitivity_panel", color = "0.14 0.6 0.85", style="rounded"];
+	28[label = "subset_np_mp_ns_sensitivity_alignment_and_prune_tree", color = "0.59 0.6 0.85", style="rounded"];
+	29[label = "build_np_mp_ns_sensitivity_treetime_dates", color = "0.15 0.6 0.85", style="rounded"];
+	30[label = "run_np_mp_ns_sensitivity_root_to_tip", color = "0.53 0.6 0.85", style="rounded"];
+	31[label = "filter_np_mp_ns_sensitivity_panel_by_rtt_outliers", color = "0.31 0.6 0.85", style="rounded"];
+	32[label = "prepare_beast_run_xml", color = "0.42 0.6 0.85", style="rounded"];
+	33[label = "summarize_beast_run", color = "0.60 0.6 0.85", style="rounded"];
+	34[label = "run_beast_replicate", color = "0.52 0.6 0.85", style="rounded"];
+	35[label = "validate_beast_xml", color = "0.65 0.6 0.85", style="rounded"];
+	36[label = "summarize_strict_constant_final_time", color = "0.63 0.6 0.85", style="rounded"];
+	37[label = "combine_strict_constant_logs", color = "0.22 0.6 0.85", style="rounded"];
+	38[label = "combine_strict_constant_trees", color = "0.26 0.6 0.85", style="rounded"];
+	39[label = "annotate_strict_constant_final_tree", color = "0.04 0.6 0.85", style="rounded"];
+	40[label = "summarize_strict_constant_lugar_final_geography", color = "0.64 0.6 0.85", style="rounded"];
+	41[label = "combine_strict_constant_lugar_logs", color = "0.23 0.6 0.85", style="rounded"];
+	42[label = "combine_strict_constant_lugar_trees", color = "0.25 0.6 0.85", style="rounded"];
+	43[label = "annotate_strict_constant_lugar_final_tree", color = "0.05 0.6 0.85", style="rounded"];
+	44[label = "pre_beast_outputs", color = "0.41 0.6 0.85", style="rounded"];
+	45[label = "beast_runs", color = "0.06 0.6 0.85", style="rounded"];
+	46[label = "main_phylogeny", color = "0.36 0.6 0.85", style="rounded"];
+	47[label = "build_inputs_outputs", color = "0.11 0.6 0.85", style="rounded"];
 	2 -> 1
-	1 -> 3
-	1 -> 5
-	3 -> 5
-	21 -> 6
-	27 -> 6
-	19 -> 6
-	34 -> 6
-	22 -> 6
-	32 -> 6
-	23 -> 6
-	31 -> 6
-	7 -> 6
-	17 -> 6
-	20 -> 6
-	30 -> 6
-	24 -> 6
-	33 -> 6
-	26 -> 6
-	18 -> 6
-	25 -> 6
-	9 -> 7
-	1 -> 7
-	3 -> 7
-	8 -> 7
-	3 -> 8
+	3 -> 1
+	2 -> 3
+	2 -> 4
+	3 -> 4
+	11 -> 5
+	25 -> 5
+	22 -> 5
+	24 -> 5
+	18 -> 5
+	19 -> 5
+	7 -> 5
+	17 -> 5
+	32 -> 5
+	23 -> 5
+	8 -> 5
+	29 -> 5
+	20 -> 5
+	36 -> 5
+	30 -> 5
+	40 -> 5
+	21 -> 5
+	13 -> 5
+	12 -> 5
+	27 -> 5
+	28 -> 5
+	16 -> 5
+	6 -> 5
+	33 -> 5
+	26 -> 5
+	31 -> 5
+	14 -> 5
+	3 -> 6
+	6 -> 7
+	9 -> 8
 	10 -> 9
-	11 -> 10
-	16 -> 11
-	14 -> 11
-	12 -> 11
-	13 -> 12
-	8 -> 13
-	12 -> 14
+	7 -> 10
+	8 -> 11
+	9 -> 12
+	12 -> 13
+	9 -> 14
 	15 -> 14
-	12 -> 15
-	12 -> 16
-	10 -> 17
+	9 -> 15
+	9 -> 16
 	11 -> 17
-	18 -> 17
-	7 -> 18
-	9 -> 18
-	17 -> 19
-	21 -> 20
-	22 -> 20
+	14 -> 17
+	16 -> 17
+	13 -> 17
+	11 -> 18
+	8 -> 18
+	18 -> 19
 	24 -> 20
-	13 -> 21
+	22 -> 20
+	21 -> 20
 	22 -> 21
-	18 -> 22
+	7 -> 21
 	19 -> 22
 	23 -> 22
-	17 -> 23
+	18 -> 22
 	19 -> 23
-	12 -> 24
+	18 -> 23
 	22 -> 24
-	17 -> 25
+	10 -> 24
 	22 -> 25
+	18 -> 25
 	20 -> 26
-	28 -> 27
-	29 -> 28
-	16 -> 29
-	14 -> 29
-	12 -> 29
+	13 -> 27
+	12 -> 28
+	13 -> 28
+	27 -> 28
+	28 -> 29
 	28 -> 30
 	29 -> 30
-	27 -> 30
 	30 -> 31
-	30 -> 32
-	31 -> 32
-	27 -> 33
-	32 -> 33
-	31 -> 33
-	22 -> 34
-	25 -> 34
-	8 -> 35
-	14 -> 36
-	21 -> 36
-	27 -> 36
+	27 -> 31
+	29 -> 31
+	25 -> 32
+	22 -> 32
+	34 -> 33
+	35 -> 34
+	34 -> 34
+	32 -> 34
+	32 -> 35
+	39 -> 36
+	38 -> 36
 	37 -> 36
-	22 -> 36
-	23 -> 36
-	24 -> 36
-	26 -> 36
-	16 -> 36
-	44 -> 36
-	25 -> 36
-	19 -> 36
-	30 -> 36
-	18 -> 36
-	29 -> 36
-	8 -> 36
-	34 -> 36
-	11 -> 36
-	10 -> 36
-	28 -> 36
-	13 -> 36
-	32 -> 36
-	31 -> 36
-	7 -> 36
-	17 -> 36
-	20 -> 36
-	33 -> 36
-	40 -> 36
-	38 -> 37
-	38 -> 38
-	39 -> 38
+	34 -> 37
+	33 -> 37
 	34 -> 38
-	34 -> 39
+	33 -> 38
+	38 -> 39
+	43 -> 40
 	41 -> 40
 	42 -> 40
-	43 -> 40
-	38 -> 41
-	37 -> 41
-	38 -> 42
-	37 -> 42
+	34 -> 41
+	33 -> 41
+	34 -> 42
+	33 -> 42
 	42 -> 43
-	47 -> 44
-	45 -> 44
-	46 -> 44
-	38 -> 45
-	37 -> 45
-	38 -> 46
-	37 -> 46
-	46 -> 47
-	29 -> 48
-	14 -> 48
-	11 -> 48
-	10 -> 48
-	28 -> 48
-	13 -> 48
-	16 -> 48
-	44 -> 49
-	37 -> 49
-	40 -> 49
+	25 -> 44
+	19 -> 44
+	22 -> 44
+	24 -> 44
+	27 -> 44
+	28 -> 44
+	32 -> 44
+	23 -> 44
+	18 -> 44
+	29 -> 44
+	20 -> 44
+	26 -> 44
+	30 -> 44
+	31 -> 44
+	21 -> 44
+	36 -> 45
+	33 -> 45
+	40 -> 45
+	11 -> 46
+	12 -> 46
+	7 -> 46
+	17 -> 46
+	14 -> 46
+	16 -> 46
+	8 -> 46
+	13 -> 46
+	6 -> 47
 }            

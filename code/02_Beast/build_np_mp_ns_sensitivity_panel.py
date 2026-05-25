@@ -115,26 +115,31 @@ def main() -> None:
 
     tips = read_tree_tips(args.tree)
     american_anchors = [tip for tip in tips if is_american_anchor(tip)]
-    forced_anchor = next(
-        (
-            tip
-            for tip in american_anchors
-            if args.forced_american_anchor_accession in tip
-        ),
-        None,
-    )
-    if forced_anchor is None:
-        raise ValueError(
-            "Forced american anchor accession "
-            f"{args.forced_american_anchor_accession!r} was not found in the tree"
+    if not american_anchors:
+        print("Warning: No American anchors found in the tree. Skipping American anchor selection.")
+        selected_american_anchors = set()
+        forced_anchor = None
+    else:
+        forced_anchor = next(
+            (
+                tip
+                for tip in american_anchors
+                if args.forced_american_anchor_accession in tip
+            ),
+            None,
         )
+        if forced_anchor is None:
+            raise ValueError(
+                "Forced american anchor accession "
+                f"{args.forced_american_anchor_accession!r} was not found in the tree"
+            )
 
-    additional_anchors = [
-        tip
-        for tip in sorted(american_anchors)
-        if tip != forced_anchor
-    ][: args.american_anchor_total - 1]
-    selected_american_anchors = set([forced_anchor, *additional_anchors])
+        additional_anchors = [
+            tip
+            for tip in sorted(american_anchors)
+            if tip != forced_anchor
+        ][: args.american_anchor_total - 1]
+        selected_american_anchors = set([forced_anchor, *additional_anchors])
 
     included: List[str] = []
     excluded_counts = {
