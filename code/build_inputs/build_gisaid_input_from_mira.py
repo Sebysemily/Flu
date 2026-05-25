@@ -167,8 +167,11 @@ def standard_header(metadata, segment):
 
 
 def main():
-    with open(CONFIG_FILE) as handle:
-        config = yaml.safe_load(handle) or {}
+    config = {}
+    for filename in ["config/config.yml", "config/paths.yml"]:
+        if os.path.exists(filename):
+            with open(filename) as handle:
+                config.update(yaml.safe_load(handle) or {})
 
     filtrado_csv = config.get("flu_filtrado", "config/flu_filtrado.csv")
     mira_base = config.get("mira_base_dir", "..")

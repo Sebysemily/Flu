@@ -55,11 +55,11 @@ NP_MP_NS_FORCED_AMERICAN_ANCHOR = NP_MP_NS_SENSITIVITY_CONFIG.get(
 NP_MP_NS_AMERICAN_ANCHOR_TOTAL = int(
     NP_MP_NS_SENSITIVITY_CONFIG.get("american_anchor_total", 6)
 )
-NP_MP_NS_SENSITIVITY_DATA_DIR = "data/pre_beast/sensitivity_np_mp_ns"
-NP_MP_NS_SENSITIVITY_RESULTS_DIR = f"{BEAST_PRE_RESULTS_DIR}/sensitivity_np_mp_ns"
+NP_MP_NS_SENSITIVITY_DATA_DIR = f"{DATA_PRE_BEAST}/sensitivity_np_mp_ns"
+NP_MP_NS_SENSITIVITY_RESULTS_DIR = f"{RESULTS_QC_METRICS}/pre_beast/sensitivity_np_mp_ns"
 NP_MP_NS_SENSITIVITY_RTT_DIR = f"{NP_MP_NS_SENSITIVITY_RESULTS_DIR}/rtt"
 NP_MP_NS_SENSITIVITY_PANEL_TAXA = f"{NP_MP_NS_SENSITIVITY_DATA_DIR}/panel_taxa.tsv"
-NP_MP_NS_SENSITIVITY_PANEL_AUDIT = f"{NP_MP_NS_SENSITIVITY_DATA_DIR}/panel_audit.tsv"
+NP_MP_NS_SENSITIVITY_PANEL_AUDIT = f"{NP_MP_NS_SENSITIVITY_RESULTS_DIR}/panel_audit.tsv"
 NP_MP_NS_SENSITIVITY_SUBSET_ALIGNMENT = (
     f"{NP_MP_NS_SENSITIVITY_DATA_DIR}/panel_np_mp_ns.fasta"
 )
@@ -67,7 +67,7 @@ NP_MP_NS_SENSITIVITY_SUBSET_TREE = (
     f"{NP_MP_NS_SENSITIVITY_DATA_DIR}/panel_np_mp_ns.nwk"
 )
 NP_MP_NS_SENSITIVITY_SUBSET_AUDIT = (
-    f"{NP_MP_NS_SENSITIVITY_DATA_DIR}/panel_np_mp_ns.audit.tsv"
+    f"{NP_MP_NS_SENSITIVITY_RESULTS_DIR}/panel_np_mp_ns.audit.tsv"
 )
 NP_MP_NS_SENSITIVITY_DATES = f"{NP_MP_NS_SENSITIVITY_RTT_DIR}/dates_from_headers.tsv"
 NP_MP_NS_SENSITIVITY_RTT_OUTLIERS = f"{NP_MP_NS_SENSITIVITY_RTT_DIR}/outliers.tsv"
@@ -111,7 +111,8 @@ BEAST_LOG_EVERY = int(BEAST_CONFIG.get("log_every", 2000))
 BEAST_TREE_EVERY = int(BEAST_CONFIG.get("tree_every", BEAST_LOG_EVERY))
 BEAST_ECHO_EVERY = int(BEAST_CONFIG.get("echo_every", BEAST_LOG_EVERY))
 
-BEAST_XML_DIR = "results/beast/xml"
+RESULTS_BEAST = config.get("results_beast", "results/beast")
+BEAST_XML_DIR = f"{RESULTS_BEAST}/xml"
 BEAST_TEMPLATE_XMLS = {
     "strict_constant": "template_beast/concat_strict_constant.base.xml",
     "strict_constant_lugar": "template_beast/concat_strict_const_lugar.xml",
@@ -140,7 +141,7 @@ PREPARED_BEAST_XMLS = list(BEAST_PREPARED_XMLS.values())
 
 rule build_np_mp_ns_sensitivity_panel:
     input:
-        tree=f"{NP_MP_NS_PREFIX}.treefile",
+        tree=CONCAT_TREE,
     output:
         panel=NP_MP_NS_SENSITIVITY_PANEL_TAXA,
         audit=NP_MP_NS_SENSITIVITY_PANEL_AUDIT,
@@ -162,8 +163,8 @@ rule build_np_mp_ns_sensitivity_panel:
 
 rule subset_np_mp_ns_sensitivity_alignment_and_prune_tree:
     input:
-        alignment=NP_MP_NS_ALIGNMENT,
-        tree=f"{NP_MP_NS_PREFIX}.treefile",
+        alignment=CONCAT_ALIGNMENT,
+        tree=CONCAT_TREE,
         taxa=NP_MP_NS_SENSITIVITY_PANEL_TAXA,
     output:
         alignment=NP_MP_NS_SENSITIVITY_SUBSET_ALIGNMENT,
@@ -381,52 +382,6 @@ rule subset_filtered_segment_alignment:
         """
 
 
-rule observe_segment_alignment_qc:
-    input:
-        before_alignment=f"{BEAST_RAW_FINAL_SEGMENT_DIR}/H5N1_{{segment}}.fasta",
-        after_alignment=f"{BEAST_FINAL_DATA_DIR}/H5N1_{{segment}}.fasta",
-        taxa_tsv=BEAST_PANEL_RTT_FILTERED_TAXA,
-    output:
-        metrics=f"{BEAST_SEGMENT_QC_DIR}/H5N1_{{segment}}.metrics.tsv",
-        outliers=f"{BEAST_SEGMENT_QC_DIR}/H5N1_{{segment}}.outliers.tsv",
-        summary=f"{BEAST_SEGMENT_QC_DIR}/H5N1_{{segment}}.summary.tsv",
-        report=f"{BEAST_SEGMENT_QC_DIR}/H5N1_{{segment}}.report.md",
-    wildcard_constraints:
-        segment="|".join(PRE_BEAST_SEGMENTS),
-    conda:
-        "../envs/02_pre_beast.yml"
-    shell:
-        r"""
-        python code/02_Beast/observe_subset_alignment_qc.py \
-            --before-alignment {input.before_alignment} \
-            --after-alignment {input.after_alignment} \
-            --taxa-tsv {input.taxa_tsv} \
-            --out-metrics {output.metrics} \
-            --out-outliers {output.outliers} \
-            --out-summary {output.summary} \
-            --out-report {output.report}
-        """
-
-
-rule summarize_final_segment_qc:
-    input:
-        segment_metrics=PRE_BEAST_SEGMENT_QC_METRICS,
-    output:
-        metrics=PRE_BEAST_FINAL_SEGMENT_QC_METRICS,
-        outliers=PRE_BEAST_FINAL_SEGMENT_QC_OUTLIERS,
-        summary=PRE_BEAST_FINAL_SEGMENT_QC_SUMMARY,
-        report=PRE_BEAST_FINAL_SEGMENT_QC_REPORT,
-    conda:
-        "../envs/02_pre_beast.yml"
-    shell:
-        r"""
-        python code/02_Beast/summarize_final_segment_qc.py \
-            --segment-metrics {input.segment_metrics} \
-            --out-metrics {output.metrics} \
-            --out-outliers {output.outliers} \
-            --out-summary {output.summary} \
-            --out-report {output.report}
-        """
 
 
 rule prepare_beast_run_xml:
@@ -462,16 +417,20 @@ rule prepare_beast_run_xml:
         """
 
 
+BEAST_PANEL_STATS_CSV = f"{RESULTS_QC_METRICS}/phylogeny/main_analysis_panel.csv"
+BEAST_PANEL_STATS_SUMMARY = f"{RESULTS_QC_METRICS}/phylogeny/main_analysis_panel_summary.txt"
+
+
 rule generate_main_analysis_panel_statistics:
     input:
         panel_tsv=BEAST_PANEL_RTT_FILTERED_TAXA,
         metadata_csv=config["flu_filtrado"],
     output:
-        csv="results/qc_metrics/phylogeny/main_analysis_panel.csv",
-        summary="results/qc_metrics/phylogeny/main_analysis_panel_summary.txt",
+        csv=BEAST_PANEL_STATS_CSV,
+        summary=BEAST_PANEL_STATS_SUMMARY,
     conda:
         "../envs/02_pre_beast.yml"
     shell:
         r"""
-        python code/02_Beast/generate_panel_statistics.py {input.panel_tsv} {output.csv}
+        python code/02_Beast/generate_panel_statistics.py {input.panel_tsv} {output.csv} {input.metadata_csv}
         """

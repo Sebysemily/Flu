@@ -1,9 +1,4 @@
 # -----------------------------
-# Inputs and metadata
-# -----------------------------
-mira_base_dir: "../../../MIRA_NGS"   # Base directory that contains run*/ from MIRA to import into gisaid format
-flu_filtrado: "config/flu_filtrado.csv"   # Ecuador main metadata table
-# -----------------------------
 # Reproducibility and resources
 # -----------------------------
 random_seed: 39809473   # Base seed reused across steps that require randomization, to ensure reproducibility.
@@ -45,3 +40,25 @@ beast_panel:
   n_closest: 200
   max_distance: 0.08
   protect_anchors_count: 10
+
+# Context subsampling (anti-duplication rule)
+max_per_country_month: 2
+
+# Maximum Likelihood (ML) tree replicates
+iqtree_replicates: 10
+
+# Northwestern/Pacific Flyway H5N1 outlier accessions to exclude
+exclude_context_accessions:
+  - "EPI_ISL_19145215"
+  - "EPI_ISL_19151732"
+  - "EPI_ISL_19158330"
+  - "EPI_ISL_19303622"
+  - "EPI_ISL_19158329"
+  - "EPI_ISL_19151888"
+  - "EPI_ISL_19157532"
+  - "EPI_ISL_13117289"
+  - "EPI_ISL_19151708"
+  - "EPI_ISL_19151569"
+  - "EPI_ISL_19151673"
+
+

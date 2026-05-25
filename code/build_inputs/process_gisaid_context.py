@@ -162,6 +162,10 @@ def main():
     parser.add_argument("--context-summary-out", default=None)
     parser.add_argument("--final-fasta-out", required=True)
     parser.add_argument("--metadata-csv", default=None)
+    parser.add_argument("--max-per-country-month", type=int, default=None,
+                        help="Maximum number of sequences to keep per country per month per year")
+    parser.add_argument("--exclude-accessions", nargs="*", default=[],
+                        help="List of EPI_ISL accessions to exclude from context sequences")
     args = parser.parse_args()
 
     if not os.path.exists(args.context_fasta_in):
@@ -180,6 +184,11 @@ def main():
                 print(f"Loaded {len(local_epi_isls)} local EPI_ISLs to exclude from context.")
         except Exception as e:
             print(f"Warning: Could not read {args.metadata_csv} for duplicate exclusion: {e}")
+
+    # Load excluded accessions
+    exclude_accessions = set(args.exclude_accessions or [])
+    if exclude_accessions:
+        print(f"Loaded {len(exclude_accessions)} accessions to manually exclude from context.")
 
     # Parse and group by isolate name
     isolates_data = {} # isolate_name -> { segment -> (epi_isl, seq, original_header) }
@@ -220,19 +229,55 @@ def main():
 
     # Filter to only isolates with all 8 segments
     complete_isolates = {}
+    isolate_dates = {}
+    isolate_places = {}
+    isolate_types = {}
     discarded_count = 0
     excluded_local_count = 0
     for isolate, segs in isolates_data.items():
         if len(segs) == 8:
             is_local = False
+            is_excluded = False
             for seg, (epi_isl, seq, orig_hdr) in segs.items():
                 if epi_isl in local_epi_isls:
                     is_local = True
                     break
+                if epi_isl in exclude_accessions:
+                    is_excluded = True
+                    break
             if is_local:
                 excluded_local_count += 1
+            elif is_excluded:
+                continue
             else:
-                complete_isolates[isolate] = segs
+                place, _, context_type = extract_metadata_from_isolate(isolate)
+                epi_isl_rep = segs["HA"][0]
+                is_maate = epi_isl_rep in MAATE_METADATA
+                
+                if is_maate:
+                    date_value = MAATE_METADATA[epi_isl_rep]["date"]
+                else:
+                    extracted_date = None
+                    for seg_name, (epi_isl, seq, orig_hdr) in segs.items():
+                        hdr_parts = [p.strip() for p in orig_hdr.split("|")]
+                        if len(hdr_parts) >= 3:
+                            raw_date = hdr_parts[2]
+                            parsed_date = parse_collection_date(raw_date)
+                            if parsed_date:
+                                extracted_date = parsed_date
+                                break
+                    if not extracted_date:
+                        discarded_count += 1
+                        continue
+                    date_value = extracted_date
+                
+                if date_value == "UNKNOWN" or not date_value:
+                    discarded_count += 1
+                else:
+                    complete_isolates[isolate] = segs
+                    isolate_dates[isolate] = date_value
+                    isolate_places[isolate] = place
+                    isolate_types[isolate] = context_type
         else:
             discarded_count += 1
 
@@ -241,6 +286,46 @@ def main():
     if excluded_local_count > 0:
         print(f"Isolados excluidos por coincidir con muestras locales (flu_filtrado): {excluded_local_count}")
 
+    # Subsample complete context isolates if requested (max per country per month per year)
+    if args.max_per_country_month is not None:
+        subsampled_isolates = {}
+        counts = {}
+        # Sort isolates deterministically by name
+        for isolate in sorted(complete_isolates.keys()):
+            segs = complete_isolates[isolate]
+            place = isolate_places[isolate]
+            date_value = isolate_dates[isolate]
+            context_type = isolate_types[isolate]
+            
+            epi_isl_rep = segs["HA"][0]
+            is_maate = epi_isl_rep in MAATE_METADATA
+            
+            # Keep all local Ecuador core sequences
+            if is_maate:
+                subsampled_isolates[isolate] = segs
+                continue
+                
+            # Parse year and month
+            year = "UNKNOWN"
+            month = "UNKNOWN"
+            if date_value != "UNKNOWN" and len(date_value) >= 7:
+                year = date_value[:4]
+                month = date_value[5:7]
+            
+            # Normalize US states to USA for country-level filtering
+            place_clean = place.lower().replace("_", "").replace(" ", "")
+            north_america_set = {s.lower().replace("_", "").replace(" ", "") for s in NORTH_AMERICA_PLACES}
+            country = "USA" if place_clean in north_america_set else place
+            
+            key = (country, year, month)
+            counts[key] = counts.get(key, 0) + 1
+            
+            if counts[key] <= args.max_per_country_month:
+                subsampled_isolates[isolate] = segs
+                
+        print(f"Subsampled context isolates from {len(complete_isolates)} to {len(subsampled_isolates)} using limit of {args.max_per_country_month} per country/month.")
+        complete_isolates = subsampled_isolates
+
     # Process and write formatted context FASTA
     records = []
     written_count = 0
@@ -248,7 +333,9 @@ def main():
     
     with open(args.context_fasta_out, "w") as out_ctx:
         for isolate, segs in sorted(complete_isolates.items()):
-            place, date_value, context_type = extract_metadata_from_isolate(isolate)
+            place = isolate_places[isolate]
+            date_value = isolate_dates[isolate]
+            context_type = isolate_types[isolate]
             
             # Use the EPI_ISL of HA segment as the representative for the isolate ID
             epi_isl_rep = segs["HA"][0]

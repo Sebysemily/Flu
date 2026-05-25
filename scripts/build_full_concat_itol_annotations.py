@@ -218,6 +218,19 @@ def write_support_percent_tree(tree_path: Path, out_path: Path) -> None:
 
 
 def main() -> None:
+    default_metadata = "config/flu_filtrado.csv"
+    for filename in ["config/paths.yml", "config/config.yml"]:
+        if os.path.exists(filename):
+            try:
+                import yaml
+                with open(filename) as fh:
+                    cfg = yaml.safe_load(fh) or {}
+                    if "flu_filtrado" in cfg:
+                        default_metadata = cfg["flu_filtrado"]
+                        break
+            except Exception:
+                pass
+
     parser = argparse.ArgumentParser(
         description="Build iTOL annotation files for the H5N1 full-concat TBE tree."
     )
@@ -231,7 +244,7 @@ def main() -> None:
     )
     parser.add_argument(
         "--metadata",
-        default="config/flu_filtrado.csv",
+        default=default_metadata,
         help="Metadata CSV used to identify Fundacion Condor samples.",
     )
     args = parser.parse_args()

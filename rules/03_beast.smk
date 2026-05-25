@@ -15,7 +15,8 @@ BEAST_DEFAULT_SEEDS = {
     "strict_exp": 1003,
     "ucln_exp": 1004,
 }
-STRICT_CONSTANT_FINAL_DIR = "results/beast/final/time"
+RESULTS_BEAST = config.get("results_beast", "results/beast")
+STRICT_CONSTANT_FINAL_DIR = f"{RESULTS_BEAST}/final/time"
 STRICT_CONSTANT_FINAL_PREFIX = f"{STRICT_CONSTANT_FINAL_DIR}/strict_constant"
 STRICT_CONSTANT_FINAL_COMBINED_LOG = f"{STRICT_CONSTANT_FINAL_PREFIX}.combined.log"
 STRICT_CONSTANT_FINAL_COMBINED_TREES = f"{STRICT_CONSTANT_FINAL_PREFIX}.combined.trees"
@@ -23,7 +24,7 @@ STRICT_CONSTANT_FINAL_TREE = f"{STRICT_CONSTANT_FINAL_PREFIX}.mcc.mean.tree"
 STRICT_CONSTANT_FINAL_DONE = f"{STRICT_CONSTANT_FINAL_DIR}/run.done"
 STRICT_CONSTANT_CHAIN_LENGTH = int(BEAST_CHAIN_LENGTHS.get("strict_constant", 100000000))
 STRICT_CONSTANT_BURNIN_STATES = int(STRICT_CONSTANT_CHAIN_LENGTH * 0.10)
-STRICT_CONSTANT_LUGAR_FINAL_DIR = "results/beast/final/geography"
+STRICT_CONSTANT_LUGAR_FINAL_DIR = f"{RESULTS_BEAST}/final/geography"
 STRICT_CONSTANT_LUGAR_FINAL_PREFIX = f"{STRICT_CONSTANT_LUGAR_FINAL_DIR}/strict_constant_lugar"
 STRICT_CONSTANT_LUGAR_FINAL_COMBINED_LOG = f"{STRICT_CONSTANT_LUGAR_FINAL_PREFIX}.combined.log"
 STRICT_CONSTANT_LUGAR_FINAL_COMBINED_TREES = f"{STRICT_CONSTANT_LUGAR_FINAL_PREFIX}.combined.trees"
@@ -43,7 +44,7 @@ def beast_seed_for(scenario, replicate):
     return base_seed + (BEAST_SEED_OFFSET if replicate == "r2" else 0)
 
 
-BEAST_RUN_TARGETS = expand("results/beast/runs/{scenario}/run.done", scenario=BEAST_RUN_SCENARIOS)
+BEAST_RUN_TARGETS = expand(f"{RESULTS_BEAST}/runs/{{scenario}}/run.done", scenario=BEAST_RUN_SCENARIOS)
 BEAST_FINAL_TARGETS = [STRICT_CONSTANT_FINAL_DONE, STRICT_CONSTANT_LUGAR_FINAL_DONE]
 BEAST_PUBLIC_TARGETS = (
     [*BEAST_RUN_TARGETS, *BEAST_FINAL_TARGETS]
@@ -56,7 +57,7 @@ rule validate_beast_xml:
     input:
         xml=lambda wildcards: BEAST_PREPARED_XMLS[wildcards.scenario],
     output:
-        validated="results/beast/xml/{scenario}.validated",
+        validated=f"{RESULTS_BEAST}/xml/{{scenario}}.validated",
     wildcard_constraints:
         scenario="|".join(BEAST_RUN_SCENARIOS),
     conda:
@@ -72,23 +73,23 @@ rule validate_beast_xml:
 rule run_beast_replicate:
     input:
         xml=lambda wildcards: BEAST_PREPARED_XMLS[wildcards.scenario],
-        validated="results/beast/xml/{scenario}.validated",
+        validated=f"{RESULTS_BEAST}/xml/{{scenario}}.validated",
         previous_done=lambda wildcards: []
         if wildcards.replicate == "r1"
-        else f"results/beast/runs/{wildcards.scenario}/r1/run.done",
+        else f"{RESULTS_BEAST}/runs/{wildcards.scenario}/r1/run.done",
     output:
-        status="results/beast/runs/{scenario}/{replicate}/status.log",
-        stdout="results/beast/runs/{scenario}/{replicate}/stdout.log",
-        stderr="results/beast/runs/{scenario}/{replicate}/stderr.log",
-        beast_log="results/beast/runs/{scenario}/{replicate}/{scenario}.log",
-        beast_trees="results/beast/runs/{scenario}/{replicate}/{scenario}.trees",
-        beast_chkpt="results/beast/runs/{scenario}/{replicate}/{scenario}.chkpt",
-        beast_ops="results/beast/runs/{scenario}/{replicate}/{scenario}.ops",
-        done="results/beast/runs/{scenario}/{replicate}/run.done",
+        status=f"{RESULTS_BEAST}/runs/{{scenario}}/{{replicate}}/status.log",
+        stdout=f"{RESULTS_BEAST}/runs/{{scenario}}/{{replicate}}/stdout.log",
+        stderr=f"{RESULTS_BEAST}/runs/{{scenario}}/{{replicate}}/stderr.log",
+        beast_log=f"{RESULTS_BEAST}/runs/{{scenario}}/{{replicate}}/{{scenario}}.log",
+        beast_trees=f"{RESULTS_BEAST}/runs/{{scenario}}/{{replicate}}/{{scenario}}.trees",
+        beast_chkpt=f"{RESULTS_BEAST}/runs/{{scenario}}/{{replicate}}/{{scenario}}.chkpt",
+        beast_ops=f"{RESULTS_BEAST}/runs/{{scenario}}/{{replicate}}/{{scenario}}.ops",
+        done=f"{RESULTS_BEAST}/runs/{{scenario}}/{{replicate}}/run.done",
     params:
         beast_binary=BEAST_BINARY,
-        output_prefix=lambda wildcards: f"results/beast/runs/{wildcards.scenario}/{wildcards.scenario}",
-        replicate_dir=lambda wildcards: f"results/beast/runs/{wildcards.scenario}/{wildcards.replicate}",
+        output_prefix=lambda wildcards: f"{RESULTS_BEAST}/runs/{wildcards.scenario}/{wildcards.scenario}",
+        replicate_dir=lambda wildcards: f"{RESULTS_BEAST}/runs/{wildcards.scenario}/{wildcards.replicate}",
         seed=lambda wildcards: beast_seed_for(wildcards.scenario, wildcards.replicate),
         beagle_mode=lambda wildcards: str(
             BEAST_BEAGLE_CONFIG.get(
@@ -143,10 +144,10 @@ rule run_beast_replicate:
 
 rule summarize_beast_run:
     input:
-        run_r1="results/beast/runs/{scenario}/r1/run.done",
-        run_r2="results/beast/runs/{scenario}/r2/run.done",
+        run_r1=f"{RESULTS_BEAST}/runs/{{scenario}}/r1/run.done",
+        run_r2=f"{RESULTS_BEAST}/runs/{{scenario}}/r2/run.done",
     output:
-        done="results/beast/runs/{scenario}/run.done",
+        done=f"{RESULTS_BEAST}/runs/{{scenario}}/run.done",
     params:
         seed_r1=lambda wildcards: beast_seed_for(wildcards.scenario, "r1"),
         seed_r2=lambda wildcards: beast_seed_for(wildcards.scenario, "r2"),
@@ -168,9 +169,9 @@ rule summarize_beast_run:
 
 rule combine_strict_constant_logs:
     input:
-        scenario_done="results/beast/runs/strict_constant/run.done",
-        log_r1="results/beast/runs/strict_constant/r1/strict_constant.log",
-        log_r2="results/beast/runs/strict_constant/r2/strict_constant.log",
+        scenario_done=f"{RESULTS_BEAST}/runs/strict_constant/run.done",
+        log_r1=f"{RESULTS_BEAST}/runs/strict_constant/r1/strict_constant.log",
+        log_r2=f"{RESULTS_BEAST}/runs/strict_constant/r2/strict_constant.log",
     output:
         combined=STRICT_CONSTANT_FINAL_COMBINED_LOG,
     params:
@@ -191,9 +192,9 @@ rule combine_strict_constant_logs:
 
 rule combine_strict_constant_trees:
     input:
-        scenario_done="results/beast/runs/strict_constant/run.done",
-        trees_r1="results/beast/runs/strict_constant/r1/strict_constant.trees",
-        trees_r2="results/beast/runs/strict_constant/r2/strict_constant.trees",
+        scenario_done=f"{RESULTS_BEAST}/runs/strict_constant/run.done",
+        trees_r1=f"{RESULTS_BEAST}/runs/strict_constant/r1/strict_constant.trees",
+        trees_r2=f"{RESULTS_BEAST}/runs/strict_constant/r2/strict_constant.trees",
     output:
         combined=STRICT_CONSTANT_FINAL_COMBINED_TREES,
     params:
@@ -258,9 +259,9 @@ EOF
 
 rule combine_strict_constant_lugar_logs:
     input:
-        scenario_done="results/beast/runs/strict_constant_lugar/run.done",
-        log_r1="results/beast/runs/strict_constant_lugar/r1/strict_constant_lugar.log",
-        log_r2="results/beast/runs/strict_constant_lugar/r2/strict_constant_lugar.log",
+        scenario_done=f"{RESULTS_BEAST}/runs/strict_constant_lugar/run.done",
+        log_r1=f"{RESULTS_BEAST}/runs/strict_constant_lugar/r1/strict_constant_lugar.log",
+        log_r2=f"{RESULTS_BEAST}/runs/strict_constant_lugar/r2/strict_constant_lugar.log",
     output:
         combined=STRICT_CONSTANT_LUGAR_FINAL_COMBINED_LOG,
     params:
@@ -281,9 +282,9 @@ rule combine_strict_constant_lugar_logs:
 
 rule combine_strict_constant_lugar_trees:
     input:
-        scenario_done="results/beast/runs/strict_constant_lugar/run.done",
-        trees_r1="results/beast/runs/strict_constant_lugar/r1/strict_constant_lugar.trees",
-        trees_r2="results/beast/runs/strict_constant_lugar/r2/strict_constant_lugar.trees",
+        scenario_done=f"{RESULTS_BEAST}/runs/strict_constant_lugar/run.done",
+        trees_r1=f"{RESULTS_BEAST}/runs/strict_constant_lugar/r1/strict_constant_lugar.trees",
+        trees_r2=f"{RESULTS_BEAST}/runs/strict_constant_lugar/r2/strict_constant_lugar.trees",
     output:
         combined=STRICT_CONSTANT_LUGAR_FINAL_COMBINED_TREES,
     params:

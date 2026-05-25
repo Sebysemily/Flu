@@ -1,10 +1,15 @@
 import glob
 import os
 
-
-MIRA_BASE = config["mira_base_dir"]
+# Organize paths dynamically from config (paths.yml)
+MIRA_BASE = config.get("mira_base_dir", "../../../MIRA_NGS")
 FILTRADO_CSV = config.get("flu_filtrado", "config/flu_filtrado.csv")
-MIRA_GISAID_FASTA = "data/input/H5N1_EC_gisaid_from_mira.fasta"
+DATA_INPUT = config.get("data_input", "data/input")
+CONTEXT_FASTA_RAW = config.get("context_fasta_raw", "data/context/gisaid_epiflu_sequence.fasta")
+DATA_COMBINED_CONTEXT_EC = config.get("data_combined_context_ecuador", "data/standard_header_input_fasta")
+RESULTS_QC_METRICS = config.get("results_qc_metrics", "results/qc_metrics")
+
+MIRA_GISAID_FASTA = f"{DATA_INPUT}/H5N1_EC_gisaid_from_mira.fasta"
 
 
 def get_existing_mira_fastas():
@@ -20,9 +25,9 @@ def get_gisaid_input_fastas():
     patterns = ["*.fasta", "*.fa", "*.fna", "*.fas"]
     fastas = []
     for pattern in patterns:
-        fastas.extend(glob.glob(os.path.join("data", "input", pattern)))
+        fastas.extend(glob.glob(os.path.join(DATA_INPUT, pattern)))
     # Exclude the generated MIRA fasta to keep the same fallback logic
-    mira_gen = os.path.abspath(os.path.join("data", "input", "H5N1_EC_gisaid_from_mira.fasta"))
+    mira_gen = os.path.abspath(MIRA_GISAID_FASTA)
     fastas = [f for f in fastas if os.path.abspath(f) != mira_gen]
     return sorted(set(fastas))
 
@@ -48,7 +53,7 @@ rule build_standard_date_headers:
         gisaid_fastas=STANDARD_HEADER_FASTAS,
         metadata_csv=FILTRADO_CSV
     output:
-        fasta="data/standard_header_input_fasta/H5N1_EC.fasta"
+        fasta=f"{DATA_COMBINED_CONTEXT_EC}/H5N1_EC.fasta"
     params:
         ecuador_date_source="collection"
     shell:
@@ -64,12 +69,16 @@ rule build_standard_date_headers:
 
 rule build_standard_headers_for_gisaid_context:
     input:
-        ecuador_fasta="data/standard_header_input_fasta/H5N1_EC.fasta",
-        context_fasta="data/context/gisaid_epiflu_sequence.fasta",
+        ecuador_fasta=f"{DATA_COMBINED_CONTEXT_EC}/H5N1_EC.fasta",
+        context_fasta=CONTEXT_FASTA_RAW,
         metadata_csv=FILTRADO_CSV
     output:
-        context_fasta="data/standard_header_input_fasta/H5N1_context.fasta",
-        final_fasta="data/standard_header_input_fasta/H5N1_final.fasta"
+        context_fasta=f"{DATA_COMBINED_CONTEXT_EC}/H5N1_context.fasta",
+        final_fasta=f"{DATA_COMBINED_CONTEXT_EC}/H5N1_final.fasta",
+        context_summary=f"{RESULTS_QC_METRICS}/build_inputs/H5N1_context_summary.csv"
+    params:
+        max_per_country_month=config.get("max_per_country_month", 2),
+        exclude_accessions=config.get("exclude_context_accessions", [])
     shell:
         r"""
         export PYTHONPATH=code:${{PYTHONPATH:-}}
@@ -77,6 +86,9 @@ rule build_standard_headers_for_gisaid_context:
             --ecuador-fasta {input.ecuador_fasta:q} \
             --context-fasta-in {input.context_fasta:q} \
             --context-fasta-out {output.context_fasta:q} \
+            --context-summary-out {output.context_summary:q} \
             --final-fasta-out {output.final_fasta:q} \
-            --metadata-csv {input.metadata_csv:q}
+            --metadata-csv {input.metadata_csv:q} \
+            --max-per-country-month {params.max_per_country_month} \
+            --exclude-accessions {params.exclude_accessions}
         """

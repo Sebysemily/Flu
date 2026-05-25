@@ -20,3 +20,5 @@ tmp_rf_full_concat/**
 .vscode/**
 .aider*
 .env
+temp/*
+.antigravity.md

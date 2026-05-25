@@ -6,16 +6,22 @@ NP_MP_NS_CODON_SEGMENTS = ["NP"]
 RANDOM_SEED = config.get("random_seed", 39809473)
 MAX_THREADS = int(config.get("max_threads", 18))
 
-DATA_COMBINED_CONTEXT_EC = config.get("data_combined_context_ecuador", "data/final")
+DATA_COMBINED_CONTEXT_EC = config.get("data_combined_context_ecuador", "data/standard_header_input_fasta")
 DATA_PHYLOGENY = config.get("data_phylogeny", "data/phylogeny")
 RESULTS_PHYLOGENY = config.get("results_phylogeny", "results/phylogeny")
 DATA_PRE_BEAST = config.get("data_pre_beast", "data/pre_beast")
-PROCESSED_ALIGNMENTS_CODON_AWARE = "data/processed_alignments/codon_aware"
-QC_METRICS_DIR = "results/qc_metrics/processed_alignments/codon_aware"
+DATA_BEAST = config.get("data_beast", "data/beast")
+PROCESSED_ALIGNMENTS_CODON_AWARE = config.get("processed_alignments_codon_aware", "data/processed_alignments/codon_aware")
+RESULTS_QC_METRICS = config.get("results_qc_metrics", "results/qc_metrics")
+RESULTS_BEAST_PRE = config.get("results_beast_pre", "results/beast_pre")
+
+QC_METRICS_DIR = f"{RESULTS_QC_METRICS}/processed_alignments/codon_aware"
 
 FULL_CONCAT_FASTA = f"{DATA_COMBINED_CONTEXT_EC}/H5N1_final_beast.fasta"
 FULL_CONCAT_ALIGNMENT = f"{DATA_PHYLOGENY}/aligned/H5N1_full_concat_beast.mafft"
 FULL_CONCAT_PARTITIONS = f"{DATA_PHYLOGENY}/H5N1_full_concat_beast.partitions"
+CONCAT_EXCEPT_HA_ALIGNMENT = f"{DATA_PHYLOGENY}/aligned/H5N1_concat_except_HA.mafft"
+CONCAT_EXCEPT_HA_PARTITIONS = f"{DATA_PHYLOGENY}/H5N1_concat_except_HA.partitions"
 FULL_CONCAT_PREFIX = f"{RESULTS_PHYLOGENY}/iq-tree/full_concat/H5N1_full_concat_beast"
 NP_MP_NS_ALIGNMENT = f"{DATA_PHYLOGENY}/aligned/H5N1_NP_MP_NS.mafft"
 NP_MP_NS_PARTITIONS = f"{DATA_PHYLOGENY}/H5N1_NP_MP_NS.partitions"
@@ -23,18 +29,18 @@ NP_MP_NS_PREFIX = f"{RESULTS_PHYLOGENY}/iq-tree/np_mp_ns/H5N1_NP_MP_NS"
 
 
 
-CONCAT_TREE = "results/phylogeny/iq-tree/full_concat/H5N1_full_concat_beast.treefile"
-CONCAT_ALIGNMENT = "data/phylogeny/aligned/H5N1_full_concat_beast.mafft"
+CONCAT_TREE = f"{RESULTS_PHYLOGENY}/iq-tree/full_concat/H5N1_full_concat_beast.treefile"
+CONCAT_ALIGNMENT = f"{DATA_PHYLOGENY}/aligned/H5N1_full_concat_beast.mafft"
 
 PRE_BEAST_SEGMENTS = ["PB2", "PB1", "PA", "HA", "NP", "NA", "MP", "NS"]
 
-BEAST_PRE_DATA_DIR = "data/pre_beast/panels"
-BEAST_EXPORT_DIR = "data/beast"
+BEAST_PRE_DATA_DIR = f"{DATA_PRE_BEAST}/panels"
+BEAST_EXPORT_DIR = DATA_BEAST
 BEAST_FINAL_DATA_DIR = f"{BEAST_EXPORT_DIR}/final_panel_segment"
 BEAST_RAW_FINAL_SEGMENT_DIR = f"{BEAST_PRE_DATA_DIR}/raw_segment_subset"
-BEAST_PRE_RESULTS_DIR = "results/beast_pre"
-BEAST_PRE_QC_DIR = f"{BEAST_PRE_RESULTS_DIR}/qc_validation"
-BEAST_SEGMENT_QC_DIR = f"{BEAST_PRE_QC_DIR}/segment_alignment"
+BEAST_PRE_RESULTS_DIR = RESULTS_BEAST_PRE
+BEAST_PRE_QC_DIR = f"{RESULTS_QC_METRICS}/beast"
+BEAST_SEGMENT_QC_DIR = f"{BEAST_PRE_QC_DIR}/final_panel_segment"
 
 BEAST_PANEL_TAXA = f"{BEAST_PRE_DATA_DIR}/panel_main_taxa.tsv"
 BEAST_PANEL_FILTERED_TAXA = f"{BEAST_PRE_DATA_DIR}/panel_main_taxa.filtered.tsv"
@@ -130,15 +136,15 @@ rule concat_aligned_segments_with_partitions:
 		"""
 
 
-rule concat_np_mp_ns_with_partitions:
+rule concat_except_ha_with_partitions:
 	input:
-		alignments=expand(f"{PROCESSED_ALIGNMENTS_CODON_AWARE}/H5N1_{{segment}}.mafft", segment=NP_MP_NS_SEGMENTS)
+		alignments=expand(f"{PROCESSED_ALIGNMENTS_CODON_AWARE}/H5N1_{{segment}}.mafft", segment=["PB2", "PB1", "PA", "NP", "NA", "MP", "NS"])
 	output:
-		aligned=NP_MP_NS_ALIGNMENT,
-		partitions=NP_MP_NS_PARTITIONS
+		aligned=CONCAT_EXCEPT_HA_ALIGNMENT,
+		partitions=CONCAT_EXCEPT_HA_PARTITIONS
 	params:
-		segment_order=",".join(NP_MP_NS_SEGMENTS),
-		codon_segments=",".join(NP_MP_NS_CODON_SEGMENTS)
+		segment_order=",".join(["PB2", "PB1", "PA", "NP", "NA", "MP", "NS"]),
+		codon_segments=",".join(["PB2", "PB1", "PA", "NP", "NA"])
 	shell:
 		r"""
 		python code/01_ml_trees/build_concat_codon_partitions.py \
@@ -150,25 +156,46 @@ rule concat_np_mp_ns_with_partitions:
 		"""
 
 
+def get_iqtree_replicate_inputs(wildcards):
+	if wildcards.segment == "concat_except_HA":
+		return {
+			"alignment": CONCAT_EXCEPT_HA_ALIGNMENT,
+			"partitions": CONCAT_EXCEPT_HA_PARTITIONS
+		}
+	inputs = {
+		"alignment": f"{PROCESSED_ALIGNMENTS_CODON_AWARE}/H5N1_{wildcards.segment}.mafft"
+	}
+	if wildcards.segment in CODON_SEGMENTS:
+		inputs["partitions"] = f"{PROCESSED_ALIGNMENTS_CODON_AWARE}/H5N1_{wildcards.segment}.codon.partitions"
+	return inputs
 
-rule iqtree_np_mp_ns:
+def get_iqtree_replicate_seed(wildcards):
+	return RANDOM_SEED + int(wildcards.rep)
+
+def get_iqtree_replicate_part_arg(wildcards, input):
+	if "partitions" in input.keys():
+		return f"-spp {input.partitions}"
+	return ""
+
+rule run_iqtree_segment_replicate:
 	input:
-		alignment=NP_MP_NS_ALIGNMENT,
-		partitions=NP_MP_NS_PARTITIONS
+		unpack(get_iqtree_replicate_inputs)
 	output:
-		treefile=f"{NP_MP_NS_PREFIX}.treefile"
+		treefile=f"{RESULTS_PHYLOGENY}/iq-tree/{{segment}}/rep{{rep}}.treefile"
 	params:
-		prefix=NP_MP_NS_PREFIX,
-		seed=RANDOM_SEED
-	threads: MAX_THREADS
+		prefix=f"{RESULTS_PHYLOGENY}/iq-tree/{{segment}}/rep{{rep}}/rep{{rep}}",
+		seed=get_iqtree_replicate_seed,
+		part_arg=get_iqtree_replicate_part_arg
+	threads: 4
 	conda:
 		"../envs/01_ml_trees.yml"
 	shell:
 		r"""
-		mkdir -p {RESULTS_PHYLOGENY}/iq-tree/np_mp_ns
-		rm -f {params.prefix}.ckp.gz
-		iqtree -s {input.alignment} -spp {input.partitions} -pre {params.prefix} -seed {params.seed} -nt {threads} -m GTR+G -fast
+		mkdir -p $(dirname {params.prefix})
+		iqtree -s {input.alignment} {params.part_arg} -pre {params.prefix} -seed {params.seed} -nt {threads} -bb 1000 -bnni
+		mv {params.prefix}.treefile {output.treefile}
 		"""
+
 
 
 rule iqtree_fast_full_concat:
@@ -189,9 +216,6 @@ rule iqtree_fast_full_concat:
 		rm -f {params.prefix}.ckp.gz
 		iqtree -s {input.alignment} -spp {input.partitions} -pre {params.prefix} -seed {params.seed} -nt {threads} -m GTR+G -fast
 		"""
-
-
-
 
 
 rule prune_tree_by_distance_to_core:
@@ -237,16 +261,8 @@ rule align_all_segments:
 		expand(f"{PROCESSED_ALIGNMENTS_CODON_AWARE}/H5N1_{{segment}}.mafft", segment=PHYLO_SEGMENTS)
 
 
-
-
-
 rule iqtree_tree_full_concat:
 	input:
 		f"{FULL_CONCAT_PREFIX}.treefile"
-
-
-rule iqtree_tree_np_mp_ns:
-	input:
-		f"{NP_MP_NS_PREFIX}.treefile"
 
 

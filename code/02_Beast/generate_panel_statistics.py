@@ -112,8 +112,21 @@ def map_local_species(specie_str):
 
 def main():
     panel_tsv = sys.argv[1] if len(sys.argv) > 1 else 'data/beast/panel_main_taxa.final.tsv'
-    metadata_csv = 'config/flu_filtrado.csv'
     output_csv = sys.argv[2] if len(sys.argv) > 2 else 'results/qc_metrics/phylogeny/main_analysis_panel.csv'
+    
+    default_metadata = 'config/flu_filtrado.csv'
+    for filename in ['config/paths.yml', 'config/config.yml']:
+        if os.path.exists(filename):
+            try:
+                import yaml
+                with open(filename) as fh:
+                    cfg = yaml.safe_load(fh) or {}
+                    if 'flu_filtrado' in cfg:
+                        default_metadata = cfg['flu_filtrado']
+            except Exception:
+                pass
+                
+    metadata_csv = sys.argv[3] if len(sys.argv) > 3 else default_metadata
     
     if not os.path.exists(panel_tsv):
         print(f"Error: Panel file not found at {panel_tsv}", file=sys.stderr)

@@ -18,11 +18,13 @@ DEFAULT_INPUT_FASTAS = [os.path.join("data", "input", "H5N1_EC_gisaid_from_mira.
 DEFAULT_METADATA_CSV = os.path.join("config", "flu_filtrado.csv")
 DEFAULT_ECUADOR_DATE_SOURCE = "reception"
 try:
-    if os.path.exists(CONFIG_FILE):
-        with open(CONFIG_FILE) as fh:
-            _cfg = yaml.safe_load(fh) or {}
-            DEFAULT_METADATA_CSV = _cfg.get("flu_filtrado", DEFAULT_METADATA_CSV)
-            DEFAULT_ECUADOR_DATE_SOURCE = _cfg.get("ecuador_date_source", DEFAULT_ECUADOR_DATE_SOURCE)
+    _cfg = {}
+    for filename in ["config/config.yml", "config/paths.yml"]:
+        if os.path.exists(filename):
+            with open(filename) as fh:
+                _cfg.update(yaml.safe_load(fh) or {})
+    DEFAULT_METADATA_CSV = _cfg.get("flu_filtrado", DEFAULT_METADATA_CSV)
+    DEFAULT_ECUADOR_DATE_SOURCE = _cfg.get("ecuador_date_source", DEFAULT_ECUADOR_DATE_SOURCE)
 except Exception:
     pass
 

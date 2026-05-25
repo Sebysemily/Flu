@@ -20,7 +20,7 @@ def parse_collection_date(value: str) -> Optional[str]:
 	if re.match(r"^\d{4}-\d{2}$", text):
 		return f"{text}-01"
 	if re.match(r"^\d{4}$", text):
-		return f"{text}-07-01"
+		return None
 
 	for fmt in ("%d-%b-%Y", "%b-%Y"):
 		try:
@@ -32,14 +32,20 @@ def parse_collection_date(value: str) -> Optional[str]:
 			pass
 
 	for dayfirst in (False, True):
-		parsed = pd.to_datetime(text, errors="coerce", dayfirst=dayfirst)
-		if pd.notna(parsed):
-			return parsed.date().isoformat()
+		# Avoid converting year-only formats (like "2023" or float "2023.0") into dates
+		cleaned_digits = re.sub(r"\D", "", text)
+		if len(cleaned_digits) == 4:
+			return None
 
-	match = YEAR_RE.search(text)
-	if match:
-		return f"{match.group(0)}-07-01"
+		try:
+			parsed = pd.to_datetime(text, errors="coerce", dayfirst=dayfirst)
+			if pd.notna(parsed):
+				return parsed.date().isoformat()
+		except Exception:
+			pass
+
 	return None
+
 
 
 def extract_year(value: str) -> Optional[str]:
