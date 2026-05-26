@@ -2,61 +2,31 @@ digraph snakemake_dag {
     graph[bgcolor=white, margin=0];
     node[shape=box, style=rounded, fontname=sans,                 fontsize=10, penwidth=2];
     edge[penwidth=2, color=grey];
-0 [ shape=none, margin=0, label=<<table border="2" color="#D9AD57" cellspacing="3" cellborder="0">
+0 [ shape=none, margin=0, label=<<table border="2" color="#57D9C2" cellspacing="3" cellborder="0">
 <tr><td>
-<b><font point-size="18">build_inputs_outputs</font></b>
+<b><font point-size="18">paper_figures</font></b>
 </td></tr>
 <hr/>
-<tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
-<tr>
-<td align="left"><font face="monospace">data/standard_header_input_fasta/H5N1_context.fasta</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">data/standard_header_input_fasta/H5N1_final.fasta</font></td>
-</tr>
+<tr><td align="left">  </td></tr>
 <hr/>
 <tr><td align="right">  </td> </tr>
 </table>>]
-1 [ shape=none, margin=0, label=<<table border="2" color="#CAD957" cellspacing="3" cellborder="0">
+1 [ shape=none, margin=0, label=<<table border="2" color="#D99E57" cellspacing="3" cellborder="0">
 <tr><td>
-<b><font point-size="18">build_standard_headers_for_gisaid_context</font></b>
+<b><font point-size="18">build_gisaid</font></b>
 </td></tr>
 <hr/>
 <tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
 <tr>
-<td align="left"><font face="monospace">config/flu_filtrado.csv</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">data/context/gisaid_epiflu_sequence.fasta</font></td>
+<td align="left"><font face="monospace">data/input/H5N1_EC_gisaid_from_mira.fasta</font></td>
 </tr>
 <tr>
 <td align="left"><font face="monospace">data/standard_header_input_fasta/H5N1_EC.fasta</font></td>
 </tr>
 <hr/>
-<tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
-<tr>
-<td align="left"><font face="monospace">data/standard_header_input_fasta/H5N1_context.fasta</font></td></tr>
-<tr>
-<td align="left"><font face="monospace">data/standard_header_input_fasta/H5N1_final.fasta</font></td></tr>
+<tr><td align="right">  </td> </tr>
 </table>>]
-2 [ shape=none, margin=0, label=<<table border="2" color="#D4D957" cellspacing="3" cellborder="0">
-<tr><td>
-<b><font point-size="18">build_standard_date_headers</font></b>
-</td></tr>
-<hr/>
-<tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
-<tr>
-<td align="left"><font face="monospace">config/flu_filtrado.csv</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">data/input/H5N1_EC_gisaid_from_mira.fasta</font></td>
-</tr>
-<hr/>
-<tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
-<tr>
-<td align="left"><font face="monospace">data/standard_header_input_fasta/H5N1_EC.fasta</font></td></tr>
-</table>>]
-3 [ shape=none, margin=0, label=<<table border="2" color="#D99A57" cellspacing="3" cellborder="0">
+2 [ shape=none, margin=0, label=<<table border="2" color="#D9A857" cellspacing="3" cellborder="0">
 <tr><td>
 <b><font point-size="18">build_gisaid_input_from_mira</font></b>
 </td></tr>
@@ -118,262 +88,159 @@ digraph snakemake_dag {
 <tr>
 <td align="left"><font face="monospace">data/input/H5N1_EC_gisaid_from_mira.fasta</font></td></tr>
 </table>>]
-4 [ shape=none, margin=0, label=<<table border="2" color="#57D990" cellspacing="3" cellborder="0">
+3 [ shape=none, margin=0, label=<<table border="2" color="#D9D157" cellspacing="3" cellborder="0">
+<tr><td>
+<b><font point-size="18">build_standard_date_headers</font></b>
+</td></tr>
+<hr/>
+<tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
+<tr>
+<td align="left"><font face="monospace">config/flu_filtrado.csv</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">data/input/H5N1_EC_gisaid_from_mira.fasta</font></td>
+</tr>
+<hr/>
+<tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
+<tr>
+<td align="left"><font face="monospace">data/standard_header_input_fasta/H5N1_EC.fasta</font></td></tr>
+</table>>]
+4 [ shape=none, margin=0, label=<<table border="2" color="#57D9CC" cellspacing="3" cellborder="0">
 <tr><td>
 <b><font point-size="18">pre_beast_outputs</font></b>
 </td></tr>
 <hr/>
 <tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
 <tr>
-<td align="left"><font face="monospace">data/beast/final_panel_segment/H5N1_HA.fasta</font></td>
+<td align="left"><font face="monospace">data/phylogeny/bayesian/bayesian_alignment.fasta</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">data/beast/final_panel_segment/H5N1_MP.fasta</font></td>
+<td align="left"><font face="monospace">data/phylogeny/bayesian/panel_main_dates.final.tsv</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">data/beast/final_panel_segment/H5N1_NA.fasta</font></td>
+<td align="left"><font face="monospace">data/phylogeny/final_alignment.fasta</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">data/beast/final_panel_segment/H5N1_NP.fasta</font></td>
+<td align="left"><font face="monospace">data/phylogeny/final_alignment.partitions</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">data/beast/final_panel_segment/H5N1_NS.fasta</font></td>
+<td align="left"><font face="monospace">data/phylogeny/final_panel/H5N1_HA.fasta</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">data/beast/final_panel_segment/H5N1_PA.fasta</font></td>
+<td align="left"><font face="monospace">data/phylogeny/final_panel/H5N1_MP.fasta</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">data/beast/final_panel_segment/H5N1_PB1.fasta</font></td>
+<td align="left"><font face="monospace">data/phylogeny/final_panel/H5N1_NA.fasta</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">data/beast/final_panel_segment/H5N1_PB2.fasta</font></td>
+<td align="left"><font face="monospace">data/phylogeny/final_panel/H5N1_NP.fasta</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">data/beast/panel_main_concat.final.audit.tsv</font></td>
+<td align="left"><font face="monospace">data/phylogeny/final_panel/H5N1_NS.fasta</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">data/beast/panel_main_concat.final.fasta</font></td>
+<td align="left"><font face="monospace">data/phylogeny/final_panel/H5N1_PA.fasta</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">data/beast/panel_main_dates.final.tsv</font></td>
+<td align="left"><font face="monospace">data/phylogeny/final_panel/H5N1_PB1.fasta</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">data/pre_beast/panels/panel_main_concat.filtered.audit.tsv</font></td>
+<td align="left"><font face="monospace">data/phylogeny/final_panel/H5N1_PB2.fasta</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">data/pre_beast/panels/panel_main_concat.filtered.fasta</font></td>
+<td align="left"><font face="monospace">data/phylogeny/rtt/panel_main_concat.filtered.audit.tsv</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">data/pre_beast/panels/panel_main_concat.filtered.nwk</font></td>
+<td align="left"><font face="monospace">data/phylogeny/rtt/panel_main_concat.filtered.fasta</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">data/pre_beast/panels/raw_segment_subset/H5N1_HA.fasta</font></td>
+<td align="left"><font face="monospace">data/phylogeny/rtt/panel_main_concat.filtered.nwk</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">data/pre_beast/panels/raw_segment_subset/H5N1_MP.fasta</font></td>
+<td align="left"><font face="monospace">results/phylogeny/bayesian/xml/strict_constant.xml</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">data/pre_beast/panels/raw_segment_subset/H5N1_NA.fasta</font></td>
+<td align="left"><font face="monospace">results/phylogeny/bayesian/xml/strict_constant_lugar.xml</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">data/pre_beast/panels/raw_segment_subset/H5N1_NP.fasta</font></td>
+<td align="left"><font face="monospace">results/phylogeny/bayesian/xml/strict_exp.xml</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">data/pre_beast/panels/raw_segment_subset/H5N1_NS.fasta</font></td>
+<td align="left"><font face="monospace">results/phylogeny/bayesian/xml/ucln_constant.xml</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">data/pre_beast/panels/raw_segment_subset/H5N1_PA.fasta</font></td>
+<td align="left"><font face="monospace">results/phylogeny/bayesian/xml/ucln_exp.xml</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">data/pre_beast/panels/raw_segment_subset/H5N1_PB1.fasta</font></td>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/subset_fast/panel_main_concat.final.treefile</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">data/pre_beast/panels/raw_segment_subset/H5N1_PB2.fasta</font></td>
+<td align="left"><font face="monospace">results/phylogeny/itol_styles/HA/dataset_colorstrip.txt</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">data/pre_beast/sensitivity_np_mp_ns/panel_audit.tsv</font></td>
+<td align="left"><font face="monospace">results/phylogeny/itol_styles/HA/tree_colors.txt</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">data/pre_beast/sensitivity_np_mp_ns/panel_np_mp_ns.audit.tsv</font></td>
+<td align="left"><font face="monospace">results/phylogeny/itol_styles/MP/dataset_colorstrip.txt</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">data/pre_beast/sensitivity_np_mp_ns/panel_np_mp_ns.fasta</font></td>
+<td align="left"><font face="monospace">results/phylogeny/itol_styles/MP/tree_colors.txt</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">data/pre_beast/sensitivity_np_mp_ns/panel_np_mp_ns.nwk</font></td>
+<td align="left"><font face="monospace">results/phylogeny/itol_styles/NA/dataset_colorstrip.txt</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">data/pre_beast/sensitivity_np_mp_ns/panel_taxa.rtt_filtered.tsv</font></td>
+<td align="left"><font face="monospace">results/phylogeny/itol_styles/NA/tree_colors.txt</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">data/pre_beast/sensitivity_np_mp_ns/panel_taxa.tsv</font></td>
+<td align="left"><font face="monospace">results/phylogeny/itol_styles/NP/dataset_colorstrip.txt</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast/xml/strict_constant.xml</font></td>
+<td align="left"><font face="monospace">results/phylogeny/itol_styles/NP/tree_colors.txt</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast/xml/strict_constant_lugar.xml</font></td>
+<td align="left"><font face="monospace">results/phylogeny/itol_styles/NS/dataset_colorstrip.txt</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast/xml/strict_exp.xml</font></td>
+<td align="left"><font face="monospace">results/phylogeny/itol_styles/NS/tree_colors.txt</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast/xml/ucln_constant.xml</font></td>
+<td align="left"><font face="monospace">results/phylogeny/itol_styles/PA/dataset_colorstrip.txt</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast/xml/ucln_exp.xml</font></td>
+<td align="left"><font face="monospace">results/phylogeny/itol_styles/PA/tree_colors.txt</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/final_segment_panel_qc.metrics.tsv</font></td>
+<td align="left"><font face="monospace">results/phylogeny/itol_styles/PB1/dataset_colorstrip.txt</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/final_segment_panel_qc.outliers.tsv</font></td>
+<td align="left"><font face="monospace">results/phylogeny/itol_styles/PB1/tree_colors.txt</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/final_segment_panel_qc.report.md</font></td>
+<td align="left"><font face="monospace">results/phylogeny/itol_styles/PB2/dataset_colorstrip.txt</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/final_segment_panel_qc.summary.tsv</font></td>
+<td align="left"><font face="monospace">results/phylogeny/itol_styles/PB2/tree_colors.txt</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/rtt_outlier_exclusions.summary.tsv</font></td>
+<td align="left"><font face="monospace">results/phylogeny/itol_styles/subset_fast/dataset_colorstrip.txt</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/rtt_outlier_exclusions.tsv</font></td>
+<td align="left"><font face="monospace">results/phylogeny/itol_styles/subset_fast/tree_colors.txt</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/segment_alignment/H5N1_HA.metrics.tsv</font></td>
+<td align="left"><font face="monospace">results/phylogeny/rtt/dates_from_headers.tsv</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/segment_alignment/H5N1_HA.outliers.tsv</font></td>
+<td align="left"><font face="monospace">results/phylogeny/rtt/treetime_clock.done</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/segment_alignment/H5N1_HA.report.md</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/segment_alignment/H5N1_HA.summary.tsv</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/segment_alignment/H5N1_MP.metrics.tsv</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/segment_alignment/H5N1_MP.outliers.tsv</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/segment_alignment/H5N1_MP.report.md</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/segment_alignment/H5N1_MP.summary.tsv</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/segment_alignment/H5N1_NA.metrics.tsv</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/segment_alignment/H5N1_NA.outliers.tsv</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/segment_alignment/H5N1_NA.report.md</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/segment_alignment/H5N1_NA.summary.tsv</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/segment_alignment/H5N1_NP.metrics.tsv</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/segment_alignment/H5N1_NP.outliers.tsv</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/segment_alignment/H5N1_NP.report.md</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/segment_alignment/H5N1_NP.summary.tsv</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/segment_alignment/H5N1_NS.metrics.tsv</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/segment_alignment/H5N1_NS.outliers.tsv</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/segment_alignment/H5N1_NS.report.md</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/segment_alignment/H5N1_NS.summary.tsv</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/segment_alignment/H5N1_PA.metrics.tsv</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/segment_alignment/H5N1_PA.outliers.tsv</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/segment_alignment/H5N1_PA.report.md</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/segment_alignment/H5N1_PA.summary.tsv</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/segment_alignment/H5N1_PB1.metrics.tsv</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/segment_alignment/H5N1_PB1.outliers.tsv</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/segment_alignment/H5N1_PB1.report.md</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/segment_alignment/H5N1_PB1.summary.tsv</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/segment_alignment/H5N1_PB2.metrics.tsv</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/segment_alignment/H5N1_PB2.outliers.tsv</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/segment_alignment/H5N1_PB2.report.md</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/segment_alignment/H5N1_PB2.summary.tsv</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/beast_pre/rtt/dates_from_headers.tsv</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/beast_pre/rtt/treetime_clock.done</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/beast_pre/sensitivity_np_mp_ns/rtt/dates.rtt_filtered.tsv</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/beast_pre/sensitivity_np_mp_ns/rtt/dates_from_headers.tsv</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/beast_pre/sensitivity_np_mp_ns/rtt/outliers.tsv</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/beast_pre/sensitivity_np_mp_ns/rtt/root_to_tip_regression.pdf</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/beast_pre/sensitivity_np_mp_ns/rtt/rtt.csv</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/beast_pre/sensitivity_np_mp_ns/rtt/rtt_outlier_exclusions.tsv</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/beast_pre/sensitivity_np_mp_ns/rtt/summary.tsv</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/beast_pre/sensitivity_np_mp_ns/rtt/treetime_clock.done</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/beast_pre/sensitivity_np_mp_ns/rtt/treetime_clock.log</font></td>
+<td align="left"><font face="monospace">results/qc_metrics/phylogeny/rtt/rtt_outlier_exclusions.tsv</font></td>
 </tr>
 <hr/>
 <tr><td align="right">  </td> </tr>
 </table>>]
-5 [ shape=none, margin=0, label=<<table border="2" color="#57D9A4" cellspacing="3" cellborder="0">
+5 [ shape=none, margin=0, label=<<table border="2" color="#57D1D9" cellspacing="3" cellborder="0">
 <tr><td>
 <b><font point-size="18">prune_tree_by_distance_to_core</font></b>
 </td></tr>
@@ -388,43 +255,45 @@ digraph snakemake_dag {
 <hr/>
 <tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
 <tr>
-<td align="left"><font face="monospace">data/pre_beast/panels/panel_main_concat.filtered.audit.tsv</font></td></tr>
+<td align="left"><font face="monospace">data/phylogeny/rtt/panel_main_concat.filtered.audit.tsv</font></td></tr>
 <tr>
-<td align="left"><font face="monospace">data/pre_beast/panels/panel_main_concat.filtered.fasta</font></td></tr>
+<td align="left"><font face="monospace">data/phylogeny/rtt/panel_main_concat.filtered.fasta</font></td></tr>
 <tr>
-<td align="left"><font face="monospace">data/pre_beast/panels/panel_main_concat.filtered.nwk</font></td></tr>
+<td align="left"><font face="monospace">data/phylogeny/rtt/panel_main_concat.filtered.nwk</font></td></tr>
 <tr>
-<td align="left"><font face="monospace">data/pre_beast/panels/panel_main_taxa.filtered.tsv</font></td></tr>
+<td align="left"><font face="monospace">data/phylogeny/rtt/panel_main_taxa.filtered.tsv</font></td></tr>
+<tr>
+<td align="left"><font face="monospace">results/qc_metrics/alignments/pruning_discarded_sequences.csv</font></td></tr>
 </table>>]
-6 [ shape=none, margin=0, label=<<table border="2" color="#87D957" cellspacing="3" cellborder="0">
+6 [ shape=none, margin=0, label=<<table border="2" color="#85D957" cellspacing="3" cellborder="0">
 <tr><td>
 <b><font point-size="18">concat_aligned_segments_with_partitions</font></b>
 </td></tr>
 <hr/>
 <tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
 <tr>
-<td align="left"><font face="monospace">data/phylogeny/aligned_qc/H5N1_HA.mafft</font></td>
+<td align="left"><font face="monospace">data/processed_alignments/qc_filtered/H5N1_HA.mafft</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">data/phylogeny/aligned_qc/H5N1_MP.mafft</font></td>
+<td align="left"><font face="monospace">data/processed_alignments/qc_filtered/H5N1_MP.mafft</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">data/phylogeny/aligned_qc/H5N1_NA.mafft</font></td>
+<td align="left"><font face="monospace">data/processed_alignments/qc_filtered/H5N1_NA.mafft</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">data/phylogeny/aligned_qc/H5N1_NP.mafft</font></td>
+<td align="left"><font face="monospace">data/processed_alignments/qc_filtered/H5N1_NP.mafft</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">data/phylogeny/aligned_qc/H5N1_NS.mafft</font></td>
+<td align="left"><font face="monospace">data/processed_alignments/qc_filtered/H5N1_NS.mafft</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">data/phylogeny/aligned_qc/H5N1_PA.mafft</font></td>
+<td align="left"><font face="monospace">data/processed_alignments/qc_filtered/H5N1_PA.mafft</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">data/phylogeny/aligned_qc/H5N1_PB1.mafft</font></td>
+<td align="left"><font face="monospace">data/processed_alignments/qc_filtered/H5N1_PB1.mafft</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">data/phylogeny/aligned_qc/H5N1_PB2.mafft</font></td>
+<td align="left"><font face="monospace">data/processed_alignments/qc_filtered/H5N1_PB2.mafft</font></td>
 </tr>
 <hr/>
 <tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
@@ -433,35 +302,83 @@ digraph snakemake_dag {
 <tr>
 <td align="left"><font face="monospace">data/phylogeny/aligned/H5N1_full_concat_beast.mafft</font></td></tr>
 </table>>]
-7 [ shape=none, margin=0, label=<<table border="2" color="#B7D957" cellspacing="3" cellborder="0">
+7 [ shape=none, margin=0, label=<<table border="2" color="#57D95C" cellspacing="3" cellborder="0">
 <tr><td>
-<b><font point-size="18">codon_qc_trim_per_segment</font></b>
+<b><font point-size="18">filter_alignments_by_nextclade_qc</font></b>
 </td></tr>
 <hr/>
 <tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
 <tr>
-<td align="left"><font face="monospace">data/phylogeny/aligned/H5N1_{segment}.mafft</font></td>
+<td align="left"><font face="monospace">data/processed_alignments/codon_aware/H5N1_HA.mafft</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">data/processed_alignments/codon_aware/H5N1_MP.mafft</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">data/processed_alignments/codon_aware/H5N1_NA.mafft</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">data/processed_alignments/codon_aware/H5N1_NP.mafft</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">data/processed_alignments/codon_aware/H5N1_NS.mafft</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">data/processed_alignments/codon_aware/H5N1_PA.mafft</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">data/processed_alignments/codon_aware/H5N1_PB1.mafft</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">data/processed_alignments/codon_aware/H5N1_PB2.mafft</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/qc_metrics/alignments/nextclade_HA_report.tsv</font></td>
 </tr>
 <hr/>
 <tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
 <tr>
-<td align="left"><font face="monospace">data/phylogeny/aligned_qc/H5N1_{segment}.mafft</font></td></tr>
+<td align="left"><font face="monospace">data/processed_alignments/qc_filtered/H5N1_HA.mafft</font></td></tr>
+<tr>
+<td align="left"><font face="monospace">data/processed_alignments/qc_filtered/H5N1_MP.mafft</font></td></tr>
+<tr>
+<td align="left"><font face="monospace">data/processed_alignments/qc_filtered/H5N1_NA.mafft</font></td></tr>
+<tr>
+<td align="left"><font face="monospace">data/processed_alignments/qc_filtered/H5N1_NP.mafft</font></td></tr>
+<tr>
+<td align="left"><font face="monospace">data/processed_alignments/qc_filtered/H5N1_NS.mafft</font></td></tr>
+<tr>
+<td align="left"><font face="monospace">data/processed_alignments/qc_filtered/H5N1_PA.mafft</font></td></tr>
+<tr>
+<td align="left"><font face="monospace">data/processed_alignments/qc_filtered/H5N1_PB1.mafft</font></td></tr>
+<tr>
+<td align="left"><font face="monospace">data/processed_alignments/qc_filtered/H5N1_PB2.mafft</font></td></tr>
+<tr>
+<td align="left"><font face="monospace">results/qc_metrics/alignments/qc_discarded_sequences.csv</font></td></tr>
 </table>>]
-8 [ shape=none, margin=0, label=<<table border="2" color="#57D960" cellspacing="3" cellborder="0">
+8 [ shape=none, margin=0, label=<<table border="2" color="#579ED9" cellspacing="3" cellborder="0">
 <tr><td>
-<b><font point-size="18">mafft_align_per_segment</font></b>
+<b><font point-size="18">run_nextclade_alignment_per_segment</font></b>
 </td></tr>
 <hr/>
 <tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
 <tr>
 <td align="left"><font face="monospace">data/phylogeny/by_segment/H5N1_{segment}.fasta</font></td>
 </tr>
+<tr>
+<td align="left"><font face="monospace">data/phylogeny/by_segment/H5N1_{segment}_ref.fasta</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">resources/nextclade_h5n1_ha</font></td>
+</tr>
 <hr/>
 <tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
 <tr>
-<td align="left"><font face="monospace">data/phylogeny/aligned/H5N1_{segment}.mafft</font></td></tr>
+<td align="left"><font face="monospace">data/processed_alignments/codon_aware/H5N1_{segment}.mafft</font></td></tr>
+<tr>
+<td align="left"><font face="monospace">results/qc_metrics/alignments/nextclade_{segment}_report.tsv</font></td></tr>
 </table>>]
-9 [ shape=none, margin=0, label=<<table border="2" color="#57ADD9" cellspacing="3" cellborder="0">
+9 [ shape=none, margin=0, label=<<table border="2" color="#578AD9" cellspacing="3" cellborder="0">
 <tr><td>
 <b><font point-size="18">split_h5n1_final_by_segment</font></b>
 </td></tr>
@@ -491,9 +408,56 @@ digraph snakemake_dag {
 <tr>
 <td align="left"><font face="monospace">data/phylogeny/by_segment_summary.csv</font></td></tr>
 </table>>]
-10 [ shape=none, margin=0, label=<<table border="2" color="#60D957" cellspacing="3" cellborder="0">
+10 [ shape=none, margin=0, label=<<table border="2" color="#D6D957" cellspacing="3" cellborder="0">
 <tr><td>
-<b><font point-size="18">iqtree_full_concat</font></b>
+<b><font point-size="18">build_standard_headers_for_gisaid_context</font></b>
+</td></tr>
+<hr/>
+<tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
+<tr>
+<td align="left"><font face="monospace">config/flu_filtrado.csv</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">data/context/gisaid_epiflu_sequence.fasta</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">data/standard_header_input_fasta/H5N1_EC.fasta</font></td>
+</tr>
+<hr/>
+<tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
+<tr>
+<td align="left"><font face="monospace">data/standard_header_input_fasta/H5N1_context.fasta</font></td></tr>
+<tr>
+<td align="left"><font face="monospace">data/standard_header_input_fasta/H5N1_final.fasta</font></td></tr>
+</table>>]
+11 [ shape=none, margin=0, label=<<table border="2" color="#66D957" cellspacing="3" cellborder="0">
+<tr><td>
+<b><font point-size="18">download_nextclade_db</font></b>
+</td></tr>
+<hr/>
+<tr><td align="left">  </td></tr>
+<hr/>
+<tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
+<tr>
+<td align="left"><font face="monospace">resources/nextclade_h5n1_ha</font></td></tr>
+</table>>]
+12 [ shape=none, margin=0, label=<<table border="2" color="#5CD957" cellspacing="3" cellborder="0">
+<tr><td>
+<b><font point-size="18">extract_segment_reference</font></b>
+</td></tr>
+<hr/>
+<tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
+<tr>
+<td align="left"><font face="monospace">data/phylogeny/by_segment/H5N1_{segment}.fasta</font></td>
+</tr>
+<hr/>
+<tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
+<tr>
+<td align="left"><font face="monospace">data/phylogeny/by_segment/H5N1_{segment}_ref.fasta</font></td></tr>
+</table>>]
+13 [ shape=none, margin=0, label=<<table border="2" color="#57D98F" cellspacing="3" cellborder="0">
+<tr><td>
+<b><font point-size="18">iqtree_fast_full_concat</font></b>
 </td></tr>
 <hr/>
 <tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
@@ -508,338 +472,159 @@ digraph snakemake_dag {
 <tr>
 <td align="left"><font face="monospace">results/phylogeny/iq-tree/full_concat/H5N1_full_concat_beast.treefile</font></td></tr>
 </table>>]
-11 [ shape=none, margin=0, label=<<table border="2" color="#C1D957" cellspacing="3" cellborder="0">
+14 [ shape=none, margin=0, label=<<table border="2" color="#CCD957" cellspacing="3" cellborder="0">
 <tr><td>
-<b><font point-size="18">build_treetime_dates</font></b>
+<b><font point-size="18">build_treetime_dates_subsets</font></b>
 </td></tr>
 <hr/>
 <tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
 <tr>
-<td align="left"><font face="monospace">data/pre_beast/panels/panel_main_concat.filtered.fasta</font></td>
+<td align="left"><font face="monospace">data/phylogeny/final_alignment.fasta</font></td>
 </tr>
 <hr/>
 <tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast_pre/rtt/dates_from_headers.tsv</font></td></tr>
+<td align="left"><font face="monospace">results/phylogeny/rtt/dates_from_headers.tsv</font></td></tr>
 </table>>]
-12 [ shape=none, margin=0, label=<<table border="2" color="#57D97D" cellspacing="3" cellborder="0">
+15 [ shape=none, margin=0, label=<<table border="2" color="#D98A57" cellspacing="3" cellborder="0">
 <tr><td>
-<b><font point-size="18">observe_segment_alignment_qc</font></b>
+<b><font point-size="18">apply_panel_to_segment_alignments</font></b>
 </td></tr>
 <hr/>
 <tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
 <tr>
-<td align="left"><font face="monospace">data/beast/final_panel_segment/H5N1_{segment}.fasta</font></td>
+<td align="left"><font face="monospace">data/phylogeny/rtt/panel_main_taxa.filtered.tsv</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">data/beast/panel_main_taxa.final.tsv</font></td>
+<td align="left"><font face="monospace">data/processed_alignments/qc_filtered/H5N1_HA.mafft</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">data/pre_beast/panels/raw_segment_subset/H5N1_{segment}.fasta</font></td>
+<td align="left"><font face="monospace">data/processed_alignments/qc_filtered/H5N1_MP.mafft</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">data/processed_alignments/qc_filtered/H5N1_NA.mafft</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">data/processed_alignments/qc_filtered/H5N1_NP.mafft</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">data/processed_alignments/qc_filtered/H5N1_NS.mafft</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">data/processed_alignments/qc_filtered/H5N1_PA.mafft</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">data/processed_alignments/qc_filtered/H5N1_PB1.mafft</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">data/processed_alignments/qc_filtered/H5N1_PB2.mafft</font></td>
 </tr>
 <hr/>
 <tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/segment_alignment/H5N1_{segment,PB2|PB1|PA|HA|NP|NA|MP|NS}.metrics.tsv</font></td></tr>
+<td align="left"><font face="monospace">data/phylogeny/final_alignment.fasta</font></td></tr>
 <tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/segment_alignment/H5N1_{segment,PB2|PB1|PA|HA|NP|NA|MP|NS}.outliers.tsv</font></td></tr>
+<td align="left"><font face="monospace">data/phylogeny/final_alignment.partitions</font></td></tr>
 <tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/segment_alignment/H5N1_{segment,PB2|PB1|PA|HA|NP|NA|MP|NS}.report.md</font></td></tr>
+<td align="left"><font face="monospace">data/phylogeny/final_panel/H5N1_HA.fasta</font></td></tr>
 <tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/segment_alignment/H5N1_{segment,PB2|PB1|PA|HA|NP|NA|MP|NS}.summary.tsv</font></td></tr>
+<td align="left"><font face="monospace">data/phylogeny/final_panel/H5N1_MP.fasta</font></td></tr>
+<tr>
+<td align="left"><font face="monospace">data/phylogeny/final_panel/H5N1_NA.fasta</font></td></tr>
+<tr>
+<td align="left"><font face="monospace">data/phylogeny/final_panel/H5N1_NP.fasta</font></td></tr>
+<tr>
+<td align="left"><font face="monospace">data/phylogeny/final_panel/H5N1_NS.fasta</font></td></tr>
+<tr>
+<td align="left"><font face="monospace">data/phylogeny/final_panel/H5N1_PA.fasta</font></td></tr>
+<tr>
+<td align="left"><font face="monospace">data/phylogeny/final_panel/H5N1_PB1.fasta</font></td></tr>
+<tr>
+<td align="left"><font face="monospace">data/phylogeny/final_panel/H5N1_PB2.fasta</font></td></tr>
 </table>>]
-13 [ shape=none, margin=0, label=<<table border="2" color="#57A4D9" cellspacing="3" cellborder="0">
+16 [ shape=none, margin=0, label=<<table border="2" color="#57D970" cellspacing="3" cellborder="0">
 <tr><td>
-<b><font point-size="18">subset_filtered_raw_segment_fasta</font></b>
+<b><font point-size="18">generate_bayesian_alignment</font></b>
 </td></tr>
 <hr/>
 <tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
 <tr>
-<td align="left"><font face="monospace">data/beast/panel_main_taxa.final.tsv</font></td>
+<td align="left"><font face="monospace">data/phylogeny/bayesian/panel_main_taxa.final.tsv</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">data/phylogeny/by_segment/H5N1_{segment}.fasta</font></td>
+<td align="left"><font face="monospace">data/phylogeny/final_alignment.fasta</font></td>
 </tr>
 <hr/>
 <tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
 <tr>
-<td align="left"><font face="monospace">data/pre_beast/panels/raw_segment_subset/H5N1_{segment,PB2|PB1|PA|HA|NP|NA|MP|NS}.fasta</font></td></tr>
+<td align="left"><font face="monospace">data/phylogeny/bayesian/bayesian_alignment.fasta</font></td></tr>
 </table>>]
-14 [ shape=none, margin=0, label=<<table border="2" color="#74D957" cellspacing="3" cellborder="0">
+17 [ shape=none, margin=0, label=<<table border="2" color="#57D966" cellspacing="3" cellborder="0">
 <tr><td>
-<b><font point-size="18">filter_beast_panel_by_rtt_outliers</font></b>
+<b><font point-size="18">filter_rtt_outliers_subsets</font></b>
 </td></tr>
 <hr/>
 <tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
 <tr>
-<td align="left"><font face="monospace">data/pre_beast/panels/panel_main_taxa.filtered.tsv</font></td>
+<td align="left"><font face="monospace">data/phylogeny/rtt/panel_main_taxa.filtered.tsv</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast_pre/rtt/dates_from_headers.tsv</font></td>
+<td align="left"><font face="monospace">results/phylogeny/rtt/dates_from_headers.tsv</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast_pre/rtt/outliers.tsv</font></td>
+<td align="left"><font face="monospace">results/phylogeny/rtt/outliers.tsv</font></td>
 </tr>
 <hr/>
 <tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
 <tr>
-<td align="left"><font face="monospace">data/beast/panel_main_dates.final.tsv</font></td></tr>
+<td align="left"><font face="monospace">data/phylogeny/bayesian/panel_main_dates.final.tsv</font></td></tr>
 <tr>
-<td align="left"><font face="monospace">data/beast/panel_main_taxa.final.tsv</font></td></tr>
+<td align="left"><font face="monospace">data/phylogeny/bayesian/panel_main_taxa.final.tsv</font></td></tr>
 <tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/rtt_outlier_exclusions.summary.tsv</font></td></tr>
-<tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/rtt_outlier_exclusions.tsv</font></td></tr>
+<td align="left"><font face="monospace">results/qc_metrics/phylogeny/rtt/rtt_outlier_exclusions.tsv</font></td></tr>
 </table>>]
-15 [ shape=none, margin=0, label=<<table border="2" color="#57B7D9" cellspacing="3" cellborder="0">
+18 [ shape=none, margin=0, label=<<table border="2" color="#5794D9" cellspacing="3" cellborder="0">
 <tr><td>
-<b><font point-size="18">run_root_to_tip</font></b>
+<b><font point-size="18">run_root_to_tip_subsets</font></b>
 </td></tr>
 <hr/>
 <tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
 <tr>
-<td align="left"><font face="monospace">data/pre_beast/panels/panel_main_concat.filtered.fasta</font></td>
+<td align="left"><font face="monospace">data/phylogeny/final_alignment.fasta</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">data/pre_beast/panels/panel_main_concat.filtered.nwk</font></td>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/subset_fast/panel_main_concat.final.treefile</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast_pre/rtt/dates_from_headers.tsv</font></td>
+<td align="left"><font face="monospace">results/phylogeny/rtt/dates_from_headers.tsv</font></td>
 </tr>
 <hr/>
 <tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast_pre/rtt/outliers.tsv</font></td></tr>
+<td align="left"><font face="monospace">results/phylogeny/rtt/outliers.tsv</font></td></tr>
 <tr>
-<td align="left"><font face="monospace">results/beast_pre/rtt/treetime_clock.done</font></td></tr>
+<td align="left"><font face="monospace">results/phylogeny/rtt/treetime_clock.done</font></td></tr>
 <tr>
-<td align="left"><font face="monospace">results/beast_pre/rtt/treetime_clock.log</font></td></tr>
+<td align="left"><font face="monospace">results/phylogeny/rtt/treetime_clock.log</font></td></tr>
 </table>>]
-16 [ shape=none, margin=0, label=<<table border="2" color="#579AD9" cellspacing="3" cellborder="0">
+19 [ shape=none, margin=0, label=<<table border="2" color="#57D999" cellspacing="3" cellborder="0">
 <tr><td>
-<b><font point-size="18">subset_filtered_segment_alignment</font></b>
+<b><font point-size="18">iqtree_fast_subset</font></b>
 </td></tr>
 <hr/>
 <tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
 <tr>
-<td align="left"><font face="monospace">data/beast/panel_main_taxa.final.tsv</font></td>
+<td align="left"><font face="monospace">data/phylogeny/final_alignment.fasta</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">data/phylogeny/aligned/H5N1_{segment}.mafft</font></td>
-</tr>
-<hr/>
-<tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
-<tr>
-<td align="left"><font face="monospace">data/beast/final_panel_segment/H5N1_{segment,PB2|PB1|PA|HA|NP|NA|MP|NS}.fasta</font></td></tr>
-</table>>]
-17 [ shape=none, margin=0, label=<<table border="2" color="#57D9AD" cellspacing="3" cellborder="0">
-<tr><td>
-<b><font point-size="18">publish_final_panel_concat_alignment</font></b>
-</td></tr>
-<hr/>
-<tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
-<tr>
-<td align="left"><font face="monospace">data/beast/panel_main_taxa.final.tsv</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">data/pre_beast/panels/panel_main_concat.filtered.fasta</font></td>
+<td align="left"><font face="monospace">data/phylogeny/final_alignment.partitions</font></td>
 </tr>
 <hr/>
 <tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
 <tr>
-<td align="left"><font face="monospace">data/beast/panel_main_concat.final.audit.tsv</font></td></tr>
-<tr>
-<td align="left"><font face="monospace">data/beast/panel_main_concat.final.fasta</font></td></tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/subset_fast/panel_main_concat.final.treefile</font></td></tr>
 </table>>]
-18 [ shape=none, margin=0, label=<<table border="2" color="#577DD9" cellspacing="3" cellborder="0">
-<tr><td>
-<b><font point-size="18">summarize_final_segment_qc</font></b>
-</td></tr>
-<hr/>
-<tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
-<tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/segment_alignment/H5N1_HA.metrics.tsv</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/segment_alignment/H5N1_MP.metrics.tsv</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/segment_alignment/H5N1_NA.metrics.tsv</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/segment_alignment/H5N1_NP.metrics.tsv</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/segment_alignment/H5N1_NS.metrics.tsv</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/segment_alignment/H5N1_PA.metrics.tsv</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/segment_alignment/H5N1_PB1.metrics.tsv</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/segment_alignment/H5N1_PB2.metrics.tsv</font></td>
-</tr>
-<hr/>
-<tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
-<tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/final_segment_panel_qc.metrics.tsv</font></td></tr>
-<tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/final_segment_panel_qc.outliers.tsv</font></td></tr>
-<tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/final_segment_panel_qc.report.md</font></td></tr>
-<tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/final_segment_panel_qc.summary.tsv</font></td></tr>
-</table>>]
-19 [ shape=none, margin=0, label=<<table border="2" color="#D9C157" cellspacing="3" cellborder="0">
-<tr><td>
-<b><font point-size="18">build_np_mp_ns_sensitivity_panel</font></b>
-</td></tr>
-<hr/>
-<tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/np_mp_ns/H5N1_NP_MP_NS.treefile</font></td>
-</tr>
-<hr/>
-<tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
-<tr>
-<td align="left"><font face="monospace">data/pre_beast/sensitivity_np_mp_ns/panel_audit.tsv</font></td></tr>
-<tr>
-<td align="left"><font face="monospace">data/pre_beast/sensitivity_np_mp_ns/panel_taxa.tsv</font></td></tr>
-</table>>]
-20 [ shape=none, margin=0, label=<<table border="2" color="#57D957" cellspacing="3" cellborder="0">
-<tr><td>
-<b><font point-size="18">iqtree_np_mp_ns</font></b>
-</td></tr>
-<hr/>
-<tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
-<tr>
-<td align="left"><font face="monospace">data/phylogeny/H5N1_NP_MP_NS.partitions</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">data/phylogeny/aligned/H5N1_NP_MP_NS.mafft</font></td>
-</tr>
-<hr/>
-<tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/np_mp_ns/H5N1_NP_MP_NS.treefile</font></td></tr>
-</table>>]
-21 [ shape=none, margin=0, label=<<table border="2" color="#7DD957" cellspacing="3" cellborder="0">
-<tr><td>
-<b><font point-size="18">concat_np_mp_ns_with_partitions</font></b>
-</td></tr>
-<hr/>
-<tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
-<tr>
-<td align="left"><font face="monospace">data/phylogeny/aligned_qc/H5N1_MP.mafft</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">data/phylogeny/aligned_qc/H5N1_NP.mafft</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">data/phylogeny/aligned_qc/H5N1_NS.mafft</font></td>
-</tr>
-<hr/>
-<tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
-<tr>
-<td align="left"><font face="monospace">data/phylogeny/H5N1_NP_MP_NS.partitions</font></td></tr>
-<tr>
-<td align="left"><font face="monospace">data/phylogeny/aligned/H5N1_NP_MP_NS.mafft</font></td></tr>
-</table>>]
-22 [ shape=none, margin=0, label=<<table border="2" color="#5791D9" cellspacing="3" cellborder="0">
-<tr><td>
-<b><font point-size="18">subset_np_mp_ns_sensitivity_alignment_and_prune_tree</font></b>
-</td></tr>
-<hr/>
-<tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
-<tr>
-<td align="left"><font face="monospace">data/phylogeny/aligned/H5N1_NP_MP_NS.mafft</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">data/pre_beast/sensitivity_np_mp_ns/panel_taxa.tsv</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/np_mp_ns/H5N1_NP_MP_NS.treefile</font></td>
-</tr>
-<hr/>
-<tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
-<tr>
-<td align="left"><font face="monospace">data/pre_beast/sensitivity_np_mp_ns/panel_np_mp_ns.audit.tsv</font></td></tr>
-<tr>
-<td align="left"><font face="monospace">data/pre_beast/sensitivity_np_mp_ns/panel_np_mp_ns.fasta</font></td></tr>
-<tr>
-<td align="left"><font face="monospace">data/pre_beast/sensitivity_np_mp_ns/panel_np_mp_ns.nwk</font></td></tr>
-</table>>]
-23 [ shape=none, margin=0, label=<<table border="2" color="#D9CA57" cellspacing="3" cellborder="0">
-<tr><td>
-<b><font point-size="18">build_np_mp_ns_sensitivity_treetime_dates</font></b>
-</td></tr>
-<hr/>
-<tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
-<tr>
-<td align="left"><font face="monospace">data/pre_beast/sensitivity_np_mp_ns/panel_np_mp_ns.fasta</font></td>
-</tr>
-<hr/>
-<tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
-<tr>
-<td align="left"><font face="monospace">results/beast_pre/sensitivity_np_mp_ns/rtt/dates_from_headers.tsv</font></td></tr>
-</table>>]
-24 [ shape=none, margin=0, label=<<table border="2" color="#57C1D9" cellspacing="3" cellborder="0">
-<tr><td>
-<b><font point-size="18">run_np_mp_ns_sensitivity_root_to_tip</font></b>
-</td></tr>
-<hr/>
-<tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
-<tr>
-<td align="left"><font face="monospace">data/pre_beast/sensitivity_np_mp_ns/panel_np_mp_ns.fasta</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">data/pre_beast/sensitivity_np_mp_ns/panel_np_mp_ns.nwk</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/beast_pre/sensitivity_np_mp_ns/rtt/dates_from_headers.tsv</font></td>
-</tr>
-<hr/>
-<tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
-<tr>
-<td align="left"><font face="monospace">results/beast_pre/sensitivity_np_mp_ns/rtt/outliers.tsv</font></td></tr>
-<tr>
-<td align="left"><font face="monospace">results/beast_pre/sensitivity_np_mp_ns/rtt/root_to_tip_regression.pdf</font></td></tr>
-<tr>
-<td align="left"><font face="monospace">results/beast_pre/sensitivity_np_mp_ns/rtt/rtt.csv</font></td></tr>
-<tr>
-<td align="left"><font face="monospace">results/beast_pre/sensitivity_np_mp_ns/rtt/treetime_clock.done</font></td></tr>
-<tr>
-<td align="left"><font face="monospace">results/beast_pre/sensitivity_np_mp_ns/rtt/treetime_clock.log</font></td></tr>
-</table>>]
-25 [ shape=none, margin=0, label=<<table border="2" color="#6AD957" cellspacing="3" cellborder="0">
-<tr><td>
-<b><font point-size="18">filter_np_mp_ns_sensitivity_panel_by_rtt_outliers</font></b>
-</td></tr>
-<hr/>
-<tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
-<tr>
-<td align="left"><font face="monospace">data/pre_beast/sensitivity_np_mp_ns/panel_taxa.tsv</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/beast_pre/sensitivity_np_mp_ns/rtt/dates_from_headers.tsv</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/beast_pre/sensitivity_np_mp_ns/rtt/outliers.tsv</font></td>
-</tr>
-<hr/>
-<tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
-<tr>
-<td align="left"><font face="monospace">data/pre_beast/sensitivity_np_mp_ns/panel_taxa.rtt_filtered.tsv</font></td></tr>
-<tr>
-<td align="left"><font face="monospace">results/beast_pre/sensitivity_np_mp_ns/rtt/dates.rtt_filtered.tsv</font></td></tr>
-<tr>
-<td align="left"><font face="monospace">results/beast_pre/sensitivity_np_mp_ns/rtt/rtt_outlier_exclusions.tsv</font></td></tr>
-<tr>
-<td align="left"><font face="monospace">results/beast_pre/sensitivity_np_mp_ns/rtt/summary.tsv</font></td></tr>
-</table>>]
-26 [ shape=none, margin=0, label=<<table border="2" color="#57D99A" cellspacing="3" cellborder="0">
+20 [ shape=none, margin=0, label=<<table border="2" color="#57D9D6" cellspacing="3" cellborder="0">
 <tr><td>
 <b><font point-size="18">prepare_beast_run_xml</font></b>
 </td></tr>
@@ -849,103 +634,22 @@ digraph snakemake_dag {
 <td align="left"><font face="monospace">&lt;input function&gt;</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">data/beast/panel_main_concat.final.fasta</font></td>
+<td align="left"><font face="monospace">data/phylogeny/bayesian/bayesian_alignment.fasta</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">data/beast/panel_main_dates.final.tsv</font></td>
+<td align="left"><font face="monospace">data/phylogeny/bayesian/panel_main_dates.final.tsv</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">data/beast/panel_main_taxa.final.tsv</font></td>
-</tr>
-<hr/>
-<tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
-<tr>
-<td align="left"><font face="monospace">results/beast/xml/{scenario,strict_constant|strict_constant_lugar|ucln_constant|strict_exp|ucln_exp}.xml</font></td></tr>
-</table>>]
-27 [ shape=none, margin=0, label=<<table border="2" color="#D98757" cellspacing="3" cellborder="0">
-<tr><td>
-<b><font point-size="18">beast_runs</font></b>
-</td></tr>
-<hr/>
-<tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
-<tr>
-<td align="left"><font face="monospace">results/beast/final/geography/run.done</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/beast/final/time/run.done</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/beast/runs/strict_constant/run.done</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/beast/runs/strict_constant_lugar/run.done</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/beast/runs/strict_exp/run.done</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/beast/runs/ucln_constant/run.done</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/beast/runs/ucln_exp/run.done</font></td>
-</tr>
-<hr/>
-<tr><td align="right">  </td> </tr>
-</table>>]
-28 [ shape=none, margin=0, label=<<table border="2" color="#5787D9" cellspacing="3" cellborder="0">
-<tr><td>
-<b><font point-size="18">summarize_beast_run</font></b>
-</td></tr>
-<hr/>
-<tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
-<tr>
-<td align="left"><font face="monospace">results/beast/runs/{scenario}/r1/run.done</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/beast/runs/{scenario}/r2/run.done</font></td>
+<td align="left"><font face="monospace">data/phylogeny/bayesian/panel_main_taxa.final.tsv</font></td>
 </tr>
 <hr/>
 <tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast/runs/{scenario,strict_constant|strict_constant_lugar|ucln_constant|strict_exp|ucln_exp}/run.done</font></td></tr>
+<td align="left"><font face="monospace">results/phylogeny/bayesian/xml/{scenario,strict_constant|strict_constant_lugar|ucln_constant|strict_exp|ucln_exp}.xml</font></td></tr>
 </table>>]
-29 [ shape=none, margin=0, label=<<table border="2" color="#57CAD9" cellspacing="3" cellborder="0">
+21 [ shape=none, margin=0, label=<<table border="2" color="#57D9AD" cellspacing="3" cellborder="0">
 <tr><td>
-<b><font point-size="18">run_beast_replicate</font></b>
-</td></tr>
-<hr/>
-<tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
-<tr>
-<td align="left"><font face="monospace">&lt;input function&gt;</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">&lt;input function&gt;</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/beast/xml/{scenario}.validated</font></td>
-</tr>
-<hr/>
-<tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
-<tr>
-<td align="left"><font face="monospace">results/beast/runs/{scenario,strict_constant|strict_constant_lugar|ucln_constant|strict_exp|ucln_exp}/{replicate,r1|r2}/run.done</font></td></tr>
-<tr>
-<td align="left"><font face="monospace">results/beast/runs/{scenario,strict_constant|strict_constant_lugar|ucln_constant|strict_exp|ucln_exp}/{replicate,r1|r2}/status.log</font></td></tr>
-<tr>
-<td align="left"><font face="monospace">results/beast/runs/{scenario,strict_constant|strict_constant_lugar|ucln_constant|strict_exp|ucln_exp}/{replicate,r1|r2}/stderr.log</font></td></tr>
-<tr>
-<td align="left"><font face="monospace">results/beast/runs/{scenario,strict_constant|strict_constant_lugar|ucln_constant|strict_exp|ucln_exp}/{replicate,r1|r2}/stdout.log</font></td></tr>
-<tr>
-<td align="left"><font face="monospace">results/beast/runs/{scenario,strict_constant|strict_constant_lugar|ucln_constant|strict_exp|ucln_exp}/{replicate,r1|r2}/{scenario}.chkpt</font></td></tr>
-<tr>
-<td align="left"><font face="monospace">results/beast/runs/{scenario,strict_constant|strict_constant_lugar|ucln_constant|strict_exp|ucln_exp}/{replicate,r1|r2}/{scenario}.log</font></td></tr>
-<tr>
-<td align="left"><font face="monospace">results/beast/runs/{scenario,strict_constant|strict_constant_lugar|ucln_constant|strict_exp|ucln_exp}/{replicate,r1|r2}/{scenario}.ops</font></td></tr>
-<tr>
-<td align="left"><font face="monospace">results/beast/runs/{scenario,strict_constant|strict_constant_lugar|ucln_constant|strict_exp|ucln_exp}/{replicate,r1|r2}/{scenario}.trees</font></td></tr>
-</table>>]
-30 [ shape=none, margin=0, label=<<table border="2" color="#5760D9" cellspacing="3" cellborder="0">
-<tr><td>
-<b><font point-size="18">validate_beast_xml</font></b>
+<b><font point-size="18">itol_color_subsets</font></b>
 </td></tr>
 <hr/>
 <tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
@@ -955,157 +659,70 @@ digraph snakemake_dag {
 <hr/>
 <tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast/xml/{scenario,strict_constant|strict_constant_lugar|ucln_constant|strict_exp|ucln_exp}.validated</font></td></tr>
+<td align="left"><font face="monospace">results/phylogeny/itol_styles/{subdir,PB2|PB1|PA|HA|NP|NA|MP|NS|subset_fast}/dataset_colorstrip.txt</font></td></tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/itol_styles/{subdir,PB2|PB1|PA|HA|NP|NA|MP|NS|subset_fast}/tree_colors.txt</font></td></tr>
 </table>>]
-31 [ shape=none, margin=0, label=<<table border="2" color="#5774D9" cellspacing="3" cellborder="0">
+22 [ shape=none, margin=0, label=<<table border="2" color="#57D97A" cellspacing="3" cellborder="0">
 <tr><td>
-<b><font point-size="18">summarize_strict_constant_final_time</font></b>
+<b><font point-size="18">generate_final_segment_tree</font></b>
 </td></tr>
 <hr/>
 <tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
 <tr>
-<td align="left"><font face="monospace">results/beast/final/time/strict_constant.combined.log</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/beast/final/time/strict_constant.combined.trees</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/beast/final/time/strict_constant.mcc.mean.tree</font></td>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/{segment}/rep1.treefile</font></td>
 </tr>
 <hr/>
 <tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast/final/time/run.done</font></td></tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/{segment}/{segment}_final.treefile</font></td></tr>
 </table>>]
-32 [ shape=none, margin=0, label=<<table border="2" color="#ADD957" cellspacing="3" cellborder="0">
+23 [ shape=none, margin=0, label=<<table border="2" color="#57BDD9" cellspacing="3" cellborder="0">
 <tr><td>
-<b><font point-size="18">combine_strict_constant_logs</font></b>
+<b><font point-size="18">run_iqtree_codon_segment_replicate</font></b>
 </td></tr>
 <hr/>
 <tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
 <tr>
-<td align="left"><font face="monospace">results/beast/runs/strict_constant/r1/strict_constant.log</font></td>
+<td align="left"><font face="monospace">data/phylogeny/final_panel/H5N1_{segment}.fasta</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast/runs/strict_constant/r2/strict_constant.log</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/beast/runs/strict_constant/run.done</font></td>
+<td align="left"><font face="monospace">data/phylogeny/final_panel/H5N1_{segment}.partitions</font></td>
 </tr>
 <hr/>
 <tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast/final/time/strict_constant.combined.log</font></td></tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/{segment,PB2|PB1|PA|HA|NP|NA}/rep{rep}.treefile</font></td></tr>
 </table>>]
-33 [ shape=none, margin=0, label=<<table border="2" color="#91D957" cellspacing="3" cellborder="0">
+24 [ shape=none, margin=0, label=<<table border="2" color="#D9C757" cellspacing="3" cellborder="0">
 <tr><td>
-<b><font point-size="18">combine_strict_constant_trees</font></b>
+<b><font point-size="18">build_single_segment_codon_partition</font></b>
 </td></tr>
 <hr/>
 <tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
 <tr>
-<td align="left"><font face="monospace">results/beast/runs/strict_constant/r1/strict_constant.trees</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/beast/runs/strict_constant/r2/strict_constant.trees</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/beast/runs/strict_constant/run.done</font></td>
+<td align="left"><font face="monospace">data/phylogeny/final_panel/H5N1_{segment}.fasta</font></td>
 </tr>
 <hr/>
 <tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast/final/time/strict_constant.combined.trees</font></td></tr>
+<td align="left"><font face="monospace">data/phylogeny/final_panel/H5N1_{segment,PB2|PB1|PA|HA|NP|NA}.partitions</font></td></tr>
 </table>>]
-34 [ shape=none, margin=0, label=<<table border="2" color="#D97457" cellspacing="3" cellborder="0">
+25 [ shape=none, margin=0, label=<<table border="2" color="#57B2D9" cellspacing="3" cellborder="0">
 <tr><td>
-<b><font point-size="18">annotate_strict_constant_final_tree</font></b>
+<b><font point-size="18">run_iqtree_simple_segment_replicate</font></b>
 </td></tr>
 <hr/>
 <tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
 <tr>
-<td align="left"><font face="monospace">results/beast/final/time/strict_constant.combined.trees</font></td>
+<td align="left"><font face="monospace">data/phylogeny/final_panel/H5N1_{segment}.fasta</font></td>
 </tr>
 <hr/>
 <tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast/final/time/strict_constant.mcc.mean.tree</font></td></tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/{segment,NS|MP}/rep{rep}.treefile</font></td></tr>
 </table>>]
-35 [ shape=none, margin=0, label=<<table border="2" color="#576AD9" cellspacing="3" cellborder="0">
-<tr><td>
-<b><font point-size="18">summarize_strict_constant_lugar_final_geography</font></b>
-</td></tr>
-<hr/>
-<tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
-<tr>
-<td align="left"><font face="monospace">results/beast/final/geography/strict_constant_lugar.combined.log</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/beast/final/geography/strict_constant_lugar.combined.trees</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/beast/final/geography/strict_constant_lugar.mcc.mean.tree</font></td>
-</tr>
-<hr/>
-<tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
-<tr>
-<td align="left"><font face="monospace">results/beast/final/geography/run.done</font></td></tr>
-</table>>]
-36 [ shape=none, margin=0, label=<<table border="2" color="#A4D957" cellspacing="3" cellborder="0">
-<tr><td>
-<b><font point-size="18">combine_strict_constant_lugar_logs</font></b>
-</td></tr>
-<hr/>
-<tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
-<tr>
-<td align="left"><font face="monospace">results/beast/runs/strict_constant_lugar/r1/strict_constant_lugar.log</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/beast/runs/strict_constant_lugar/r2/strict_constant_lugar.log</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/beast/runs/strict_constant_lugar/run.done</font></td>
-</tr>
-<hr/>
-<tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
-<tr>
-<td align="left"><font face="monospace">results/beast/final/geography/strict_constant_lugar.combined.log</font></td></tr>
-</table>>]
-37 [ shape=none, margin=0, label=<<table border="2" color="#9AD957" cellspacing="3" cellborder="0">
-<tr><td>
-<b><font point-size="18">combine_strict_constant_lugar_trees</font></b>
-</td></tr>
-<hr/>
-<tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
-<tr>
-<td align="left"><font face="monospace">results/beast/runs/strict_constant_lugar/r1/strict_constant_lugar.trees</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/beast/runs/strict_constant_lugar/r2/strict_constant_lugar.trees</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/beast/runs/strict_constant_lugar/run.done</font></td>
-</tr>
-<hr/>
-<tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
-<tr>
-<td align="left"><font face="monospace">results/beast/final/geography/strict_constant_lugar.combined.trees</font></td></tr>
-</table>>]
-38 [ shape=none, margin=0, label=<<table border="2" color="#D97D57" cellspacing="3" cellborder="0">
-<tr><td>
-<b><font point-size="18">annotate_strict_constant_lugar_final_tree</font></b>
-</td></tr>
-<hr/>
-<tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
-<tr>
-<td align="left"><font face="monospace">results/beast/final/geography/strict_constant_lugar.combined.trees</font></td>
-</tr>
-<hr/>
-<tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
-<tr>
-<td align="left"><font face="monospace">results/beast/final/geography/strict_constant_lugar.mcc.mean.tree</font></td></tr>
-</table>>]
-39 [ shape=none, margin=0, label=<<table border="2" color="#D9A457" cellspacing="3" cellborder="0">
+26 [ shape=none, margin=0, label=<<table border="2" color="#D9B257" cellspacing="3" cellborder="0">
 <tr><td>
 <b><font point-size="18">build_gisaid_outputs</font></b>
 </td></tr>
@@ -1120,332 +737,263 @@ digraph snakemake_dag {
 <hr/>
 <tr><td align="right">  </td> </tr>
 </table>>]
-40 [ shape=none, margin=0, label=<<table border="2" color="#57D987" cellspacing="3" cellborder="0">
+27 [ shape=none, margin=0, label=<<table border="2" color="#D99457" cellspacing="3" cellborder="0">
 <tr><td>
-<b><font point-size="18">paper_figures</font></b>
-</td></tr>
-<hr/>
-<tr><td align="left">  </td></tr>
-<hr/>
-<tr><td align="right">  </td> </tr>
-</table>>]
-41 [ shape=none, margin=0, label=<<table border="2" color="#D99157" cellspacing="3" cellborder="0">
-<tr><td>
-<b><font point-size="18">build_gisaid</font></b>
+<b><font point-size="18">beast_runs</font></b>
 </td></tr>
 <hr/>
 <tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
 <tr>
-<td align="left"><font face="monospace">data/input/H5N1_EC_gisaid_from_mira.fasta</font></td>
+<td align="left"><font face="monospace">results/phylogeny/bayesian/final/geography/run.done</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">data/standard_header_input_fasta/H5N1_EC.fasta</font></td>
-</tr>
-<hr/>
-<tr><td align="right">  </td> </tr>
-</table>>]
-42 [ shape=none, margin=0, label=<<table border="2" color="#57D96A" cellspacing="3" cellborder="0">
-<tr><td>
-<b><font point-size="18">main_phylogeny</font></b>
-</td></tr>
-<hr/>
-<tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
-<tr>
-<td align="left"><font face="monospace">data/phylogeny/aligned/H5N1_NP_MP_NS.mafft</font></td>
+<td align="left"><font face="monospace">results/phylogeny/bayesian/final/time/run.done</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">data/phylogeny/aligned/H5N1_full_concat_beast.mafft</font></td>
+<td align="left"><font face="monospace">results/phylogeny/bayesian/runs/strict_constant/run.done</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">data/phylogeny/by_segment/H5N1_HA.fasta</font></td>
+<td align="left"><font face="monospace">results/phylogeny/bayesian/runs/strict_constant_lugar/run.done</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">data/phylogeny/by_segment/H5N1_MP.fasta</font></td>
+<td align="left"><font face="monospace">results/phylogeny/bayesian/runs/strict_exp/run.done</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">data/phylogeny/by_segment/H5N1_NA.fasta</font></td>
+<td align="left"><font face="monospace">results/phylogeny/bayesian/runs/ucln_constant/run.done</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">data/phylogeny/by_segment/H5N1_NP.fasta</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">data/phylogeny/by_segment/H5N1_NS.fasta</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">data/phylogeny/by_segment/H5N1_PA.fasta</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">data/phylogeny/by_segment/H5N1_PB1.fasta</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">data/phylogeny/by_segment/H5N1_PB2.fasta</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">data/phylogeny/by_segment_summary.csv</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/full_concat/H5N1_full_concat_beast.treefile</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/np_mp_ns/H5N1_NP_MP_NS.treefile</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/HA/H5N1_HA.raxml.supportTBE</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/HA/itol/H5N1_HA.itol_colorstrip_groups.txt</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/HA/itol/H5N1_HA.itol_tree_colors.txt</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/MP/H5N1_MP.raxml.supportTBE</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/MP/itol/H5N1_MP.itol_colorstrip_groups.txt</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/MP/itol/H5N1_MP.itol_tree_colors.txt</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/NA/H5N1_NA.raxml.supportTBE</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/NA/itol/H5N1_NA.itol_colorstrip_groups.txt</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/NA/itol/H5N1_NA.itol_tree_colors.txt</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/NP/H5N1_NP.raxml.supportTBE</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/NP/itol/H5N1_NP.itol_colorstrip_groups.txt</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/NP/itol/H5N1_NP.itol_tree_colors.txt</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/NS/H5N1_NS.raxml.supportTBE</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/NS/itol/H5N1_NS.itol_colorstrip_groups.txt</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/NS/itol/H5N1_NS.itol_tree_colors.txt</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/PA/H5N1_PA.raxml.supportTBE</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/PA/itol/H5N1_PA.itol_colorstrip_groups.txt</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/PA/itol/H5N1_PA.itol_tree_colors.txt</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/PB1/H5N1_PB1.raxml.supportTBE</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/PB1/itol/H5N1_PB1.itol_colorstrip_groups.txt</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/PB1/itol/H5N1_PB1.itol_tree_colors.txt</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/PB2/H5N1_PB2.raxml.supportTBE</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/PB2/itol/H5N1_PB2.itol_colorstrip_groups.txt</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/PB2/itol/H5N1_PB2.itol_tree_colors.txt</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/full_concat/itol/H5N1_full_concat_beast.itol_colorstrip_groups.txt</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/full_concat/itol/H5N1_full_concat_beast.itol_tree_colors.txt</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/np_mp_ns/itol/H5N1_NP_MP_NS.itol_colorstrip_groups.txt</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/np_mp_ns/itol/H5N1_NP_MP_NS.itol_tree_colors.txt</font></td>
+<td align="left"><font face="monospace">results/phylogeny/bayesian/runs/ucln_exp/run.done</font></td>
 </tr>
 <hr/>
 <tr><td align="right">  </td> </tr>
 </table>>]
-43 [ shape=none, margin=0, label=<<table border="2" color="#57D9B7" cellspacing="3" cellborder="0">
+28 [ shape=none, margin=0, label=<<table border="2" color="#577FD9" cellspacing="3" cellborder="0">
 <tr><td>
-<b><font point-size="18">raxml_ng_tree_per_segment_codon</font></b>
+<b><font point-size="18">summarize_beast_run</font></b>
 </td></tr>
 <hr/>
 <tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
 <tr>
-<td align="left"><font face="monospace">data/phylogeny/aligned_qc/H5N1_{segment}.mafft</font></td>
+<td align="left"><font face="monospace">results/phylogeny/bayesian/runs/{scenario}/r1/run.done</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">data/phylogeny/codon_partitions/H5N1_{segment}.codon.partitions</font></td>
+<td align="left"><font face="monospace">results/phylogeny/bayesian/runs/{scenario}/r2/run.done</font></td>
 </tr>
 <hr/>
 <tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
 <tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/{segment,PB2|PB1|PA|HA|NP|NA}/H5N1_{segment}.raxml.bestTreeCollapsed</font></td></tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/{segment,PB2|PB1|PA|HA|NP|NA}/H5N1_{segment}.raxml.supportTBE</font></td></tr>
+<td align="left"><font face="monospace">results/phylogeny/bayesian/runs/{scenario,strict_constant|strict_constant_lugar|ucln_constant|strict_exp|ucln_exp}/run.done</font></td></tr>
 </table>>]
-44 [ shape=none, margin=0, label=<<table border="2" color="#D9D457" cellspacing="3" cellborder="0">
+29 [ shape=none, margin=0, label=<<table border="2" color="#57C7D9" cellspacing="3" cellborder="0">
 <tr><td>
-<b><font point-size="18">build_segment_codon_partitions</font></b>
+<b><font point-size="18">run_beast_replicate</font></b>
 </td></tr>
 <hr/>
 <tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
 <tr>
-<td align="left"><font face="monospace">data/phylogeny/aligned_qc/H5N1_{segment}.mafft</font></td>
+<td align="left"><font face="monospace">&lt;input function&gt;</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">&lt;input function&gt;</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/bayesian/xml/{scenario}.validated</font></td>
 </tr>
 <hr/>
 <tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
 <tr>
-<td align="left"><font face="monospace">data/phylogeny/codon_partitions/H5N1_{segment,PB2|PB1|PA|HA|NP|NA}.codon.partitions</font></td></tr>
+<td align="left"><font face="monospace">results/phylogeny/bayesian/runs/{scenario,strict_constant|strict_constant_lugar|ucln_constant|strict_exp|ucln_exp}/{replicate,r1|r2}/run.done</font></td></tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/bayesian/runs/{scenario,strict_constant|strict_constant_lugar|ucln_constant|strict_exp|ucln_exp}/{replicate,r1|r2}/status.log</font></td></tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/bayesian/runs/{scenario,strict_constant|strict_constant_lugar|ucln_constant|strict_exp|ucln_exp}/{replicate,r1|r2}/stderr.log</font></td></tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/bayesian/runs/{scenario,strict_constant|strict_constant_lugar|ucln_constant|strict_exp|ucln_exp}/{replicate,r1|r2}/stdout.log</font></td></tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/bayesian/runs/{scenario,strict_constant|strict_constant_lugar|ucln_constant|strict_exp|ucln_exp}/{replicate,r1|r2}/{scenario}.chkpt</font></td></tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/bayesian/runs/{scenario,strict_constant|strict_constant_lugar|ucln_constant|strict_exp|ucln_exp}/{replicate,r1|r2}/{scenario}.log</font></td></tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/bayesian/runs/{scenario,strict_constant|strict_constant_lugar|ucln_constant|strict_exp|ucln_exp}/{replicate,r1|r2}/{scenario}.ops</font></td></tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/bayesian/runs/{scenario,strict_constant|strict_constant_lugar|ucln_constant|strict_exp|ucln_exp}/{replicate,r1|r2}/{scenario}.trees</font></td></tr>
 </table>>]
-45 [ shape=none, margin=0, label=<<table border="2" color="#57D9C1" cellspacing="3" cellborder="0">
+30 [ shape=none, margin=0, label=<<table border="2" color="#5761D9" cellspacing="3" cellborder="0">
 <tr><td>
-<b><font point-size="18">raxml_ng_tree_per_segment_simple</font></b>
+<b><font point-size="18">validate_beast_xml</font></b>
 </td></tr>
 <hr/>
 <tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
 <tr>
-<td align="left"><font face="monospace">data/phylogeny/aligned_qc/H5N1_{segment}.mafft</font></td>
+<td align="left"><font face="monospace">&lt;input function&gt;</font></td>
 </tr>
 <hr/>
 <tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
 <tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/{segment,NS|MP}/H5N1_{segment}.raxml.supportTBE</font></td></tr>
+<td align="left"><font face="monospace">results/phylogeny/bayesian/xml/{scenario,strict_constant|strict_constant_lugar|ucln_constant|strict_exp|ucln_exp}.validated</font></td></tr>
 </table>>]
-46 [ shape=none, margin=0, label=<<table border="2" color="#D9B757" cellspacing="3" cellborder="0">
+31 [ shape=none, margin=0, label=<<table border="2" color="#5775D9" cellspacing="3" cellborder="0">
 <tr><td>
-<b><font point-size="18">build_ml_itol_colorstrips</font></b>
+<b><font point-size="18">summarize_strict_constant_final_time</font></b>
 </td></tr>
 <hr/>
 <tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
 <tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/full_concat/H5N1_full_concat_beast.treefile</font></td>
+<td align="left"><font face="monospace">results/phylogeny/bayesian/final/time/strict_constant.combined.log</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/np_mp_ns/H5N1_NP_MP_NS.treefile</font></td>
+<td align="left"><font face="monospace">results/phylogeny/bayesian/final/time/strict_constant.combined.trees</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/HA/H5N1_HA.raxml.supportTBE</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/MP/H5N1_MP.raxml.supportTBE</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/NA/H5N1_NA.raxml.supportTBE</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/NP/H5N1_NP.raxml.supportTBE</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/NS/H5N1_NS.raxml.supportTBE</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/PA/H5N1_PA.raxml.supportTBE</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/PB1/H5N1_PB1.raxml.supportTBE</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/PB2/H5N1_PB2.raxml.supportTBE</font></td>
+<td align="left"><font face="monospace">results/phylogeny/bayesian/final/time/strict_constant.mcc.mean.tree</font></td>
 </tr>
 <hr/>
 <tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
 <tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/HA/itol/H5N1_HA.itol_colorstrip_groups.txt</font></td></tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/HA/itol/H5N1_HA.itol_tree_colors.txt</font></td></tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/MP/itol/H5N1_MP.itol_colorstrip_groups.txt</font></td></tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/MP/itol/H5N1_MP.itol_tree_colors.txt</font></td></tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/NA/itol/H5N1_NA.itol_colorstrip_groups.txt</font></td></tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/NA/itol/H5N1_NA.itol_tree_colors.txt</font></td></tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/NP/itol/H5N1_NP.itol_colorstrip_groups.txt</font></td></tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/NP/itol/H5N1_NP.itol_tree_colors.txt</font></td></tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/NS/itol/H5N1_NS.itol_colorstrip_groups.txt</font></td></tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/NS/itol/H5N1_NS.itol_tree_colors.txt</font></td></tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/PA/itol/H5N1_PA.itol_colorstrip_groups.txt</font></td></tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/PA/itol/H5N1_PA.itol_tree_colors.txt</font></td></tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/PB1/itol/H5N1_PB1.itol_colorstrip_groups.txt</font></td></tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/PB1/itol/H5N1_PB1.itol_tree_colors.txt</font></td></tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/PB2/itol/H5N1_PB2.itol_colorstrip_groups.txt</font></td></tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/PB2/itol/H5N1_PB2.itol_tree_colors.txt</font></td></tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/full_concat/itol/H5N1_full_concat_beast.itol_colorstrip_groups.txt</font></td></tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/full_concat/itol/H5N1_full_concat_beast.itol_tree_colors.txt</font></td></tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/np_mp_ns/itol/H5N1_NP_MP_NS.itol_colorstrip_groups.txt</font></td></tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/np_mp_ns/itol/H5N1_NP_MP_NS.itol_tree_colors.txt</font></td></tr>
+<td align="left"><font face="monospace">results/phylogeny/bayesian/final/time/run.done</font></td></tr>
 </table>>]
-47 [ shape=none, margin=0, label=<<table border="2" color="#D96A57" cellspacing="3" cellborder="0">
+32 [ shape=none, margin=0, label=<<table border="2" color="#ADD957" cellspacing="3" cellborder="0">
+<tr><td>
+<b><font point-size="18">combine_strict_constant_logs</font></b>
+</td></tr>
+<hr/>
+<tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/bayesian/runs/strict_constant/r1/strict_constant.log</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/bayesian/runs/strict_constant/r2/strict_constant.log</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/bayesian/runs/strict_constant/run.done</font></td>
+</tr>
+<hr/>
+<tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/bayesian/final/time/strict_constant.combined.log</font></td></tr>
+</table>>]
+33 [ shape=none, margin=0, label=<<table border="2" color="#8FD957" cellspacing="3" cellborder="0">
+<tr><td>
+<b><font point-size="18">combine_strict_constant_trees</font></b>
+</td></tr>
+<hr/>
+<tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/bayesian/runs/strict_constant/r1/strict_constant.trees</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/bayesian/runs/strict_constant/r2/strict_constant.trees</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/bayesian/runs/strict_constant/run.done</font></td>
+</tr>
+<hr/>
+<tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/bayesian/final/time/strict_constant.combined.trees</font></td></tr>
+</table>>]
+34 [ shape=none, margin=0, label=<<table border="2" color="#D97557" cellspacing="3" cellborder="0">
+<tr><td>
+<b><font point-size="18">annotate_strict_constant_final_tree</font></b>
+</td></tr>
+<hr/>
+<tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/bayesian/final/time/strict_constant.combined.trees</font></td>
+</tr>
+<hr/>
+<tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/bayesian/final/time/strict_constant.mcc.mean.tree</font></td></tr>
+</table>>]
+35 [ shape=none, margin=0, label=<<table border="2" color="#576BD9" cellspacing="3" cellborder="0">
+<tr><td>
+<b><font point-size="18">summarize_strict_constant_lugar_final_geography</font></b>
+</td></tr>
+<hr/>
+<tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/bayesian/final/geography/strict_constant_lugar.combined.log</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/bayesian/final/geography/strict_constant_lugar.combined.trees</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/bayesian/final/geography/strict_constant_lugar.mcc.mean.tree</font></td>
+</tr>
+<hr/>
+<tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/bayesian/final/geography/run.done</font></td></tr>
+</table>>]
+36 [ shape=none, margin=0, label=<<table border="2" color="#A3D957" cellspacing="3" cellborder="0">
+<tr><td>
+<b><font point-size="18">combine_strict_constant_lugar_logs</font></b>
+</td></tr>
+<hr/>
+<tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/bayesian/runs/strict_constant_lugar/r1/strict_constant_lugar.log</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/bayesian/runs/strict_constant_lugar/r2/strict_constant_lugar.log</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/bayesian/runs/strict_constant_lugar/run.done</font></td>
+</tr>
+<hr/>
+<tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/bayesian/final/geography/strict_constant_lugar.combined.log</font></td></tr>
+</table>>]
+37 [ shape=none, margin=0, label=<<table border="2" color="#99D957" cellspacing="3" cellborder="0">
+<tr><td>
+<b><font point-size="18">combine_strict_constant_lugar_trees</font></b>
+</td></tr>
+<hr/>
+<tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/bayesian/runs/strict_constant_lugar/r1/strict_constant_lugar.trees</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/bayesian/runs/strict_constant_lugar/r2/strict_constant_lugar.trees</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/bayesian/runs/strict_constant_lugar/run.done</font></td>
+</tr>
+<hr/>
+<tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/bayesian/final/geography/strict_constant_lugar.combined.trees</font></td></tr>
+</table>>]
+38 [ shape=none, margin=0, label=<<table border="2" color="#D98057" cellspacing="3" cellborder="0">
+<tr><td>
+<b><font point-size="18">annotate_strict_constant_lugar_final_tree</font></b>
+</td></tr>
+<hr/>
+<tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/bayesian/final/geography/strict_constant_lugar.combined.trees</font></td>
+</tr>
+<hr/>
+<tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/bayesian/final/geography/strict_constant_lugar.mcc.mean.tree</font></td></tr>
+</table>>]
+39 [ shape=none, margin=0, label=<<table border="2" color="#D96B57" cellspacing="3" cellborder="0">
 <tr><td>
 <b><font point-size="18">all_validation_outputs</font></b>
 </td></tr>
 <hr/>
 <tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
 <tr>
-<td align="left"><font face="monospace">data/beast/final_panel_segment/H5N1_HA.fasta</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">data/beast/final_panel_segment/H5N1_MP.fasta</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">data/beast/final_panel_segment/H5N1_NA.fasta</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">data/beast/final_panel_segment/H5N1_NP.fasta</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">data/beast/final_panel_segment/H5N1_NS.fasta</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">data/beast/final_panel_segment/H5N1_PA.fasta</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">data/beast/final_panel_segment/H5N1_PB1.fasta</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">data/beast/final_panel_segment/H5N1_PB2.fasta</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">data/beast/panel_main_concat.final.audit.tsv</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">data/beast/panel_main_concat.final.fasta</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">data/beast/panel_main_dates.final.tsv</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">data/phylogeny/aligned/H5N1_NP_MP_NS.mafft</font></td>
-</tr>
-<tr>
 <td align="left"><font face="monospace">data/phylogeny/aligned/H5N1_full_concat_beast.mafft</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">data/phylogeny/bayesian/bayesian_alignment.fasta</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">data/phylogeny/bayesian/panel_main_dates.final.tsv</font></td>
 </tr>
 <tr>
 <td align="left"><font face="monospace">data/phylogeny/by_segment/H5N1_HA.fasta</font></td>
@@ -1475,55 +1023,43 @@ digraph snakemake_dag {
 <td align="left"><font face="monospace">data/phylogeny/by_segment_summary.csv</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">data/pre_beast/panels/panel_main_concat.filtered.audit.tsv</font></td>
+<td align="left"><font face="monospace">data/phylogeny/final_alignment.fasta</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">data/pre_beast/panels/panel_main_concat.filtered.fasta</font></td>
+<td align="left"><font face="monospace">data/phylogeny/final_alignment.partitions</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">data/pre_beast/panels/panel_main_concat.filtered.nwk</font></td>
+<td align="left"><font face="monospace">data/phylogeny/final_panel/H5N1_HA.fasta</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">data/pre_beast/panels/raw_segment_subset/H5N1_HA.fasta</font></td>
+<td align="left"><font face="monospace">data/phylogeny/final_panel/H5N1_MP.fasta</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">data/pre_beast/panels/raw_segment_subset/H5N1_MP.fasta</font></td>
+<td align="left"><font face="monospace">data/phylogeny/final_panel/H5N1_NA.fasta</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">data/pre_beast/panels/raw_segment_subset/H5N1_NA.fasta</font></td>
+<td align="left"><font face="monospace">data/phylogeny/final_panel/H5N1_NP.fasta</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">data/pre_beast/panels/raw_segment_subset/H5N1_NP.fasta</font></td>
+<td align="left"><font face="monospace">data/phylogeny/final_panel/H5N1_NS.fasta</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">data/pre_beast/panels/raw_segment_subset/H5N1_NS.fasta</font></td>
+<td align="left"><font face="monospace">data/phylogeny/final_panel/H5N1_PA.fasta</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">data/pre_beast/panels/raw_segment_subset/H5N1_PA.fasta</font></td>
+<td align="left"><font face="monospace">data/phylogeny/final_panel/H5N1_PB1.fasta</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">data/pre_beast/panels/raw_segment_subset/H5N1_PB1.fasta</font></td>
+<td align="left"><font face="monospace">data/phylogeny/final_panel/H5N1_PB2.fasta</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">data/pre_beast/panels/raw_segment_subset/H5N1_PB2.fasta</font></td>
+<td align="left"><font face="monospace">data/phylogeny/rtt/panel_main_concat.filtered.audit.tsv</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">data/pre_beast/sensitivity_np_mp_ns/panel_audit.tsv</font></td>
+<td align="left"><font face="monospace">data/phylogeny/rtt/panel_main_concat.filtered.fasta</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">data/pre_beast/sensitivity_np_mp_ns/panel_np_mp_ns.audit.tsv</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">data/pre_beast/sensitivity_np_mp_ns/panel_np_mp_ns.fasta</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">data/pre_beast/sensitivity_np_mp_ns/panel_np_mp_ns.nwk</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">data/pre_beast/sensitivity_np_mp_ns/panel_taxa.rtt_filtered.tsv</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">data/pre_beast/sensitivity_np_mp_ns/panel_taxa.tsv</font></td>
+<td align="left"><font face="monospace">data/phylogeny/rtt/panel_main_concat.filtered.nwk</font></td>
 </tr>
 <tr>
 <td align="left"><font face="monospace">data/standard_header_input_fasta/H5N1_context.fasta</font></td>
@@ -1532,405 +1068,811 @@ digraph snakemake_dag {
 <td align="left"><font face="monospace">data/standard_header_input_fasta/H5N1_final.fasta</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast/final/geography/run.done</font></td>
+<td align="left"><font face="monospace">results/phylogeny/bayesian/xml/strict_constant.xml</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast/final/time/run.done</font></td>
+<td align="left"><font face="monospace">results/phylogeny/bayesian/xml/strict_constant_lugar.xml</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast/runs/strict_constant/run.done</font></td>
+<td align="left"><font face="monospace">results/phylogeny/bayesian/xml/strict_exp.xml</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast/runs/strict_constant_lugar/run.done</font></td>
+<td align="left"><font face="monospace">results/phylogeny/bayesian/xml/ucln_constant.xml</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast/runs/strict_exp/run.done</font></td>
+<td align="left"><font face="monospace">results/phylogeny/bayesian/xml/ucln_exp.xml</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast/runs/ucln_constant/run.done</font></td>
+<td align="left"><font face="monospace">results/phylogeny/concordance/full_concat.gcs</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast/runs/ucln_exp/run.done</font></td>
+<td align="left"><font face="monospace">results/phylogeny/concordance/full_concat.scf</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast/xml/strict_constant.xml</font></td>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/HA/HA_final.treefile</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast/xml/strict_constant_lugar.xml</font></td>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/HA/rep1.treefile</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast/xml/strict_exp.xml</font></td>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/HA/rep2.treefile</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast/xml/ucln_constant.xml</font></td>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/HA/rep3.treefile</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast/xml/ucln_exp.xml</font></td>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/HA/rep4.treefile</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/final_segment_panel_qc.metrics.tsv</font></td>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/HA/rep5.treefile</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/final_segment_panel_qc.outliers.tsv</font></td>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/HA/rf_dist_matrix.rf</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/final_segment_panel_qc.report.md</font></td>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/MP/MP_final.treefile</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/final_segment_panel_qc.summary.tsv</font></td>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/MP/rep1.treefile</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/rtt_outlier_exclusions.summary.tsv</font></td>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/MP/rep2.treefile</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/rtt_outlier_exclusions.tsv</font></td>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/MP/rep3.treefile</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/segment_alignment/H5N1_HA.metrics.tsv</font></td>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/MP/rep4.treefile</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/segment_alignment/H5N1_HA.outliers.tsv</font></td>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/MP/rep5.treefile</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/segment_alignment/H5N1_HA.report.md</font></td>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/MP/rf_dist_matrix.rf</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/segment_alignment/H5N1_HA.summary.tsv</font></td>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/NA/NA_final.treefile</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/segment_alignment/H5N1_MP.metrics.tsv</font></td>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/NA/rep1.treefile</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/segment_alignment/H5N1_MP.outliers.tsv</font></td>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/NA/rep2.treefile</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/segment_alignment/H5N1_MP.report.md</font></td>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/NA/rep3.treefile</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/segment_alignment/H5N1_MP.summary.tsv</font></td>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/NA/rep4.treefile</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/segment_alignment/H5N1_NA.metrics.tsv</font></td>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/NA/rep5.treefile</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/segment_alignment/H5N1_NA.outliers.tsv</font></td>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/NA/rf_dist_matrix.rf</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/segment_alignment/H5N1_NA.report.md</font></td>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/NP/NP_final.treefile</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/segment_alignment/H5N1_NA.summary.tsv</font></td>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/NP/rep1.treefile</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/segment_alignment/H5N1_NP.metrics.tsv</font></td>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/NP/rep2.treefile</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/segment_alignment/H5N1_NP.outliers.tsv</font></td>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/NP/rep3.treefile</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/segment_alignment/H5N1_NP.report.md</font></td>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/NP/rep4.treefile</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/segment_alignment/H5N1_NP.summary.tsv</font></td>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/NP/rep5.treefile</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/segment_alignment/H5N1_NS.metrics.tsv</font></td>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/NP/rf_dist_matrix.rf</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/segment_alignment/H5N1_NS.outliers.tsv</font></td>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/NS/NS_final.treefile</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/segment_alignment/H5N1_NS.report.md</font></td>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/NS/rep1.treefile</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/segment_alignment/H5N1_NS.summary.tsv</font></td>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/NS/rep2.treefile</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/segment_alignment/H5N1_PA.metrics.tsv</font></td>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/NS/rep3.treefile</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/segment_alignment/H5N1_PA.outliers.tsv</font></td>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/NS/rep4.treefile</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/segment_alignment/H5N1_PA.report.md</font></td>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/NS/rep5.treefile</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/segment_alignment/H5N1_PA.summary.tsv</font></td>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/NS/rf_dist_matrix.rf</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/segment_alignment/H5N1_PB1.metrics.tsv</font></td>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/PA/PA_final.treefile</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/segment_alignment/H5N1_PB1.outliers.tsv</font></td>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/PA/rep1.treefile</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/segment_alignment/H5N1_PB1.report.md</font></td>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/PA/rep2.treefile</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/segment_alignment/H5N1_PB1.summary.tsv</font></td>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/PA/rep3.treefile</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/segment_alignment/H5N1_PB2.metrics.tsv</font></td>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/PA/rep4.treefile</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/segment_alignment/H5N1_PB2.outliers.tsv</font></td>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/PA/rep5.treefile</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/segment_alignment/H5N1_PB2.report.md</font></td>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/PA/rf_dist_matrix.rf</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast_pre/qc_validation/segment_alignment/H5N1_PB2.summary.tsv</font></td>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/PB1/PB1_final.treefile</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast_pre/rtt/dates_from_headers.tsv</font></td>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/PB1/rep1.treefile</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast_pre/rtt/treetime_clock.done</font></td>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/PB1/rep2.treefile</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast_pre/sensitivity_np_mp_ns/rtt/dates.rtt_filtered.tsv</font></td>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/PB1/rep3.treefile</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast_pre/sensitivity_np_mp_ns/rtt/dates_from_headers.tsv</font></td>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/PB1/rep4.treefile</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast_pre/sensitivity_np_mp_ns/rtt/outliers.tsv</font></td>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/PB1/rep5.treefile</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast_pre/sensitivity_np_mp_ns/rtt/root_to_tip_regression.pdf</font></td>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/PB1/rf_dist_matrix.rf</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast_pre/sensitivity_np_mp_ns/rtt/rtt.csv</font></td>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/PB2/PB2_final.treefile</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast_pre/sensitivity_np_mp_ns/rtt/rtt_outlier_exclusions.tsv</font></td>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/PB2/rep1.treefile</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast_pre/sensitivity_np_mp_ns/rtt/summary.tsv</font></td>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/PB2/rep2.treefile</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast_pre/sensitivity_np_mp_ns/rtt/treetime_clock.done</font></td>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/PB2/rep3.treefile</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/beast_pre/sensitivity_np_mp_ns/rtt/treetime_clock.log</font></td>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/PB2/rep4.treefile</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/PB2/rep5.treefile</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/PB2/rf_dist_matrix.rf</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/concat_except_HA/rep1.treefile</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/concat_except_HA/rep2.treefile</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/concat_except_HA/rep3.treefile</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/concat_except_HA/rep4.treefile</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/concat_except_HA/rep5.treefile</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/concat_except_HA/rf_dist_matrix.rf</font></td>
 </tr>
 <tr>
 <td align="left"><font face="monospace">results/phylogeny/iq-tree/full_concat/H5N1_full_concat_beast.treefile</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/np_mp_ns/H5N1_NP_MP_NS.treefile</font></td>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/subset_fast/panel_main_concat.final.treefile</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/HA/H5N1_HA.raxml.supportTBE</font></td>
+<td align="left"><font face="monospace">results/phylogeny/itol_styles/HA/dataset_colorstrip.txt</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/HA/itol/H5N1_HA.itol_colorstrip_groups.txt</font></td>
+<td align="left"><font face="monospace">results/phylogeny/itol_styles/HA/tree_colors.txt</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/HA/itol/H5N1_HA.itol_tree_colors.txt</font></td>
+<td align="left"><font face="monospace">results/phylogeny/itol_styles/MP/dataset_colorstrip.txt</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/MP/H5N1_MP.raxml.supportTBE</font></td>
+<td align="left"><font face="monospace">results/phylogeny/itol_styles/MP/tree_colors.txt</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/MP/itol/H5N1_MP.itol_colorstrip_groups.txt</font></td>
+<td align="left"><font face="monospace">results/phylogeny/itol_styles/NA/dataset_colorstrip.txt</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/MP/itol/H5N1_MP.itol_tree_colors.txt</font></td>
+<td align="left"><font face="monospace">results/phylogeny/itol_styles/NA/tree_colors.txt</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/NA/H5N1_NA.raxml.supportTBE</font></td>
+<td align="left"><font face="monospace">results/phylogeny/itol_styles/NP/dataset_colorstrip.txt</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/NA/itol/H5N1_NA.itol_colorstrip_groups.txt</font></td>
+<td align="left"><font face="monospace">results/phylogeny/itol_styles/NP/tree_colors.txt</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/NA/itol/H5N1_NA.itol_tree_colors.txt</font></td>
+<td align="left"><font face="monospace">results/phylogeny/itol_styles/NS/dataset_colorstrip.txt</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/NP/H5N1_NP.raxml.supportTBE</font></td>
+<td align="left"><font face="monospace">results/phylogeny/itol_styles/NS/tree_colors.txt</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/NP/itol/H5N1_NP.itol_colorstrip_groups.txt</font></td>
+<td align="left"><font face="monospace">results/phylogeny/itol_styles/PA/dataset_colorstrip.txt</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/NP/itol/H5N1_NP.itol_tree_colors.txt</font></td>
+<td align="left"><font face="monospace">results/phylogeny/itol_styles/PA/tree_colors.txt</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/NS/H5N1_NS.raxml.supportTBE</font></td>
+<td align="left"><font face="monospace">results/phylogeny/itol_styles/PB1/dataset_colorstrip.txt</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/NS/itol/H5N1_NS.itol_colorstrip_groups.txt</font></td>
+<td align="left"><font face="monospace">results/phylogeny/itol_styles/PB1/tree_colors.txt</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/NS/itol/H5N1_NS.itol_tree_colors.txt</font></td>
+<td align="left"><font face="monospace">results/phylogeny/itol_styles/PB2/dataset_colorstrip.txt</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/PA/H5N1_PA.raxml.supportTBE</font></td>
+<td align="left"><font face="monospace">results/phylogeny/itol_styles/PB2/tree_colors.txt</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/PA/itol/H5N1_PA.itol_colorstrip_groups.txt</font></td>
+<td align="left"><font face="monospace">results/phylogeny/itol_styles/dataset_colorstrip.txt</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/PA/itol/H5N1_PA.itol_tree_colors.txt</font></td>
+<td align="left"><font face="monospace">results/phylogeny/itol_styles/subset_fast/dataset_colorstrip.txt</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/PB1/H5N1_PB1.raxml.supportTBE</font></td>
+<td align="left"><font face="monospace">results/phylogeny/itol_styles/subset_fast/tree_colors.txt</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/PB1/itol/H5N1_PB1.itol_colorstrip_groups.txt</font></td>
+<td align="left"><font face="monospace">results/phylogeny/itol_styles/tree_colors.txt</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/PB1/itol/H5N1_PB1.itol_tree_colors.txt</font></td>
+<td align="left"><font face="monospace">results/phylogeny/rtt/dates_from_headers.tsv</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/PB2/H5N1_PB2.raxml.supportTBE</font></td>
+<td align="left"><font face="monospace">results/phylogeny/rtt/treetime_clock.done</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/PB2/itol/H5N1_PB2.itol_colorstrip_groups.txt</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/PB2/itol/H5N1_PB2.itol_tree_colors.txt</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/full_concat/itol/H5N1_full_concat_beast.itol_colorstrip_groups.txt</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/full_concat/itol/H5N1_full_concat_beast.itol_tree_colors.txt</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/np_mp_ns/itol/H5N1_NP_MP_NS.itol_colorstrip_groups.txt</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/raxml/np_mp_ns/itol/H5N1_NP_MP_NS.itol_tree_colors.txt</font></td>
+<td align="left"><font face="monospace">results/qc_metrics/phylogeny/rtt/rtt_outlier_exclusions.tsv</font></td>
 </tr>
 <hr/>
 <tr><td align="right">  </td> </tr>
 </table>>]
-	1 -> 0
+40 [ shape=none, margin=0, label=<<table border="2" color="#7AD957" cellspacing="3" cellborder="0">
+<tr><td>
+<b><font point-size="18">concat_except_HA_replicate</font></b>
+</td></tr>
+<hr/>
+<tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
+<tr>
+<td align="left"><font face="monospace">data/phylogeny/H5N1_concat_except_HA.partitions</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">data/phylogeny/aligned/H5N1_concat_except_HA.mafft</font></td>
+</tr>
+<hr/>
+<tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/concat_except_HA/rep{rep}.treefile</font></td></tr>
+</table>>]
+41 [ shape=none, margin=0, label=<<table border="2" color="#70D957" cellspacing="3" cellborder="0">
+<tr><td>
+<b><font point-size="18">concat_except_ha_with_partitions</font></b>
+</td></tr>
+<hr/>
+<tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
+<tr>
+<td align="left"><font face="monospace">data/phylogeny/final_panel/H5N1_MP.fasta</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">data/phylogeny/final_panel/H5N1_NA.fasta</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">data/phylogeny/final_panel/H5N1_NP.fasta</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">data/phylogeny/final_panel/H5N1_NS.fasta</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">data/phylogeny/final_panel/H5N1_PA.fasta</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">data/phylogeny/final_panel/H5N1_PB1.fasta</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">data/phylogeny/final_panel/H5N1_PB2.fasta</font></td>
+</tr>
+<hr/>
+<tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
+<tr>
+<td align="left"><font face="monospace">data/phylogeny/H5N1_concat_except_HA.partitions</font></td></tr>
+<tr>
+<td align="left"><font face="monospace">data/phylogeny/aligned/H5N1_concat_except_HA.mafft</font></td></tr>
+</table>>]
+42 [ shape=none, margin=0, label=<<table border="2" color="#B8D957" cellspacing="3" cellborder="0">
+<tr><td>
+<b><font point-size="18">calculate_rf_distances</font></b>
+</td></tr>
+<hr/>
+<tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/{segment}/rep1.treefile</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/{segment}/rep2.treefile</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/{segment}/rep3.treefile</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/{segment}/rep4.treefile</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/{segment}/rep5.treefile</font></td>
+</tr>
+<hr/>
+<tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/{segment}/rf_dist_matrix.rf</font></td></tr>
+</table>>]
+43 [ shape=none, margin=0, label=<<table border="2" color="#C2D957" cellspacing="3" cellborder="0">
+<tr><td>
+<b><font point-size="18">calculate_concordance_factors</font></b>
+</td></tr>
+<hr/>
+<tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
+<tr>
+<td align="left"><font face="monospace">data/phylogeny/final_panel/H5N1_HA.fasta</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">data/phylogeny/final_panel/H5N1_MP.fasta</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">data/phylogeny/final_panel/H5N1_NA.fasta</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">data/phylogeny/final_panel/H5N1_NP.fasta</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">data/phylogeny/final_panel/H5N1_NS.fasta</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">data/phylogeny/final_panel/H5N1_PA.fasta</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">data/phylogeny/final_panel/H5N1_PB1.fasta</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">data/phylogeny/final_panel/H5N1_PB2.fasta</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/HA/HA_final.treefile</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/MP/MP_final.treefile</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/NA/NA_final.treefile</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/NP/NP_final.treefile</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/NS/NS_final.treefile</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/PA/PA_final.treefile</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/PB1/PB1_final.treefile</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/PB2/PB2_final.treefile</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/subset_fast/panel_main_concat.final.treefile</font></td>
+</tr>
+<hr/>
+<tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/concordance/full_concat.gcs</font></td></tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/concordance/full_concat.scf</font></td></tr>
+</table>>]
+44 [ shape=none, margin=0, label=<<table border="2" color="#57D985" cellspacing="3" cellborder="0">
+<tr><td>
+<b><font point-size="18">generate_itol_colors_full_concat</font></b>
+</td></tr>
+<hr/>
+<tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/full_concat/H5N1_full_concat_beast.treefile</font></td>
+</tr>
+<hr/>
+<tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/itol_styles/dataset_colorstrip.txt</font></td></tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/itol_styles/tree_colors.txt</font></td></tr>
+</table>>]
+45 [ shape=none, margin=0, label=<<table border="2" color="#D9BD57" cellspacing="3" cellborder="0">
+<tr><td>
+<b><font point-size="18">build_inputs_outputs</font></b>
+</td></tr>
+<hr/>
+<tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
+<tr>
+<td align="left"><font face="monospace">data/standard_header_input_fasta/H5N1_context.fasta</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">data/standard_header_input_fasta/H5N1_final.fasta</font></td>
+</tr>
+<hr/>
+<tr><td align="right">  </td> </tr>
+</table>>]
+46 [ shape=none, margin=0, label=<<table border="2" color="#57D9B8" cellspacing="3" cellborder="0">
+<tr><td>
+<b><font point-size="18">main_phylogeny</font></b>
+</td></tr>
+<hr/>
+<tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
+<tr>
+<td align="left"><font face="monospace">data/phylogeny/aligned/H5N1_full_concat_beast.mafft</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">data/phylogeny/by_segment/H5N1_HA.fasta</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">data/phylogeny/by_segment/H5N1_MP.fasta</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">data/phylogeny/by_segment/H5N1_NA.fasta</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">data/phylogeny/by_segment/H5N1_NP.fasta</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">data/phylogeny/by_segment/H5N1_NS.fasta</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">data/phylogeny/by_segment/H5N1_PA.fasta</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">data/phylogeny/by_segment/H5N1_PB1.fasta</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">data/phylogeny/by_segment/H5N1_PB2.fasta</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">data/phylogeny/by_segment_summary.csv</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/concordance/full_concat.gcs</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/concordance/full_concat.scf</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/HA/HA_final.treefile</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/HA/rep1.treefile</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/HA/rep2.treefile</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/HA/rep3.treefile</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/HA/rep4.treefile</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/HA/rep5.treefile</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/HA/rf_dist_matrix.rf</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/MP/MP_final.treefile</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/MP/rep1.treefile</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/MP/rep2.treefile</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/MP/rep3.treefile</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/MP/rep4.treefile</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/MP/rep5.treefile</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/MP/rf_dist_matrix.rf</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/NA/NA_final.treefile</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/NA/rep1.treefile</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/NA/rep2.treefile</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/NA/rep3.treefile</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/NA/rep4.treefile</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/NA/rep5.treefile</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/NA/rf_dist_matrix.rf</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/NP/NP_final.treefile</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/NP/rep1.treefile</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/NP/rep2.treefile</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/NP/rep3.treefile</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/NP/rep4.treefile</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/NP/rep5.treefile</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/NP/rf_dist_matrix.rf</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/NS/NS_final.treefile</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/NS/rep1.treefile</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/NS/rep2.treefile</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/NS/rep3.treefile</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/NS/rep4.treefile</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/NS/rep5.treefile</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/NS/rf_dist_matrix.rf</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/PA/PA_final.treefile</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/PA/rep1.treefile</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/PA/rep2.treefile</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/PA/rep3.treefile</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/PA/rep4.treefile</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/PA/rep5.treefile</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/PA/rf_dist_matrix.rf</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/PB1/PB1_final.treefile</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/PB1/rep1.treefile</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/PB1/rep2.treefile</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/PB1/rep3.treefile</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/PB1/rep4.treefile</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/PB1/rep5.treefile</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/PB1/rf_dist_matrix.rf</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/PB2/PB2_final.treefile</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/PB2/rep1.treefile</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/PB2/rep2.treefile</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/PB2/rep3.treefile</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/PB2/rep4.treefile</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/PB2/rep5.treefile</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/PB2/rf_dist_matrix.rf</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/concat_except_HA/rep1.treefile</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/concat_except_HA/rep2.treefile</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/concat_except_HA/rep3.treefile</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/concat_except_HA/rep4.treefile</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/concat_except_HA/rep5.treefile</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/concat_except_HA/rf_dist_matrix.rf</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/full_concat/H5N1_full_concat_beast.treefile</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/itol_styles/dataset_colorstrip.txt</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/itol_styles/tree_colors.txt</font></td>
+</tr>
+<hr/>
+<tr><td align="right">  </td> </tr>
+</table>>]
+	3 -> 1
 	2 -> 1
-	3 -> 2
+	2 -> 3
 	5 -> 4
-	26 -> 4
-	13 -> 4
-	11 -> 4
-	25 -> 4
-	16 -> 4
+	14 -> 4
+	18 -> 4
 	15 -> 4
 	17 -> 4
-	18 -> 4
-	12 -> 4
+	16 -> 4
+	20 -> 4
 	19 -> 4
-	14 -> 4
-	22 -> 4
-	23 -> 4
-	24 -> 4
+	21 -> 4
+	13 -> 5
 	6 -> 5
-	10 -> 5
 	7 -> 6
 	8 -> 7
+	11 -> 8
+	12 -> 8
 	9 -> 8
-	1 -> 9
-	6 -> 10
-	5 -> 11
-	16 -> 12
-	14 -> 12
-	13 -> 12
-	9 -> 13
-	14 -> 13
+	10 -> 9
+	3 -> 10
+	9 -> 12
+	6 -> 13
 	15 -> 14
-	5 -> 14
-	11 -> 14
 	5 -> 15
-	11 -> 15
-	8 -> 16
-	14 -> 16
-	5 -> 17
+	7 -> 15
+	15 -> 16
+	17 -> 16
 	14 -> 17
-	12 -> 18
-	20 -> 19
-	21 -> 20
-	7 -> 21
-	21 -> 22
-	20 -> 22
-	19 -> 22
-	22 -> 23
-	23 -> 24
-	22 -> 24
-	23 -> 25
-	24 -> 25
-	19 -> 25
-	17 -> 26
-	14 -> 26
+	18 -> 17
+	5 -> 17
+	14 -> 18
+	19 -> 18
+	15 -> 18
+	15 -> 19
+	17 -> 20
+	16 -> 20
+	19 -> 21
+	22 -> 21
+	25 -> 22
+	23 -> 22
+	15 -> 23
+	24 -> 23
+	15 -> 24
+	15 -> 25
+	3 -> 26
+	2 -> 26
 	28 -> 27
-	31 -> 27
 	35 -> 27
+	31 -> 27
 	29 -> 28
+	20 -> 29
 	30 -> 29
-	26 -> 29
 	29 -> 29
-	26 -> 30
+	20 -> 30
 	34 -> 31
-	33 -> 31
 	32 -> 31
+	33 -> 31
 	28 -> 32
 	29 -> 32
 	28 -> 33
 	29 -> 33
 	33 -> 34
-	37 -> 35
-	38 -> 35
 	36 -> 35
+	38 -> 35
+	37 -> 35
 	28 -> 36
 	29 -> 36
 	28 -> 37
 	29 -> 37
 	37 -> 38
-	3 -> 39
-	2 -> 39
-	3 -> 41
-	2 -> 41
-	6 -> 42
-	20 -> 42
-	9 -> 42
-	43 -> 42
-	21 -> 42
-	46 -> 42
-	45 -> 42
-	10 -> 42
-	7 -> 43
-	44 -> 43
-	7 -> 44
-	7 -> 45
-	20 -> 46
-	10 -> 46
+	10 -> 39
+	5 -> 39
+	43 -> 39
+	25 -> 39
+	9 -> 39
+	42 -> 39
+	18 -> 39
+	17 -> 39
+	16 -> 39
+	13 -> 39
+	6 -> 39
+	22 -> 39
+	44 -> 39
+	15 -> 39
+	20 -> 39
+	40 -> 39
+	19 -> 39
+	21 -> 39
+	23 -> 39
+	14 -> 39
+	41 -> 40
+	15 -> 41
+	40 -> 42
+	25 -> 42
+	23 -> 42
+	19 -> 43
+	15 -> 43
+	22 -> 43
+	13 -> 44
+	10 -> 45
+	23 -> 46
 	43 -> 46
-	45 -> 46
-	22 -> 47
-	14 -> 47
-	1 -> 47
-	20 -> 47
-	43 -> 47
-	5 -> 47
-	13 -> 47
-	11 -> 47
-	28 -> 47
-	46 -> 47
-	23 -> 47
-	6 -> 47
-	9 -> 47
-	26 -> 47
-	31 -> 47
-	25 -> 47
-	15 -> 47
-	12 -> 47
-	19 -> 47
-	35 -> 47
-	45 -> 47
-	21 -> 47
-	16 -> 47
-	17 -> 47
-	18 -> 47
-	24 -> 47
-	10 -> 47
+	13 -> 46
+	6 -> 46
+	9 -> 46
+	25 -> 46
+	40 -> 46
+	22 -> 46
+	42 -> 46
+	44 -> 46
 }            

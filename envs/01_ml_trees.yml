@@ -6,6 +6,6 @@ dependencies:
   - python=3.11
   - pandas
   - biopython
-  - mafft
+  - nextclade
   - raxml-ng
   - iqtree

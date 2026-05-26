@@ -74,11 +74,9 @@ rule build_standard_headers_for_gisaid_context:
         metadata_csv=FILTRADO_CSV
     output:
         context_fasta=f"{DATA_COMBINED_CONTEXT_EC}/H5N1_context.fasta",
-        final_fasta=f"{DATA_COMBINED_CONTEXT_EC}/H5N1_final.fasta",
-        context_summary=f"{RESULTS_QC_METRICS}/build_inputs/H5N1_context_summary.csv"
+        final_fasta=f"{DATA_COMBINED_CONTEXT_EC}/H5N1_final.fasta"
     params:
-        max_per_country_month=config.get("max_per_country_month", 2),
-        exclude_accessions=config.get("exclude_context_accessions", [])
+        max_per_country_month=config.get("max_per_country_month", 2)
     shell:
         r"""
         export PYTHONPATH=code:${{PYTHONPATH:-}}
@@ -86,9 +84,7 @@ rule build_standard_headers_for_gisaid_context:
             --ecuador-fasta {input.ecuador_fasta:q} \
             --context-fasta-in {input.context_fasta:q} \
             --context-fasta-out {output.context_fasta:q} \
-            --context-summary-out {output.context_summary:q} \
             --final-fasta-out {output.final_fasta:q} \
             --metadata-csv {input.metadata_csv:q} \
-            --max-per-country-month {params.max_per_country_month} \
-            --exclude-accessions {params.exclude_accessions}
+            --max-per-country-month {params.max_per_country_month}
         """

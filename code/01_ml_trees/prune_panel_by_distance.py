@@ -51,10 +51,11 @@ def main() -> None:
     parser.add_argument("--out-tree", required=True, help="Output pruned Newick tree")
     parser.add_argument("--audit-out", required=True, help="Output subset audit TSV")
     parser.add_argument("--distance-audit-out", required=True, help="Output distance audit TSV")
+    parser.add_argument("--discarded-csv", default=None, help="Output CSV for discarded sequences")
     parser.add_argument("--country-month-audit-out", default=None, help="Output country/month audit TSV")
     parser.add_argument("--n-closest", type=int, default=200, help="Target number of closest candidates to select")
     parser.add_argument("--max-distance", type=float, default=0.08, help="Maximum patristic distance threshold")
-    parser.add_argument("--protect-anchors-count", type=int, default=10, help="Number of oldest American anchors to protect")
+    parser.add_argument("--protect-anchors-per-month", type=int, default=2, help="Number of oldest American anchors to protect per month up to 2022-05")
     args = parser.parse_args()
 
     tree = read_tree(args.tree)
@@ -70,22 +71,31 @@ def main() -> None:
     print(f"Found {len(american_anchor_tips)} American anchor tips.")
     print(f"Found {len(regional_context_tips)} Regional context tips.")
 
-    # 2. Protect oldest american_anchor sequences
-    anchor_dates = []
+    # 2. Protect oldest american_anchor sequences per month up to May 2022
+    anchors_by_month = {}
     for tip in american_anchor_tips:
         date_str = parse_date_from_header(tip)
-        anchor_dates.append((tip, date_str))
-    
-    # Sort lexicographically by date string (which is YYYY-MM-DD or YYYY-07-01, so YYYY-MM-DD chronologically)
-    anchor_dates.sort(key=lambda x: x[1])
-    
+        match = re.search(r"(\d{4})-(\d{2})", date_str)
+        if match:
+            month_key = f"{match.group(1)}-{match.group(2)}"
+        else:
+            month_key = "UNKNOWN"
+        
+        if month_key not in anchors_by_month:
+            anchors_by_month[month_key] = []
+        anchors_by_month[month_key].append((tip, date_str))
+
     protected_anchors = set()
-    protect_limit = min(args.protect_anchors_count, len(american_anchor_tips))
-    for i in range(protect_limit):
-        protected_anchors.add(anchor_dates[i][0])
+    for month_key, month_tips in anchors_by_month.items():
+        if month_key != "UNKNOWN" and month_key <= "2022-05":
+            # Sort chronologically
+            month_tips.sort(key=lambda x: x[1])
+            limit = min(args.protect_anchors_per_month, len(month_tips))
+            for i in range(limit):
+                protected_anchors.add(month_tips[i][0])
 
     if len(protected_anchors) > 0:
-        print(f"Protected {len(protected_anchors)} oldest American anchor tips: {sorted(protected_anchors)}")
+        print(f"Protected {len(protected_anchors)} American anchor tips (at least {args.protect_anchors_per_month} per month up to 2022-05): {sorted(protected_anchors)}")
 
     # 3. Identify candidates (non-protected anchors and regional contexts)
     candidates = []
@@ -120,7 +130,7 @@ def main() -> None:
     print(f"Selected top {len(selected_candidates)} closest candidates.")
 
     # 6. Build final panel rows
-    panel_rows: List[Tuple[str, str, str, float]] = []
+    panel_rows = []
     
     # Core Ecuador
     for tip in core_tips:
@@ -221,6 +231,37 @@ def main() -> None:
                 coverage[(country, ym)] = coverage.get((country, ym), 0) + 1
             for (country, month), n in sorted(coverage.items()):
                 writer.writerow([country, month, n])
+
+    # 12. Write discarded CSV if requested
+    if args.discarded_csv:
+        disc_dir = os.path.dirname(args.discarded_csv)
+        if disc_dir:
+            os.makedirs(disc_dir, exist_ok=True)
+            
+        cand_dist = {cand: dist for cand, _, dist in scored_candidates}
+        passed_set = {cand for cand, _, _ in passed_max_dist}
+        
+        discarded_rows = []
+        for tip in sorted(tree_tips):
+            if tip in panel_taxa_set:
+                continue
+            
+            dist_val = cand_dist.get(tip, None)
+            if tip not in cand_dist:
+                reason = "no path to core sequence in tree"
+            elif tip not in passed_set:
+                reason = f"exceeded max_distance (distance: {dist_val:.6f} > {args.max_distance})"
+            else:
+                reason = f"not in top {args.n_closest} closest (distance: {dist_val:.6f})"
+                
+            discarded_rows.append([tip, reason, "" if dist_val is None else f"{dist_val:.6f}"])
+            
+        with open(args.discarded_csv, "w", encoding="utf-8", newline="") as handle:
+            writer = csv.writer(handle, delimiter=",")
+            writer.writerow(["taxon", "reason", "distance_to_seed"])
+            for row in discarded_rows:
+                writer.writerow(row)
+        print(f"Wrote discarded sequences to {args.discarded_csv} ({len(discarded_rows)} sequences).")
 
 if __name__ == "__main__":
     main()

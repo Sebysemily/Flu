@@ -164,8 +164,6 @@ def main():
     parser.add_argument("--metadata-csv", default=None)
     parser.add_argument("--max-per-country-month", type=int, default=None,
                         help="Maximum number of sequences to keep per country per month per year")
-    parser.add_argument("--exclude-accessions", nargs="*", default=[],
-                        help="List of EPI_ISL accessions to exclude from context sequences")
     args = parser.parse_args()
 
     if not os.path.exists(args.context_fasta_in):
@@ -184,11 +182,6 @@ def main():
                 print(f"Loaded {len(local_epi_isls)} local EPI_ISLs to exclude from context.")
         except Exception as e:
             print(f"Warning: Could not read {args.metadata_csv} for duplicate exclusion: {e}")
-
-    # Load excluded accessions
-    exclude_accessions = set(args.exclude_accessions or [])
-    if exclude_accessions:
-        print(f"Loaded {len(exclude_accessions)} accessions to manually exclude from context.")
 
     # Parse and group by isolate name
     isolates_data = {} # isolate_name -> { segment -> (epi_isl, seq, original_header) }
@@ -237,18 +230,12 @@ def main():
     for isolate, segs in isolates_data.items():
         if len(segs) == 8:
             is_local = False
-            is_excluded = False
             for seg, (epi_isl, seq, orig_hdr) in segs.items():
                 if epi_isl in local_epi_isls:
                     is_local = True
                     break
-                if epi_isl in exclude_accessions:
-                    is_excluded = True
-                    break
             if is_local:
                 excluded_local_count += 1
-            elif is_excluded:
-                continue
             else:
                 place, _, context_type = extract_metadata_from_isolate(isolate)
                 epi_isl_rep = segs["HA"][0]
@@ -266,10 +253,7 @@ def main():
                             if parsed_date:
                                 extracted_date = parsed_date
                                 break
-                    if not extracted_date:
-                        discarded_count += 1
-                        continue
-                    date_value = extracted_date
+                    date_value = extracted_date if extracted_date else "UNKNOWN"
                 
                 if date_value == "UNKNOWN" or not date_value:
                     discarded_count += 1

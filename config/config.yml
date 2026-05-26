@@ -2,7 +2,7 @@
 # Reproducibility and resources
 # -----------------------------
 random_seed: 39809473   # Base seed reused across steps that require randomization, to ensure reproducibility.
-max_threads: 18         # Default thread cap 
+max_threads: 16         # Default thread cap 
 # -----------------------------
 # BEAST exploratory runs
 # -----------------------------
@@ -10,7 +10,7 @@ beast:
   enabled: true
   binary: null
   max_hours: 6
-  threads: 18
+  threads: 16
   beagle:
     mode: auto
     vendor: amd
@@ -36,29 +36,21 @@ beast:
     strict_exp: 10893
     ucln_exp: 3749
 
-beast_panel:
+prunning_parameters:
   n_closest: 200
   max_distance: 0.08
-  protect_anchors_count: 10
+  protect_anchors_per_month: 2
 
 # Context subsampling (anti-duplication rule)
-max_per_country_month: 2
+max_per_country_month: 5
+
 
 # Maximum Likelihood (ML) tree replicates
-iqtree_replicates: 10
+iqtree_replicates: 5
 
-# Northwestern/Pacific Flyway H5N1 outlier accessions to exclude
-exclude_context_accessions:
-  - "EPI_ISL_19145215"
-  - "EPI_ISL_19151732"
-  - "EPI_ISL_19158330"
-  - "EPI_ISL_19303622"
-  - "EPI_ISL_19158329"
-  - "EPI_ISL_19151888"
-  - "EPI_ISL_19157532"
-  - "EPI_ISL_13117289"
-  - "EPI_ISL_19151708"
-  - "EPI_ISL_19151569"
-  - "EPI_ISL_19151673"
+
+# Nextclade alignment reference sequence ID
+reference_id: "Flu-0316"
+
 
 

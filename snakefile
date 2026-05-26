@@ -20,7 +20,6 @@ FINAL_FASTA = f"{DATA_COMBINED_CONTEXT_EC}/H5N1_final.fasta"
 BUILD_INPUTS_TARGETS = [
     INPUT_CONTEXT_FASTA,
     FINAL_FASTA,
-    f"{RESULTS_QC_METRICS}/build_inputs/H5N1_context_summary.csv",
 ]
 
 BY_SEGMENT_FASTAS = expand(
@@ -36,8 +35,20 @@ MAIN_PHYLOGENY_TARGETS = [
     *expand(
         f"{RESULTS_PHYLOGENY}/iq-tree/{{segment}}/rep{{rep}}.treefile",
         segment=["PB2", "PB1", "PA", "HA", "NP", "NA", "MP", "NS", "concat_except_HA"],
-        rep=range(1, int(config.get("iqtree_replicates", 10)) + 1)
-    )
+        rep=range(1, int(config.get("iqtree_replicates", 5)) + 1)
+    ),
+    *expand(
+        f"{RESULTS_PHYLOGENY}/iq-tree/{{segment}}/{{segment}}_final.treefile",
+        segment=["PB2", "PB1", "PA", "HA", "NP", "NA", "MP", "NS"]
+    ),
+    *expand(
+        f"{RESULTS_PHYLOGENY}/iq-tree/{{segment}}/rf_dist_matrix.rf",
+        segment=["PB2", "PB1", "PA", "HA", "NP", "NA", "MP", "NS", "concat_except_HA"]
+    ),
+    "results/phylogeny/concordance/full_concat.gcs",
+    "results/phylogeny/concordance/full_concat.scf",
+    f"{RESULTS_PHYLOGENY}/itol_styles/tree_colors.txt",
+    f"{RESULTS_PHYLOGENY}/itol_styles/dataset_colorstrip.txt",
 ]
 
 PRE_BEAST_TARGETS = [
@@ -45,18 +56,23 @@ PRE_BEAST_TARGETS = [
     BEAST_FILTERED_SUBSET_TREE,
     BEAST_FILTERED_SUBSET_AUDIT,
     PRE_BEAST_DATES,
-    BEAST_FINAL_SUBSET_ALIGNMENT,
-    BEAST_FINAL_SUBSET_AUDIT,
+    FINAL_ALIGNMENT,
+    FINAL_PARTITIONS,
+    BAYESIAN_ALIGNMENT,
     PRE_BEAST_RTT_EXCLUSIONS,
-    PRE_BEAST_RTT_EXCLUSIONS_SUMMARY,
-    *PRE_BEAST_RAW_FINAL_SEGMENT_FASTAS,
     *PRE_BEAST_FINAL_SEGMENT_FASTAS,
     PRE_BEAST_ROOT_TO_TIP_DONE,
     BEAST_FINAL_DATES,
-    *NP_MP_NS_RTT_SENSITIVITY_TARGETS,
     *PREPARED_BEAST_XMLS,
-    BEAST_PANEL_STATS_CSV,
-    BEAST_PANEL_STATS_SUMMARY,
+    f"{RESULTS_PHYLOGENY}/iq-tree/subset_fast/panel_main_concat.final.treefile",
+    *expand(
+        f"{RESULTS_PHYLOGENY}/itol_styles/{{subdir}}/tree_colors.txt",
+        subdir=PRE_BEAST_SEGMENTS + ["subset_fast"]
+    ),
+    *expand(
+        f"{RESULTS_PHYLOGENY}/itol_styles/{{subdir}}/dataset_colorstrip.txt",
+        subdir=PRE_BEAST_SEGMENTS + ["subset_fast"]
+    ),
 ]
 
 PAPER_FIGURE_TARGETS = []
@@ -65,7 +81,6 @@ ALL_VALIDATION_TARGETS = [
     *BUILD_INPUTS_TARGETS,
     *MAIN_PHYLOGENY_TARGETS,
     *PRE_BEAST_TARGETS,
-    *BEAST_PUBLIC_TARGETS,
 ]
 
 

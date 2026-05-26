@@ -65,7 +65,7 @@ def main():
     parser.add_argument("--rtt-outliers", required=True)
     parser.add_argument("--filtered-panel-out", required=True)
     parser.add_argument("--exclusions-out", required=True)
-    parser.add_argument("--summary-out", required=True)
+    parser.add_argument("--summary-out", default=None)
     parser.add_argument("--dates-in", default=None)
     parser.add_argument("--dates-out", default=None)
     args = parser.parse_args()
@@ -114,16 +114,17 @@ def main():
             "residual",
         ],
     )
-    write_tsv(
-        args.summary_out,
-        [
-            {"metric": "panel_taxa_input", "value": len(panel_rows)},
-            {"metric": "rtt_outliers_detected", "value": len(rtt_outliers)},
-            {"metric": "panel_taxa_excluded", "value": len(excluded_rows)},
-            {"metric": "panel_taxa_kept", "value": len(filtered_rows)},
-        ],
-        ["metric", "value"],
-    )
+    if args.summary_out:
+        write_tsv(
+            args.summary_out,
+            [
+                {"metric": "panel_taxa_input", "value": len(panel_rows)},
+                {"metric": "rtt_outliers_detected", "value": len(rtt_outliers)},
+                {"metric": "panel_taxa_excluded", "value": len(excluded_rows)},
+                {"metric": "panel_taxa_kept", "value": len(filtered_rows)},
+            ],
+            ["metric", "value"],
+        )
 
     if args.dates_in and args.dates_out:
         prune_dates_tsv(args.dates_in, args.dates_out, set(rtt_outliers.keys()))

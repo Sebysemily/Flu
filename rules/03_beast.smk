@@ -15,7 +15,7 @@ BEAST_DEFAULT_SEEDS = {
     "strict_exp": 1003,
     "ucln_exp": 1004,
 }
-RESULTS_BEAST = config.get("results_beast", "results/beast")
+RESULTS_BEAST = "results/phylogeny/bayesian"
 STRICT_CONSTANT_FINAL_DIR = f"{RESULTS_BEAST}/final/time"
 STRICT_CONSTANT_FINAL_PREFIX = f"{STRICT_CONSTANT_FINAL_DIR}/strict_constant"
 STRICT_CONSTANT_FINAL_COMBINED_LOG = f"{STRICT_CONSTANT_FINAL_PREFIX}.combined.log"
