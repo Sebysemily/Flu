@@ -162,8 +162,6 @@ def main():
     parser.add_argument("--context-summary-out", default=None)
     parser.add_argument("--final-fasta-out", required=True)
     parser.add_argument("--metadata-csv", default=None)
-    parser.add_argument("--max-per-country-month", type=int, default=None,
-                        help="Maximum number of sequences to keep per country per month per year")
     args = parser.parse_args()
 
     if not os.path.exists(args.context_fasta_in):
@@ -238,6 +236,10 @@ def main():
                 excluded_local_count += 1
             else:
                 place, _, context_type = extract_metadata_from_isolate(isolate)
+                place_clean = place.lower().replace("_", "").replace(" ", "")
+                us_places = {s.lower().replace("_", "").replace(" ", "") for s in NORTH_AMERICA_PLACES if s not in {"honduras", "panama"}}
+                if place_clean in us_places:
+                    place = "USA"
                 epi_isl_rep = segs["HA"][0]
                 is_maate = epi_isl_rep in MAATE_METADATA
                 
@@ -270,45 +272,6 @@ def main():
     if excluded_local_count > 0:
         print(f"Isolados excluidos por coincidir con muestras locales (flu_filtrado): {excluded_local_count}")
 
-    # Subsample complete context isolates if requested (max per country per month per year)
-    if args.max_per_country_month is not None:
-        subsampled_isolates = {}
-        counts = {}
-        # Sort isolates deterministically by name
-        for isolate in sorted(complete_isolates.keys()):
-            segs = complete_isolates[isolate]
-            place = isolate_places[isolate]
-            date_value = isolate_dates[isolate]
-            context_type = isolate_types[isolate]
-            
-            epi_isl_rep = segs["HA"][0]
-            is_maate = epi_isl_rep in MAATE_METADATA
-            
-            # Keep all local Ecuador core sequences
-            if is_maate:
-                subsampled_isolates[isolate] = segs
-                continue
-                
-            # Parse year and month
-            year = "UNKNOWN"
-            month = "UNKNOWN"
-            if date_value != "UNKNOWN" and len(date_value) >= 7:
-                year = date_value[:4]
-                month = date_value[5:7]
-            
-            # Normalize US states to USA for country-level filtering
-            place_clean = place.lower().replace("_", "").replace(" ", "")
-            north_america_set = {s.lower().replace("_", "").replace(" ", "") for s in NORTH_AMERICA_PLACES}
-            country = "USA" if place_clean in north_america_set else place
-            
-            key = (country, year, month)
-            counts[key] = counts.get(key, 0) + 1
-            
-            if counts[key] <= args.max_per_country_month:
-                subsampled_isolates[isolate] = segs
-                
-        print(f"Subsampled context isolates from {len(complete_isolates)} to {len(subsampled_isolates)} using limit of {args.max_per_country_month} per country/month.")
-        complete_isolates = subsampled_isolates
 
     # Process and write formatted context FASTA
     records = []

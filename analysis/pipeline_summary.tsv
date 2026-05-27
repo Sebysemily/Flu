@@ -1,119 +1,118 @@
 Building DAG of jobs...
 output_file	date	rule	log-file(s)	status	plan
-data/standard_header_input_fasta/H5N1_context.fasta	Tue May 26 02:12:26 2026	build_standard_headers_for_gisaid_context		rule implementation changed	update pending
-data/standard_header_input_fasta/H5N1_final.fasta	Tue May 26 02:12:26 2026	build_standard_headers_for_gisaid_context		rule implementation changed	update pending
-data/standard_header_input_fasta/H5N1_EC.fasta	Tue May 26 02:12:25 2026	build_standard_date_headers		ok	no update
-data/input/H5N1_EC_gisaid_from_mira.fasta	Tue May 26 02:12:25 2026	build_gisaid_input_from_mira		ok	no update
-data/phylogeny/by_segment/H5N1_PB2.fasta	Tue May 26 02:12:26 2026	split_h5n1_final_by_segment		ok	update pending
-data/phylogeny/by_segment/H5N1_PB1.fasta	Tue May 26 02:12:26 2026	split_h5n1_final_by_segment		ok	update pending
-data/phylogeny/by_segment/H5N1_PA.fasta	Tue May 26 02:12:26 2026	split_h5n1_final_by_segment		ok	update pending
-data/phylogeny/by_segment/H5N1_HA.fasta	Tue May 26 02:12:26 2026	split_h5n1_final_by_segment		ok	update pending
-data/phylogeny/by_segment/H5N1_NP.fasta	Tue May 26 02:12:26 2026	split_h5n1_final_by_segment		ok	update pending
-data/phylogeny/by_segment/H5N1_NA.fasta	Tue May 26 02:12:26 2026	split_h5n1_final_by_segment		ok	update pending
-data/phylogeny/by_segment/H5N1_MP.fasta	Tue May 26 02:12:26 2026	split_h5n1_final_by_segment		ok	update pending
-data/phylogeny/by_segment/H5N1_NS.fasta	Tue May 26 02:12:26 2026	split_h5n1_final_by_segment		ok	update pending
-data/phylogeny/by_segment_summary.csv	Tue May 26 02:12:26 2026	split_h5n1_final_by_segment		ok	update pending
-data/phylogeny/aligned/H5N1_full_concat_beast.mafft	Mon May 25 22:17:00 2026	concat_aligned_segments_with_partitions		set of input files changed	update pending
-data/phylogeny/H5N1_full_concat_beast.partitions	Mon May 25 22:17:00 2026	concat_aligned_segments_with_partitions		set of input files changed	update pending
-data/processed_alignments/qc_filtered/H5N1_PB2.mafft	Tue May 26 02:12:31 2026	filter_alignments_by_nextclade_qc		ok	update pending
-data/processed_alignments/qc_filtered/H5N1_PB1.mafft	Tue May 26 02:12:31 2026	filter_alignments_by_nextclade_qc		ok	update pending
-data/processed_alignments/qc_filtered/H5N1_PA.mafft	Tue May 26 02:12:31 2026	filter_alignments_by_nextclade_qc		ok	update pending
-data/processed_alignments/qc_filtered/H5N1_HA.mafft	Tue May 26 02:12:31 2026	filter_alignments_by_nextclade_qc		ok	update pending
-data/processed_alignments/qc_filtered/H5N1_NP.mafft	Tue May 26 02:12:31 2026	filter_alignments_by_nextclade_qc		ok	update pending
-data/processed_alignments/qc_filtered/H5N1_NA.mafft	Tue May 26 02:12:31 2026	filter_alignments_by_nextclade_qc		ok	update pending
-data/processed_alignments/qc_filtered/H5N1_MP.mafft	Tue May 26 02:12:31 2026	filter_alignments_by_nextclade_qc		ok	update pending
-data/processed_alignments/qc_filtered/H5N1_NS.mafft	Tue May 26 02:12:31 2026	filter_alignments_by_nextclade_qc		ok	update pending
-results/qc_metrics/alignments/qc_discarded_sequences.csv	Tue May 26 02:12:31 2026	filter_alignments_by_nextclade_qc		ok	update pending
-data/processed_alignments/codon_aware/H5N1_PB2.mafft	Tue May 26 02:12:30 2026	run_nextclade_alignment_per_segment		ok	update pending
-results/qc_metrics/alignments/nextclade_PB2_report.tsv	Tue May 26 02:12:30 2026	run_nextclade_alignment_per_segment		ok	update pending
-resources/nextclade_h5n1_ha	Tue May 26 02:12:27 2026	download_nextclade_db	logs/download_db.log	ok	update pending
+data/standard_header_input_fasta/H5N1_context.fasta	Tue May 26 04:50:20 2026	build_standard_headers_for_gisaid_context		ok	no update
+data/standard_header_input_fasta/H5N1_final.fasta	Tue May 26 04:50:20 2026	build_standard_headers_for_gisaid_context		ok	no update
+data/standard_header_input_fasta/H5N1_EC.fasta	Tue May 26 04:50:20 2026	build_standard_date_headers		ok	no update
+data/input/H5N1_EC_gisaid_from_mira.fasta	Tue May 26 04:50:19 2026	build_gisaid_input_from_mira		ok	no update
+data/phylogeny/by_segment/H5N1_PB2.fasta	Tue May 26 04:50:20 2026	split_h5n1_final_by_segment		rule implementation changed	update pending
+data/phylogeny/by_segment/H5N1_PB1.fasta	Tue May 26 04:50:20 2026	split_h5n1_final_by_segment		rule implementation changed	update pending
+data/phylogeny/by_segment/H5N1_PA.fasta	Tue May 26 04:50:20 2026	split_h5n1_final_by_segment		rule implementation changed	update pending
+data/phylogeny/by_segment/H5N1_HA.fasta	Tue May 26 04:50:20 2026	split_h5n1_final_by_segment		rule implementation changed	update pending
+data/phylogeny/by_segment/H5N1_NP.fasta	Tue May 26 04:50:20 2026	split_h5n1_final_by_segment		rule implementation changed	update pending
+data/phylogeny/by_segment/H5N1_NA.fasta	Tue May 26 04:50:20 2026	split_h5n1_final_by_segment		rule implementation changed	update pending
+data/phylogeny/by_segment/H5N1_MP.fasta	Tue May 26 04:50:20 2026	split_h5n1_final_by_segment		rule implementation changed	update pending
+data/phylogeny/by_segment/H5N1_NS.fasta	Tue May 26 04:50:20 2026	split_h5n1_final_by_segment		rule implementation changed	update pending
+data/phylogeny/aligned/H5N1_full_concat_beast.mafft	Tue May 26 04:50:25 2026	concat_aligned_segments_with_partitions		ok	update pending
+data/phylogeny/aligned/H5N1_full_concat_beast.partitions	-	concat_aligned_segments_with_partitions	-	missing	update pending
+data/processed_alignments/qc_filtered/H5N1_PB2.mafft	Tue May 26 04:50:25 2026	filter_alignments_by_nextclade_qc		ok	update pending
+data/processed_alignments/qc_filtered/H5N1_PB1.mafft	Tue May 26 04:50:25 2026	filter_alignments_by_nextclade_qc		ok	update pending
+data/processed_alignments/qc_filtered/H5N1_PA.mafft	Tue May 26 04:50:25 2026	filter_alignments_by_nextclade_qc		ok	update pending
+data/processed_alignments/qc_filtered/H5N1_HA.mafft	Tue May 26 04:50:25 2026	filter_alignments_by_nextclade_qc		ok	update pending
+data/processed_alignments/qc_filtered/H5N1_NP.mafft	Tue May 26 04:50:25 2026	filter_alignments_by_nextclade_qc		ok	update pending
+data/processed_alignments/qc_filtered/H5N1_NA.mafft	Tue May 26 04:50:25 2026	filter_alignments_by_nextclade_qc		ok	update pending
+data/processed_alignments/qc_filtered/H5N1_MP.mafft	Tue May 26 04:50:25 2026	filter_alignments_by_nextclade_qc		ok	update pending
+data/processed_alignments/qc_filtered/H5N1_NS.mafft	Tue May 26 04:50:25 2026	filter_alignments_by_nextclade_qc		ok	update pending
+results/qc_metrics/alignments/qc_discarded_sequences.csv	Tue May 26 04:50:25 2026	filter_alignments_by_nextclade_qc		ok	update pending
+data/processed_alignments/codon_aware/H5N1_PB2.mafft	Tue May 26 04:50:23 2026	run_nextclade_alignment_per_segment		ok	update pending
+results/qc_metrics/alignments/nextclade_PB2_report.tsv	Tue May 26 04:50:23 2026	run_nextclade_alignment_per_segment		ok	update pending
+resources/nextclade_h5n1_ha	Tue May 26 04:50:21 2026	download_nextclade_db	logs/download_db.log	ok	update pending
 data/phylogeny/by_segment/H5N1_PB2_ref.fasta	-	extract_segment_reference		removed temp file	update pending
-data/processed_alignments/codon_aware/H5N1_PB1.mafft	Tue May 26 02:12:28 2026	run_nextclade_alignment_per_segment		ok	update pending
-results/qc_metrics/alignments/nextclade_PB1_report.tsv	Tue May 26 02:12:28 2026	run_nextclade_alignment_per_segment		ok	update pending
+data/processed_alignments/codon_aware/H5N1_PB1.mafft	Tue May 26 04:50:25 2026	run_nextclade_alignment_per_segment		ok	update pending
+results/qc_metrics/alignments/nextclade_PB1_report.tsv	Tue May 26 04:50:25 2026	run_nextclade_alignment_per_segment		ok	update pending
 data/phylogeny/by_segment/H5N1_PB1_ref.fasta	-	extract_segment_reference		removed temp file	update pending
-data/processed_alignments/codon_aware/H5N1_PA.mafft	Tue May 26 02:12:30 2026	run_nextclade_alignment_per_segment		ok	update pending
-results/qc_metrics/alignments/nextclade_PA_report.tsv	Tue May 26 02:12:30 2026	run_nextclade_alignment_per_segment		ok	update pending
+data/processed_alignments/codon_aware/H5N1_PA.mafft	Tue May 26 04:50:22 2026	run_nextclade_alignment_per_segment		ok	update pending
+results/qc_metrics/alignments/nextclade_PA_report.tsv	Tue May 26 04:50:22 2026	run_nextclade_alignment_per_segment		ok	update pending
 data/phylogeny/by_segment/H5N1_PA_ref.fasta	-	extract_segment_reference		removed temp file	update pending
-data/processed_alignments/codon_aware/H5N1_HA.mafft	Tue May 26 02:12:28 2026	run_nextclade_alignment_per_segment		ok	update pending
-results/qc_metrics/alignments/nextclade_HA_report.tsv	Tue May 26 02:12:28 2026	run_nextclade_alignment_per_segment		ok	update pending
+data/processed_alignments/codon_aware/H5N1_HA.mafft	Tue May 26 04:50:24 2026	run_nextclade_alignment_per_segment		ok	update pending
+results/qc_metrics/alignments/nextclade_HA_report.tsv	Tue May 26 04:50:24 2026	run_nextclade_alignment_per_segment		ok	update pending
 data/phylogeny/by_segment/H5N1_HA_ref.fasta	-	extract_segment_reference		removed temp file	update pending
-data/processed_alignments/codon_aware/H5N1_NP.mafft	Tue May 26 02:12:29 2026	run_nextclade_alignment_per_segment		ok	update pending
-results/qc_metrics/alignments/nextclade_NP_report.tsv	Tue May 26 02:12:29 2026	run_nextclade_alignment_per_segment		ok	update pending
+data/processed_alignments/codon_aware/H5N1_NP.mafft	Tue May 26 04:50:22 2026	run_nextclade_alignment_per_segment		ok	update pending
+results/qc_metrics/alignments/nextclade_NP_report.tsv	Tue May 26 04:50:22 2026	run_nextclade_alignment_per_segment		ok	update pending
 data/phylogeny/by_segment/H5N1_NP_ref.fasta	-	extract_segment_reference		removed temp file	update pending
-data/processed_alignments/codon_aware/H5N1_NA.mafft	Tue May 26 02:12:30 2026	run_nextclade_alignment_per_segment		ok	update pending
-results/qc_metrics/alignments/nextclade_NA_report.tsv	Tue May 26 02:12:30 2026	run_nextclade_alignment_per_segment		ok	update pending
+data/processed_alignments/codon_aware/H5N1_NA.mafft	Tue May 26 04:50:23 2026	run_nextclade_alignment_per_segment		ok	update pending
+results/qc_metrics/alignments/nextclade_NA_report.tsv	Tue May 26 04:50:23 2026	run_nextclade_alignment_per_segment		ok	update pending
 data/phylogeny/by_segment/H5N1_NA_ref.fasta	-	extract_segment_reference		removed temp file	update pending
-data/processed_alignments/codon_aware/H5N1_MP.mafft	Tue May 26 02:12:29 2026	run_nextclade_alignment_per_segment		ok	update pending
-results/qc_metrics/alignments/nextclade_MP_report.tsv	Tue May 26 02:12:29 2026	run_nextclade_alignment_per_segment		ok	update pending
+data/processed_alignments/codon_aware/H5N1_MP.mafft	Tue May 26 04:50:22 2026	run_nextclade_alignment_per_segment		ok	update pending
+results/qc_metrics/alignments/nextclade_MP_report.tsv	Tue May 26 04:50:22 2026	run_nextclade_alignment_per_segment		ok	update pending
 data/phylogeny/by_segment/H5N1_MP_ref.fasta	-	extract_segment_reference		removed temp file	update pending
-data/processed_alignments/codon_aware/H5N1_NS.mafft	Tue May 26 02:12:31 2026	run_nextclade_alignment_per_segment		ok	update pending
-results/qc_metrics/alignments/nextclade_NS_report.tsv	Tue May 26 02:12:31 2026	run_nextclade_alignment_per_segment		ok	update pending
+data/processed_alignments/codon_aware/H5N1_NS.mafft	Tue May 26 04:50:24 2026	run_nextclade_alignment_per_segment		ok	update pending
+results/qc_metrics/alignments/nextclade_NS_report.tsv	Tue May 26 04:50:24 2026	run_nextclade_alignment_per_segment		ok	update pending
 data/phylogeny/by_segment/H5N1_NS_ref.fasta	-	extract_segment_reference		removed temp file	update pending
-results/phylogeny/iq-tree/full_concat/H5N1_full_concat_beast.treefile	Mon May 25 22:18:51 2026	iqtree_fast_full_concat		rule implementation changed	update pending
-results/phylogeny/iq-tree/PB2/rep1.treefile	Mon May 25 07:21:23 2026	run_iqtree_codon_segment_replicate		rule implementation changed	update pending
-data/phylogeny/final_panel/H5N1_PB2.fasta	-	apply_panel_to_segment_alignments	-	missing	update pending
-data/phylogeny/final_panel/H5N1_PB1.fasta	-	apply_panel_to_segment_alignments	-	missing	update pending
-data/phylogeny/final_panel/H5N1_PA.fasta	-	apply_panel_to_segment_alignments	-	missing	update pending
-data/phylogeny/final_panel/H5N1_HA.fasta	-	apply_panel_to_segment_alignments	-	missing	update pending
-data/phylogeny/final_panel/H5N1_NP.fasta	-	apply_panel_to_segment_alignments	-	missing	update pending
-data/phylogeny/final_panel/H5N1_NA.fasta	-	apply_panel_to_segment_alignments	-	missing	update pending
-data/phylogeny/final_panel/H5N1_MP.fasta	-	apply_panel_to_segment_alignments	-	missing	update pending
-data/phylogeny/final_panel/H5N1_NS.fasta	-	apply_panel_to_segment_alignments	-	missing	update pending
-data/phylogeny/final_alignment.fasta	-	apply_panel_to_segment_alignments	-	missing	update pending
-data/phylogeny/final_alignment.partitions	-	apply_panel_to_segment_alignments	-	missing	update pending
-data/phylogeny/rtt/panel_main_concat.filtered.fasta	-	prune_tree_by_distance_to_core	-	missing	update pending
-data/phylogeny/rtt/panel_main_concat.filtered.nwk	-	prune_tree_by_distance_to_core	-	missing	update pending
-data/phylogeny/rtt/panel_main_concat.filtered.audit.tsv	-	prune_tree_by_distance_to_core	-	missing	update pending
-data/phylogeny/rtt/panel_main_taxa.filtered.tsv	-	prune_tree_by_distance_to_core	-	missing	update pending
-results/qc_metrics/alignments/pruning_discarded_sequences.csv	-	prune_tree_by_distance_to_core	-	missing	update pending
-data/phylogeny/final_panel/H5N1_PB2.partitions	-	build_single_segment_codon_partition	-	missing	update pending
-results/phylogeny/iq-tree/PB2/rep2.treefile	Mon May 25 08:21:19 2026	run_iqtree_codon_segment_replicate		rule implementation changed	update pending
-results/phylogeny/iq-tree/PB2/rep3.treefile	Mon May 25 07:59:27 2026	run_iqtree_codon_segment_replicate		rule implementation changed	update pending
-results/phylogeny/iq-tree/PB2/rep4.treefile	Mon May 25 07:54:42 2026	run_iqtree_codon_segment_replicate		rule implementation changed	update pending
-results/phylogeny/iq-tree/PB2/rep5.treefile	Mon May 25 07:58:48 2026	run_iqtree_codon_segment_replicate		rule implementation changed	update pending
+results/phylogeny/iq-tree/full_concat/H5N1_full_concat_beast.treefile	-	iqtree_fast_full_concat		missing	update pending
+results/phylogeny/iq-tree/PB2/rep1.treefile	-	run_iqtree_codon_segment_replicate		missing	update pending
+data/phylogeny/main_panel/H5N1_PB2.fasta	-	apply_panel_to_segment_alignments	-	missing	update pending
+data/phylogeny/main_panel/H5N1_PB1.fasta	-	apply_panel_to_segment_alignments	-	missing	update pending
+data/phylogeny/main_panel/H5N1_PA.fasta	-	apply_panel_to_segment_alignments	-	missing	update pending
+data/phylogeny/main_panel/H5N1_HA.fasta	-	apply_panel_to_segment_alignments	-	missing	update pending
+data/phylogeny/main_panel/H5N1_NP.fasta	-	apply_panel_to_segment_alignments	-	missing	update pending
+data/phylogeny/main_panel/H5N1_NA.fasta	-	apply_panel_to_segment_alignments	-	missing	update pending
+data/phylogeny/main_panel/H5N1_MP.fasta	-	apply_panel_to_segment_alignments	-	missing	update pending
+data/phylogeny/main_panel/H5N1_NS.fasta	-	apply_panel_to_segment_alignments	-	missing	update pending
+data/phylogeny/main_panel/main_alignment.fasta	-	apply_panel_to_segment_alignments	-	missing	update pending
+data/phylogeny/main_panel/main_alignment.partitions	-	apply_panel_to_segment_alignments	-	missing	update pending
+data/phylogeny/rtt/panel_main_concat.filtered.fasta	Tue May 26 05:03:32 2026	prune_tree_by_distance_to_core		ok	update pending
+data/phylogeny/rtt/panel_main_concat.filtered.nwk	Tue May 26 05:03:32 2026	prune_tree_by_distance_to_core		ok	update pending
+data/phylogeny/rtt/panel_main_concat.filtered.audit.tsv	Tue May 26 05:03:32 2026	prune_tree_by_distance_to_core		ok	update pending
+data/phylogeny/rtt/panel_main_taxa.filtered.tsv	Tue May 26 05:03:32 2026	prune_tree_by_distance_to_core		ok	update pending
+results/qc_metrics/alignments/pruning_discarded_sequences.csv	Tue May 26 05:03:32 2026	prune_tree_by_distance_to_core		ok	update pending
+data/phylogeny/main_panel/H5N1_PB2.partitions	-	build_single_segment_codon_partition	-	missing	update pending
+results/phylogeny/iq-tree/PB2/rep2.treefile	-	run_iqtree_codon_segment_replicate		missing	update pending
+results/phylogeny/iq-tree/PB2/rep3.treefile	-	run_iqtree_codon_segment_replicate		missing	update pending
+results/phylogeny/iq-tree/PB2/rep4.treefile	-	run_iqtree_codon_segment_replicate		missing	update pending
+results/phylogeny/iq-tree/PB2/rep5.treefile	-	run_iqtree_codon_segment_replicate		missing	update pending
 results/phylogeny/iq-tree/PB1/rep1.treefile	-	run_iqtree_codon_segment_replicate		missing	update pending
-data/phylogeny/final_panel/H5N1_PB1.partitions	-	build_single_segment_codon_partition	-	missing	update pending
-results/phylogeny/iq-tree/PB1/rep2.treefile	Mon May 25 09:03:39 2026	run_iqtree_codon_segment_replicate		rule implementation changed	update pending
+data/phylogeny/main_panel/H5N1_PB1.partitions	-	build_single_segment_codon_partition	-	missing	update pending
+results/phylogeny/iq-tree/PB1/rep2.treefile	-	run_iqtree_codon_segment_replicate		missing	update pending
 results/phylogeny/iq-tree/PB1/rep3.treefile	-	run_iqtree_codon_segment_replicate		missing	update pending
-results/phylogeny/iq-tree/PB1/rep4.treefile	Mon May 25 09:03:23 2026	run_iqtree_codon_segment_replicate		rule implementation changed	update pending
-results/phylogeny/iq-tree/PB1/rep5.treefile	Mon May 25 06:48:38 2026	run_iqtree_codon_segment_replicate		rule implementation changed	update pending
-results/phylogeny/iq-tree/PA/rep1.treefile	Mon May 25 09:53:53 2026	run_iqtree_codon_segment_replicate		rule implementation changed	update pending
-data/phylogeny/final_panel/H5N1_PA.partitions	-	build_single_segment_codon_partition	-	missing	update pending
-results/phylogeny/iq-tree/PA/rep2.treefile	Mon May 25 09:34:08 2026	run_iqtree_codon_segment_replicate		rule implementation changed	update pending
-results/phylogeny/iq-tree/PA/rep3.treefile	Mon May 25 09:49:04 2026	run_iqtree_codon_segment_replicate		rule implementation changed	update pending
-results/phylogeny/iq-tree/PA/rep4.treefile	Mon May 25 09:30:29 2026	run_iqtree_codon_segment_replicate		rule implementation changed	update pending
-results/phylogeny/iq-tree/PA/rep5.treefile	Mon May 25 09:59:23 2026	run_iqtree_codon_segment_replicate		rule implementation changed	update pending
-results/phylogeny/iq-tree/HA/rep1.treefile	Mon May 25 11:13:10 2026	run_iqtree_codon_segment_replicate		rule implementation changed	update pending
-data/phylogeny/final_panel/H5N1_HA.partitions	-	build_single_segment_codon_partition	-	missing	update pending
-results/phylogeny/iq-tree/HA/rep2.treefile	Mon May 25 10:41:53 2026	run_iqtree_codon_segment_replicate		rule implementation changed	update pending
-results/phylogeny/iq-tree/HA/rep3.treefile	Mon May 25 10:37:19 2026	run_iqtree_codon_segment_replicate		rule implementation changed	update pending
-results/phylogeny/iq-tree/HA/rep4.treefile	Mon May 25 11:00:15 2026	run_iqtree_codon_segment_replicate		rule implementation changed	update pending
-results/phylogeny/iq-tree/HA/rep5.treefile	Mon May 25 10:20:20 2026	run_iqtree_codon_segment_replicate		rule implementation changed	update pending
-results/phylogeny/iq-tree/NP/rep1.treefile	Mon May 25 11:36:00 2026	run_iqtree_codon_segment_replicate		rule implementation changed	update pending
-data/phylogeny/final_panel/H5N1_NP.partitions	-	build_single_segment_codon_partition	-	missing	update pending
-results/phylogeny/iq-tree/NP/rep2.treefile	Mon May 25 11:43:50 2026	run_iqtree_codon_segment_replicate		rule implementation changed	update pending
-results/phylogeny/iq-tree/NP/rep3.treefile	Mon May 25 11:27:43 2026	run_iqtree_codon_segment_replicate		rule implementation changed	update pending
-results/phylogeny/iq-tree/NP/rep4.treefile	Mon May 25 11:40:24 2026	run_iqtree_codon_segment_replicate		rule implementation changed	update pending
-results/phylogeny/iq-tree/NP/rep5.treefile	Mon May 25 11:27:16 2026	run_iqtree_codon_segment_replicate		rule implementation changed	update pending
-results/phylogeny/iq-tree/NA/rep1.treefile	Mon May 25 12:26:13 2026	run_iqtree_codon_segment_replicate		rule implementation changed	update pending
-data/phylogeny/final_panel/H5N1_NA.partitions	-	build_single_segment_codon_partition	-	missing	update pending
-results/phylogeny/iq-tree/NA/rep2.treefile	Mon May 25 12:06:15 2026	run_iqtree_codon_segment_replicate		rule implementation changed	update pending
-results/phylogeny/iq-tree/NA/rep3.treefile	Mon May 25 12:25:45 2026	run_iqtree_codon_segment_replicate		rule implementation changed	update pending
-results/phylogeny/iq-tree/NA/rep4.treefile	Mon May 25 12:05:51 2026	run_iqtree_codon_segment_replicate		rule implementation changed	update pending
+results/phylogeny/iq-tree/PB1/rep4.treefile	-	run_iqtree_codon_segment_replicate		missing	update pending
+results/phylogeny/iq-tree/PB1/rep5.treefile	-	run_iqtree_codon_segment_replicate		missing	update pending
+results/phylogeny/iq-tree/PA/rep1.treefile	-	run_iqtree_codon_segment_replicate		missing	update pending
+data/phylogeny/main_panel/H5N1_PA.partitions	-	build_single_segment_codon_partition	-	missing	update pending
+results/phylogeny/iq-tree/PA/rep2.treefile	-	run_iqtree_codon_segment_replicate		missing	update pending
+results/phylogeny/iq-tree/PA/rep3.treefile	-	run_iqtree_codon_segment_replicate		missing	update pending
+results/phylogeny/iq-tree/PA/rep4.treefile	-	run_iqtree_codon_segment_replicate		missing	update pending
+results/phylogeny/iq-tree/PA/rep5.treefile	-	run_iqtree_codon_segment_replicate		missing	update pending
+results/phylogeny/iq-tree/HA/rep1.treefile	-	run_iqtree_codon_segment_replicate		missing	update pending
+data/phylogeny/main_panel/H5N1_HA.partitions	-	build_single_segment_codon_partition	-	missing	update pending
+results/phylogeny/iq-tree/HA/rep2.treefile	-	run_iqtree_codon_segment_replicate		missing	update pending
+results/phylogeny/iq-tree/HA/rep3.treefile	-	run_iqtree_codon_segment_replicate		missing	update pending
+results/phylogeny/iq-tree/HA/rep4.treefile	-	run_iqtree_codon_segment_replicate		missing	update pending
+results/phylogeny/iq-tree/HA/rep5.treefile	-	run_iqtree_codon_segment_replicate		missing	update pending
+results/phylogeny/iq-tree/NP/rep1.treefile	-	run_iqtree_codon_segment_replicate		missing	update pending
+data/phylogeny/main_panel/H5N1_NP.partitions	-	build_single_segment_codon_partition	-	missing	update pending
+results/phylogeny/iq-tree/NP/rep2.treefile	-	run_iqtree_codon_segment_replicate		missing	update pending
+results/phylogeny/iq-tree/NP/rep3.treefile	-	run_iqtree_codon_segment_replicate		missing	update pending
+results/phylogeny/iq-tree/NP/rep4.treefile	-	run_iqtree_codon_segment_replicate		missing	update pending
+results/phylogeny/iq-tree/NP/rep5.treefile	-	run_iqtree_codon_segment_replicate		missing	update pending
+results/phylogeny/iq-tree/NA/rep1.treefile	-	run_iqtree_codon_segment_replicate		missing	update pending
+data/phylogeny/main_panel/H5N1_NA.partitions	-	build_single_segment_codon_partition	-	missing	update pending
+results/phylogeny/iq-tree/NA/rep2.treefile	-	run_iqtree_codon_segment_replicate		missing	update pending
+results/phylogeny/iq-tree/NA/rep3.treefile	-	run_iqtree_codon_segment_replicate		missing	update pending
+results/phylogeny/iq-tree/NA/rep4.treefile	-	run_iqtree_codon_segment_replicate		missing	update pending
 results/phylogeny/iq-tree/NA/rep5.treefile	-	run_iqtree_codon_segment_replicate	-	missing	update pending
-results/phylogeny/iq-tree/MP/rep1.treefile	-	run_iqtree_simple_segment_replicate	-	missing	update pending
-results/phylogeny/iq-tree/MP/rep2.treefile	-	run_iqtree_simple_segment_replicate	-	missing	update pending
-results/phylogeny/iq-tree/MP/rep3.treefile	-	run_iqtree_simple_segment_replicate	-	missing	update pending
-results/phylogeny/iq-tree/MP/rep4.treefile	-	run_iqtree_simple_segment_replicate	-	missing	update pending
+results/phylogeny/iq-tree/MP/rep1.treefile	-	run_iqtree_simple_segment_replicate		missing	update pending
+results/phylogeny/iq-tree/MP/rep2.treefile	-	run_iqtree_simple_segment_replicate		missing	update pending
+results/phylogeny/iq-tree/MP/rep3.treefile	-	run_iqtree_simple_segment_replicate		missing	update pending
+results/phylogeny/iq-tree/MP/rep4.treefile	-	run_iqtree_simple_segment_replicate		missing	update pending
 results/phylogeny/iq-tree/MP/rep5.treefile	-	run_iqtree_simple_segment_replicate	-	missing	update pending
-results/phylogeny/iq-tree/NS/rep1.treefile	-	run_iqtree_simple_segment_replicate	-	missing	update pending
-results/phylogeny/iq-tree/NS/rep2.treefile	-	run_iqtree_simple_segment_replicate	-	missing	update pending
-results/phylogeny/iq-tree/NS/rep3.treefile	-	run_iqtree_simple_segment_replicate	-	missing	update pending
-results/phylogeny/iq-tree/NS/rep4.treefile	-	run_iqtree_simple_segment_replicate	-	missing	update pending
-results/phylogeny/iq-tree/NS/rep5.treefile	-	run_iqtree_simple_segment_replicate	-	missing	update pending
+results/phylogeny/iq-tree/NS/rep1.treefile	-	run_iqtree_simple_segment_replicate		missing	update pending
+results/phylogeny/iq-tree/NS/rep2.treefile	-	run_iqtree_simple_segment_replicate		missing	update pending
+results/phylogeny/iq-tree/NS/rep3.treefile	-	run_iqtree_simple_segment_replicate		missing	update pending
+results/phylogeny/iq-tree/NS/rep4.treefile	-	run_iqtree_simple_segment_replicate		missing	update pending
+results/phylogeny/iq-tree/NS/rep5.treefile	-	run_iqtree_simple_segment_replicate		missing	update pending
 results/phylogeny/iq-tree/concat_except_HA/rep1.treefile	-	concat_except_HA_replicate	-	missing	update pending
-data/phylogeny/aligned/H5N1_concat_except_HA.mafft	-	concat_except_ha_with_partitions	-	missing	update pending
-data/phylogeny/H5N1_concat_except_HA.partitions	-	concat_except_ha_with_partitions	-	missing	update pending
+data/phylogeny/aligned/H5N1_concat_except_HA.mafft	Tue May 26 05:03:36 2026	concat_except_ha_with_partitions		set of input files changed	update pending
+data/phylogeny/aligned/H5N1_concat_except_HA.partitions	-	concat_except_ha_with_partitions	-	missing	update pending
 results/phylogeny/iq-tree/concat_except_HA/rep2.treefile	-	concat_except_HA_replicate	-	missing	update pending
 results/phylogeny/iq-tree/concat_except_HA/rep3.treefile	-	concat_except_HA_replicate	-	missing	update pending
 results/phylogeny/iq-tree/concat_except_HA/rep4.treefile	-	concat_except_HA_replicate	-	missing	update pending
@@ -137,37 +136,12 @@ results/phylogeny/iq-tree/NS/rf_dist_matrix.rf	-	calculate_rf_distances	-	missin
 results/phylogeny/iq-tree/concat_except_HA/rf_dist_matrix.rf	-	calculate_rf_distances	-	missing	update pending
 results/phylogeny/concordance/full_concat.gcs	-	calculate_concordance_factors	-	missing	update pending
 results/phylogeny/concordance/full_concat.scf	-	calculate_concordance_factors	-	missing	update pending
-results/phylogeny/iq-tree/subset_fast/panel_main_concat.final.treefile	Mon May 25 22:19:02 2026	iqtree_fast_subset		rule implementation changed	update pending
-results/phylogeny/itol_styles/tree_colors.txt	-	generate_itol_colors_full_concat	-	missing	update pending
-results/phylogeny/itol_styles/dataset_colorstrip.txt	-	generate_itol_colors_full_concat	-	missing	update pending
-results/phylogeny/rtt/dates_from_headers.tsv	-	build_treetime_dates_subsets	-	missing	update pending
-data/phylogeny/bayesian/bayesian_alignment.fasta	-	generate_bayesian_alignment	-	missing	update pending
-data/phylogeny/bayesian/panel_main_taxa.final.tsv	-	filter_rtt_outliers_subsets	-	missing	update pending
-data/phylogeny/bayesian/panel_main_dates.final.tsv	-	filter_rtt_outliers_subsets	-	missing	update pending
-results/qc_metrics/phylogeny/rtt/rtt_outlier_exclusions.tsv	-	filter_rtt_outliers_subsets	-	missing	update pending
-results/phylogeny/rtt/outliers.tsv	-	run_root_to_tip_subsets	-	missing	update pending
-results/phylogeny/rtt/treetime_clock.log	-	run_root_to_tip_subsets	-	missing	update pending
-results/phylogeny/rtt/treetime_clock.done	-	run_root_to_tip_subsets	-	missing	update pending
-results/phylogeny/bayesian/xml/strict_constant.xml	-	prepare_beast_run_xml	-	missing	update pending
-results/phylogeny/bayesian/xml/strict_constant_lugar.xml	-	prepare_beast_run_xml	-	missing	update pending
-results/phylogeny/bayesian/xml/ucln_constant.xml	-	prepare_beast_run_xml	-	missing	update pending
-results/phylogeny/bayesian/xml/strict_exp.xml	-	prepare_beast_run_xml	-	missing	update pending
-results/phylogeny/bayesian/xml/ucln_exp.xml	-	prepare_beast_run_xml	-	missing	update pending
-results/phylogeny/itol_styles/PB2/tree_colors.txt	-	itol_color_subsets	-	missing	update pending
-results/phylogeny/itol_styles/PB2/dataset_colorstrip.txt	-	itol_color_subsets	-	missing	update pending
-results/phylogeny/itol_styles/PB1/tree_colors.txt	-	itol_color_subsets	-	missing	update pending
-results/phylogeny/itol_styles/PB1/dataset_colorstrip.txt	-	itol_color_subsets	-	missing	update pending
-results/phylogeny/itol_styles/PA/tree_colors.txt	-	itol_color_subsets	-	missing	update pending
-results/phylogeny/itol_styles/PA/dataset_colorstrip.txt	-	itol_color_subsets	-	missing	update pending
-results/phylogeny/itol_styles/HA/tree_colors.txt	-	itol_color_subsets	-	missing	update pending
-results/phylogeny/itol_styles/HA/dataset_colorstrip.txt	-	itol_color_subsets	-	missing	update pending
-results/phylogeny/itol_styles/NP/tree_colors.txt	-	itol_color_subsets	-	missing	update pending
-results/phylogeny/itol_styles/NP/dataset_colorstrip.txt	-	itol_color_subsets	-	missing	update pending
-results/phylogeny/itol_styles/NA/tree_colors.txt	-	itol_color_subsets	-	missing	update pending
-results/phylogeny/itol_styles/NA/dataset_colorstrip.txt	-	itol_color_subsets	-	missing	update pending
-results/phylogeny/itol_styles/MP/tree_colors.txt	-	itol_color_subsets	-	missing	update pending
-results/phylogeny/itol_styles/MP/dataset_colorstrip.txt	-	itol_color_subsets	-	missing	update pending
-results/phylogeny/itol_styles/NS/tree_colors.txt	-	itol_color_subsets	-	missing	update pending
-results/phylogeny/itol_styles/NS/dataset_colorstrip.txt	-	itol_color_subsets	-	missing	update pending
-results/phylogeny/itol_styles/subset_fast/tree_colors.txt	Mon May 25 22:19:43 2026	itol_color_subsets		ok	update pending
-results/phylogeny/itol_styles/subset_fast/dataset_colorstrip.txt	Mon May 25 22:19:43 2026	itol_color_subsets		ok	update pending
+results/phylogeny/iq-tree/subset_fast/panel_main_concat.final.treefile	-	iqtree_fast_subset		missing	update pending
+results/phylogeny/itol_styles/tree_colors.txt	-	generate_itol_colors_full_concat		missing	update pending
+results/phylogeny/itol_styles/dataset_colorstrip.txt	-	generate_itol_colors_full_concat		missing	update pending
+results/phylogeny/rtt/dates_from_headers.tsv	-	build_treetime_dates_subsets		missing	update pending
+results/phylogeny/rtt/outliers.tsv	-	run_root_to_tip_subsets		missing	update pending
+results/phylogeny/rtt/treetime_clock.log	-	run_root_to_tip_subsets		missing	update pending
+results/phylogeny/rtt/treetime_clock.done	-	run_root_to_tip_subsets		missing	update pending
+results/phylogeny/itol_styles/subset_fast/tree_colors.txt	-	itol_color_subsets		missing	update pending
+results/phylogeny/itol_styles/subset_fast/dataset_colorstrip.txt	-	itol_color_subsets		missing	update pending

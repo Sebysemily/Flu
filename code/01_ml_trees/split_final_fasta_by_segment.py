@@ -49,11 +49,12 @@ def main():
     )
     parser.add_argument("--input-fasta", required=True)
     parser.add_argument("--output-dir", required=True)
-    parser.add_argument("--summary-csv", required=True)
+    parser.add_argument("--summary-csv", default=None)
     args = parser.parse_args()
 
     os.makedirs(args.output_dir, exist_ok=True)
-    os.makedirs(os.path.dirname(args.summary_csv), exist_ok=True)
+    if args.summary_csv:
+        os.makedirs(os.path.dirname(args.summary_csv), exist_ok=True)
 
     grouped = defaultdict(list)
     invalid_headers = []
@@ -76,15 +77,17 @@ def main():
                 out_handle.write(wrap_seq(seq) + "\n")
                 counts[segment] += 1
 
-    with open(args.summary_csv, "w") as summary_handle:
-        summary_handle.write("segment,n_sequences\n")
-        for segment in SEGMENTS:
-            summary_handle.write(f"{segment},{counts.get(segment, 0)}\n")
-        if invalid_headers:
-            summary_handle.write(f"INVALID_HEADERS,{len(invalid_headers)}\n")
+    if args.summary_csv:
+        with open(args.summary_csv, "w") as summary_handle:
+            summary_handle.write("segment,n_sequences\n")
+            for segment in SEGMENTS:
+                summary_handle.write(f"{segment},{counts.get(segment, 0)}\n")
+            if invalid_headers:
+                summary_handle.write(f"INVALID_HEADERS,{len(invalid_headers)}\n")
 
     print(f"FASTA por segmento generados en: {args.output_dir}")
-    print(f"Resumen generado: {args.summary_csv}")
+    if args.summary_csv:
+        print(f"Resumen generado: {args.summary_csv}")
     for segment in SEGMENTS:
         print(f"{segment}: {counts.get(segment, 0)} secuencias")
     if invalid_headers:

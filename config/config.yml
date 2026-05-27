@@ -4,53 +4,23 @@
 random_seed: 39809473   # Base seed reused across steps that require randomization, to ensure reproducibility.
 max_threads: 16         # Default thread cap 
 # -----------------------------
-# BEAST exploratory runs
+# qc and prunning
 # -----------------------------
-beast:
-  enabled: true
-  binary: null
-  max_hours: 6
-  threads: 16
-  beagle:
-    mode: auto
-    vendor: amd
-    resource: gpu
-    platform: auto
-    precision: auto
-    scaling: default
-    fallback_to_cpu: false
-    info: true
-  chain_length:
-    strict_constant: 100000000
-    strict_constant_lugar: 100000000
-    ucln_constant: 120000000
-    strict_exp: 100000000
-    ucln_exp: 120000000
-  log_every: 10000
-  tree_every: 10000
-  echo_every: 10000
-  seeds:
-    strict_constant: 3980
-    strict_constant_lugar: 13980
-    ucln_constant: 9473
-    strict_exp: 10893
-    ucln_exp: 3749
-
 prunning_parameters:
   n_closest: 200
   max_distance: 0.08
-  protect_anchors_per_month: 2
-
-# Context subsampling (anti-duplication rule)
-max_per_country_month: 5
-
-
+  protect_anchors_per_month: 3
+  protect_regional_per_month: 3
+# Nextclade alignment reference sequence ID
+reference_id: "Flu-0316" # done to obtain a reference for the 7 segments not present in db  
+# -----------------------------
+# treetime prunning values
+# -----------------------------
+treetime_parameters:
+  clock_filter: 3.0   # Outlier detection threshold (number of interquartile ranges from regression)
+# -----------------------------
+# ML_parameters
 # Maximum Likelihood (ML) tree replicates
 iqtree_replicates: 5
-
-
-# Nextclade alignment reference sequence ID
-reference_id: "Flu-0316"
-
-
-
+# IQ-TREE bootstrap replicates (Ultrafast Bootstrap)
+iqtree_bootstrap: 1000

@@ -9,3 +9,4 @@ dependencies:
   - nextclade
   - raxml-ng
   - iqtree
+  - matplotlib

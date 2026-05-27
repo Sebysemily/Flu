@@ -19,7 +19,7 @@ DEFAULT_TREES: List[Tuple[str, str]] = [
     ("NA", "results/phylogeny/raxml/NA/H5N1_NA.raxml.supportTBE"),
     ("MP", "results/phylogeny/raxml/MP/H5N1_MP.raxml.supportTBE"),
     ("NS", "results/phylogeny/raxml/NS/H5N1_NS.raxml.supportTBE"),
-    ("concat", "results/phylogeny/raxml/full_concat/H5N1_full_concat_beast.raxml.supportTBE"),
+    ("concat", "results/phylogeny/raxml/full_concat/H5N1_full_concat.raxml.supportTBE"),
 ]
 
 GROUPS = ["flu2024", "guayas2023", "pichincha0694"]

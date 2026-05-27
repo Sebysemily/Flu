@@ -21,4 +21,6 @@ tmp_rf_full_concat/**
 .aider*
 .env
 temp/*
-.antigravity.md
+**/.antigravity.md
+**/__pycache__/
+*.sif

@@ -4,6 +4,7 @@ import csv
 import os
 import re
 import sys
+import heapq
 from io import StringIO
 from typing import Dict, Iterable, List, Set, Tuple
 from copy import deepcopy
@@ -25,10 +26,55 @@ def read_tree(path: str):
 def get_terminals(tree) -> Set[str]:
     return {t.name for t in tree.get_terminals() if t.name}
 
+def calculate_distances_to_core(tree, core_names: Set[str]) -> Dict[str, float]:
+    adj = {}
+    name_to_clade = {}
+    
+    def traverse(clade):
+        if clade.name:
+            name_to_clade[clade.name] = clade
+        if clade not in adj:
+            adj[clade] = []
+        for child in clade.clades:
+            dist = child.branch_length if child.branch_length is not None else 0.0
+            if child not in adj:
+                adj[child] = []
+            adj[clade].append((child, dist))
+            adj[child].append((clade, dist))
+            traverse(child)
+            
+    traverse(tree.root)
+    
+    pq = []
+    visited = {}
+    
+    for name in core_names:
+        if name in name_to_clade:
+            clade = name_to_clade[name]
+            visited[clade] = 0.0
+            heapq.heappush(pq, (0.0, id(clade), clade))
+            
+    while pq:
+        d, _, u = heapq.heappop(pq)
+        if d > visited.get(u, float("inf")):
+            continue
+        for v, weight in adj.get(u, []):
+            new_d = d + weight
+            if new_d < visited.get(v, float("inf")):
+                visited[v] = new_d
+                heapq.heappush(pq, (new_d, id(v), v))
+                
+    tip_distances = {}
+    for name, clade in name_to_clade.items():
+        if clade in visited:
+            tip_distances[name] = visited[clade]
+            
+    return tip_distances
+
 def parse_date_from_header(label: str) -> str:
-    # Header format: isolate_EPI_ISL__context_type/segment/place/date
+    # Header format: isolate_EPI_ISL__context_type/place/date or isolate_EPI_ISL__context_type/segment/place/date
     parts = label.split("/")
-    if len(parts) >= 4:
+    if len(parts) >= 3:
         return parts[-1].strip()
     return "UNKNOWN"
 
@@ -56,6 +102,7 @@ def main() -> None:
     parser.add_argument("--n-closest", type=int, default=200, help="Target number of closest candidates to select")
     parser.add_argument("--max-distance", type=float, default=0.08, help="Maximum patristic distance threshold")
     parser.add_argument("--protect-anchors-per-month", type=int, default=2, help="Number of oldest American anchors to protect per month up to 2022-05")
+    parser.add_argument("--protect-regional-per-month", type=int, default=3, help="Number of regional context sequences to protect per month closest to core")
     args = parser.parse_args()
 
     tree = read_tree(args.tree)
@@ -71,65 +118,75 @@ def main() -> None:
     print(f"Found {len(american_anchor_tips)} American anchor tips.")
     print(f"Found {len(regional_context_tips)} Regional context tips.")
 
-    # 2. Protect oldest american_anchor sequences per month up to May 2022
+    # 2. Calculate patristic distance to closest core sequence for all anchor and regional context tips using Dijkstra's algorithm
+    tip_distances = calculate_distances_to_core(tree, set(core_tips))
+
+    # Group anchors by month and protect the closest to core per month up to May 2022
     anchors_by_month = {}
     for tip in american_anchor_tips:
         date_str = parse_date_from_header(tip)
         match = re.search(r"(\d{4})-(\d{2})", date_str)
-        if match:
-            month_key = f"{match.group(1)}-{match.group(2)}"
-        else:
-            month_key = "UNKNOWN"
+        month_key = f"{match.group(1)}-{match.group(2)}" if match else "UNKNOWN"
         
         if month_key not in anchors_by_month:
             anchors_by_month[month_key] = []
-        anchors_by_month[month_key].append((tip, date_str))
+        anchors_by_month[month_key].append(tip)
 
     protected_anchors = set()
     for month_key, month_tips in anchors_by_month.items():
         if month_key != "UNKNOWN" and month_key <= "2022-05":
-            # Sort chronologically
-            month_tips.sort(key=lambda x: x[1])
-            limit = min(args.protect_anchors_per_month, len(month_tips))
+            valid_tips = [t for t in month_tips if t in tip_distances]
+            valid_tips.sort(key=lambda t: tip_distances[t])
+            limit = min(args.protect_anchors_per_month, len(valid_tips))
             for i in range(limit):
-                protected_anchors.add(month_tips[i][0])
+                protected_anchors.add(valid_tips[i])
 
     if len(protected_anchors) > 0:
-        print(f"Protected {len(protected_anchors)} American anchor tips (at least {args.protect_anchors_per_month} per month up to 2022-05): {sorted(protected_anchors)}")
+        print(f"Protected {len(protected_anchors)} closest American anchor tips per month up to 2022-05: {sorted(protected_anchors)}")
 
-    # 3. Identify candidates (non-protected anchors and regional contexts)
+    # Group regional contexts by month and protect the closest to core per month
+    regional_by_month = {}
+    for tip in regional_context_tips:
+        date_str = parse_date_from_header(tip)
+        match = re.search(r"(\d{4})-(\d{2})", date_str)
+        month_key = f"{match.group(1)}-{match.group(2)}" if match else "UNKNOWN"
+        
+        if month_key not in regional_by_month:
+            regional_by_month[month_key] = []
+        regional_by_month[month_key].append(tip)
+
+    protected_regional = set()
+    for month_key, month_tips in regional_by_month.items():
+        if month_key != "UNKNOWN":
+            valid_tips = [t for t in month_tips if t in tip_distances]
+            valid_tips.sort(key=lambda t: tip_distances[t])
+            limit = min(args.protect_regional_per_month, len(valid_tips))
+            for i in range(limit):
+                protected_regional.add(valid_tips[i])
+
+    if len(protected_regional) > 0:
+        print(f"Protected {len(protected_regional)} closest Regional context tips per month: {sorted(protected_regional)}")
+
+    # 3. Identify remaining candidates (non-protected anchors and regional contexts)
     candidates = []
     for tip in american_anchor_tips:
-        if tip not in protected_anchors:
-            candidates.append((tip, "american_anchor"))
+        if tip not in protected_anchors and tip in tip_distances:
+            candidates.append((tip, "american_anchor", tip_distances[tip]))
     for tip in regional_context_tips:
-        candidates.append((tip, "regional_context"))
+        if tip not in protected_regional and tip in tip_distances:
+            candidates.append((tip, "regional_context", tip_distances[tip]))
 
-    # 4. Calculate distances to closest core sequence
-    scored_candidates = []
-    for cand, role in candidates:
-        min_dist = float("inf")
-        for core in core_tips:
-            try:
-                dist = tree.distance(cand, core)
-                if dist < min_dist:
-                    min_dist = dist
-            except Exception:
-                continue
-        if min_dist != float("inf"):
-            scored_candidates.append((cand, role, min_dist))
-
-    # 5. Filter by max distance and take top N closest
-    passed_max_dist = [c for c in scored_candidates if c[2] <= args.max_distance]
+    # 4. Filter by max distance and take top N closest
+    passed_max_dist = [c for c in candidates if c[2] <= args.max_distance]
     passed_max_dist.sort(key=lambda x: x[2]) # sort by distance ascending
     
     selected_candidates = passed_max_dist[:args.n_closest]
 
-    print(f"Total candidates calculated: {len(scored_candidates)}")
+    print(f"Total scored context tips: {len(tip_distances)}")
     print(f"Candidates within max_distance ({args.max_distance}): {len(passed_max_dist)}")
     print(f"Selected top {len(selected_candidates)} closest candidates.")
 
-    # 6. Build final panel rows
+    # 5. Build final panel rows
     panel_rows = []
     
     # Core Ecuador
@@ -138,7 +195,11 @@ def main() -> None:
         
     # Protected Anchors
     for tip in sorted(protected_anchors):
-        panel_rows.append((tip, "american_anchor", "oldest_protected", None))
+        panel_rows.append((tip, "american_anchor", "closest_protected", tip_distances.get(tip, None)))
+        
+    # Protected Regional Contexts
+    for tip in sorted(protected_regional):
+        panel_rows.append((tip, "regional_context", "closest_protected", tip_distances.get(tip, None)))
         
     # Selected Context candidates
     for tip, role, dist in selected_candidates:
@@ -190,6 +251,7 @@ def main() -> None:
         writer.writerow(["american_anchors_total", len(american_anchor_tips)])
         writer.writerow(["american_anchors_protected", len(protected_anchors)])
         writer.writerow(["regional_context_total", len(regional_context_tips)])
+        writer.writerow(["regional_context_protected", len(protected_regional)])
         writer.writerow(["candidates_total", len(candidates)])
         writer.writerow(["candidates_passed_distance_cutoff", len(passed_max_dist)])
         writer.writerow(["candidates_selected", len(selected_candidates)])
@@ -238,7 +300,7 @@ def main() -> None:
         if disc_dir:
             os.makedirs(disc_dir, exist_ok=True)
             
-        cand_dist = {cand: dist for cand, _, dist in scored_candidates}
+        cand_dist = tip_distances
         passed_set = {cand for cand, _, _ in passed_max_dist}
         
         discarded_rows = []
