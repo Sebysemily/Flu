@@ -49,7 +49,7 @@ tip_df <- data.frame(label = tree$tip.label, stringsAsFactors = FALSE) |>
 
 flu_tips <- tip_df |> filter(!is.na(type_c))
 
-p <- ggtree(tree, layout = "rect", color = "grey40", linewidth = 0.3) %<+% tip_df
+p <- ggtree(tree, layout = "roundrect", color = "grey40", linewidth = 0.8) %<+% tip_df
 
 if (nrow(flu_tips) > 0) {
   present <- intersect(FLU_TIP_ROLES, unique(flu_tips$type_c))

@@ -90,15 +90,25 @@ if (!"file_name" %in% colnames(panel_meta)) {
 if (!"expected_role" %in% colnames(panel_meta)) {
   stop("panel metadata must contain expected_role column")
 }
-if (!lineage_col %in% colnames(panel_meta)) {
-  stop("panel metadata missing column: ", lineage_col)
+if (!"HA_lineage" %in% colnames(panel_meta)) {
+  stop("panel metadata missing column: HA_lineage")
+}
+if (!"PB2_lineage" %in% colnames(panel_meta)) {
+  stop("panel metadata missing column: PB2_lineage")
 }
 
 tip_roles <- setNames(panel_meta$expected_role, panel_meta$file_name)
-tip_lineages <- setNames(
-  str_trim(panel_meta[[lineage_col]]),
+tip_lineages_ha <- setNames(
+  str_trim(panel_meta$HA_lineage),
   panel_meta$file_name
 )
+tip_lineages_ha[is.na(tip_lineages_ha) | tip_lineages_ha == ""] <- "unknown"
+
+tip_lineages_pb2 <- setNames(
+  str_trim(panel_meta$PB2_lineage),
+  panel_meta$file_name
+)
+tip_lineages_pb2[is.na(tip_lineages_pb2) | tip_lineages_pb2 == ""] <- "unknown"
 
 tree_ha <- read.tree(ha_tree_path)
 tree_pb2 <- read.tree(pb2_tree_path)
@@ -154,22 +164,22 @@ decorate_tangle_leaves <- function(dend, roles, lineages, palette) {
     set("labels_cex", label_cex)
 }
 
-context_lineages_in_panel <- function(tips, roles, lineages) {
+context_lineages_in_panel <- function(tips, roles, lineages_ha, lineages_pb2) {
   context_tips <- tips[!vapply(roles[tips], is_ecuador_tip, logical(1))]
-  vals <- lineages[context_tips]
+  vals <- c(lineages_ha[context_tips], lineages_pb2[context_tips])
   unique(vals[!is.na(vals) & vals != ""])
 }
 
 dend_ha <- decorate_tangle_leaves(
   phylo_to_dend(tree_ha),
   tip_roles,
-  tip_lineages,
+  tip_lineages_ha,
   lineage_palette
 )
 dend_pb2 <- decorate_tangle_leaves(
   phylo_to_dend(tree_pb2),
   tip_roles,
-  tip_lineages,
+  tip_lineages_pb2,
   lineage_palette
 )
 
@@ -179,9 +189,10 @@ if (length(common_tips) <= 500) {
 }
 
 tip_order <- labels(dl[[1]])
+all_present_lineages <- c(tip_lineages_ha[tip_order], tip_lineages_pb2[tip_order])
 ribbon_palette <- extend_lineage_palette(
   lineage_palette,
-  tip_lineages[tip_order]
+  all_present_lineages
 )
 
 ribbon_colors <- vapply(
@@ -190,15 +201,11 @@ ribbon_colors <- vapply(
   character(1)
 )
 
-strip_dend_labels <- function(dend) {
-  n <- length(labels(dend))
-  set(dend, "labels", rep("", n))
-}
-
-dl_plot <- dendlist(
-  strip_dend_labels(dl[[1]]),
-  strip_dend_labels(dl[[2]])
-)
+# Do not strip dendrogram labels before tanglegram plotting.
+# tanglegram() uses the labels to correctly match leaves between HA and PB2
+# to draw the connecting ribbons. The labels themselves are made invisible
+# via lab.cex = 0.
+dl_plot <- dl
 
 n_tips <- length(common_tips)
 tangle_height_in <- if (is.na(max_tips)) {
@@ -208,10 +215,10 @@ tangle_height_in <- if (is.na(max_tips)) {
 }
 composite_height_in <- if (is.na(max_tips)) 14 else max(10, 3.2 + tangle_height_in * 0.28)
 
-context_lineages <- context_lineages_in_panel(tip_order, tip_roles, tip_lineages)
+context_lineages <- context_lineages_in_panel(tip_order, tip_roles, tip_lineages_ha, tip_lineages_pb2)
 cat(
   "Ribbon colors by expected_role;",
-  "context tip nodes by", lineage_col, "\n"
+  "context tip nodes by HA & PB2 lineage\n"
 )
 cat(
   "  types:", paste(names(table(tip_roles[tip_order])), collapse = ", "), "\n"
@@ -235,8 +242,8 @@ grDevices::png(
 tanglegram(
   dl_plot,
   color_lines = ribbon_colors,
-  lwd = 4,
-  edge.lwd = 0.25,
+  lwd = 6,
+  edge.lwd = 1.5,
   columns_width = c(4, 1.2, 4),
   highlight_distinct_edges = FALSE,
   common_subtrees_color_lines = FALSE,
@@ -270,7 +277,7 @@ p_tanglegram <- cowplot::ggdraw() +
 
 p_tangle_legend <- build_tanglegram_legend(
   ribbon_roles = tip_roles[tip_order],
-  lineage_col_label = lineage_col,
+  lineage_col_label = "lineage",
   context_lineages = context_lineages,
   lineage_palette = ribbon_palette
 )
@@ -293,5 +300,5 @@ ggsave(
 
 cat(
   "Composite saved to", output_png,
-  "(", length(common_tips), "shared tips; ribbons = type, nodes =", lineage_col, ")\n"
+  "(", length(common_tips), "shared tips; ribbons = type, nodes = HA & PB2 lineages)\n"
 )

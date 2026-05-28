@@ -18,8 +18,8 @@ flu_tip_labels <- c(
 
 FLU_TIP_ROLES <- names(flu_tip_colors)
 
-FLU_TIP_CEX <- 12
-CONTEXT_TIP_CEX <- 3
+FLU_TIP_CEX <- 7
+CONTEXT_TIP_CEX <- 5
 CONTEXT_TIP_SHAPE <- 16L
 
 is_ecuador_tip <- function(role) {
