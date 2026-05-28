@@ -9,9 +9,6 @@ digraph snakemake_dag {
 <hr/>
 <tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
 <tr>
-<td align="left"><font face="monospace">data/phylogeny/aligned/H5N1_full_concat_beast.mafft</font></td>
-</tr>
-<tr>
 <td align="left"><font face="monospace">data/phylogeny/by_segment/H5N1_HA.fasta</font></td>
 </tr>
 <tr>
@@ -51,220 +48,61 @@ digraph snakemake_dag {
 <td align="left"><font face="monospace">data/phylogeny/rtt/panel_main_concat.filtered.nwk</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">data/standard_header_input_fasta/H5N1_context.fasta</font></td>
+<td align="left"><font face="monospace">metadata/H5N1_context.csv</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">data/standard_header_input_fasta/H5N1_final.fasta</font></td>
+<td align="left"><font face="monospace">metadata/flu_filtrado.csv</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/phylogeny/concordance/full_concat.gcs</font></td>
+<td align="left"><font face="monospace">results/figures/HA_fast_tree.png</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/phylogeny/concordance/full_concat.scf</font></td>
+<td align="left"><font face="monospace">results/figures/HA_tree.png</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/HA/HA_final.treefile</font></td>
+<td align="left"><font face="monospace">results/figures/MP_tree.png</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/HA/rep1.treefile</font></td>
+<td align="left"><font face="monospace">results/figures/NA_tree.png</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/HA/rep2.treefile</font></td>
+<td align="left"><font face="monospace">results/figures/NP_tree.png</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/HA/rep3.treefile</font></td>
+<td align="left"><font face="monospace">results/figures/NS_tree.png</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/HA/rep4.treefile</font></td>
+<td align="left"><font face="monospace">results/figures/PA_tree.png</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/HA/rep5.treefile</font></td>
+<td align="left"><font face="monospace">results/figures/PB1_tree.png</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/HA/rf_dist_matrix.rf</font></td>
+<td align="left"><font face="monospace">results/figures/PB2_tree.png</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/MP/MP_final.treefile</font></td>
+<td align="left"><font face="monospace">results/figures/subset_concat_tree.png</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/MP/rep1.treefile</font></td>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/HA/H5N1_HA_fast.treefile</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/MP/rep2.treefile</font></td>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/subset_concat/rep1.treefile</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/MP/rep3.treefile</font></td>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/subset_concat/rep2.treefile</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/MP/rep4.treefile</font></td>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/subset_concat/rep3.treefile</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/MP/rep5.treefile</font></td>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/subset_concat/rep4.treefile</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/MP/rf_dist_matrix.rf</font></td>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/subset_concat/rep5.treefile</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/NA/NA_final.treefile</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/NA/rep1.treefile</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/NA/rep2.treefile</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/NA/rep3.treefile</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/NA/rep4.treefile</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/NA/rep5.treefile</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/NA/rf_dist_matrix.rf</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/NP/NP_final.treefile</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/NP/rep1.treefile</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/NP/rep2.treefile</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/NP/rep3.treefile</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/NP/rep4.treefile</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/NP/rep5.treefile</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/NP/rf_dist_matrix.rf</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/NS/NS_final.treefile</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/NS/rep1.treefile</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/NS/rep2.treefile</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/NS/rep3.treefile</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/NS/rep4.treefile</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/NS/rep5.treefile</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/NS/rf_dist_matrix.rf</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/PA/PA_final.treefile</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/PA/rep1.treefile</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/PA/rep2.treefile</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/PA/rep3.treefile</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/PA/rep4.treefile</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/PA/rep5.treefile</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/PA/rf_dist_matrix.rf</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/PB1/PB1_final.treefile</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/PB1/rep1.treefile</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/PB1/rep2.treefile</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/PB1/rep3.treefile</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/PB1/rep4.treefile</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/PB1/rep5.treefile</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/PB1/rf_dist_matrix.rf</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/PB2/PB2_final.treefile</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/PB2/rep1.treefile</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/PB2/rep2.treefile</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/PB2/rep3.treefile</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/PB2/rep4.treefile</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/PB2/rep5.treefile</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/PB2/rf_dist_matrix.rf</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/concat_except_HA/rep1.treefile</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/concat_except_HA/rep2.treefile</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/concat_except_HA/rep3.treefile</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/concat_except_HA/rep4.treefile</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/concat_except_HA/rep5.treefile</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/concat_except_HA/rf_dist_matrix.rf</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/full_concat/H5N1_full_concat_beast.treefile</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/subset_fast/panel_main_concat.final.treefile</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/itol_styles/dataset_colorstrip.txt</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/itol_styles/subset_fast/dataset_colorstrip.txt</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/itol_styles/subset_fast/tree_colors.txt</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/itol_styles/tree_colors.txt</font></td>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/subset_concat/subset_concat_final.treefile</font></td>
 </tr>
 <tr>
 <td align="left"><font face="monospace">results/phylogeny/rtt/dates_from_headers.tsv</font></td>
@@ -275,46 +113,41 @@ digraph snakemake_dag {
 <hr/>
 <tr><td align="right">  </td> </tr>
 </table>>]
-1 [ shape=none, margin=0, label=<<table border="2" color="#D9BB57" cellspacing="3" cellborder="0">
+1 [ shape=none, margin=0, label=<<table border="2" color="#57D9A7" cellspacing="3" cellborder="0">
 <tr><td>
-<b><font point-size="18">build_standard_headers_for_gisaid_context</font></b>
+<b><font point-size="18">process_raw_to_segments</font></b>
 </td></tr>
 <hr/>
 <tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
-<tr>
-<td align="left"><font face="monospace">config/flu_filtrado.csv</font></td>
-</tr>
 <tr>
 <td align="left"><font face="monospace">data/context/gisaid_epiflu_sequence.fasta</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">data/standard_header_input_fasta/H5N1_EC.fasta</font></td>
-</tr>
-<hr/>
-<tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
-<tr>
-<td align="left"><font face="monospace">data/standard_header_input_fasta/H5N1_context.fasta</font></td></tr>
-<tr>
-<td align="left"><font face="monospace">data/standard_header_input_fasta/H5N1_final.fasta</font></td></tr>
-</table>>]
-2 [ shape=none, margin=0, label=<<table border="2" color="#D9A757" cellspacing="3" cellborder="0">
-<tr><td>
-<b><font point-size="18">build_standard_date_headers</font></b>
-</td></tr>
-<hr/>
-<tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
-<tr>
-<td align="left"><font face="monospace">config/flu_filtrado.csv</font></td>
-</tr>
-<tr>
 <td align="left"><font face="monospace">data/input/H5N1_EC_gisaid_from_mira.fasta</font></td>
 </tr>
+<tr>
+<td align="left"><font face="monospace">metadata/flu_filtrado.csv</font></td>
+</tr>
 <hr/>
 <tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
 <tr>
-<td align="left"><font face="monospace">data/standard_header_input_fasta/H5N1_EC.fasta</font></td></tr>
+<td align="left"><font face="monospace">data/phylogeny/by_segment/H5N1_HA.fasta</font></td></tr>
+<tr>
+<td align="left"><font face="monospace">data/phylogeny/by_segment/H5N1_MP.fasta</font></td></tr>
+<tr>
+<td align="left"><font face="monospace">data/phylogeny/by_segment/H5N1_NA.fasta</font></td></tr>
+<tr>
+<td align="left"><font face="monospace">data/phylogeny/by_segment/H5N1_NP.fasta</font></td></tr>
+<tr>
+<td align="left"><font face="monospace">data/phylogeny/by_segment/H5N1_NS.fasta</font></td></tr>
+<tr>
+<td align="left"><font face="monospace">data/phylogeny/by_segment/H5N1_PA.fasta</font></td></tr>
+<tr>
+<td align="left"><font face="monospace">data/phylogeny/by_segment/H5N1_PB1.fasta</font></td></tr>
+<tr>
+<td align="left"><font face="monospace">data/phylogeny/by_segment/H5N1_PB2.fasta</font></td></tr>
 </table>>]
-3 [ shape=none, margin=0, label=<<table border="2" color="#D97F57" cellspacing="3" cellborder="0">
+2 [ shape=none, margin=0, label=<<table border="2" color="#D97F57" cellspacing="3" cellborder="0">
 <tr><td>
 <b><font point-size="18">build_gisaid_input_from_mira</font></b>
 </td></tr>
@@ -369,79 +202,28 @@ digraph snakemake_dag {
 <td align="left"><font face="monospace">../../../MIRA_NGS/run_agro/amended_consensus.fasta</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">config/flu_filtrado.csv</font></td>
+<td align="left"><font face="monospace">metadata/flu_filtrado.csv</font></td>
 </tr>
 <hr/>
 <tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
 <tr>
 <td align="left"><font face="monospace">data/input/H5N1_EC_gisaid_from_mira.fasta</font></td></tr>
 </table>>]
-4 [ shape=none, margin=0, label=<<table border="2" color="#576BD9" cellspacing="3" cellborder="0">
+3 [ shape=none, margin=0, label=<<table border="2" color="#57D97F" cellspacing="3" cellborder="0">
 <tr><td>
-<b><font point-size="18">split_h5n1_final_by_segment</font></b>
-</td></tr>
-<hr/>
-<tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
-<tr>
-<td align="left"><font face="monospace">data/standard_header_input_fasta/H5N1_final.fasta</font></td>
-</tr>
-<hr/>
-<tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
-<tr>
-<td align="left"><font face="monospace">data/phylogeny/by_segment/H5N1_HA.fasta</font></td></tr>
-<tr>
-<td align="left"><font face="monospace">data/phylogeny/by_segment/H5N1_MP.fasta</font></td></tr>
-<tr>
-<td align="left"><font face="monospace">data/phylogeny/by_segment/H5N1_NA.fasta</font></td></tr>
-<tr>
-<td align="left"><font face="monospace">data/phylogeny/by_segment/H5N1_NP.fasta</font></td></tr>
-<tr>
-<td align="left"><font face="monospace">data/phylogeny/by_segment/H5N1_NS.fasta</font></td></tr>
-<tr>
-<td align="left"><font face="monospace">data/phylogeny/by_segment/H5N1_PA.fasta</font></td></tr>
-<tr>
-<td align="left"><font face="monospace">data/phylogeny/by_segment/H5N1_PB1.fasta</font></td></tr>
-<tr>
-<td align="left"><font face="monospace">data/phylogeny/by_segment/H5N1_PB2.fasta</font></td></tr>
-</table>>]
-5 [ shape=none, margin=0, label=<<table border="2" color="#A7D957" cellspacing="3" cellborder="0">
-<tr><td>
-<b><font point-size="18">concat_aligned_segments_with_partitions</font></b>
+<b><font point-size="18">iqtree_fast_ha</font></b>
 </td></tr>
 <hr/>
 <tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
 <tr>
 <td align="left"><font face="monospace">data/processed_alignments/qc_filtered/H5N1_HA.mafft</font></td>
 </tr>
-<tr>
-<td align="left"><font face="monospace">data/processed_alignments/qc_filtered/H5N1_MP.mafft</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">data/processed_alignments/qc_filtered/H5N1_NA.mafft</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">data/processed_alignments/qc_filtered/H5N1_NP.mafft</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">data/processed_alignments/qc_filtered/H5N1_NS.mafft</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">data/processed_alignments/qc_filtered/H5N1_PA.mafft</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">data/processed_alignments/qc_filtered/H5N1_PB1.mafft</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">data/processed_alignments/qc_filtered/H5N1_PB2.mafft</font></td>
-</tr>
 <hr/>
 <tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
 <tr>
-<td align="left"><font face="monospace">data/phylogeny/aligned/H5N1_full_concat_beast.mafft</font></td></tr>
-<tr>
-<td align="left"><font face="monospace">data/phylogeny/aligned/H5N1_full_concat_beast.partitions</font></td></tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/HA/H5N1_HA_fast.treefile</font></td></tr>
 </table>>]
-6 [ shape=none, margin=0, label=<<table border="2" color="#57D96B" cellspacing="3" cellborder="0">
+4 [ shape=none, margin=0, label=<<table border="2" color="#93D957" cellspacing="3" cellborder="0">
 <tr><td>
 <b><font point-size="18">filter_alignments_by_nextclade_qc</font></b>
 </td></tr>
@@ -495,7 +277,7 @@ digraph snakemake_dag {
 <tr>
 <td align="left"><font face="monospace">results/qc_metrics/alignments/qc_discarded_sequences.csv</font></td></tr>
 </table>>]
-7 [ shape=none, margin=0, label=<<table border="2" color="#5793D9" cellspacing="3" cellborder="0">
+5 [ shape=none, margin=0, label=<<table border="2" color="#57A7D9" cellspacing="3" cellborder="0">
 <tr><td>
 <b><font point-size="18">run_nextclade_alignment_per_segment</font></b>
 </td></tr>
@@ -517,7 +299,7 @@ digraph snakemake_dag {
 <tr>
 <td align="left"><font face="monospace">results/qc_metrics/alignments/nextclade_{segment}_report.tsv</font></td></tr>
 </table>>]
-8 [ shape=none, margin=0, label=<<table border="2" color="#6BD957" cellspacing="3" cellborder="0">
+6 [ shape=none, margin=0, label=<<table border="2" color="#BBD957" cellspacing="3" cellborder="0">
 <tr><td>
 <b><font point-size="18">download_nextclade_db</font></b>
 </td></tr>
@@ -528,7 +310,7 @@ digraph snakemake_dag {
 <tr>
 <td align="left"><font face="monospace">resources/nextclade_h5n1_ha</font></td></tr>
 </table>>]
-9 [ shape=none, margin=0, label=<<table border="2" color="#57D957" cellspacing="3" cellborder="0">
+7 [ shape=none, margin=0, label=<<table border="2" color="#A7D957" cellspacing="3" cellborder="0">
 <tr><td>
 <b><font point-size="18">extract_segment_reference</font></b>
 </td></tr>
@@ -542,48 +324,136 @@ digraph snakemake_dag {
 <tr>
 <td align="left"><font face="monospace">data/phylogeny/by_segment/H5N1_{segment}_ref.fasta</font></td></tr>
 </table>>]
-10 [ shape=none, margin=0, label=<<table border="2" color="#57D9A7" cellspacing="3" cellborder="0">
+8 [ shape=none, margin=0, label=<<table border="2" color="#576BD9" cellspacing="3" cellborder="0">
 <tr><td>
-<b><font point-size="18">iqtree_fast_full_concat</font></b>
+<b><font point-size="18">segment_analysis_ggtree_fast_ha</font></b>
 </td></tr>
 <hr/>
 <tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
 <tr>
-<td align="left"><font face="monospace">data/phylogeny/aligned/H5N1_full_concat_beast.mafft</font></td>
+<td align="left"><font face="monospace">metadata/H5N1_context.csv</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">data/phylogeny/aligned/H5N1_full_concat_beast.partitions</font></td>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/HA/H5N1_HA_fast.treefile</font></td>
 </tr>
 <hr/>
 <tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
 <tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/full_concat/H5N1_full_concat_beast.treefile</font></td></tr>
+<td align="left"><font face="monospace">results/figures/HA_fast_tree.png</font></td></tr>
 </table>>]
-11 [ shape=none, margin=0, label=<<table border="2" color="#57BBD9" cellspacing="3" cellborder="0">
+9 [ shape=none, margin=0, label=<<table border="2" color="#D99357" cellspacing="3" cellborder="0">
 <tr><td>
-<b><font point-size="18">run_iqtree_codon_segment_replicate</font></b>
+<b><font point-size="18">build_h5n1_context_metadata</font></b>
 </td></tr>
 <hr/>
 <tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
 <tr>
-<td align="left"><font face="monospace">data/phylogeny/main_panel/H5N1_{segment}.fasta</font></td>
+<td align="left"><font face="monospace">data/context/gisaid_epiflu_sequence.fasta</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">data/phylogeny/main_panel/H5N1_{segment}.partitions</font></td>
+<td align="left"><font face="monospace">metadata/flu_filtrado.csv</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">metadata/genoflu_context_results.tsv</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">metadata/genoflu_results.done</font></td>
 </tr>
 <hr/>
 <tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
 <tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/{segment,PB2|PB1|PA|HA|NP|NA}/rep{rep}.treefile</font></td></tr>
+<td align="left"><font face="monospace">metadata/H5N1_context.csv</font></td></tr>
 </table>>]
-12 [ shape=none, margin=0, label=<<table border="2" color="#D96B57" cellspacing="3" cellborder="0">
+10 [ shape=none, margin=0, label=<<table border="2" color="#7FD957" cellspacing="3" cellborder="0">
+<tr><td>
+<b><font point-size="18">genoflu_context_multi</font></b>
+</td></tr>
+<hr/>
+<tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
+<tr>
+<td align="left"><font face="monospace">data/context/gisaid_epiflu_sequence.fasta</font></td>
+</tr>
+<hr/>
+<tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
+<tr>
+<td align="left"><font face="monospace">metadata/genoflu_context_results.tsv</font></td></tr>
+</table>>]
+11 [ shape=none, margin=0, label=<<table border="2" color="#57D96B" cellspacing="3" cellborder="0">
+<tr><td>
+<b><font point-size="18">genoflu_results_to_metadata</font></b>
+</td></tr>
+<hr/>
+<tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
+<tr>
+<td align="left"><font face="monospace">metadata/genoflu_results.tsv</font></td>
+</tr>
+<hr/>
+<tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
+<tr>
+<td align="left"><font face="monospace">metadata/genoflu_results.done</font></td></tr>
+</table>>]
+12 [ shape=none, margin=0, label=<<table border="2" color="#57D957" cellspacing="3" cellborder="0">
+<tr><td>
+<b><font point-size="18">genoflu_multi</font></b>
+</td></tr>
+<hr/>
+<tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
+<tr>
+<td align="left"><font face="monospace">data/input/H5N1_EC_gisaid_from_mira.fasta</font></td>
+</tr>
+<hr/>
+<tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
+<tr>
+<td align="left"><font face="monospace">metadata/genoflu_results.tsv</font></td></tr>
+</table>>]
+13 [ shape=none, margin=0, label=<<table border="2" color="#57D9BB" cellspacing="3" cellborder="0">
+<tr><td>
+<b><font point-size="18">prune_tree_by_distance_to_core</font></b>
+</td></tr>
+<hr/>
+<tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
+<tr>
+<td align="left"><font face="monospace">data/processed_alignments/qc_filtered/H5N1_HA.mafft</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">metadata/H5N1_context.csv</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/HA/H5N1_HA_fast.treefile</font></td>
+</tr>
+<hr/>
+<tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
+<tr>
+<td align="left"><font face="monospace">data/phylogeny/rtt/panel_main_concat.filtered.audit.tsv</font></td></tr>
+<tr>
+<td align="left"><font face="monospace">data/phylogeny/rtt/panel_main_concat.filtered.fasta</font></td></tr>
+<tr>
+<td align="left"><font face="monospace">data/phylogeny/rtt/panel_main_concat.filtered.nwk</font></td></tr>
+<tr>
+<td align="left"><font face="monospace">results/qc_metrics/alignments/pruning_discarded_sequences.csv</font></td></tr>
+</table>>]
+14 [ shape=none, margin=0, label=<<table border="2" color="#D9BB57" cellspacing="3" cellborder="0">
+<tr><td>
+<b><font point-size="18">build_treetime_dates_subsets</font></b>
+</td></tr>
+<hr/>
+<tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
+<tr>
+<td align="left"><font face="monospace">metadata/H5N1_context.csv</font></td>
+</tr>
+<hr/>
+<tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/rtt/dates_from_headers.tsv</font></td></tr>
+</table>>]
+15 [ shape=none, margin=0, label=<<table border="2" color="#D96B57" cellspacing="3" cellborder="0">
 <tr><td>
 <b><font point-size="18">apply_panel_to_segment_alignments</font></b>
 </td></tr>
 <hr/>
 <tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
 <tr>
-<td align="left"><font face="monospace">data/phylogeny/rtt/panel_main_taxa.filtered.tsv</font></td>
+<td align="left"><font face="monospace">data/phylogeny/rtt/panel_main_concat.filtered.nwk</font></td>
 </tr>
 <tr>
 <td align="left"><font face="monospace">data/processed_alignments/qc_filtered/H5N1_HA.mafft</font></td>
@@ -632,262 +502,7 @@ digraph snakemake_dag {
 <tr>
 <td align="left"><font face="monospace">data/phylogeny/main_panel/main_alignment.partitions</font></td></tr>
 </table>>]
-13 [ shape=none, margin=0, label=<<table border="2" color="#57CFD9" cellspacing="3" cellborder="0">
-<tr><td>
-<b><font point-size="18">prune_tree_by_distance_to_core</font></b>
-</td></tr>
-<hr/>
-<tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
-<tr>
-<td align="left"><font face="monospace">data/phylogeny/aligned/H5N1_full_concat_beast.mafft</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/full_concat/H5N1_full_concat_beast.treefile</font></td>
-</tr>
-<hr/>
-<tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
-<tr>
-<td align="left"><font face="monospace">data/phylogeny/rtt/panel_main_concat.filtered.audit.tsv</font></td></tr>
-<tr>
-<td align="left"><font face="monospace">data/phylogeny/rtt/panel_main_concat.filtered.fasta</font></td></tr>
-<tr>
-<td align="left"><font face="monospace">data/phylogeny/rtt/panel_main_concat.filtered.nwk</font></td></tr>
-<tr>
-<td align="left"><font face="monospace">data/phylogeny/rtt/panel_main_taxa.filtered.tsv</font></td></tr>
-<tr>
-<td align="left"><font face="monospace">results/qc_metrics/alignments/pruning_discarded_sequences.csv</font></td></tr>
-</table>>]
-14 [ shape=none, margin=0, label=<<table border="2" color="#D99357" cellspacing="3" cellborder="0">
-<tr><td>
-<b><font point-size="18">build_single_segment_codon_partition</font></b>
-</td></tr>
-<hr/>
-<tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
-<tr>
-<td align="left"><font face="monospace">data/phylogeny/main_panel/H5N1_{segment}.fasta</font></td>
-</tr>
-<hr/>
-<tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
-<tr>
-<td align="left"><font face="monospace">data/phylogeny/main_panel/H5N1_{segment,PB2|PB1|PA|HA|NP|NA}.partitions</font></td></tr>
-</table>>]
-15 [ shape=none, margin=0, label=<<table border="2" color="#57A7D9" cellspacing="3" cellborder="0">
-<tr><td>
-<b><font point-size="18">run_iqtree_simple_segment_replicate</font></b>
-</td></tr>
-<hr/>
-<tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
-<tr>
-<td align="left"><font face="monospace">data/phylogeny/main_panel/H5N1_{segment}.fasta</font></td>
-</tr>
-<hr/>
-<tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/{segment,NS|MP}/rep{rep}.treefile</font></td></tr>
-</table>>]
-16 [ shape=none, margin=0, label=<<table border="2" color="#93D957" cellspacing="3" cellborder="0">
-<tr><td>
-<b><font point-size="18">concat_except_HA_replicate</font></b>
-</td></tr>
-<hr/>
-<tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
-<tr>
-<td align="left"><font face="monospace">data/phylogeny/aligned/H5N1_concat_except_HA.mafft</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">data/phylogeny/aligned/H5N1_concat_except_HA.partitions</font></td>
-</tr>
-<hr/>
-<tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/concat_except_HA/rep{rep}.treefile</font></td></tr>
-</table>>]
-17 [ shape=none, margin=0, label=<<table border="2" color="#7FD957" cellspacing="3" cellborder="0">
-<tr><td>
-<b><font point-size="18">concat_except_ha_with_partitions</font></b>
-</td></tr>
-<hr/>
-<tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
-<tr>
-<td align="left"><font face="monospace">data/phylogeny/main_panel/H5N1_MP.fasta</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">data/phylogeny/main_panel/H5N1_NA.fasta</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">data/phylogeny/main_panel/H5N1_NP.fasta</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">data/phylogeny/main_panel/H5N1_NS.fasta</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">data/phylogeny/main_panel/H5N1_PA.fasta</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">data/phylogeny/main_panel/H5N1_PB1.fasta</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">data/phylogeny/main_panel/H5N1_PB2.fasta</font></td>
-</tr>
-<hr/>
-<tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
-<tr>
-<td align="left"><font face="monospace">data/phylogeny/aligned/H5N1_concat_except_HA.mafft</font></td></tr>
-<tr>
-<td align="left"><font face="monospace">data/phylogeny/aligned/H5N1_concat_except_HA.partitions</font></td></tr>
-</table>>]
-18 [ shape=none, margin=0, label=<<table border="2" color="#57D97F" cellspacing="3" cellborder="0">
-<tr><td>
-<b><font point-size="18">generate_final_segment_tree</font></b>
-</td></tr>
-<hr/>
-<tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/{segment}/rep1.treefile</font></td>
-</tr>
-<hr/>
-<tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/{segment}/{segment}_final.treefile</font></td></tr>
-</table>>]
-19 [ shape=none, margin=0, label=<<table border="2" color="#BBD957" cellspacing="3" cellborder="0">
-<tr><td>
-<b><font point-size="18">calculate_rf_distances</font></b>
-</td></tr>
-<hr/>
-<tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/{segment}/rep1.treefile</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/{segment}/rep2.treefile</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/{segment}/rep3.treefile</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/{segment}/rep4.treefile</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/{segment}/rep5.treefile</font></td>
-</tr>
-<hr/>
-<tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/{segment}/rf_dist_matrix.rf</font></td></tr>
-</table>>]
-20 [ shape=none, margin=0, label=<<table border="2" color="#CFD957" cellspacing="3" cellborder="0">
-<tr><td>
-<b><font point-size="18">calculate_concordance_factors</font></b>
-</td></tr>
-<hr/>
-<tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
-<tr>
-<td align="left"><font face="monospace">data/phylogeny/main_panel/H5N1_HA.fasta</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">data/phylogeny/main_panel/H5N1_MP.fasta</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">data/phylogeny/main_panel/H5N1_NA.fasta</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">data/phylogeny/main_panel/H5N1_NP.fasta</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">data/phylogeny/main_panel/H5N1_NS.fasta</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">data/phylogeny/main_panel/H5N1_PA.fasta</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">data/phylogeny/main_panel/H5N1_PB1.fasta</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">data/phylogeny/main_panel/H5N1_PB2.fasta</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/HA/HA_final.treefile</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/MP/MP_final.treefile</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/NA/NA_final.treefile</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/NP/NP_final.treefile</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/NS/NS_final.treefile</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/PA/PA_final.treefile</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/PB1/PB1_final.treefile</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/PB2/PB2_final.treefile</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/subset_fast/panel_main_concat.final.treefile</font></td>
-</tr>
-<hr/>
-<tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/concordance/full_concat.gcs</font></td></tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/concordance/full_concat.scf</font></td></tr>
-</table>>]
-21 [ shape=none, margin=0, label=<<table border="2" color="#57D9BB" cellspacing="3" cellborder="0">
-<tr><td>
-<b><font point-size="18">iqtree_fast_subset</font></b>
-</td></tr>
-<hr/>
-<tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
-<tr>
-<td align="left"><font face="monospace">data/phylogeny/main_panel/main_alignment.fasta</font></td>
-</tr>
-<tr>
-<td align="left"><font face="monospace">data/phylogeny/main_panel/main_alignment.partitions</font></td>
-</tr>
-<hr/>
-<tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/subset_fast/panel_main_concat.final.treefile</font></td></tr>
-</table>>]
-22 [ shape=none, margin=0, label=<<table border="2" color="#57D993" cellspacing="3" cellborder="0">
-<tr><td>
-<b><font point-size="18">generate_itol_colors_full_concat</font></b>
-</td></tr>
-<hr/>
-<tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/full_concat/H5N1_full_concat_beast.treefile</font></td>
-</tr>
-<hr/>
-<tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/itol_styles/dataset_colorstrip.txt</font></td></tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/itol_styles/tree_colors.txt</font></td></tr>
-</table>>]
-23 [ shape=none, margin=0, label=<<table border="2" color="#D9CF57" cellspacing="3" cellborder="0">
-<tr><td>
-<b><font point-size="18">build_treetime_dates_subsets</font></b>
-</td></tr>
-<hr/>
-<tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
-<tr>
-<td align="left"><font face="monospace">data/phylogeny/main_panel/main_alignment.fasta</font></td>
-</tr>
-<hr/>
-<tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/rtt/dates_from_headers.tsv</font></td></tr>
-</table>>]
-24 [ shape=none, margin=0, label=<<table border="2" color="#577FD9" cellspacing="3" cellborder="0">
+16 [ shape=none, margin=0, label=<<table border="2" color="#5793D9" cellspacing="3" cellborder="0">
 <tr><td>
 <b><font point-size="18">run_root_to_tip_subsets</font></b>
 </td></tr>
@@ -897,7 +512,7 @@ digraph snakemake_dag {
 <td align="left"><font face="monospace">data/phylogeny/main_panel/main_alignment.fasta</font></td>
 </tr>
 <tr>
-<td align="left"><font face="monospace">results/phylogeny/iq-tree/subset_fast/panel_main_concat.final.treefile</font></td>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/subset_concat/subset_concat_final.treefile</font></td>
 </tr>
 <tr>
 <td align="left"><font face="monospace">results/phylogeny/rtt/dates_from_headers.tsv</font></td>
@@ -911,72 +526,155 @@ digraph snakemake_dag {
 <tr>
 <td align="left"><font face="monospace">results/phylogeny/rtt/treetime_clock.log</font></td></tr>
 </table>>]
-25 [ shape=none, margin=0, label=<<table border="2" color="#57D9CF" cellspacing="3" cellborder="0">
+17 [ shape=none, margin=0, label=<<table border="2" color="#D9CF57" cellspacing="3" cellborder="0">
 <tr><td>
-<b><font point-size="18">itol_color_subsets</font></b>
+<b><font point-size="18">copy_subset_concat_final_tree</font></b>
+</td></tr>
+<hr/>
+<tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/subset_concat/rep1.treefile</font></td>
+</tr>
+<hr/>
+<tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/subset_concat/subset_concat_final.treefile</font></td></tr>
+</table>>]
+18 [ shape=none, margin=0, label=<<table border="2" color="#57BBD9" cellspacing="3" cellborder="0">
+<tr><td>
+<b><font point-size="18">run_iqtree_subset_concat_replicate</font></b>
+</td></tr>
+<hr/>
+<tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
+<tr>
+<td align="left"><font face="monospace">data/phylogeny/main_panel/main_alignment.fasta</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">data/phylogeny/main_panel/main_alignment.partitions</font></td>
+</tr>
+<hr/>
+<tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/subset_concat/rep{rep}.treefile</font></td></tr>
+</table>>]
+19 [ shape=none, margin=0, label=<<table border="2" color="#577FD9" cellspacing="3" cellborder="0">
+<tr><td>
+<b><font point-size="18">segment_analysis_ggtree</font></b>
 </td></tr>
 <hr/>
 <tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
 <tr>
 <td align="left"><font face="monospace">&lt;input function&gt;</font></td>
 </tr>
+<tr>
+<td align="left"><font face="monospace">metadata/H5N1_context.csv</font></td>
+</tr>
 <hr/>
 <tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
 <tr>
-<td align="left"><font face="monospace">results/phylogeny/itol_styles/{subdir,PB2|PB1|PA|HA|NP|NA|MP|NS|subset_fast}/dataset_colorstrip.txt</font></td></tr>
-<tr>
-<td align="left"><font face="monospace">results/phylogeny/itol_styles/{subdir,PB2|PB1|PA|HA|NP|NA|MP|NS|subset_fast}/tree_colors.txt</font></td></tr>
+<td align="left"><font face="monospace">results/figures/{segment}_tree.png</font></td></tr>
 </table>>]
-	16 -> 0
-	18 -> 0
-	22 -> 0
-	11 -> 0
-	10 -> 0
-	12 -> 0
-	5 -> 0
-	13 -> 0
-	19 -> 0
-	25 -> 0
-	4 -> 0
-	15 -> 0
-	23 -> 0
-	24 -> 0
-	21 -> 0
+20 [ shape=none, margin=0, label=<<table border="2" color="#CFD957" cellspacing="3" cellborder="0">
+<tr><td>
+<b><font point-size="18">copy_trees_for_segment_analysis</font></b>
+</td></tr>
+<hr/>
+<tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/{segment}/rep1.treefile</font></td>
+</tr>
+<hr/>
+<tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/{segment,PB2|PB1|PA|HA|NP|NA|MP|NS}/{segment}_final.treefile</font></td></tr>
+</table>>]
+21 [ shape=none, margin=0, label=<<table border="2" color="#57D9CF" cellspacing="3" cellborder="0">
+<tr><td>
+<b><font point-size="18">run_iqtree_codon_segment_replicate</font></b>
+</td></tr>
+<hr/>
+<tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
+<tr>
+<td align="left"><font face="monospace">data/phylogeny/main_panel/H5N1_{segment}.fasta</font></td>
+</tr>
+<tr>
+<td align="left"><font face="monospace">data/phylogeny/main_panel/H5N1_{segment}.partitions</font></td>
+</tr>
+<hr/>
+<tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/{segment,PB2|PB1|PA|HA|NP|NA}/rep{rep}.treefile</font></td></tr>
+</table>>]
+22 [ shape=none, margin=0, label=<<table border="2" color="#D9A757" cellspacing="3" cellborder="0">
+<tr><td>
+<b><font point-size="18">build_single_segment_codon_partition</font></b>
+</td></tr>
+<hr/>
+<tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
+<tr>
+<td align="left"><font face="monospace">data/phylogeny/main_panel/H5N1_{segment}.fasta</font></td>
+</tr>
+<hr/>
+<tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
+<tr>
+<td align="left"><font face="monospace">data/phylogeny/main_panel/H5N1_{segment,PB2|PB1|PA|HA|NP|NA}.partitions</font></td></tr>
+</table>>]
+23 [ shape=none, margin=0, label=<<table border="2" color="#57CFD9" cellspacing="3" cellborder="0">
+<tr><td>
+<b><font point-size="18">run_iqtree_simple_segment_replicate</font></b>
+</td></tr>
+<hr/>
+<tr><td align="left"> <b><font point-size="14">&#8618; input</font></b> </td></tr>
+<tr>
+<td align="left"><font face="monospace">data/phylogeny/main_panel/H5N1_{segment}.fasta</font></td>
+</tr>
+<hr/>
+<tr><td align="right"> <b><font point-size="14">output &rarr;</font></b> </td> </tr>
+<tr>
+<td align="left"><font face="monospace">results/phylogeny/iq-tree/{segment,NS|MP}/rep{rep}.treefile</font></td></tr>
+</table>>]
+	9 -> 0
 	1 -> 0
-	20 -> 0
+	15 -> 0
+	16 -> 0
+	17 -> 0
+	3 -> 0
+	14 -> 0
+	13 -> 0
+	8 -> 0
+	18 -> 0
+	19 -> 0
 	2 -> 1
-	3 -> 2
-	1 -> 4
+	4 -> 3
+	5 -> 4
 	6 -> 5
-	7 -> 6
-	4 -> 7
-	9 -> 7
-	8 -> 7
-	4 -> 9
-	5 -> 10
-	14 -> 11
+	7 -> 5
+	1 -> 5
+	1 -> 7
+	3 -> 8
+	9 -> 8
+	11 -> 9
+	10 -> 9
 	12 -> 11
-	6 -> 12
-	13 -> 12
-	10 -> 13
-	5 -> 13
-	12 -> 14
-	12 -> 15
+	2 -> 12
+	4 -> 13
+	9 -> 13
+	3 -> 13
+	9 -> 14
+	4 -> 15
+	13 -> 15
+	15 -> 16
+	14 -> 16
 	17 -> 16
-	12 -> 17
-	11 -> 18
+	18 -> 17
 	15 -> 18
-	16 -> 19
-	11 -> 19
-	15 -> 19
-	18 -> 20
-	12 -> 20
+	17 -> 19
+	9 -> 19
+	20 -> 19
+	23 -> 20
 	21 -> 20
-	12 -> 21
-	10 -> 22
-	12 -> 23
-	23 -> 24
-	12 -> 24
-	21 -> 24
-	21 -> 25
+	22 -> 21
+	15 -> 21
+	15 -> 22
+	15 -> 23
 }            

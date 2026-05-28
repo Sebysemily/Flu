@@ -5,6 +5,7 @@ PHYLO_SEGMENTS = ["PB2", "PB1", "PA", "HA", "NP", "NA", "MP", "NS"]
 CODON_SEGMENTS = ["PB2", "PB1", "PA", "HA", "NP", "NA"]
 SIMPLE_SEGMENTS = ["NS", "MP"]
 MAIN_PANEL_METADATA = "metadata/H5N1_context.csv"
+FILTRADO_CSV = config.get("flu_filtrado", "metadata/flu_filtrado.csv")
 
 # =====================================================================
 # =====================================================================
@@ -109,6 +110,38 @@ rule filter_alignments_by_nextclade_qc:
         """
 
 # =====================================================================
+# Rule: filter_lineage_pb2_ha_alignments
+# =====================================================================
+
+PROCESSED_ALIGNMENTS_HA_PB2_LINEAGE = config.get(
+    "processed_alignments_ha_pb2_lineage", "data/processed_alignments/HA_PB2_lineage"
+)
+
+rule filter_lineage_pb2_ha_alignments:
+    input:
+        pb2=f"{PROCESSED_ALIGNMENTS_QC_FILTERED}/H5N1_PB2.mafft",
+        ha=f"{PROCESSED_ALIGNMENTS_QC_FILTERED}/H5N1_HA.mafft",
+        flu_filtrado=FILTRADO_CSV,
+    output:
+        pb2=f"{PROCESSED_ALIGNMENTS_HA_PB2_LINEAGE}/H5N1_PB2.mafft",
+        ha=f"{PROCESSED_ALIGNMENTS_HA_PB2_LINEAGE}/H5N1_HA.mafft",
+        audit=f"{RESULTS_QC_METRICS}/alignments/pb2_ha_lineage_filter_audit.csv",
+    params:
+        output_dir=PROCESSED_ALIGNMENTS_HA_PB2_LINEAGE,
+    conda:
+        "../envs/01_ml_trees.yml"
+    shell:
+        r"""
+        export PYTHONPATH=code:${{PYTHONPATH:-}}
+        python code/01_ml_trees/filter_pb2_ha_lineage_alignments.py \
+            --pb2-alignment {input.pb2} \
+            --ha-alignment {input.ha} \
+            --flu-filtrado {input.flu_filtrado} \
+            --output-dir {params.output_dir} \
+            --audit-csv {output.audit}
+        """
+
+# =====================================================================
 # Rule: build_single_segment_codon_partition
 # =====================================================================
 
@@ -190,16 +223,16 @@ rule run_iqtree_simple_segment_replicate:
         """
 
 # =====================================================================
-# Rule: iqtree_fast_ha
+# Rule: iqtree_fast_ha (lineage panel)
 # =====================================================================
 
 rule iqtree_fast_ha:
     input:
-        alignment=f"{PROCESSED_ALIGNMENTS_QC_FILTERED}/H5N1_HA.mafft",
+        alignment=f"{PROCESSED_ALIGNMENTS_HA_PB2_LINEAGE}/H5N1_HA.mafft",
     output:
-        treefile=f"{RESULTS_PHYLOGENY}/iq-tree/HA/H5N1_HA_fast.treefile"
+        treefile=f"{RESULTS_PHYLOGENY}/iq-tree/HA/lineage/H5N1_HA_fast.treefile"
     params:
-        prefix=f"{RESULTS_PHYLOGENY}/iq-tree/HA/fast_ha/fast_ha",
+        prefix=f"{RESULTS_PHYLOGENY}/iq-tree/HA/lineage/fast_ha/fast_ha",
         seed=RANDOM_SEED
     threads: MAX_THREADS
     conda:
@@ -212,24 +245,119 @@ rule iqtree_fast_ha:
         """
 
 # =====================================================================
-# Rule: segment_analysis_ggtree_fast_ha
+# Rule: iqtree_fast_pb2 (lineage panel)
 # =====================================================================
 
-rule segment_analysis_ggtree_fast_ha:
+rule iqtree_fast_pb2:
     input:
-        tree=f"{RESULTS_PHYLOGENY}/iq-tree/HA/H5N1_HA_fast.treefile",
+        alignment=f"{PROCESSED_ALIGNMENTS_HA_PB2_LINEAGE}/H5N1_PB2.mafft",
+    output:
+        treefile=f"{RESULTS_PHYLOGENY}/iq-tree/PB2/lineage/H5N1_PB2_fast.treefile"
+    params:
+        prefix=f"{RESULTS_PHYLOGENY}/iq-tree/PB2/lineage/fast_pb2/fast_pb2",
+        seed=RANDOM_SEED
+    threads: MAX_THREADS
+    conda:
+        "../envs/01_ml_trees.yml"
+    shell:
+        r"""
+        mkdir -p $(dirname {params.prefix})
+        iqtree -s {input.alignment} -pre {params.prefix} --fast -seed {params.seed} -nt {threads}
+        cp {params.prefix}.treefile {output.treefile}
+        """
+
+# =====================================================================
+# Rule: segment_analysis_ggtree_lineage (HA / PB2 fast trees)
+# =====================================================================
+
+LINEAGE_GGTREE_SEGMENTS = ["HA", "PB2"]
+LINEAGE_FIGURES_DIR = "figures/HA_PB2_lineage"
+
+rule segment_analysis_ggtree_lineage:
+    input:
+        tree=f"{RESULTS_PHYLOGENY}/iq-tree/{{segment}}/lineage/H5N1_{{segment}}_fast.treefile",
         metadata=MAIN_PANEL_METADATA,
     output:
-        png="results/figures/HA_fast_tree.png",
+        png=f"{LINEAGE_FIGURES_DIR}/{{segment}}_lineage_fast_tree.png",
+        rds=f"{LINEAGE_FIGURES_DIR}/{{segment}}_lineage_fast_tree.rds",
+    params:
+        title=lambda wildcards: f"{wildcards.segment} lineage (PB2+HA panel, fast ML)",
+        figures_dir=LINEAGE_FIGURES_DIR,
+    wildcard_constraints:
+        segment="|".join(LINEAGE_GGTREE_SEGMENTS),
     conda:
         "../envs/ggtree.yml"
     shell:
         r"""
+        mkdir -p {params.figures_dir}
         Rscript code/segment_analysis/plot_ggtree.R \
             {input.tree} \
             {input.metadata} \
             {output.png} \
-            "HA (fast ML, all samples)"
+            "{params.title}"
+        test -s {output.png}
+        test -s {output.rds}
+        """
+
+# =====================================================================
+# Rule: segment_analysis_composite_lineage (heatmap + HA/PB2 tanglegram)
+# =====================================================================
+
+rule segment_analysis_composite_lineage_preview:
+    input:
+        heatmap_rds="figures/build_inputs/flu_lineage.rds",
+        ha_tree=f"{RESULTS_PHYLOGENY}/iq-tree/HA/lineage/H5N1_HA_fast.treefile",
+        pb2_tree=f"{RESULTS_PHYLOGENY}/iq-tree/PB2/lineage/H5N1_PB2_fast.treefile",
+        panel_metadata=MAIN_PANEL_METADATA,
+    output:
+        png=f"{LINEAGE_FIGURES_DIR}/HA_PB2_lineage_composite_preview.png",
+    params:
+        figures_dir=LINEAGE_FIGURES_DIR,
+        max_tips=60,
+        ribbon_segment="HA",
+    conda:
+        "../envs/ggtree.yml"
+    shell:
+        r"""
+        ulimit -s unlimited || true
+        mkdir -p {params.figures_dir}
+        Rscript code/segment_analysis/plot_composite_lineage.R \
+            {input.heatmap_rds} \
+            {input.ha_tree} \
+            {input.pb2_tree} \
+            {input.panel_metadata} \
+            {output.png} \
+            {params.max_tips} \
+            {params.ribbon_segment}
+        test -s {output.png}
+        """
+
+rule segment_analysis_composite_lineage:
+    input:
+        heatmap_rds="figures/build_inputs/flu_lineage.rds",
+        ha_tree=f"{RESULTS_PHYLOGENY}/iq-tree/HA/lineage/H5N1_HA_fast.treefile",
+        pb2_tree=f"{RESULTS_PHYLOGENY}/iq-tree/PB2/lineage/H5N1_PB2_fast.treefile",
+        panel_metadata=MAIN_PANEL_METADATA,
+    output:
+        png=f"{LINEAGE_FIGURES_DIR}/HA_PB2_lineage_composite.png",
+    params:
+        figures_dir=LINEAGE_FIGURES_DIR,
+        ribbon_segment="HA",
+    conda:
+        "../envs/ggtree.yml"
+    shell:
+        r"""
+        ulimit -s unlimited || true
+        mkdir -p {params.figures_dir}
+        Rscript code/segment_analysis/plot_composite_lineage.R \
+            {input.heatmap_rds} \
+            {input.ha_tree} \
+            {input.pb2_tree} \
+            {input.panel_metadata} \
+            {output.png} \
+            "" \
+            {params.ribbon_segment}
+        test -s {output.png}
         """
 
 # =====================================================================

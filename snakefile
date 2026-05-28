@@ -10,38 +10,38 @@ BY_SEGMENT_FASTAS = expand(
     segment=["PB2", "PB1", "PA", "HA", "NP", "NA", "MP", "NS"],
 )
 
-MAIN_PHYLOGENY_TARGETS = [
-    *BY_SEGMENT_FASTAS,
-    f"{RESULTS_PHYLOGENY}/iq-tree/HA/H5N1_HA_fast.treefile",
-    "results/figures/HA_fast_tree.png",
+LINEAGE_PB2_HA_TARGETS = [
+    f"{PROCESSED_ALIGNMENTS_HA_PB2_LINEAGE}/H5N1_PB2.mafft",
+    f"{PROCESSED_ALIGNMENTS_HA_PB2_LINEAGE}/H5N1_HA.mafft",
+    f"{RESULTS_QC_METRICS}/alignments/pb2_ha_lineage_filter_audit.csv",
+    f"{RESULTS_PHYLOGENY}/iq-tree/HA/lineage/H5N1_HA_fast.treefile",
+    f"{RESULTS_PHYLOGENY}/iq-tree/PB2/lineage/H5N1_PB2_fast.treefile",
+    *expand("figures/HA_PB2_lineage/{segment}_lineage_fast_tree.png", segment=["HA", "PB2"]),
+    *expand("figures/HA_PB2_lineage/{segment}_lineage_fast_tree.rds", segment=["HA", "PB2"]),
+    "figures/HA_PB2_lineage/HA_PB2_lineage_composite.png",
 ]
 
-RTT_AND_ML_SUBSET_TARGETS = [
-    MAIN_PANEL_FILTERED_ALIGNMENT,
-    MAIN_PANEL_FILTERED_TREE,
-    MAIN_PANEL_FILTERED_AUDIT,
-    PRE_BEAST_DATES,
-    MAIN_PANEL_ALIGNMENT,
-    MAIN_PANEL_PARTITIONS,
-    PRE_BEAST_ROOT_TO_TIP_DONE,
-    *expand(
-        f"{RESULTS_PHYLOGENY}/iq-tree/subset_concat/rep{{rep}}.treefile",
-        rep=range(1, int(config.get("iqtree_replicates", 5)) + 1)
-    ),
-    f"{RESULTS_PHYLOGENY}/iq-tree/subset_concat/subset_concat_final.treefile",
+MAIN_PHYLOGENY_TARGETS = [
+    *BY_SEGMENT_FASTAS,
+    *LINEAGE_PB2_HA_TARGETS,
     MAIN_PANEL_METADATA,
-    *expand(
-        "results/figures/{segment}_tree.png",
-        segment=["PB2", "PB1", "PA", "HA", "NP", "NA", "MP", "NS", "subset_concat"]
-    ),
 ]
 
 ALL_VALIDATION_TARGETS = [
     *MAIN_PHYLOGENY_TARGETS,
-    *RTT_AND_ML_SUBSET_TARGETS,
     FILTRADO_CSV,
+]
+
+GENOFLU_METADATA_TARGETS = [
+    MAIN_PANEL_METADATA,
+    "metadata/genoflu_results.done",
+    "metadata/genoflu_context_results.tsv",
 ]
 
 rule all:
     input:
         ALL_VALIDATION_TARGETS
+
+rule genoflu_metadata:
+    input:
+        GENOFLU_METADATA_TARGETS

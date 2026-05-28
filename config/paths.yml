@@ -9,6 +9,8 @@
 mira_base_dir: "../../../MIRA_NGS"
 flu_filtrado: "metadata/flu_filtrado.csv"
 context_fasta_raw: "data/context/gisaid_epiflu_sequence.fasta"
+context_dir: "data/context"
+context_genoflu_run: "data/context/genoflu_run"
 
 # -----------------------------
 # Intermediate Directories (Data)
@@ -17,6 +19,8 @@ data_input: "data/input"
 data_combined_context_ecuador: "data/standard_header_input_fasta"
 data_phylogeny: "data/phylogeny"
 processed_alignments_codon_aware: "data/processed_alignments/codon_aware"
+processed_alignments_qc_filtered: "data/processed_alignments/qc_filtered"
+processed_alignments_ha_pb2_lineage: "data/processed_alignments/HA_PB2_lineage"
 
 # -----------------------------
 # Results Directories

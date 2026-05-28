@@ -3,380 +3,203 @@ digraph snakemake_dag {
     node[shape=box, style=rounded, fontname=sans,                 fontsize=10, penwidth=2];
     edge[penwidth=2, color=grey];
 	0[label = "all", color = "0.00 0.6 0.85", style="rounded"];
-	1[label = "build_standard_headers_for_gisaid_context", color = "0.13 0.6 0.85", style="rounded,dashed"];
-	2[label = "build_standard_date_headers", color = "0.10 0.6 0.85", style="rounded,dashed"];
-	3[label = "build_gisaid_input_from_mira", color = "0.05 0.6 0.85", style="rounded,dashed"];
-	4[label = "split_h5n1_final_by_segment", color = "0.64 0.6 0.85", style="rounded"];
-	5[label = "concat_aligned_segments_with_partitions", color = "0.23 0.6 0.85", style="rounded"];
-	6[label = "filter_alignments_by_nextclade_qc", color = "0.36 0.6 0.85", style="rounded"];
-	7[label = "run_nextclade_alignment_per_segment", color = "0.59 0.6 0.85", style="rounded"];
-	8[label = "download_nextclade_db", color = "0.31 0.6 0.85", style="rounded"];
-	9[label = "extract_segment_reference\nsegment: PB2", color = "0.33 0.6 0.85", style="rounded"];
-	10[label = "run_nextclade_alignment_per_segment", color = "0.59 0.6 0.85", style="rounded"];
-	11[label = "extract_segment_reference\nsegment: PB1", color = "0.33 0.6 0.85", style="rounded"];
-	12[label = "run_nextclade_alignment_per_segment", color = "0.59 0.6 0.85", style="rounded"];
-	13[label = "extract_segment_reference\nsegment: PA", color = "0.33 0.6 0.85", style="rounded"];
-	14[label = "run_nextclade_alignment_per_segment", color = "0.59 0.6 0.85", style="rounded"];
-	15[label = "extract_segment_reference\nsegment: HA", color = "0.33 0.6 0.85", style="rounded"];
-	16[label = "run_nextclade_alignment_per_segment", color = "0.59 0.6 0.85", style="rounded"];
-	17[label = "extract_segment_reference\nsegment: NP", color = "0.33 0.6 0.85", style="rounded"];
-	18[label = "run_nextclade_alignment_per_segment", color = "0.59 0.6 0.85", style="rounded"];
-	19[label = "extract_segment_reference\nsegment: NA", color = "0.33 0.6 0.85", style="rounded"];
-	20[label = "run_nextclade_alignment_per_segment", color = "0.59 0.6 0.85", style="rounded"];
-	21[label = "extract_segment_reference\nsegment: MP", color = "0.33 0.6 0.85", style="rounded"];
-	22[label = "run_nextclade_alignment_per_segment", color = "0.59 0.6 0.85", style="rounded"];
-	23[label = "extract_segment_reference\nsegment: NS", color = "0.33 0.6 0.85", style="rounded"];
-	24[label = "iqtree_fast_full_concat", color = "0.44 0.6 0.85", style="rounded"];
-	25[label = "run_iqtree_codon_segment_replicate\nrep: 1", color = "0.54 0.6 0.85", style="rounded"];
-	26[label = "apply_panel_to_segment_alignments", color = "0.03 0.6 0.85", style="rounded"];
-	27[label = "prune_tree_by_distance_to_core", color = "0.51 0.6 0.85", style="rounded"];
-	28[label = "build_single_segment_codon_partition\nsegment: PB2", color = "0.08 0.6 0.85", style="rounded"];
-	29[label = "run_iqtree_codon_segment_replicate\nrep: 2", color = "0.54 0.6 0.85", style="rounded"];
-	30[label = "run_iqtree_codon_segment_replicate\nrep: 3", color = "0.54 0.6 0.85", style="rounded"];
-	31[label = "run_iqtree_codon_segment_replicate\nrep: 4", color = "0.54 0.6 0.85", style="rounded"];
-	32[label = "run_iqtree_codon_segment_replicate\nrep: 5", color = "0.54 0.6 0.85", style="rounded"];
-	33[label = "run_iqtree_codon_segment_replicate\nrep: 1", color = "0.54 0.6 0.85", style="rounded"];
-	34[label = "build_single_segment_codon_partition\nsegment: PB1", color = "0.08 0.6 0.85", style="rounded"];
-	35[label = "run_iqtree_codon_segment_replicate\nrep: 2", color = "0.54 0.6 0.85", style="rounded"];
-	36[label = "run_iqtree_codon_segment_replicate\nrep: 3", color = "0.54 0.6 0.85", style="rounded"];
-	37[label = "run_iqtree_codon_segment_replicate\nrep: 4", color = "0.54 0.6 0.85", style="rounded"];
-	38[label = "run_iqtree_codon_segment_replicate\nrep: 5", color = "0.54 0.6 0.85", style="rounded"];
-	39[label = "run_iqtree_codon_segment_replicate\nrep: 1", color = "0.54 0.6 0.85", style="rounded"];
-	40[label = "build_single_segment_codon_partition\nsegment: PA", color = "0.08 0.6 0.85", style="rounded"];
-	41[label = "run_iqtree_codon_segment_replicate\nrep: 2", color = "0.54 0.6 0.85", style="rounded"];
-	42[label = "run_iqtree_codon_segment_replicate\nrep: 3", color = "0.54 0.6 0.85", style="rounded"];
-	43[label = "run_iqtree_codon_segment_replicate\nrep: 4", color = "0.54 0.6 0.85", style="rounded"];
-	44[label = "run_iqtree_codon_segment_replicate\nrep: 5", color = "0.54 0.6 0.85", style="rounded"];
-	45[label = "run_iqtree_codon_segment_replicate\nrep: 1", color = "0.54 0.6 0.85", style="rounded"];
-	46[label = "build_single_segment_codon_partition\nsegment: HA", color = "0.08 0.6 0.85", style="rounded"];
-	47[label = "run_iqtree_codon_segment_replicate\nrep: 2", color = "0.54 0.6 0.85", style="rounded"];
-	48[label = "run_iqtree_codon_segment_replicate\nrep: 3", color = "0.54 0.6 0.85", style="rounded"];
-	49[label = "run_iqtree_codon_segment_replicate\nrep: 4", color = "0.54 0.6 0.85", style="rounded"];
-	50[label = "run_iqtree_codon_segment_replicate\nrep: 5", color = "0.54 0.6 0.85", style="rounded"];
-	51[label = "run_iqtree_codon_segment_replicate\nrep: 1", color = "0.54 0.6 0.85", style="rounded"];
-	52[label = "build_single_segment_codon_partition\nsegment: NP", color = "0.08 0.6 0.85", style="rounded"];
-	53[label = "run_iqtree_codon_segment_replicate\nrep: 2", color = "0.54 0.6 0.85", style="rounded"];
-	54[label = "run_iqtree_codon_segment_replicate\nrep: 3", color = "0.54 0.6 0.85", style="rounded"];
-	55[label = "run_iqtree_codon_segment_replicate\nrep: 4", color = "0.54 0.6 0.85", style="rounded"];
-	56[label = "run_iqtree_codon_segment_replicate\nrep: 5", color = "0.54 0.6 0.85", style="rounded"];
-	57[label = "run_iqtree_codon_segment_replicate\nrep: 1", color = "0.54 0.6 0.85", style="rounded"];
-	58[label = "build_single_segment_codon_partition\nsegment: NA", color = "0.08 0.6 0.85", style="rounded"];
-	59[label = "run_iqtree_codon_segment_replicate\nrep: 2", color = "0.54 0.6 0.85", style="rounded"];
-	60[label = "run_iqtree_codon_segment_replicate\nrep: 3", color = "0.54 0.6 0.85", style="rounded"];
-	61[label = "run_iqtree_codon_segment_replicate\nrep: 4", color = "0.54 0.6 0.85", style="rounded"];
-	62[label = "run_iqtree_codon_segment_replicate\nrep: 5", color = "0.54 0.6 0.85", style="rounded"];
-	63[label = "run_iqtree_simple_segment_replicate\nrep: 1\nsegment: MP", color = "0.56 0.6 0.85", style="rounded"];
-	64[label = "run_iqtree_simple_segment_replicate\nrep: 2\nsegment: MP", color = "0.56 0.6 0.85", style="rounded"];
-	65[label = "run_iqtree_simple_segment_replicate\nrep: 3\nsegment: MP", color = "0.56 0.6 0.85", style="rounded"];
-	66[label = "run_iqtree_simple_segment_replicate\nrep: 4\nsegment: MP", color = "0.56 0.6 0.85", style="rounded"];
-	67[label = "run_iqtree_simple_segment_replicate\nrep: 5\nsegment: MP", color = "0.56 0.6 0.85", style="rounded"];
-	68[label = "run_iqtree_simple_segment_replicate\nrep: 1\nsegment: NS", color = "0.56 0.6 0.85", style="rounded"];
-	69[label = "run_iqtree_simple_segment_replicate\nrep: 2\nsegment: NS", color = "0.56 0.6 0.85", style="rounded"];
-	70[label = "run_iqtree_simple_segment_replicate\nrep: 3\nsegment: NS", color = "0.56 0.6 0.85", style="rounded"];
-	71[label = "run_iqtree_simple_segment_replicate\nrep: 4\nsegment: NS", color = "0.56 0.6 0.85", style="rounded"];
-	72[label = "run_iqtree_simple_segment_replicate\nrep: 5\nsegment: NS", color = "0.56 0.6 0.85", style="rounded"];
-	73[label = "concat_except_HA_replicate\nrep: 1", color = "0.26 0.6 0.85", style="rounded"];
-	74[label = "concat_except_ha_with_partitions", color = "0.28 0.6 0.85", style="rounded"];
-	75[label = "concat_except_HA_replicate\nrep: 2", color = "0.26 0.6 0.85", style="rounded"];
-	76[label = "concat_except_HA_replicate\nrep: 3", color = "0.26 0.6 0.85", style="rounded"];
-	77[label = "concat_except_HA_replicate\nrep: 4", color = "0.26 0.6 0.85", style="rounded"];
-	78[label = "concat_except_HA_replicate\nrep: 5", color = "0.26 0.6 0.85", style="rounded"];
-	79[label = "generate_final_segment_tree", color = "0.38 0.6 0.85", style="rounded"];
-	80[label = "generate_final_segment_tree", color = "0.38 0.6 0.85", style="rounded"];
-	81[label = "generate_final_segment_tree", color = "0.38 0.6 0.85", style="rounded"];
-	82[label = "generate_final_segment_tree", color = "0.38 0.6 0.85", style="rounded"];
-	83[label = "generate_final_segment_tree", color = "0.38 0.6 0.85", style="rounded"];
-	84[label = "generate_final_segment_tree", color = "0.38 0.6 0.85", style="rounded"];
-	85[label = "generate_final_segment_tree", color = "0.38 0.6 0.85", style="rounded"];
-	86[label = "generate_final_segment_tree", color = "0.38 0.6 0.85", style="rounded"];
-	87[label = "calculate_rf_distances", color = "0.21 0.6 0.85", style="rounded"];
-	88[label = "calculate_rf_distances", color = "0.21 0.6 0.85", style="rounded"];
-	89[label = "calculate_rf_distances", color = "0.21 0.6 0.85", style="rounded"];
-	90[label = "calculate_rf_distances", color = "0.21 0.6 0.85", style="rounded"];
-	91[label = "calculate_rf_distances", color = "0.21 0.6 0.85", style="rounded"];
-	92[label = "calculate_rf_distances", color = "0.21 0.6 0.85", style="rounded"];
-	93[label = "calculate_rf_distances", color = "0.21 0.6 0.85", style="rounded"];
-	94[label = "calculate_rf_distances", color = "0.21 0.6 0.85", style="rounded"];
-	95[label = "calculate_rf_distances\nsegment: concat_except_HA", color = "0.21 0.6 0.85", style="rounded"];
-	96[label = "calculate_concordance_factors", color = "0.18 0.6 0.85", style="rounded"];
-	97[label = "iqtree_fast_subset", color = "0.46 0.6 0.85", style="rounded"];
-	98[label = "generate_itol_colors_full_concat", color = "0.41 0.6 0.85", style="rounded"];
-	99[label = "build_treetime_dates_subsets", color = "0.15 0.6 0.85", style="rounded"];
-	100[label = "run_root_to_tip_subsets", color = "0.62 0.6 0.85", style="rounded"];
-	101[label = "itol_color_subsets\nsubdir: subset_fast", color = "0.49 0.6 0.85", style="rounded"];
+	1[label = "process_raw_to_segments", color = "0.44 0.6 0.85", style="rounded"];
+	2[label = "build_gisaid_input_from_mira", color = "0.05 0.6 0.85", style="rounded,dashed"];
+	3[label = "iqtree_fast_ha", color = "0.38 0.6 0.85", style="rounded"];
+	4[label = "filter_alignments_by_nextclade_qc", color = "0.26 0.6 0.85", style="rounded"];
+	5[label = "run_nextclade_alignment_per_segment", color = "0.56 0.6 0.85", style="rounded"];
+	6[label = "download_nextclade_db", color = "0.21 0.6 0.85", style="rounded"];
+	7[label = "extract_segment_reference\nsegment: PB2", color = "0.23 0.6 0.85", style="rounded"];
+	8[label = "run_nextclade_alignment_per_segment", color = "0.56 0.6 0.85", style="rounded"];
+	9[label = "extract_segment_reference\nsegment: PB1", color = "0.23 0.6 0.85", style="rounded"];
+	10[label = "run_nextclade_alignment_per_segment", color = "0.56 0.6 0.85", style="rounded"];
+	11[label = "extract_segment_reference\nsegment: PA", color = "0.23 0.6 0.85", style="rounded"];
+	12[label = "run_nextclade_alignment_per_segment", color = "0.56 0.6 0.85", style="rounded"];
+	13[label = "extract_segment_reference\nsegment: HA", color = "0.23 0.6 0.85", style="rounded"];
+	14[label = "run_nextclade_alignment_per_segment", color = "0.56 0.6 0.85", style="rounded"];
+	15[label = "extract_segment_reference\nsegment: NP", color = "0.23 0.6 0.85", style="rounded"];
+	16[label = "run_nextclade_alignment_per_segment", color = "0.56 0.6 0.85", style="rounded"];
+	17[label = "extract_segment_reference\nsegment: NA", color = "0.23 0.6 0.85", style="rounded"];
+	18[label = "run_nextclade_alignment_per_segment", color = "0.56 0.6 0.85", style="rounded"];
+	19[label = "extract_segment_reference\nsegment: MP", color = "0.23 0.6 0.85", style="rounded"];
+	20[label = "run_nextclade_alignment_per_segment", color = "0.56 0.6 0.85", style="rounded"];
+	21[label = "extract_segment_reference\nsegment: NS", color = "0.23 0.6 0.85", style="rounded"];
+	22[label = "segment_analysis_ggtree_fast_ha", color = "0.64 0.6 0.85", style="rounded"];
+	23[label = "build_h5n1_context_metadata", color = "0.08 0.6 0.85", style="rounded"];
+	24[label = "genoflu_context_multi", color = "0.28 0.6 0.85", style="rounded"];
+	25[label = "genoflu_results_to_metadata", color = "0.36 0.6 0.85", style="rounded"];
+	26[label = "genoflu_multi", color = "0.33 0.6 0.85", style="rounded"];
+	27[label = "prune_tree_by_distance_to_core", color = "0.46 0.6 0.85", style="rounded"];
+	28[label = "build_treetime_dates_subsets", color = "0.13 0.6 0.85", style="rounded"];
+	29[label = "apply_panel_to_segment_alignments", color = "0.03 0.6 0.85", style="rounded"];
+	30[label = "run_root_to_tip_subsets", color = "0.59 0.6 0.85", style="rounded"];
+	31[label = "copy_subset_concat_final_tree", color = "0.15 0.6 0.85", style="rounded"];
+	32[label = "run_iqtree_subset_concat_replicate\nrep: 1", color = "0.54 0.6 0.85", style="rounded"];
+	33[label = "run_iqtree_subset_concat_replicate\nrep: 2", color = "0.54 0.6 0.85", style="rounded"];
+	34[label = "run_iqtree_subset_concat_replicate\nrep: 3", color = "0.54 0.6 0.85", style="rounded"];
+	35[label = "run_iqtree_subset_concat_replicate\nrep: 4", color = "0.54 0.6 0.85", style="rounded"];
+	36[label = "run_iqtree_subset_concat_replicate\nrep: 5", color = "0.54 0.6 0.85", style="rounded"];
+	37[label = "segment_analysis_ggtree", color = "0.62 0.6 0.85", style="rounded"];
+	38[label = "copy_trees_for_segment_analysis", color = "0.18 0.6 0.85", style="rounded"];
+	39[label = "run_iqtree_codon_segment_replicate\nrep: 1", color = "0.49 0.6 0.85", style="rounded"];
+	40[label = "build_single_segment_codon_partition\nsegment: PB2", color = "0.10 0.6 0.85", style="rounded"];
+	41[label = "segment_analysis_ggtree", color = "0.62 0.6 0.85", style="rounded"];
+	42[label = "copy_trees_for_segment_analysis", color = "0.18 0.6 0.85", style="rounded"];
+	43[label = "run_iqtree_codon_segment_replicate\nrep: 1", color = "0.49 0.6 0.85", style="rounded"];
+	44[label = "build_single_segment_codon_partition\nsegment: PB1", color = "0.10 0.6 0.85", style="rounded"];
+	45[label = "segment_analysis_ggtree", color = "0.62 0.6 0.85", style="rounded"];
+	46[label = "copy_trees_for_segment_analysis", color = "0.18 0.6 0.85", style="rounded"];
+	47[label = "run_iqtree_codon_segment_replicate\nrep: 1", color = "0.49 0.6 0.85", style="rounded"];
+	48[label = "build_single_segment_codon_partition\nsegment: PA", color = "0.10 0.6 0.85", style="rounded"];
+	49[label = "segment_analysis_ggtree", color = "0.62 0.6 0.85", style="rounded"];
+	50[label = "copy_trees_for_segment_analysis", color = "0.18 0.6 0.85", style="rounded"];
+	51[label = "run_iqtree_codon_segment_replicate\nrep: 1", color = "0.49 0.6 0.85", style="rounded"];
+	52[label = "build_single_segment_codon_partition\nsegment: HA", color = "0.10 0.6 0.85", style="rounded"];
+	53[label = "segment_analysis_ggtree", color = "0.62 0.6 0.85", style="rounded"];
+	54[label = "copy_trees_for_segment_analysis", color = "0.18 0.6 0.85", style="rounded"];
+	55[label = "run_iqtree_codon_segment_replicate\nrep: 1", color = "0.49 0.6 0.85", style="rounded"];
+	56[label = "build_single_segment_codon_partition\nsegment: NP", color = "0.10 0.6 0.85", style="rounded"];
+	57[label = "segment_analysis_ggtree", color = "0.62 0.6 0.85", style="rounded"];
+	58[label = "copy_trees_for_segment_analysis", color = "0.18 0.6 0.85", style="rounded"];
+	59[label = "run_iqtree_codon_segment_replicate\nrep: 1", color = "0.49 0.6 0.85", style="rounded"];
+	60[label = "build_single_segment_codon_partition\nsegment: NA", color = "0.10 0.6 0.85", style="rounded"];
+	61[label = "segment_analysis_ggtree", color = "0.62 0.6 0.85", style="rounded"];
+	62[label = "copy_trees_for_segment_analysis", color = "0.18 0.6 0.85", style="rounded"];
+	63[label = "run_iqtree_simple_segment_replicate\nrep: 1\nsegment: MP", color = "0.51 0.6 0.85", style="rounded"];
+	64[label = "segment_analysis_ggtree", color = "0.62 0.6 0.85", style="rounded"];
+	65[label = "copy_trees_for_segment_analysis", color = "0.18 0.6 0.85", style="rounded"];
+	66[label = "run_iqtree_simple_segment_replicate\nrep: 1\nsegment: NS", color = "0.51 0.6 0.85", style="rounded"];
+	67[label = "segment_analysis_ggtree\nsegment: subset_concat", color = "0.62 0.6 0.85", style="rounded"];
 	1 -> 0
-	4 -> 0
-	5 -> 0
-	24 -> 0
-	25 -> 0
+	3 -> 0
+	22 -> 0
+	27 -> 0
+	28 -> 0
 	29 -> 0
 	30 -> 0
-	31 -> 0
 	32 -> 0
 	33 -> 0
+	34 -> 0
 	35 -> 0
 	36 -> 0
+	31 -> 0
+	23 -> 0
 	37 -> 0
-	38 -> 0
-	39 -> 0
 	41 -> 0
-	42 -> 0
-	43 -> 0
-	44 -> 0
 	45 -> 0
-	47 -> 0
-	48 -> 0
 	49 -> 0
-	50 -> 0
-	51 -> 0
 	53 -> 0
-	54 -> 0
-	55 -> 0
-	56 -> 0
 	57 -> 0
-	59 -> 0
-	60 -> 0
 	61 -> 0
-	62 -> 0
-	63 -> 0
 	64 -> 0
-	65 -> 0
-	66 -> 0
 	67 -> 0
-	68 -> 0
-	69 -> 0
-	70 -> 0
-	71 -> 0
-	72 -> 0
-	73 -> 0
-	75 -> 0
-	76 -> 0
-	77 -> 0
-	78 -> 0
-	79 -> 0
-	80 -> 0
-	81 -> 0
-	82 -> 0
-	83 -> 0
-	84 -> 0
-	85 -> 0
-	86 -> 0
-	87 -> 0
-	88 -> 0
-	89 -> 0
-	90 -> 0
-	91 -> 0
-	92 -> 0
-	93 -> 0
-	94 -> 0
-	95 -> 0
-	96 -> 0
-	98 -> 0
-	27 -> 0
-	99 -> 0
-	26 -> 0
-	100 -> 0
-	97 -> 0
-	101 -> 0
 	2 -> 1
-	3 -> 2
-	1 -> 4
+	4 -> 3
+	5 -> 4
+	8 -> 4
+	10 -> 4
+	12 -> 4
+	14 -> 4
+	16 -> 4
+	18 -> 4
+	20 -> 4
+	1 -> 5
 	6 -> 5
-	7 -> 6
-	10 -> 6
-	12 -> 6
-	14 -> 6
-	16 -> 6
-	18 -> 6
-	20 -> 6
-	22 -> 6
-	4 -> 7
-	8 -> 7
-	9 -> 7
-	4 -> 9
-	4 -> 10
-	8 -> 10
+	7 -> 5
+	1 -> 7
+	1 -> 8
+	6 -> 8
+	9 -> 8
+	1 -> 9
+	1 -> 10
+	6 -> 10
 	11 -> 10
-	4 -> 11
-	4 -> 12
-	8 -> 12
+	1 -> 11
+	1 -> 12
+	6 -> 12
 	13 -> 12
-	4 -> 13
-	4 -> 14
-	8 -> 14
+	1 -> 13
+	1 -> 14
+	6 -> 14
 	15 -> 14
-	4 -> 15
-	4 -> 16
-	8 -> 16
+	1 -> 15
+	1 -> 16
+	6 -> 16
 	17 -> 16
-	4 -> 17
-	4 -> 18
-	8 -> 18
+	1 -> 17
+	1 -> 18
+	6 -> 18
 	19 -> 18
-	4 -> 19
-	4 -> 20
-	8 -> 20
+	1 -> 19
+	1 -> 20
+	6 -> 20
 	21 -> 20
-	4 -> 21
-	4 -> 22
-	8 -> 22
+	1 -> 21
+	3 -> 22
 	23 -> 22
-	4 -> 23
-	5 -> 24
+	24 -> 23
+	25 -> 23
 	26 -> 25
-	28 -> 25
-	6 -> 26
-	27 -> 26
-	5 -> 27
-	24 -> 27
-	26 -> 28
-	26 -> 29
-	28 -> 29
-	26 -> 30
+	2 -> 26
+	4 -> 27
+	3 -> 27
+	23 -> 27
+	23 -> 28
+	4 -> 29
+	27 -> 29
+	31 -> 30
+	29 -> 30
 	28 -> 30
-	26 -> 31
-	28 -> 31
-	26 -> 32
-	28 -> 32
-	26 -> 33
-	34 -> 33
-	26 -> 34
-	26 -> 35
-	34 -> 35
-	26 -> 36
-	34 -> 36
-	26 -> 37
-	34 -> 37
-	26 -> 38
-	34 -> 38
-	26 -> 39
+	32 -> 31
+	29 -> 32
+	29 -> 33
+	29 -> 34
+	29 -> 35
+	29 -> 36
+	38 -> 37
+	23 -> 37
+	39 -> 38
+	29 -> 39
 	40 -> 39
-	26 -> 40
-	26 -> 41
-	40 -> 41
-	26 -> 42
-	40 -> 42
-	26 -> 43
-	40 -> 43
-	26 -> 44
-	40 -> 44
-	26 -> 45
+	29 -> 40
+	42 -> 41
+	23 -> 41
+	43 -> 42
+	29 -> 43
+	44 -> 43
+	29 -> 44
 	46 -> 45
-	26 -> 46
-	26 -> 47
-	46 -> 47
-	26 -> 48
-	46 -> 48
-	26 -> 49
-	46 -> 49
-	26 -> 50
-	46 -> 50
-	26 -> 51
+	23 -> 45
+	47 -> 46
+	29 -> 47
+	48 -> 47
+	29 -> 48
+	50 -> 49
+	23 -> 49
+	51 -> 50
+	29 -> 51
 	52 -> 51
-	26 -> 52
-	26 -> 53
-	52 -> 53
-	26 -> 54
-	52 -> 54
-	26 -> 55
-	52 -> 55
-	26 -> 56
-	52 -> 56
-	26 -> 57
+	29 -> 52
+	54 -> 53
+	23 -> 53
+	55 -> 54
+	29 -> 55
+	56 -> 55
+	29 -> 56
 	58 -> 57
-	26 -> 58
-	26 -> 59
-	58 -> 59
-	26 -> 60
-	58 -> 60
-	26 -> 61
-	58 -> 61
-	26 -> 62
-	58 -> 62
-	26 -> 63
-	26 -> 64
-	26 -> 65
-	26 -> 66
-	26 -> 67
-	26 -> 68
-	26 -> 69
-	26 -> 70
-	26 -> 71
-	26 -> 72
-	74 -> 73
-	26 -> 74
-	74 -> 75
-	74 -> 76
-	74 -> 77
-	74 -> 78
-	25 -> 79
-	33 -> 80
-	39 -> 81
-	45 -> 82
-	51 -> 83
-	57 -> 84
-	63 -> 85
-	68 -> 86
-	25 -> 87
-	29 -> 87
-	30 -> 87
-	31 -> 87
-	32 -> 87
-	33 -> 88
-	35 -> 88
-	36 -> 88
-	37 -> 88
-	38 -> 88
-	39 -> 89
-	41 -> 89
-	42 -> 89
-	43 -> 89
-	44 -> 89
-	45 -> 90
-	47 -> 90
-	48 -> 90
-	49 -> 90
-	50 -> 90
-	51 -> 91
-	53 -> 91
-	54 -> 91
-	55 -> 91
-	56 -> 91
-	57 -> 92
-	59 -> 92
-	60 -> 92
-	61 -> 92
-	62 -> 92
-	63 -> 93
-	64 -> 93
-	65 -> 93
-	66 -> 93
-	67 -> 93
-	68 -> 94
-	69 -> 94
-	70 -> 94
-	71 -> 94
-	72 -> 94
-	73 -> 95
-	75 -> 95
-	76 -> 95
-	77 -> 95
-	78 -> 95
-	97 -> 96
-	79 -> 96
-	80 -> 96
-	81 -> 96
-	82 -> 96
-	83 -> 96
-	84 -> 96
-	85 -> 96
-	86 -> 96
-	26 -> 96
-	26 -> 97
-	24 -> 98
-	26 -> 99
-	97 -> 100
-	26 -> 100
-	99 -> 100
-	97 -> 101
+	23 -> 57
+	59 -> 58
+	29 -> 59
+	60 -> 59
+	29 -> 60
+	62 -> 61
+	23 -> 61
+	63 -> 62
+	29 -> 63
+	65 -> 64
+	23 -> 64
+	66 -> 65
+	29 -> 66
+	31 -> 67
+	23 -> 67
 }            

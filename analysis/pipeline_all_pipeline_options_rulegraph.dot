@@ -2,162 +2,17 @@ digraph snakemake_dag {
     graph[bgcolor=white, margin=0];
     node[shape=box, style=rounded, fontname=sans,                 fontsize=10, penwidth=2];
     edge[penwidth=2, color=grey];
-	0[label = "beast_runs", color = "0.08 0.6 0.85", style="rounded"];
-	1[label = "summarize_beast_run", color = "0.61 0.6 0.85", style="rounded"];
-	2[label = "run_beast_replicate", color = "0.52 0.6 0.85", style="rounded"];
-	3[label = "prepare_beast_run_xml", color = "0.50 0.6 0.85", style="rounded"];
-	4[label = "filter_rtt_outliers_subsets", color = "0.35 0.6 0.85", style="rounded"];
-	5[label = "prune_tree_by_distance_to_core", color = "0.51 0.6 0.85", style="rounded"];
-	6[label = "concat_aligned_segments_with_partitions", color = "0.27 0.6 0.85", style="rounded"];
-	7[label = "filter_alignments_by_nextclade_qc", color = "0.34 0.6 0.85", style="rounded"];
-	8[label = "run_nextclade_alignment_per_segment", color = "0.58 0.6 0.85", style="rounded"];
-	9[label = "split_h5n1_final_by_segment", color = "0.60 0.6 0.85", style="rounded"];
-	10[label = "build_standard_headers_for_gisaid_context", color = "0.17 0.6 0.85", style="rounded"];
-	11[label = "build_standard_date_headers", color = "0.16 0.6 0.85", style="rounded"];
-	12[label = "build_gisaid_input_from_mira", color = "0.10 0.6 0.85", style="rounded"];
-	13[label = "download_nextclade_db", color = "0.31 0.6 0.85", style="rounded"];
-	14[label = "extract_segment_reference", color = "0.33 0.6 0.85", style="rounded"];
-	15[label = "iqtree_fast_full_concat", color = "0.41 0.6 0.85", style="rounded"];
-	16[label = "run_root_to_tip_subsets", color = "0.59 0.6 0.85", style="rounded"];
-	17[label = "iqtree_fast_subset", color = "0.42 0.6 0.85", style="rounded"];
-	18[label = "apply_panel_to_segment_alignments", color = "0.07 0.6 0.85", style="rounded"];
-	19[label = "build_treetime_dates_subsets", color = "0.18 0.6 0.85", style="rounded"];
-	20[label = "generate_bayesian_alignment", color = "0.37 0.6 0.85", style="rounded"];
-	21[label = "validate_beast_xml", color = "0.65 0.6 0.85", style="rounded"];
-	22[label = "summarize_strict_constant_final_time", color = "0.63 0.6 0.85", style="rounded"];
-	23[label = "combine_strict_constant_logs", color = "0.22 0.6 0.85", style="rounded"];
-	24[label = "combine_strict_constant_trees", color = "0.26 0.6 0.85", style="rounded"];
-	25[label = "annotate_strict_constant_final_tree", color = "0.04 0.6 0.85", style="rounded"];
-	26[label = "summarize_strict_constant_lugar_final_geography", color = "0.64 0.6 0.85", style="rounded"];
-	27[label = "combine_strict_constant_lugar_logs", color = "0.24 0.6 0.85", style="rounded"];
-	28[label = "combine_strict_constant_lugar_trees", color = "0.25 0.6 0.85", style="rounded"];
-	29[label = "annotate_strict_constant_lugar_final_tree", color = "0.05 0.6 0.85", style="rounded"];
-	30[label = "main_phylogeny", color = "0.46 0.6 0.85", style="rounded"];
-	31[label = "run_iqtree_codon_segment_replicate", color = "0.54 0.6 0.85", style="rounded"];
-	32[label = "build_single_segment_codon_partition", color = "0.14 0.6 0.85", style="rounded"];
-	33[label = "run_iqtree_simple_segment_replicate", color = "0.55 0.6 0.85", style="rounded"];
-	34[label = "concat_except_HA_replicate", color = "0.29 0.6 0.85", style="rounded"];
-	35[label = "concat_except_ha_with_partitions", color = "0.30 0.6 0.85", style="rounded"];
-	36[label = "generate_final_segment_tree", color = "0.38 0.6 0.85", style="rounded"];
-	37[label = "calculate_rf_distances", color = "0.21 0.6 0.85", style="rounded"];
-	38[label = "calculate_concordance_factors", color = "0.20 0.6 0.85", style="rounded"];
-	39[label = "generate_itol_colors_full_concat", color = "0.39 0.6 0.85", style="rounded"];
-	40[label = "paper_figures", color = "0.47 0.6 0.85", style="rounded"];
-	41[label = "build_inputs_outputs", color = "0.13 0.6 0.85", style="rounded"];
-	42[label = "build_gisaid", color = "0.09 0.6 0.85", style="rounded"];
-	43[label = "pre_beast_outputs", color = "0.48 0.6 0.85", style="rounded"];
-	44[label = "itol_color_subsets", color = "0.44 0.6 0.85", style="rounded"];
-	45[label = "all_validation_outputs", color = "0.03 0.6 0.85", style="rounded"];
-	46[label = "build_gisaid_outputs", color = "0.12 0.6 0.85", style="rounded"];
-	26 -> 0
-	22 -> 0
+	0[label = "genoflu_metadata", color = "0.31 0.6 0.85", style="rounded"];
+	1[label = "build_h5n1_context_metadata", color = "0.08 0.6 0.85", style="rounded"];
+	2[label = "genoflu_context_multi", color = "0.28 0.6 0.85", style="rounded"];
+	3[label = "genoflu_results_to_metadata", color = "0.36 0.6 0.85", style="rounded"];
+	4[label = "genoflu_multi", color = "0.33 0.6 0.85", style="rounded"];
+	5[label = "build_gisaid_input_from_mira", color = "0.05 0.6 0.85", style="rounded"];
+	2 -> 0
 	1 -> 0
+	3 -> 0
+	3 -> 1
 	2 -> 1
-	2 -> 2
-	21 -> 2
-	3 -> 2
-	20 -> 3
 	4 -> 3
-	19 -> 4
 	5 -> 4
-	16 -> 4
-	15 -> 5
-	6 -> 5
-	7 -> 6
-	8 -> 7
-	9 -> 8
-	14 -> 8
-	13 -> 8
-	10 -> 9
-	11 -> 10
-	12 -> 11
-	9 -> 14
-	6 -> 15
-	18 -> 16
-	17 -> 16
-	19 -> 16
-	18 -> 17
-	7 -> 18
-	5 -> 18
-	18 -> 19
-	18 -> 20
-	4 -> 20
-	3 -> 21
-	25 -> 22
-	23 -> 22
-	24 -> 22
-	2 -> 23
-	1 -> 23
-	2 -> 24
-	1 -> 24
-	24 -> 25
-	29 -> 26
-	27 -> 26
-	28 -> 26
-	2 -> 27
-	1 -> 27
-	2 -> 28
-	1 -> 28
-	28 -> 29
-	37 -> 30
-	34 -> 30
-	15 -> 30
-	31 -> 30
-	6 -> 30
-	38 -> 30
-	33 -> 30
-	39 -> 30
-	9 -> 30
-	36 -> 30
-	18 -> 31
-	32 -> 31
-	18 -> 32
-	18 -> 33
-	35 -> 34
-	18 -> 35
-	33 -> 36
-	31 -> 36
-	34 -> 37
-	33 -> 37
-	31 -> 37
-	36 -> 38
-	18 -> 38
-	17 -> 38
-	15 -> 39
-	10 -> 41
-	11 -> 42
-	12 -> 42
-	19 -> 43
-	16 -> 43
-	20 -> 43
-	17 -> 43
-	44 -> 43
-	3 -> 43
-	5 -> 43
-	4 -> 43
-	18 -> 43
-	36 -> 44
-	17 -> 44
-	31 -> 45
-	44 -> 45
-	9 -> 45
-	18 -> 45
-	19 -> 45
-	34 -> 45
-	39 -> 45
-	36 -> 45
-	15 -> 45
-	17 -> 45
-	6 -> 45
-	38 -> 45
-	3 -> 45
-	5 -> 45
-	4 -> 45
-	16 -> 45
-	37 -> 45
-	20 -> 45
-	10 -> 45
-	33 -> 45
-	11 -> 46
-	12 -> 46
 }            
