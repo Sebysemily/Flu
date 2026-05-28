@@ -39,7 +39,7 @@ RTT_AND_ML_SUBSET_TARGETS = [
 ALL_VALIDATION_TARGETS = [
     *MAIN_PHYLOGENY_TARGETS,
     *RTT_AND_ML_SUBSET_TARGETS,
-    "metadata/genoflu_results_to_metadata.done",
+    FILTRADO_CSV,
 ]
 
 rule all:

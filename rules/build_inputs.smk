@@ -24,7 +24,8 @@ MIRA_GISAID_FASTA = f"{DATA_INPUT}/H5N1_EC_gisaid_from_mira.fasta"
 
 rule build_gisaid_input_from_mira:
     input:
-        MIRA_FASTAS
+        MIRA_FASTAS,
+        ancient(FILTRADO_CSV)
     output:
         MIRA_GISAID_FASTA
     shell:
@@ -53,21 +54,21 @@ CONTEXT_FASTA_RAW = config.get("context_fasta_raw", "data/context/gisaid_epiflu_
 rule process_raw_to_segments:
     input:
         ecuador_fastas=STANDARD_HEADER_FASTAS,
-        context_fasta=CONTEXT_FASTA_RAW
+        context_fasta=CONTEXT_FASTA_RAW,
+        metadata_csv=ancient(FILTRADO_CSV)
     output:
         segment_fastas=expand(f"{DATA_PHYLOGENY}/by_segment/H5N1_{{segment}}.fasta", segment=PHYLO_SEGMENTS),
         metadata_out=MAIN_PANEL_METADATA
     params:
         output_dir=f"{DATA_PHYLOGENY}/by_segment",
-        ecuador_date_source="collection",
-        metadata_csv=FILTRADO_CSV
+        ecuador_date_source="collection"
     shell:
         r"""
         export PYTHONPATH=code:${{PYTHONPATH:-}}
         python code/build_inputs/process_raw_to_segments.py \
             --ecuador-fastas {input.ecuador_fastas} \
             --context-fasta {input.context_fasta} \
-            --metadata-csv {params.metadata_csv} \
+            --metadata-csv {input.metadata_csv} \
             --ecuador-date-source {params.ecuador_date_source} \
             --output-dir {params.output_dir} \
             --metadata-out {output.metadata_out}
@@ -76,13 +77,15 @@ rule process_raw_to_segments:
 # =====================================================================
 # Rule: genoflu_multi
 # =====================================================================
+INPUT_FASTAS = sorted(glob.glob(os.path.join(DATA_INPUT, "*.fasta")))
+
 rule genoflu_multi:
     input:
-        segment_fastas=expand(f"{DATA_PHYLOGENY}/by_segment/H5N1_{{segment}}.fasta", segment=PHYLO_SEGMENTS)
+        input_fastas=INPUT_FASTAS
     output:
         results="metadata/genoflu_results.tsv"
     params:
-        fasta_dir=f"{DATA_PHYLOGENY}/by_segment",
+        fasta_dir=DATA_INPUT,
         genoflu_dir="resources/GenoFLU-multi"
     conda:
         "../envs/01_ml_trees.yml"
@@ -97,16 +100,14 @@ rule genoflu_multi:
 # =====================================================================
 rule genoflu_results_to_metadata:
     input:
-        results="metadata/genoflu_results.tsv",
-        metadata_csv=FILTRADO_CSV
+        results="metadata/genoflu_results.tsv"
     output:
-        done="metadata/genoflu_results_to_metadata.done"
+        metadata_csv=FILTRADO_CSV
     conda:
         "../envs/01_ml_trees.yml"
     shell:
         r"""
         python code/build_inputs/genoFlu_to_metadata.py \
             --genoflu-results {input.results} \
-            --metadata-csv {input.metadata_csv}
-        touch {output.done}
+            --metadata-csv {output.metadata_csv}
         """
