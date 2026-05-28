@@ -1,104 +1,124 @@
 #!/usr/bin/env Rscript
 # plot_ggtree.R
 # -------------
-# Plots a rooted phylogenetic tree with tip colours derived from the
-# main-panel metadata CSV (type_c column), replacing the old iTOL-file
-# parsing workflow.
+# Plots a phylogenetic tree with tip colours derived from the metadata.
 #
 # CLI args (supplied by Snakemake):
 #   1  tree_file     – path to Newick tree
-#   2  metadata_file – path to metadata/main_panel.csv
-#   3  output_file   – path for the PNG output
-#   4  title         – (optional) figure title
+#   2  metadata_file – path to metadata/H5N1_context.csv
+#   3  ecuador_metadata_file - path to config/flu_filtrado.csv
+#   4  output_file   – path for the PNG output
+#   5  title         – (optional) figure title
 
 suppressPackageStartupMessages({
   library(phytools)   # read.newick
   library(tidyverse)  # dplyr, tibble, etc.
   library(ggtree)     # ggtree, geom_tippoint, …
-  library(ape)        # getMRCA, Ntip
+  library(treeio)
 })
 
 # ── CLI args ───────────────────────────────────────────────────────────────
 args <- commandArgs(trailingOnly = TRUE)
-if (length(args) < 3) {
-  stop("Usage: Rscript plot_ggtree.R <tree_file> <metadata_csv> <output_file> [title]")
+if (length(args) < 4) {
+  stop("Usage: Rscript plot_ggtree.R <tree_file> <metadata_csv> <ecuador_metadata_csv> <output_file> [title]")
 }
 
-tree_file     <- args[1]
-metadata_file <- args[2]
-output_file   <- args[3]
-title         <- if (length(args) >= 4) args[4] else "Phylogenetic Tree"
+tree_file             <- args[1]
+metadata_file         <- args[2]
+ecuador_metadata_file <- args[3]
+output_file           <- args[4]
+title                 <- if (length(args) >= 5) args[5] else "Phylogenetic Tree"
 
-if (!file.exists(tree_file))     stop(paste("Tree file not found:", tree_file))
-if (!file.exists(metadata_file)) stop(paste("Metadata file not found:", metadata_file))
+if (!file.exists(tree_file))             stop(paste("Tree file not found:", tree_file))
+if (!file.exists(metadata_file))         stop(paste("Metadata file not found:", metadata_file))
+if (!file.exists(ecuador_metadata_file)) stop(paste("Ecuador metadata file not found:", ecuador_metadata_file))
 
 # ── Load tree ──────────────────────────────────────────────────────────────
 tree <- read.newick(tree_file)
 
-# Root on the American anchor outgroup (midpoint fallback)
-outgroup_name <- "ABlue-winged_TealSouth_CarolinaUSDA-000345-0032021_EPI_ISL_18133416__american_anchor/USA/2021-12-30"
-if (outgroup_name %in% tree$tip.label) {
-  tree <- root(tree, outgroup = outgroup_name, resolve.root = TRUE)
-} else {
-  message("Outgroup not found – falling back to midpoint root.")
-  tree <- midpoint.root(tree)
+# ── Load and concatenate metadata ──────────────────────────────────────────
+# A. Read Ecuador metadata
+ecuador_meta <- read_csv(ecuador_metadata_file, show_col_types = FALSE) |>
+  select(
+    file_name = EPI_ISL,
+    collection_date = `Fecha colección`,
+    sample_id = `Código USFQ`
+  ) |>
+  mutate(
+    country = "Ecuador",
+    expected_role = if_else(sample_id == "Flu-0406" | file_name %in% c("EPI_ISL_17973443", "EPI_ISL_17973458", "EPI_ISL_18137671"), "flu_costa", "flu_sierra")
+  ) |>
+  select(file_name, collection_date, country, expected_role)
+
+# B. Read GISAID context metadata
+context_meta <- read_csv(metadata_file, show_col_types = FALSE) |>
+  select(file_name, collection_date, country, expected_role)
+
+# C. Concatenate
+metadata <- bind_rows(ecuador_meta, context_meta)
+
+# D. Drop extra metadata rows not in the tree
+extra_in_metadata <- setdiff(metadata$file_name, tree$tip.label)
+if(length(extra_in_metadata) > 0) {
+  message("Dropping metadata rows not in tree: ", 
+          paste(extra_in_metadata, collapse=", "))
+}
+metadata <- metadata[metadata$file_name %in% tree$tip.label, ]
+
+# E. Prepare tip dataframe for plotting
+tip_df <- tibble(label = tree$tip.label) |>
+  left_join(metadata, by = c("label" = "file_name"))
+
+# Validate that all tree tips have metadata
+missing_metadata <- tip_df |> filter(is.na(expected_role))
+if (nrow(missing_metadata) > 0) {
+  stop(paste("ERROR: Metadata not found for tree tip labels: ",
+             paste(missing_metadata$label, collapse=", ")))
 }
 
-# ── Load metadata ──────────────────────────────────────────────────────────
-meta <- read.csv(metadata_file, stringsAsFactors = FALSE)
-# Ensure all tips are present; fill unknowns gracefully
-tip_df <- tibble(label = tree$tip.label) |>
-  left_join(meta, by = "label") |>
-  mutate(
-    type_c = if_else(is.na(type_c), "unknown", type_c)
-  )
+tip_df <- tip_df |>
+  mutate(type_c = expected_role)
 
 # ── Colour / shape palette (mirrors iTOL logic) ────────────────────────────
-#   flu_epi_isl  → coastal Ecuador   (#FF0000, red)
-#   flu_sierra   → sierra Ecuador    (#00008B, dark-blue)
+#   flu_costa        → coastal Ecuador   (#FF0000, red)
+#   flu_sierra       → sierra Ecuador    (#00008B, dark-blue)
 #   american_anchor                  (#800080, purple)
 #   regional_context                 (#4CAF50, green)
-#   unknown                          (#999999, grey)
 
 type_colors <- c(
-  flu_epi_isl      = "#FF0000",
+  flu_costa        = "#FF0000",
   flu_sierra       = "#00008B",
   american_anchor  = "#800080",
-  regional_context = "#4CAF50",
-  unknown          = "#999999"
+  regional_context = "#4CAF50"
 )
 
 type_shapes <- c(
-  flu_epi_isl      = 17L,   # filled triangle
+  flu_costa        = 17L,   # filled triangle
   flu_sierra       = 17L,
   american_anchor  = 15L,   # filled square
-  regional_context = 16L,   # filled circle
-  unknown          = 16L
+  regional_context = 16L    # filled circle
 )
 
 type_sizes <- c(
-  flu_epi_isl      = 2.5,
+  flu_costa        = 2.5,
   flu_sierra       = 2.5,
   american_anchor  = 2.0,
-  regional_context = 1.2,
-  unknown          = 1.0
+  regional_context = 1.2
 )
 
 type_alphas <- c(
-  flu_epi_isl      = 1.0,
+  flu_costa        = 1.0,
   flu_sierra       = 1.0,
   american_anchor  = 0.85,
-  regional_context = 0.55,
-  unknown          = 0.4
+  regional_context = 0.55
 )
 
 # Friendly legend labels
 type_labels <- c(
-  flu_epi_isl      = "Ecuador (coastal)",
+  flu_costa        = "Ecuador (coastal)",
   flu_sierra       = "Ecuador (sierra)",
   american_anchor  = "American anchor",
-  regional_context = "Regional context",
-  unknown          = "Unknown"
+  regional_context = "Regional context"
 )
 
 # Only include levels that actually appear in this tree
@@ -135,7 +155,7 @@ if (length(flu_tips) > 1) {
 
   # Coastal (red) sub-clade → additional green marker
   red_flu <- tip_df |>
-    filter(type_c == "flu_epi_isl") |>
+    filter(type_c == "flu_costa") |>
     pull(label)
   if (length(red_flu) > 1) {
     red_mrca <- getMRCA(tree, red_flu)

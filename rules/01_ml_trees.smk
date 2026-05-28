@@ -4,25 +4,10 @@ MAX_THREADS = int(config.get("max_threads", 18))
 PHYLO_SEGMENTS = ["PB2", "PB1", "PA", "HA", "NP", "NA", "MP", "NS"]
 CODON_SEGMENTS = ["PB2", "PB1", "PA", "HA", "NP", "NA"]
 SIMPLE_SEGMENTS = ["NS", "MP"]
+MAIN_PANEL_METADATA = "metadata/H5N1_context.csv"
 
 # =====================================================================
-# Rule: split_h5n1_final_by_segment
 # =====================================================================
-
-DATA_COMBINED_CONTEXT_EC = config.get("data_combined_context_ecuador", "data/standard_header_input_fasta")
-DATA_PHYLOGENY = config.get("data_phylogeny", "data/phylogeny")
-
-rule split_h5n1_final_by_segment:
-    input:
-        final_fasta=f"{DATA_COMBINED_CONTEXT_EC}/H5N1_final.fasta"
-    output:
-        expand(f"{DATA_PHYLOGENY}/by_segment/H5N1_{{segment}}.fasta", segment=PHYLO_SEGMENTS)
-    shell:
-        r"""
-        python code/01_ml_trees/split_final_fasta_by_segment.py \
-            --input-fasta {input.final_fasta} \
-            --output-dir {DATA_PHYLOGENY}/by_segment
-        """
 
 # =====================================================================
 # Rule: download_nextclade_db
@@ -247,7 +232,7 @@ rule iqtree_fast_full_concat:
     shell:
         r"""
         mkdir -p $(dirname {params.prefix})
-        iqtree -s {input.alignment} -spp {input.partitions} -pre {params.prefix} --pathogen -seed {params.seed} -nt {threads} 
+        iqtree -s {input.alignment} -spp {input.partitions} -pre {params.prefix} --fast -seed {params.seed} -nt {threads} 
         cp {params.prefix}.treefile {output.treefile}
         """
 
@@ -301,46 +286,8 @@ rule prune_tree_by_distance_to_core:
 # Rule: generate_itol_colors_full_concat
 # =====================================================================
 
-rule generate_itol_colors_full_concat:
-    input:
-        tree=f"{RESULTS_PHYLOGENY}/iq-tree/full_concat/H5N1_full_concat.treefile"
-    output:
-        tree_colors=f"{RESULTS_PHYLOGENY}/itol_styles/tree_colors.txt",
-        colorstrip=f"{RESULTS_PHYLOGENY}/itol_styles/dataset_colorstrip.txt"
-    shell:
-        r"""
-        python code/01_ml_trees/generate_itol_colors.py \
-            -i {input.tree} \
-            --tree-colors {output.tree_colors} \
-            --colorstrip {output.colorstrip}
-        """
-
 # =====================================================================
-# Rule: itol_color_subsets
-# =====================================================================
-
-def get_itol_subset_tree(wildcards):
-    if wildcards.subdir == "subset_concat":
-        return f"{RESULTS_PHYLOGENY}/iq-tree/subset_concat/subset_concat_final.treefile"
-    return f"{RESULTS_PHYLOGENY}/iq-tree/{wildcards.subdir}/{wildcards.subdir}_final.treefile"
-
-rule itol_color_subsets:
-    input:
-        tree=get_itol_subset_tree
-    output:
-        tree_colors=f"{RESULTS_PHYLOGENY}/itol_styles/{{subdir}}/tree_colors.txt",
-        colorstrip=f"{RESULTS_PHYLOGENY}/itol_styles/{{subdir}}/dataset_colorstrip.txt"
-    wildcard_constraints:
-        subdir="|".join(PHYLO_SEGMENTS + ["subset_concat"])
-    shell:
-        r"""
-        python code/01_ml_trees/generate_itol_colors.py \
-            -i {input.tree} \
-            --tree-colors {output.tree_colors} \
-            --colorstrip {output.colorstrip}
-        """
-
-# =====================================================================
+# Rule: copy_trees_for_segment_analysis
 # =====================================================================
 rule copy_trees_for_segment_analysis:
     input:
@@ -349,69 +296,8 @@ rule copy_trees_for_segment_analysis:
         treefile=f"{RESULTS_PHYLOGENY}/{{dir_path}}/{{segment}}_final.treefile"
     wildcard_constraints:
         dir_path=r"(iq-tree/[^/]+|segment_analysis/tanglegram)"
-    conda:
-        "../envs/01_ml_trees.yml"
     shell:
-        r"""
-        python -c "
-from Bio import Phylo
-tree = Phylo.read('{input.treefile}', 'newick')
-outgroup_name = 'ABlue-winged_TealSouth_CarolinaUSDA-000345-0032021_EPI_ISL_18133416__american_anchor/USA/2021-12-30'
-outgroups = [c for c in tree.get_terminals() if c.name == outgroup_name]
-if outgroups:
-    tree.root_with_outgroup(outgroups[0])
-else:
-    tree.root_at_midpoint()
-Phylo.write(tree, '{output.treefile}', 'newick')
-"
-        """
-
-# =====================================================================
-# Rule: build_main_panel_metadata
-# Derives metadata/main_panel.csv from the pruned-subset concat tree.
-# The CSV (label, id, type_c, date) drives colour/shape logic in R
-# plots, replacing the per-tree iTOL colour file workflow.
-# =====================================================================
-
-MAIN_PANEL_METADATA = "metadata/main_panel.csv"
-
-rule build_main_panel_metadata:
-    input:
-        tree=f"{RESULTS_PHYLOGENY}/iq-tree/subset_concat/subset_concat_final.treefile"
-    output:
-        metadata=MAIN_PANEL_METADATA
-    conda:
-        "../envs/01_ml_trees.yml"
-    shell:
-        r"""
-        python code/01_ml_trees/build_main_panel_metadata.py \
-            --tree   {input.tree} \
-            --output {output.metadata}
-        """
-
-# =====================================================================
-# Rule: segment_analysis_rf
-# =====================================================================
-rule segment_analysis_rf:
-    input:
-        species_tree = f"{RESULTS_PHYLOGENY}/iq-tree/subset_concat/subset_concat_final.treefile",
-        gene_trees = expand(f"{RESULTS_PHYLOGENY}/iq-tree/{{segment}}/{{segment}}_final.treefile", segment=PHYLO_SEGMENTS),
-    output:
-        matrix = f"{RESULTS_PHYLOGENY}/segment_analysis/rf_matrix.csv"
-    params:
-        segments = ",".join(PHYLO_SEGMENTS),
-        work_dir = f"{RESULTS_PHYLOGENY}/segment_analysis/rf"
-    conda:
-        "../envs/01_ml_trees.yml"
-    shell:
-        r"""
-        python code/segment_analysis/run_rf_matrix.py \
-            --segments {params.segments} \
-            --trees {input.gene_trees} \
-            --concat-tree {input.species_tree} \
-            --work-dir {params.work_dir} \
-            --output {output.matrix}
-        """
+        "cp {input.treefile} {output.treefile}"
 
 # =====================================================================
 # Rule: segment_analysis_tanglegram
@@ -420,7 +306,8 @@ rule segment_analysis_tanglegram:
     input:
         ha_tree = f"{RESULTS_PHYLOGENY}/iq-tree/HA/HA_final.treefile",
         pb2_tree = f"{RESULTS_PHYLOGENY}/iq-tree/PB2/PB2_final.treefile",
-        itol_colors = f"{RESULTS_PHYLOGENY}/itol_styles/subset_concat/tree_colors.txt",
+        metadata = MAIN_PANEL_METADATA,
+        ecuador_metadata = "config/flu_filtrado.csv"
     output:
         tanglegram = f"{RESULTS_PHYLOGENY}/segment_analysis/tanglegram_ha_vs_pb2.png",
     conda:
@@ -432,59 +319,11 @@ rule segment_analysis_tanglegram:
             --tree2 {input.pb2_tree} \
             --label1 "HA Segment" \
             --label2 "PB2 Segment" \
-            --itol-colors {input.itol_colors} \
+            --metadata {input.metadata} \
+            --ecuador-metadata {input.ecuador_metadata} \
             --collapse-context \
             --hide-non-core-labels \
             --output {output.tanglegram}
-        """
-
-# =====================================================================
-# Rule: calculate_rf_distances
-# =====================================================================
-
-rule calculate_rf_distances:
-    input:
-        trees=lambda wildcards: expand(
-            f"{RESULTS_PHYLOGENY}/iq-tree/{wildcards.segment}/rep{{rep}}.treefile",
-            rep=range(1, int(config.get("iqtree_replicates", 5)) + 1)
-        )
-    output:
-        matrix=f"{RESULTS_PHYLOGENY}/iq-tree/{{segment}}/rf_dist_matrix.rfdist"
-    params:
-        prefix=f"{RESULTS_PHYLOGENY}/iq-tree/{{segment}}/rf_dist_matrix",
-        list_file=f"{RESULTS_PHYLOGENY}/iq-tree/{{segment}}/5_replicas.trees"
-    conda:
-        "../envs/01_ml_trees.yml"
-    shell:
-        r"""
-        if [ $(echo {input.trees} | wc -w) -le 1 ]; then
-            echo "Only one tree replica provided, writing dummy RF distance matrix."
-            mkdir -p $(dirname {output.matrix})
-            echo "Only one tree replica. RF distance calculation skipped." > {output.matrix}
-        else
-            cat {input.trees} > {params.list_file}
-            iqtree -rf_all {params.list_file} -pre {params.prefix}
-            rm -f {params.list_file}
-            
-            # Now normalize the distance values to 0-1 scale
-            python -c "
-from Bio import Phylo
-tree = Phylo.read('{input.trees}'.split()[0], 'newick')
-N = len(tree.get_terminals())
-rf_max = 2 * (N - 3)
-with open('{output.matrix}', 'r') as f:
-    lines = f.readlines()
-if lines:
-    out_lines = [lines[0]]
-    for line in lines[1:]:
-        parts = line.strip().split()
-        if len(parts) >= 2:
-            norm_dists = ['%.6f' % (float(x)/rf_max) for x in parts[1:]]
-            out_lines.append(parts[0] + ' ' + ' '.join(norm_dists) + '\n')
-    with open('{output.matrix}', 'w') as f:
-        f.writelines(out_lines)
-"
-        fi
         """
 
 # =====================================================================
@@ -554,7 +393,6 @@ rule run_iqtree_subset_concat_replicate:
 
 # =====================================================================
 # Rule: segment_analysis_ggtree
-# Uses metadata/main_panel.csv for colour logic (no iTOL file needed).
 # =====================================================================
 rule segment_analysis_ggtree:
     input:
@@ -564,6 +402,7 @@ rule segment_analysis_ggtree:
             else f"{RESULTS_PHYLOGENY}/iq-tree/{wildcards.segment}/{wildcards.segment}_final.treefile"
         ),
         metadata=MAIN_PANEL_METADATA,
+        ecuador_metadata="config/flu_filtrado.csv"
     output:
         png="results/figures/{segment}_tree.png"
     conda:
@@ -573,7 +412,7 @@ rule segment_analysis_ggtree:
         Rscript code/segment_analysis/plot_ggtree.R \
             {input.tree} \
             {input.metadata} \
+            {input.ecuador_metadata} \
             {output.png} \
             "{wildcards.segment} Tree"
         """
-

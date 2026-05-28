@@ -3,6 +3,9 @@ import os
 
 FILTRADO_CSV = config.get("flu_filtrado", "config/flu_filtrado.csv")
 DATA_COMBINED_CONTEXT_EC = config.get("data_combined_context_ecuador", "data/standard_header_input_fasta")
+DATA_PHYLOGENY = config.get("data_phylogeny", "data/phylogeny")
+PHYLO_SEGMENTS = ["PB2", "PB1", "PA", "HA", "NP", "NA", "MP", "NS"]
+MAIN_PANEL_METADATA = "metadata/H5N1_context.csv"
 
 # =====================================================================
 # Rule: build_gisaid_input_from_mira
@@ -31,7 +34,7 @@ rule build_gisaid_input_from_mira:
         """
 
 # =====================================================================
-# Rule: build_standard_date_headers
+# Rule: process_raw_to_segments
 # =====================================================================
 
 def get_gisaid_input_fastas():
@@ -46,46 +49,27 @@ def get_gisaid_input_fastas():
 
 GISAID_INPUT_FASTAS = get_gisaid_input_fastas()
 STANDARD_HEADER_FASTAS = GISAID_INPUT_FASTAS if GISAID_INPUT_FASTAS else [MIRA_GISAID_FASTA]
+CONTEXT_FASTA_RAW = config.get("context_fasta_raw", "data/context/gisaid_epiflu_sequence.fasta")
 
-rule build_standard_date_headers:
+rule process_raw_to_segments:
     input:
-        gisaid_fastas=STANDARD_HEADER_FASTAS,
+        ecuador_fastas=STANDARD_HEADER_FASTAS,
+        context_fasta=CONTEXT_FASTA_RAW,
         metadata_csv=FILTRADO_CSV
     output:
-        fasta=f"{DATA_COMBINED_CONTEXT_EC}/H5N1_EC.fasta"
+        segment_fastas=expand(f"{DATA_PHYLOGENY}/by_segment/H5N1_{{segment}}.fasta", segment=PHYLO_SEGMENTS),
+        metadata_out=MAIN_PANEL_METADATA
     params:
+        output_dir=f"{DATA_PHYLOGENY}/by_segment",
         ecuador_date_source="collection"
     shell:
         r"""
         export PYTHONPATH=code:${{PYTHONPATH:-}}
-        python code/build_inputs/build_standard_date_headers.py \
-            --input-fasta {input.gisaid_fastas:q} \
-            --metadata-csv {input.metadata_csv:q} \
-            --ecuador-date-source {params.ecuador_date_source:q} \
-            --output-fasta {output.fasta:q}
-        """
-
-# =====================================================================
-# Rule: build_standard_headers_for_gisaid_context
-# =====================================================================
-
-CONTEXT_FASTA_RAW = config.get("context_fasta_raw", "data/context/gisaid_epiflu_sequence.fasta")
-
-rule build_standard_headers_for_gisaid_context:
-    input:
-        ecuador_fasta=f"{DATA_COMBINED_CONTEXT_EC}/H5N1_EC.fasta",
-        context_fasta=CONTEXT_FASTA_RAW,
-        metadata_csv=FILTRADO_CSV
-    output:
-        context_fasta=f"{DATA_COMBINED_CONTEXT_EC}/H5N1_context.fasta",
-        final_fasta=f"{DATA_COMBINED_CONTEXT_EC}/H5N1_final.fasta"
-    shell:
-        r"""
-        export PYTHONPATH=code:${{PYTHONPATH:-}}
-        python code/build_inputs/process_gisaid_context.py \
-            --ecuador-fasta {input.ecuador_fasta:q} \
-            --context-fasta-in {input.context_fasta:q} \
-            --context-fasta-out {output.context_fasta:q} \
-            --final-fasta-out {output.final_fasta:q} \
-            --metadata-csv {input.metadata_csv:q}
+        python code/build_inputs/process_raw_to_segments.py \
+            --ecuador-fastas {input.ecuador_fastas} \
+            --context-fasta {input.context_fasta} \
+            --metadata-csv {input.metadata_csv} \
+            --ecuador-date-source {params.ecuador_date_source} \
+            --output-dir {params.output_dir} \
+            --metadata-out {output.metadata_out}
         """

@@ -74,7 +74,7 @@ def main():
     rtt_outliers = read_rtt_outliers(args.rtt_outliers)
 
     # Protect the American anchor sequence from RTT outlier pruning
-    protected_sequence = "ABlue-winged_TealSouth_CarolinaUSDA-000345-0032021_EPI_ISL_18133416__american_anchor/USA/2021-12-30"
+    protected_sequence = "EPI_ISL_18133416"
     if protected_sequence in rtt_outliers:
         rtt_outliers.pop(protected_sequence, None)
 

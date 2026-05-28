@@ -5,26 +5,11 @@ include: "rules/build_inputs.smk"
 include: "rules/01_ml_trees.smk"
 include: "rules/02_pre_beast.smk"
 
-BUILD_GISAID_TARGETS = [
-    f"{DATA_COMBINED_CONTEXT_EC}/H5N1_EC.fasta",
-]
-if not GISAID_INPUT_FASTAS:
-    BUILD_GISAID_TARGETS = [
-        MIRA_GISAID_FASTA,
-        *BUILD_GISAID_TARGETS,
-    ]
-
-INPUT_CONTEXT_FASTA = f"{DATA_COMBINED_CONTEXT_EC}/H5N1_context.fasta"
-FINAL_FASTA = f"{DATA_COMBINED_CONTEXT_EC}/H5N1_final.fasta"
-BUILD_INPUTS_TARGETS = [
-    INPUT_CONTEXT_FASTA,
-    FINAL_FASTA,
-]
-
 BY_SEGMENT_FASTAS = expand(
     f"{DATA_PHYLOGENY}/by_segment/H5N1_{{segment}}.fasta",
     segment=["PB2", "PB1", "PA", "HA", "NP", "NA", "MP", "NS"],
 )
+
 MAIN_PHYLOGENY_TARGETS = [
     *BY_SEGMENT_FASTAS,
     f"{DATA_PHYLOGENY}/aligned/H5N1_full_concat.mafft",
@@ -39,8 +24,6 @@ MAIN_PHYLOGENY_TARGETS = [
         segment=["PB2", "PB1", "PA", "HA", "NP", "NA", "MP", "NS"]
     ),
     f"{RESULTS_PHYLOGENY}/segment_analysis/tanglegram_ha_vs_pb2.png",
-    f"{RESULTS_PHYLOGENY}/itol_styles/tree_colors.txt",
-    f"{RESULTS_PHYLOGENY}/itol_styles/dataset_colorstrip.txt",
 ]
 
 RTT_AND_ML_SUBSET_TARGETS = [
@@ -64,11 +47,9 @@ RTT_AND_ML_SUBSET_TARGETS = [
 ]
 
 ALL_VALIDATION_TARGETS = [
-    *BUILD_INPUTS_TARGETS,
     *MAIN_PHYLOGENY_TARGETS,
     *RTT_AND_ML_SUBSET_TARGETS,
 ]
-
 
 rule all:
     input:
