@@ -7,7 +7,6 @@ PRE_BEAST_ROOT_TO_TIP_DONE = f"{RTT_DIR}/treetime_clock.done"
 rule build_treetime_dates_subsets:
     input:
         metadata=MAIN_PANEL_METADATA,
-        ecuador_metadata=FILTRADO_CSV
     output:
         dates=PRE_BEAST_DATES,
     conda:
@@ -17,7 +16,6 @@ rule build_treetime_dates_subsets:
         mkdir -p $(dirname {output.dates})
         python code/02_Beast/build_treetime_dates.py \
             --metadata {input.metadata} \
-            --ecuador-metadata {input.ecuador_metadata} \
             --out {output.dates}
         """
 

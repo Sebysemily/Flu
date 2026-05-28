@@ -1,0 +1,3 @@
+[submodule "resources/GenoFLU-multi"]
+	path = resources/GenoFLU-multi
+	url = https://github.com/moncla-lab/GenoFLU-multi.git

@@ -22,6 +22,51 @@ MAATE_METADATA = {
     "EPI_ISL_18137671": {"province": "Guayas", "date": "2023-05-18"},
 }
 
+COASTAL_EPI_ISLS = set(MAATE_METADATA.keys())
+
+
+def ecuador_expected_role(sample_id: str, epi_isl: str) -> str:
+    """Classify Ecuador samples as coastal (flu_costa) or sierra (flu_sierra)."""
+    if sample_id == "Flu-0406" or epi_isl in COASTAL_EPI_ISLS:
+        return "flu_costa"
+    return "flu_sierra"
+
+
+def build_ecuador_metadata_rows(df_filt: pd.DataFrame, date_source: str) -> list:
+    """One metadata row per local EPI_ISL from flu_filtrado."""
+    rows = []
+    seen = set()
+    for _, row in df_filt.iterrows():
+        epi_raw = row.get("EPI_ISL")
+        if pd.isna(epi_raw):
+            continue
+        epi_isl = str(epi_raw).strip()
+        if not epi_isl or epi_isl in seen:
+            continue
+        sample_raw = row.get("Código USFQ")
+        sample_id = "" if pd.isna(sample_raw) else str(sample_raw).strip()
+        date_val = pick_ecuador_date(row.to_dict(), date_source)
+        if not date_val:
+            continue
+        rows.append({
+            "file_name": epi_isl,
+            "collection_date": date_val,
+            "country": "Ecuador",
+            "expected_role": ecuador_expected_role(sample_id, epi_isl),
+        })
+        seen.add(epi_isl)
+    return rows
+
+
+def dedupe_metadata_rows(rows: list) -> list:
+    """Keep one row per file_name (first occurrence)."""
+    by_name = {}
+    for row in rows:
+        name = row["file_name"]
+        if name not in by_name:
+            by_name[name] = row
+    return list(by_name.values())
+
 NORTH_AMERICA_PLACES = {
     "alabama", "alaska", "arizona", "arkansas", "california", "colorado", "connecticut",
     "delaware", "florida", "georgia", "hawaii", "idaho", "illinois", "indiana", "iowa",
@@ -286,29 +331,37 @@ def main():
 
     print(f"Complete context isolates kept: {len(complete_context)}")
 
-    # 5. Write Context Metadata CSV
-    # file_name, collection_date, country, expected_role
+    # 5. Build unified panel metadata (Ecuador + context, deduped by file_name)
+    ecuador_meta_rows = build_ecuador_metadata_rows(df_filt, args.ecuador_date_source)
+    print(f"Ecuador metadata rows: {len(ecuador_meta_rows)}")
+
     context_meta_rows = []
-    
-    # We write a row for each sequence (each segment has a unique EPI_ISL)
     for isolate, segs in sorted(complete_context.items()):
         place = context_places[isolate]
         date_value = context_dates[isolate]
         context_type = context_types[isolate]
-        
         for seg, (epi_isl, seq, orig_hdr) in segs.items():
             context_meta_rows.append({
                 "file_name": epi_isl,
                 "collection_date": date_value,
                 "country": place,
-                "expected_role": context_type
+                "expected_role": context_type,
             })
 
+    unified_meta = dedupe_metadata_rows(ecuador_meta_rows + context_meta_rows)
+    unified_meta.sort(key=lambda r: (r["expected_role"], r["file_name"]))
+
     with open(args.metadata_out, "w", newline="", encoding="utf-8") as f:
-        writer = csv.DictWriter(f, fieldnames=["file_name", "collection_date", "country", "expected_role"])
+        writer = csv.DictWriter(
+            f, fieldnames=["file_name", "collection_date", "country", "expected_role"]
+        )
         writer.writeheader()
-        writer.writerows(context_meta_rows)
-    print(f"Wrote context metadata: {args.metadata_out}")
+        writer.writerows(unified_meta)
+    print(
+        f"Wrote unified metadata: {args.metadata_out} "
+        f"({len(unified_meta)} taxa; Ecuador={len(ecuador_meta_rows)}, "
+        f"context unique={len(unified_meta) - len(ecuador_meta_rows)})"
+    )
 
     # 6. Write Per-segment fastas containing only EPI_ISL as headers
     for seg in SEGMENTS:

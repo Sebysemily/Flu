@@ -173,7 +173,7 @@ def main():
             with open(filename) as handle:
                 config.update(yaml.safe_load(handle) or {})
 
-    filtrado_csv = config.get("flu_filtrado", "config/flu_filtrado.csv")
+    filtrado_csv = config.get("flu_filtrado", "metadata/flu_filtrado.csv")
     mira_base = config.get("mira_base_dir", "..")
 
     filtrado_df = pd.read_csv(filtrado_csv, dtype=str, keep_default_na=False)
@@ -315,7 +315,7 @@ def main():
             {
                 "Código USFQ": sample,
                 "status": "SKIPPED",
-                "reason": "Not in config/flu_filtrado.csv",
+                "reason": "Not in metadata/flu_filtrado.csv",
                 "found_in_mira": "YES",
                 "missing_segments": "",
                 "filled_with_Ns": "",

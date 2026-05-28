@@ -114,7 +114,7 @@ def main():
     panel_tsv = sys.argv[1] if len(sys.argv) > 1 else 'data/beast/panel_main_taxa.final.tsv'
     output_csv = sys.argv[2] if len(sys.argv) > 2 else 'results/qc_metrics/phylogeny/main_analysis_panel.csv'
     
-    default_metadata = 'config/flu_filtrado.csv'
+    default_metadata = 'metadata/flu_filtrado.csv'
     for filename in ['config/paths.yml', 'config/config.yml']:
         if os.path.exists(filename):
             try:

@@ -18,13 +18,12 @@ rule download_nextclade_db:
         ref=directory("resources/nextclade_h5n1_ha")
     conda:
         "../envs/01_ml_trees.yml"
-    log:
-        "logs/download_db.log"
     shell:
         """
+        mkdir -p {output.ref}
         nextclade dataset get \
           --name 'community/moncla-lab/iav-h5/ha/2.3.4.4' \
-          --output-dir {output.ref} > {log} 2>&1
+          --output-dir {output.ref}
         """
 
 # =====================================================================
@@ -135,29 +134,6 @@ rule build_single_segment_codon_partition:
         """
 
 # =====================================================================
-# Rule: concat_aligned_segments_with_partitions
-# =====================================================================
-
-rule concat_aligned_segments_with_partitions:
-    input:
-        alignments=expand(f"{PROCESSED_ALIGNMENTS_QC_FILTERED}/H5N1_{{segment}}.mafft", segment=PHYLO_SEGMENTS)
-    output:
-        aligned=f"{DATA_PHYLOGENY}/aligned/H5N1_full_concat.mafft",
-        partitions=f"{DATA_PHYLOGENY}/aligned/H5N1_full_concat.partitions"
-    params:
-        segment_order=",".join(PHYLO_SEGMENTS),
-        codon_segments=",".join(CODON_SEGMENTS)
-    shell:
-        r"""
-        python code/01_ml_trees/build_concat_codon_partitions.py \
-            --segment-order {params.segment_order} \
-            --codon-segments {params.codon_segments} \
-            --output-alignment {output.aligned} \
-            --output-partitions {output.partitions} \
-            {input.alignments}
-        """
-
-# =====================================================================
 # Rule: run_iqtree_codon_segment_replicate
 # =====================================================================
 
@@ -214,17 +190,16 @@ rule run_iqtree_simple_segment_replicate:
         """
 
 # =====================================================================
-# Rule: iqtree_fast_full_concat
+# Rule: iqtree_fast_ha
 # =====================================================================
 
-rule iqtree_fast_full_concat:
+rule iqtree_fast_ha:
     input:
-        alignment=f"{DATA_PHYLOGENY}/aligned/H5N1_full_concat.mafft",
-        partitions=f"{DATA_PHYLOGENY}/aligned/H5N1_full_concat.partitions"
+        alignment=f"{PROCESSED_ALIGNMENTS_QC_FILTERED}/H5N1_HA.mafft",
     output:
-        treefile=f"{RESULTS_PHYLOGENY}/iq-tree/full_concat/H5N1_full_concat.treefile"
+        treefile=f"{RESULTS_PHYLOGENY}/iq-tree/HA/H5N1_HA_fast.treefile"
     params:
-        prefix=f"{RESULTS_PHYLOGENY}/iq-tree/full_concat/pathogen/pathogen",
+        prefix=f"{RESULTS_PHYLOGENY}/iq-tree/HA/fast_ha/fast_ha",
         seed=RANDOM_SEED
     threads: MAX_THREADS
     conda:
@@ -232,8 +207,29 @@ rule iqtree_fast_full_concat:
     shell:
         r"""
         mkdir -p $(dirname {params.prefix})
-        iqtree -s {input.alignment} -spp {input.partitions} -pre {params.prefix} --fast -seed {params.seed} -nt {threads} 
+        iqtree -s {input.alignment} -pre {params.prefix} --fast -seed {params.seed} -nt {threads}
         cp {params.prefix}.treefile {output.treefile}
+        """
+
+# =====================================================================
+# Rule: segment_analysis_ggtree_fast_ha
+# =====================================================================
+
+rule segment_analysis_ggtree_fast_ha:
+    input:
+        tree=f"{RESULTS_PHYLOGENY}/iq-tree/HA/H5N1_HA_fast.treefile",
+        metadata=MAIN_PANEL_METADATA,
+    output:
+        png="results/figures/HA_fast_tree.png",
+    conda:
+        "../envs/ggtree.yml"
+    shell:
+        r"""
+        Rscript code/segment_analysis/plot_ggtree.R \
+            {input.tree} \
+            {input.metadata} \
+            {output.png} \
+            "HA (fast ML, all samples)"
         """
 
 # =====================================================================
@@ -242,20 +238,19 @@ rule iqtree_fast_full_concat:
 
 RTT_DIR = "results/phylogeny/rtt"
 RTT_DATA_DIR = "data/phylogeny/rtt"
-MAIN_PANEL_FILTERED_TAXA = f"{RTT_DATA_DIR}/panel_main_taxa.filtered.tsv"
 MAIN_PANEL_FILTERED_ALIGNMENT = f"{RTT_DATA_DIR}/panel_main_concat.filtered.fasta"
 MAIN_PANEL_FILTERED_TREE = f"{RTT_DATA_DIR}/panel_main_concat.filtered.nwk"
 MAIN_PANEL_FILTERED_AUDIT = f"{RTT_DATA_DIR}/panel_main_concat.filtered.audit.tsv"
 
 rule prune_tree_by_distance_to_core:
     input:
-        alignment=f"{DATA_PHYLOGENY}/aligned/H5N1_full_concat.mafft",
-        tree=f"{RESULTS_PHYLOGENY}/iq-tree/full_concat/H5N1_full_concat.treefile",
+        alignment=f"{PROCESSED_ALIGNMENTS_QC_FILTERED}/H5N1_HA.mafft",
+        tree=f"{RESULTS_PHYLOGENY}/iq-tree/HA/H5N1_HA_fast.treefile",
+        metadata=MAIN_PANEL_METADATA,
     output:
         alignment=MAIN_PANEL_FILTERED_ALIGNMENT,
         tree=MAIN_PANEL_FILTERED_TREE,
         audit=MAIN_PANEL_FILTERED_AUDIT,
-        taxa=MAIN_PANEL_FILTERED_TAXA,
         discarded_csv=f"{RESULTS_QC_METRICS}/alignments/pruning_discarded_sequences.csv",
     conda:
         "../envs/01_ml_trees.yml"
@@ -270,7 +265,7 @@ rule prune_tree_by_distance_to_core:
         python code/01_ml_trees/prune_panel_by_distance.py \
             --alignment {input.alignment} \
             --tree {input.tree} \
-            --panel-main-out {output.taxa} \
+            --metadata {input.metadata} \
             --out-alignment {output.alignment} \
             --out-tree {output.tree} \
             --audit-out {output.audit} \
@@ -283,48 +278,26 @@ rule prune_tree_by_distance_to_core:
         """
 
 # =====================================================================
-# Rule: generate_itol_colors_full_concat
-# =====================================================================
-
-# =====================================================================
 # Rule: copy_trees_for_segment_analysis
 # =====================================================================
 rule copy_trees_for_segment_analysis:
     input:
         treefile=f"{RESULTS_PHYLOGENY}/iq-tree/{{segment}}/rep1.treefile"
     output:
-        treefile=f"{RESULTS_PHYLOGENY}/{{dir_path}}/{{segment}}_final.treefile"
+        treefile=f"{RESULTS_PHYLOGENY}/iq-tree/{{segment}}/{{segment}}_final.treefile"
     wildcard_constraints:
-        dir_path=r"(iq-tree/[^/]+|segment_analysis/tanglegram)"
+        segment="|".join(PHYLO_SEGMENTS)
     shell:
         "cp {input.treefile} {output.treefile}"
 
-# =====================================================================
-# Rule: segment_analysis_tanglegram
-# =====================================================================
-rule segment_analysis_tanglegram:
+
+rule copy_subset_concat_final_tree:
     input:
-        ha_tree = f"{RESULTS_PHYLOGENY}/iq-tree/HA/HA_final.treefile",
-        pb2_tree = f"{RESULTS_PHYLOGENY}/iq-tree/PB2/PB2_final.treefile",
-        metadata = MAIN_PANEL_METADATA,
-        ecuador_metadata = "config/flu_filtrado.csv"
+        treefile=f"{RESULTS_PHYLOGENY}/iq-tree/subset_concat/rep1.treefile"
     output:
-        tanglegram = f"{RESULTS_PHYLOGENY}/segment_analysis/tanglegram_ha_vs_pb2.png",
-    conda:
-        "../envs/01_ml_trees.yml"
+        treefile=f"{RESULTS_PHYLOGENY}/iq-tree/subset_concat/subset_concat_final.treefile"
     shell:
-        r"""
-        python code/segment_analysis/draw_tanglegrams.py \
-            --tree1 {input.ha_tree} \
-            --tree2 {input.pb2_tree} \
-            --label1 "HA Segment" \
-            --label2 "PB2 Segment" \
-            --metadata {input.metadata} \
-            --ecuador-metadata {input.ecuador_metadata} \
-            --collapse-context \
-            --hide-non-core-labels \
-            --output {output.tanglegram}
-        """
+        "cp {input.treefile} {output.treefile}"
 
 # =====================================================================
 # Rule: apply_panel_to_segment_alignments
@@ -335,7 +308,7 @@ rule apply_panel_to_segment_alignments:
     # and also builds the concatenated alignment and partitions for the subset.
     input:
         alignments=expand("data/processed_alignments/qc_filtered/H5N1_{segment}.mafft", segment=PHYLO_SEGMENTS),
-        taxa=MAIN_PANEL_FILTERED_TAXA,
+        panel_tree=MAIN_PANEL_FILTERED_TREE,
     output:
         segment_alignments=expand(f"{MAIN_PANEL_DIR}/H5N1_{{segment}}.fasta", segment=PHYLO_SEGMENTS),
         aligned=MAIN_PANEL_ALIGNMENT,
@@ -353,7 +326,7 @@ rule apply_panel_to_segment_alignments:
         for seg in {params.segments}; do
             python code/02_Beast/subset_alignment_by_taxa.py \
                 --alignment data/processed_alignments/qc_filtered/H5N1_${{seg}}.mafft \
-                --taxa {input.taxa} \
+                --taxa-tree {input.panel_tree} \
                 --out-alignment {params.final_panel_dir}/H5N1_${{seg}}.fasta
         done
         
@@ -402,7 +375,6 @@ rule segment_analysis_ggtree:
             else f"{RESULTS_PHYLOGENY}/iq-tree/{wildcards.segment}/{wildcards.segment}_final.treefile"
         ),
         metadata=MAIN_PANEL_METADATA,
-        ecuador_metadata="config/flu_filtrado.csv"
     output:
         png="results/figures/{segment}_tree.png"
     conda:
@@ -412,7 +384,6 @@ rule segment_analysis_ggtree:
         Rscript code/segment_analysis/plot_ggtree.R \
             {input.tree} \
             {input.metadata} \
-            {input.ecuador_metadata} \
             {output.png} \
             "{wildcards.segment} Tree"
         """

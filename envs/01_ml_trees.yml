@@ -10,3 +10,4 @@ dependencies:
   - raxml-ng
   - iqtree
   - matplotlib
+  - genoflu

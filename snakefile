@@ -12,18 +12,8 @@ BY_SEGMENT_FASTAS = expand(
 
 MAIN_PHYLOGENY_TARGETS = [
     *BY_SEGMENT_FASTAS,
-    f"{DATA_PHYLOGENY}/aligned/H5N1_full_concat.mafft",
-    f"{RESULTS_PHYLOGENY}/iq-tree/full_concat/H5N1_full_concat.treefile",
-    *expand(
-        f"{RESULTS_PHYLOGENY}/iq-tree/{{segment}}/rep{{rep}}.treefile",
-        segment=["PB2", "PB1", "PA", "HA", "NP", "NA", "MP", "NS"],
-        rep=range(1, int(config.get("iqtree_replicates", 5)) + 1)
-    ),
-    *expand(
-        f"{RESULTS_PHYLOGENY}/iq-tree/{{segment}}/{{segment}}_final.treefile",
-        segment=["PB2", "PB1", "PA", "HA", "NP", "NA", "MP", "NS"]
-    ),
-    f"{RESULTS_PHYLOGENY}/segment_analysis/tanglegram_ha_vs_pb2.png",
+    f"{RESULTS_PHYLOGENY}/iq-tree/HA/H5N1_HA_fast.treefile",
+    "results/figures/HA_fast_tree.png",
 ]
 
 RTT_AND_ML_SUBSET_TARGETS = [
@@ -49,6 +39,7 @@ RTT_AND_ML_SUBSET_TARGETS = [
 ALL_VALIDATION_TARGETS = [
     *MAIN_PHYLOGENY_TARGETS,
     *RTT_AND_ML_SUBSET_TARGETS,
+    "metadata/genoflu_results_to_metadata.done",
 ]
 
 rule all:

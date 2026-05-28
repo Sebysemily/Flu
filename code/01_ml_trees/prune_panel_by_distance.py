@@ -71,12 +71,33 @@ def calculate_distances_to_core(tree, core_names: Set[str]) -> Dict[str, float]:
             
     return tip_distances
 
-def parse_date_from_header(label: str) -> str:
-    # Header format: isolate_EPI_ISL__context_type/place/date or isolate_EPI_ISL__context_type/segment/place/date
+def load_panel_metadata(path: str) -> Dict[str, Dict[str, str]]:
+    """Load deduped panel metadata: file_name -> {expected_role, collection_date}."""
+    meta = {}
+    with open(path, "r", encoding="utf-8") as handle:
+        reader = csv.DictReader(handle)
+        for row in reader:
+            name = (row.get("file_name") or "").strip()
+            if not name or name in meta:
+                continue
+            meta[name] = {
+                "expected_role": (row.get("expected_role") or "").strip(),
+                "collection_date": (row.get("collection_date") or "").strip(),
+                "country": (row.get("country") or "").strip(),
+            }
+    return meta
+
+
+def parse_date_for_tip(label: str, meta: Dict[str, Dict[str, str]]) -> str:
+    if label in meta and meta[label].get("collection_date"):
+        return meta[label]["collection_date"]
     parts = label.split("/")
     if len(parts) >= 3:
         return parts[-1].strip()
     return "UNKNOWN"
+
+
+CORE_ROLES = {"flu_costa", "flu_sierra", "flu_epi_isl"}
 
 def write_panel(path: str, rows: List[Tuple[str, str, str, float]]) -> None:
     out_dir = os.path.dirname(path)
@@ -92,7 +113,11 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Consolidated script to select, subset and prune tree to BEAST panel by distance.")
     parser.add_argument("--alignment", required=True, help="Input alignment to subset")
     parser.add_argument("--tree", required=True, help="Input Newick tree to prune")
-    parser.add_argument("--panel-main-out", required=True, help="Output main taxa TSV")
+    parser.add_argument(
+        "--panel-main-out",
+        default=None,
+        help="Optional TSV audit of panel taxa (role/lineage). Omit to rely on --out-tree tips only.",
+    )
     parser.add_argument("--out-alignment", required=True, help="Output subset FASTA alignment")
     parser.add_argument("--out-tree", required=True, help="Output pruned Newick tree")
     parser.add_argument("--audit-out", required=True, help="Output subset audit TSV")
@@ -103,20 +128,38 @@ def main() -> None:
     parser.add_argument("--max-distance", type=float, default=0.08, help="Maximum patristic distance threshold")
     parser.add_argument("--protect-anchors-per-month", type=int, default=2, help="Number of oldest American anchors to protect per month up to 2022-05")
     parser.add_argument("--protect-regional-per-month", type=int, default=3, help="Number of regional context sequences to protect per month closest to core")
+    parser.add_argument("--metadata", required=True, help="Path to metadata/H5N1_context.csv")
     args = parser.parse_args()
+
+    panel_meta = load_panel_metadata(args.metadata)
 
     tree = read_tree(args.tree)
     tree_tips = get_terminals(tree)
 
-    # 1. Identify groups
-    core_tips = sorted([t for t in tree_tips if t.startswith("Flu-")])
-    american_anchor_tips = sorted([t for t in tree_tips if "__american_anchor" in t])
-    regional_context_tips = sorted([t for t in tree_tips if "__regional_context" in t])
+    def role_for_tip(tip: str) -> str:
+        return panel_meta.get(tip, {}).get("expected_role", "")
+
+    # 1. Identify groups from unified metadata
+    core_tips = sorted([t for t in tree_tips if role_for_tip(t) in CORE_ROLES])
+    american_anchor_tips = sorted([t for t in tree_tips if role_for_tip(t) == "american_anchor"])
+    regional_context_tips = sorted([t for t in tree_tips if role_for_tip(t) == "regional_context"])
+
+    core_costa = [t for t in core_tips if role_for_tip(t) == "flu_costa"]
+    core_sierra = [t for t in core_tips if role_for_tip(t) == "flu_sierra"]
+    core_epi = [t for t in core_tips if role_for_tip(t) == "flu_epi_isl"]
 
     print(f"Loaded tree with {len(tree_tips)} tips.")
-    print(f"Found {len(core_tips)} Ecuador core tips.")
+    print(f"Found {len(core_tips)} Ecuador core tips (metadata roles).")
+    print(f"  flu_costa: {len(core_costa)}, flu_sierra: {len(core_sierra)}, flu_epi_isl: {len(core_epi)}")
     print(f"Found {len(american_anchor_tips)} American anchor tips.")
     print(f"Found {len(regional_context_tips)} Regional context tips.")
+
+    tips_missing_role = sorted(
+        t for t in tree_tips
+        if t not in core_tips and t not in american_anchor_tips and t not in regional_context_tips
+    )
+    if tips_missing_role:
+        print(f"Warning: {len(tips_missing_role)} tips have no expected_role in metadata (excluded from panel logic).")
 
     # 2. Calculate patristic distance to closest core sequence for all anchor and regional context tips using Dijkstra's algorithm
     tip_distances = calculate_distances_to_core(tree, set(core_tips))
@@ -124,10 +167,10 @@ def main() -> None:
     # Group anchors by month and protect the closest to core per month up to May 2022
     anchors_by_month = {}
     for tip in american_anchor_tips:
-        date_str = parse_date_from_header(tip)
+        date_str = parse_date_for_tip(tip, panel_meta)
         match = re.search(r"(\d{4})-(\d{2})", date_str)
         month_key = f"{match.group(1)}-{match.group(2)}" if match else "UNKNOWN"
-        
+
         if month_key not in anchors_by_month:
             anchors_by_month[month_key] = []
         anchors_by_month[month_key].append(tip)
@@ -147,10 +190,10 @@ def main() -> None:
     # Group regional contexts by month and protect the closest to core per month
     regional_by_month = {}
     for tip in regional_context_tips:
-        date_str = parse_date_from_header(tip)
+        date_str = parse_date_for_tip(tip, panel_meta)
         match = re.search(r"(\d{4})-(\d{2})", date_str)
         month_key = f"{match.group(1)}-{match.group(2)}" if match else "UNKNOWN"
-        
+
         if month_key not in regional_by_month:
             regional_by_month[month_key] = []
         regional_by_month[month_key].append(tip)
@@ -189,9 +232,9 @@ def main() -> None:
     # 5. Build final panel rows
     panel_rows = []
     
-    # Core Ecuador
+    # Core Ecuador — preserve flu_costa / flu_sierra from H5N1_context
     for tip in core_tips:
-        panel_rows.append((tip, "ecuador_core", "main_cluster", None))
+        panel_rows.append((tip, role_for_tip(tip), "main_cluster", None))
         
     # Protected Anchors
     for tip in sorted(protected_anchors):
@@ -205,8 +248,10 @@ def main() -> None:
     for tip, role, dist in selected_candidates:
         panel_rows.append((tip, role, "distance_to_ecuador_core", dist))
 
-    write_panel(args.panel_main_out, panel_rows)
-    print(f"Wrote final panel Main Taxa to {args.panel_main_out} ({len(panel_rows)} taxa total).")
+    if args.panel_main_out:
+        write_panel(args.panel_main_out, panel_rows)
+        print(f"Wrote optional panel audit TSV to {args.panel_main_out} ({len(panel_rows)} taxa).")
+    print(f"Final panel: {len(panel_rows)} taxa (tip list = pruned tree output).")
 
     # Set of final panel taxon names
     panel_taxa_set = {row[0] for row in panel_rows}
@@ -248,6 +293,10 @@ def main() -> None:
         writer.writerow(["metric", "value"])
         writer.writerow(["tree_tips_total", len(tree_tips)])
         writer.writerow(["ecuador_core_tips", len(core_tips)])
+        writer.writerow(["flu_costa_tips", len(core_costa)])
+        writer.writerow(["flu_sierra_tips", len(core_sierra)])
+        writer.writerow(["flu_epi_isl_tips", len(core_epi)])
+        writer.writerow(["tips_missing_metadata_role", len(tips_missing_role)])
         writer.writerow(["american_anchors_total", len(american_anchor_tips)])
         writer.writerow(["american_anchors_protected", len(protected_anchors)])
         writer.writerow(["regional_context_total", len(regional_context_tips)])
@@ -287,9 +336,12 @@ def main() -> None:
             writer.writerow(["country", "month", "n_selected"])
             coverage = {}
             for tip, role, dist in selected_candidates:
-                parts = tip.split("/")
-                country = parts[1] if len(parts) >= 2 else "UNKNOWN"
-                ym = parts[-1][:7] if len(parts) >= 3 and len(parts[-1]) >= 7 else "UNKNOWN"
+                date_str = parse_date_for_tip(tip, panel_meta)
+                ym = date_str[:7] if len(date_str) >= 7 else "UNKNOWN"
+                country = panel_meta.get(tip, {}).get("country", "UNKNOWN")
+                if country == "UNKNOWN":
+                    parts = tip.split("/")
+                    country = parts[1] if len(parts) >= 2 else "UNKNOWN"
                 coverage[(country, ym)] = coverage.get((country, ym), 0) + 1
             for (country, month), n in sorted(coverage.items()):
                 writer.writerow([country, month, n])
