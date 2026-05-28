@@ -23,7 +23,56 @@ def prune_to_common(tree1, tree2):
     return common
 
 
-def optimize_tree_layout(tree, reference_leaf_order):
+def collapse_maximal_context_clades(tree, core_prefix="Flu-"):
+    """
+    Finds and collapses maximal clades in-place that contain only context sequences.
+    Returns a dictionary mapping the new leaf name to the set of original leaf names.
+    """
+    collapsed_groups = {}
+    group_counter = 0
+
+    def is_context_only(node):
+        return all(not leaf.name.lower().startswith(core_prefix.lower()) for leaf in node.get_terminals())
+
+    clades_to_collapse = []
+
+    def find_maximal_context(node):
+        if is_context_only(node):
+            clades_to_collapse.append(node)
+            return
+        if node.is_terminal():
+            return
+        for child in node.clades:
+            find_maximal_context(child)
+
+    find_maximal_context(tree.root)
+
+    # Collapse each identified clade
+    for node in clades_to_collapse:
+        terminals = node.get_terminals()
+        leaf_names = {l.name for l in terminals}
+        count = len(leaf_names)
+
+        if count > 1:
+            group_counter += 1
+            new_name = f"Regional Context Group {group_counter} (N={count})"
+            node.name = new_name
+            node.clades = []  # Collapse descendants
+            collapsed_groups[new_name] = leaf_names
+        else:
+            # If it's a single leaf, keep it as is
+            leaf_name = list(leaf_names)[0]
+            collapsed_groups[leaf_name] = leaf_names
+
+    # Add uncollapsed core leaves to the mapping
+    for leaf in tree.get_terminals():
+        if leaf.name not in collapsed_groups:
+            collapsed_groups[leaf.name] = {leaf.name}
+
+    return collapsed_groups
+
+
+def optimize_tree_layout(tree, reference_leaf_order, collapsed_members):
     """
     Applies the barycenter heuristic to rotate tree nodes in-place
     to match the reference leaf order as closely as possible.
@@ -34,7 +83,10 @@ def optimize_tree_layout(tree, reference_leaf_order):
         if node in memo:
             return memo[node]
         if node.is_terminal():
-            val = [reference_leaf_order.get(node.name, 0)]
+            # For collapsed groups, find the average index of its members in the reference order
+            members = collapsed_members.get(node.name, {node.name})
+            indices = [reference_leaf_order.get(m, 0) for m in members if m in reference_leaf_order]
+            val = indices if indices else [0]
             memo[node] = val
             return val
         indices = []
@@ -67,14 +119,12 @@ def get_coordinates(tree, side='left'):
     leaves = tree.get_terminals()
     y_coords = {leaf.name: i for i, leaf in enumerate(leaves)}
     
-    # Compute depths (distances from root)
     depths = tree.depths()
     max_depth = max(depths.values()) if depths.values() else 1.0
     if max_depth == 0:
         max_depth = 1.0
 
     node_coords = {}
-    parent_dict = build_parent_dict(tree)
 
     def calc_coords(node):
         if node.is_terminal():
@@ -88,10 +138,8 @@ def get_coordinates(tree, side='left'):
         
         depth = depths[node]
         if side == 'left':
-            # scale X from 0.0 (root) to 0.8 (leaves)
             x = (depth / max_depth) * 0.8
         else:
-            # scale X from 3.0 (root) to 2.2 (leaves)
             x = 3.0 - (depth / max_depth) * 0.8
             
         node_coords[node] = (x, y)
@@ -101,16 +149,61 @@ def get_coordinates(tree, side='left'):
     return node_coords, y_coords
 
 
-def draw_tree_branches(ax, tree, coords):
+def load_itol_colors(style_file):
+    color_map = {}
+    if not style_file or not os.path.exists(style_file):
+        return color_map
+    with open(style_file, "r") as f:
+        for line in f:
+            line = line.strip()
+            if not line or line.startswith("TREE_COLORS") or line.startswith("SEPARATOR") or line.startswith("DATA") or line.startswith("#"):
+                continue
+            parts = line.split(",")
+            if len(parts) >= 3:
+                name = parts[0].strip("'\"")
+                color = parts[2].strip()
+                color_map[name] = color
+    return color_map
+
+
+def get_node_color(node, color_map, collapsed_members, default_color='#555555'):
+    """
+    Determines the color for a node based on its descendants.
+    """
+    terminals = node.get_terminals()
+    
+    # Expand collapsed leaves to original names
+    all_original_leaves = []
+    for t in terminals:
+        members = collapsed_members.get(t.name, {t.name})
+        all_original_leaves.extend(members)
+        
+    colors = [color_map.get(leaf_name) for leaf_name in all_original_leaves if leaf_name in color_map]
+    
+    if not colors:
+        return default_color
+        
+    # If all leaves share a single color, use it
+    first_color = colors[0]
+    if all(c == first_color for c in colors):
+        return first_color
+        
+    return default_color
+
+
+def draw_tree_branches(ax, tree, coords, color_map, collapsed_members):
     parent_dict = build_parent_dict(tree)
     for child, parent in parent_dict.items():
         x_p, y_p = coords[parent]
         x_c, y_c = coords[child]
         
+        # Determine branch color
+        branch_color = get_node_color(child, color_map, collapsed_members)
+        
         # Draw vertical line at parent x
-        ax.plot([x_p, x_p], [y_p, y_c], color='black', linewidth=1.2)
+        ax.plot([x_p, x_p], [y_p, y_c], color=branch_color, linewidth=1.2)
         # Draw horizontal line to child
-        ax.plot([x_p, x_c], [y_c, y_c], color='black', linewidth=1.2)
+        ax.plot([x_p, x_c], [y_c, y_c], color=branch_color, linewidth=1.2)
 
 
 def main():
@@ -119,6 +212,9 @@ def main():
     parser.add_argument("--tree2", required=True, help="Path to Right Newick Tree")
     parser.add_argument("--label1", default="Tree 1", help="Label for Left Tree")
     parser.add_argument("--label2", default="Tree 2", help="Label for Right Tree")
+    parser.add_argument("--itol-colors", help="Path to iTOL tree_colors.txt template file")
+    parser.add_argument("--collapse-context", action="store_true", help="Collapse maximal context-only clades")
+    parser.add_argument("--hide-non-core-labels", action="store_true", help="Hide labels for non-core sequences (except collapsed group titles)")
     parser.add_argument("--output", required=True, help="Path to output PNG image")
     args = parser.parse_args()
 
@@ -128,72 +224,125 @@ def main():
 
     # 2. Prune to common taxa
     common_taxa = prune_to_common(t1, t2)
-    print(f"Drawing tanglegram for {len(common_taxa)} common taxa.")
+    print(f"Loaded {len(common_taxa)} common taxa.")
 
     if not common_taxa:
         raise ValueError("No common taxa between the two trees. Cannot draw tanglegram.")
 
-    # 3. Optimize layout of Tree 2 to match Tree 1
-    leaves1_names = [l.name for l in t1.get_terminals()]
-    ref_order = {name: idx for idx, name in enumerate(leaves1_names)}
-    optimize_tree_layout(t2, ref_order)
+    # Load colors
+    color_map = load_itol_colors(args.itol_colors)
 
-    # 4. Generate coordinates
+    # 3. Collapse context clades if requested
+    collapsed_members1 = {}
+    collapsed_members2 = {}
+    if args.collapse_context:
+        collapsed_members1 = collapse_maximal_context_clades(t1)
+        collapsed_members2 = collapse_maximal_context_clades(t2)
+        print(f"Collapsed Tree 1 leaves count: {len(t1.get_terminals())}")
+        print(f"Collapsed Tree 2 leaves count: {len(t2.get_terminals())}")
+    else:
+        # Default identity mapping
+        collapsed_members1 = {l.name: {l.name} for l in t1.get_terminals()}
+        collapsed_members2 = {l.name: {l.name} for l in t2.get_terminals()}
+
+    # 4. Optimize layout of Tree 2 to match Tree 1
+    leaves1_names = [l.name for l in t1.get_terminals()]
+    # Reference order is based on original uncollapsed leaf order to maintain detailed alignment
+    original_leaves_order = {name: idx for idx, name in enumerate(leaves1_names)}
+    optimize_tree_layout(t2, original_leaves_order, collapsed_members2)
+
+    # 5. Generate coordinates
     coords1, y_coords1 = get_coordinates(t1, side='left')
     coords2, y_coords2 = get_coordinates(t2, side='right')
 
-    # 5. Set up plot
-    num_taxa = len(common_taxa)
-    fig_height = max(6, num_taxa * 0.25)  # Scale height based on number of taxa
+    # 6. Set up plot
+    num_taxa1 = len(t1.get_terminals())
+    num_taxa2 = len(t2.get_terminals())
+    max_taxa = max(num_taxa1, num_taxa2)
+    
+    fig_height = max(6, max_taxa * 0.25)
     fig, ax = plt.subplots(figsize=(14, fig_height))
     
-    # Hide axes
     ax.axis('off')
     ax.set_xlim(-0.1, 3.1)
-    ax.set_ylim(-1.0, num_taxa + 1.0)
+    ax.set_ylim(-1.0, max_taxa + 1.0)
 
-    # 6. Draw tree branches
-    draw_tree_branches(ax, t1, coords1)
-    draw_tree_branches(ax, t2, coords2)
+    # 7. Draw tree branches
+    draw_tree_branches(ax, t1, coords1, color_map, collapsed_members1)
+    draw_tree_branches(ax, t2, coords2, color_map, collapsed_members2)
 
-    # 7. Draw labels and connection lines
-    # Define connector boundaries
+    # 8. Draw labels and connection lines
     x_conn_left = 1.35
     x_conn_right = 1.65
-    
-    for taxon in common_taxa:
-        y1 = y_coords1[taxon]
-        y2 = y_coords2[taxon]
-        
-        # Draw leaf labels
-        # Left label (left-aligned at X=0.82)
-        # We replace underscores/pipes with cleaner text if desired, or leave as is
-        label_text = taxon.split("|")[0] if "|" in taxon else taxon
-        ax.text(0.82, y1, label_text, ha='left', va='center', fontsize=8, color='#333333', family='monospace')
-        # Right label (right-aligned at X=2.18)
-        ax.text(2.18, y2, label_text, ha='right', va='center', fontsize=8, color='#333333', family='monospace')
-        
-        # Connection lines
-        # If they match exactly (no crossing), draw a light gray line
-        # If they cross, draw a vibrant tomato line to highlight reassortment
-        is_crossing = abs(y1 - y2) > 0.01
-        if is_crossing:
-            color = '#ff4d4d'  # tomato
-            alpha = 0.5
-            linewidth = 1.0
-            style = '-'
-        else:
-            color = '#cccccc'  # light gray
-            alpha = 0.4
-            linewidth = 0.8
-            style = '--'
-            
-        ax.plot([x_conn_left, x_conn_right], [y1, y2], color=color, alpha=alpha, linewidth=linewidth, linestyle=style)
 
-    # 8. Add Titles
-    ax.text(0.4, num_taxa, args.label1, ha='center', va='bottom', fontsize=12, fontweight='bold', color='#1a1a1a')
-    ax.text(2.6, num_taxa, args.label2, ha='center', va='bottom', fontsize=12, fontweight='bold', color='#1a1a1a')
-    ax.text(1.5, num_taxa + 0.5, f"Tanglegram: {args.label1} vs {args.label2}", ha='center', va='bottom', fontsize=14, fontweight='bold', color='#111111')
+    # A: Draw leaf nodes (dots and text)
+    # Left Tree
+    for leaf in t1.get_terminals():
+        y = y_coords1[leaf.name]
+        is_core = leaf.name.lower().startswith("flu-")
+        color = get_node_color(leaf, color_map, collapsed_members1)
+        
+        # Plot point
+        ax.plot(0.8, y, 'o', color=color, markersize=4)
+        
+        # Plot text
+        show_label = is_core or not args.hide_non_core_labels or leaf.name.startswith("Regional Context Group")
+        if show_label:
+            label_text = leaf.name.split("|")[0] if "|" in leaf.name else leaf.name
+            ax.text(0.82, y, label_text, ha='left', va='center', fontsize=8, color='#333333', family='monospace')
+
+    # Right Tree
+    for leaf in t2.get_terminals():
+        y = y_coords2[leaf.name]
+        is_core = leaf.name.lower().startswith("flu-")
+        color = get_node_color(leaf, color_map, collapsed_members2)
+        
+        # Plot point
+        ax.plot(2.2, y, 'o', color=color, markersize=4)
+        
+        # Plot text
+        show_label = is_core or not args.hide_non_core_labels or leaf.name.startswith("Regional Context Group")
+        if show_label:
+            label_text = leaf.name.split("|")[0] if "|" in leaf.name else leaf.name
+            ax.text(2.18, y, label_text, ha='right', va='center', fontsize=8, color='#333333', family='monospace')
+
+    # B: Draw Connection Lines
+    # We draw lines between any pair of collapsed leaves that share original leaves.
+    for leaf1, members1 in collapsed_members1.items():
+        y1 = y_coords1[leaf1]
+        for leaf2, members2 in collapsed_members2.items():
+            y2 = y_coords2[leaf2]
+            
+            shared = members1.intersection(members2)
+            if not shared:
+                continue
+                
+            # Line properties
+            is_crossing = abs(y1 - y2) > 0.01
+            
+            # Determine color from shared leaves
+            shared_list = list(shared)
+            first_shared = shared_list[0]
+            shared_color = color_map.get(first_shared, '#cccccc')
+            
+            if is_crossing:
+                # Highlight crossings with a bit more alpha
+                color = '#ff4d4d' if not args.itol_colors else shared_color
+                alpha = 0.6
+                linewidth = 1.2
+                style = '-'
+            else:
+                color = '#cccccc' if not args.itol_colors else shared_color
+                alpha = 0.3
+                linewidth = 0.8
+                style = '--'
+                
+            ax.plot([x_conn_left, x_conn_right], [y1, y2], color=color, alpha=alpha, linewidth=linewidth, linestyle=style)
+
+    # 9. Add Titles
+    ax.text(0.4, max_taxa, args.label1, ha='center', va='bottom', fontsize=12, fontweight='bold', color='#1a1a1a')
+    ax.text(2.6, max_taxa, args.label2, ha='center', va='bottom', fontsize=12, fontweight='bold', color='#1a1a1a')
+    ax.text(1.5, max_taxa + 0.5, f"Tanglegram: {args.label1} vs {args.label2}", ha='center', va='bottom', fontsize=14, fontweight='bold', color='#111111')
 
     # Save output
     os.makedirs(os.path.dirname(args.output), exist_ok=True)

@@ -173,29 +173,6 @@ rule concat_aligned_segments_with_partitions:
         """
 
 # =====================================================================
-# Rule: concat_except_ha_with_partitions
-# =====================================================================
-
-rule concat_except_ha_with_partitions:
-    input:
-        alignments=expand(f"{MAIN_PANEL_DIR}/H5N1_{{segment}}.fasta", segment=["PB2", "PB1", "PA", "NP", "NA", "MP", "NS"])
-    output:
-        aligned=f"{DATA_PHYLOGENY}/aligned/H5N1_concat_except_HA.mafft",
-        partitions=f"{DATA_PHYLOGENY}/aligned/H5N1_concat_except_HA.partitions"
-    params:
-        segment_order=",".join(["PB2", "PB1", "PA", "NP", "NA", "MP", "NS"]),
-        codon_segments=",".join(["PB2", "PB1", "PA", "NP", "NA"])
-    shell:
-        r"""
-        python code/01_ml_trees/build_concat_codon_partitions.py \
-            --segment-order {params.segment_order} \
-            --codon-segments {params.codon_segments} \
-            --output-alignment {output.aligned} \
-            --output-partitions {output.partitions} \
-            {input.alignments}
-        """
-
-# =====================================================================
 # Rule: run_iqtree_codon_segment_replicate
 # =====================================================================
 
@@ -248,32 +225,6 @@ rule run_iqtree_simple_segment_replicate:
         r"""
         mkdir -p $(dirname {params.prefix})
         iqtree -s {input.alignment} -pre {params.prefix} -seed {params.seed} -nt {threads} -bb {params.bootstrap} -bnni
-        cp {params.prefix}.treefile {output.treefile}
-        """
-
-# =====================================================================
-# Rule: concat_except_HA_replicate
-# =====================================================================
-
-rule concat_except_HA_replicate:
-    input:
-        alignment=f"{DATA_PHYLOGENY}/aligned/H5N1_concat_except_HA.mafft",
-        partitions=f"{DATA_PHYLOGENY}/aligned/H5N1_concat_except_HA.partitions"
-    output:
-        treefile=f"{RESULTS_PHYLOGENY}/iq-tree/concat_except_HA/rep{{rep}}.treefile"
-    params:
-        prefix=f"{RESULTS_PHYLOGENY}/iq-tree/concat_except_HA/rep{{rep}}/rep{{rep}}",
-        seed=get_iqtree_replicate_seed,
-        bootstrap=config.get("iqtree_bootstrap", 1000)
-    wildcard_constraints:
-        segment="concat_except_HA"
-    threads: 4
-    conda:
-        "../envs/01_ml_trees.yml"
-    shell:
-        r"""
-        mkdir -p $(dirname {params.prefix})
-        iqtree -s {input.alignment} -spp {input.partitions} -pre {params.prefix} -seed {params.seed} -nt {threads} -bb {params.bootstrap} -bnni
         cp {params.prefix}.treefile {output.treefile}
         """
 
@@ -390,6 +341,7 @@ rule itol_color_subsets:
         """
 
 # =====================================================================
+# =====================================================================
 rule copy_trees_for_segment_analysis:
     input:
         treefile=f"{RESULTS_PHYLOGENY}/iq-tree/{{segment}}/rep1.treefile"
@@ -397,38 +349,44 @@ rule copy_trees_for_segment_analysis:
         treefile=f"{RESULTS_PHYLOGENY}/{{dir_path}}/{{segment}}_final.treefile"
     wildcard_constraints:
         dir_path=r"(iq-tree/[^/]+|segment_analysis/tanglegram)"
-    shell:
-        "cp {input.treefile} {output.treefile}"
-
-# =====================================================================
-# Rule: segment_analysis_au
-# =====================================================================
-rule segment_analysis_au:
-    input:
-        species_tree = f"{RESULTS_PHYLOGENY}/iq-tree/subset_concat/subset_concat_final.treefile",
-        gene_trees = expand(f"{RESULTS_PHYLOGENY}/iq-tree/{{segment}}/{{segment}}_final.treefile", segment=PHYLO_SEGMENTS),
-        alignments = expand(f"{MAIN_PANEL_DIR}/H5N1_{{segment}}.fasta", segment=PHYLO_SEGMENTS),
-        concat_alignment = MAIN_PANEL_ALIGNMENT,
-        concat_partitions = MAIN_PANEL_PARTITIONS,
-    output:
-        matrix = f"{RESULTS_PHYLOGENY}/segment_analysis/au_test_matrix.csv"
-    params:
-        segments = ",".join(PHYLO_SEGMENTS),
-        alignments_dir = MAIN_PANEL_DIR,
-        work_dir = f"{RESULTS_PHYLOGENY}/segment_analysis/au"
     conda:
         "../envs/01_ml_trees.yml"
     shell:
         r"""
-        python code/segment_analysis/run_au_tests.py \
-            --segments {params.segments} \
-            --trees {input.gene_trees} \
-            --concat-tree {input.species_tree} \
-            --alignments-dir {params.alignments_dir} \
-            --concat-alignment {input.concat_alignment} \
-            --concat-partitions {input.concat_partitions} \
-            --work-dir {params.work_dir} \
-            --output {output.matrix}
+        python -c "
+from Bio import Phylo
+tree = Phylo.read('{input.treefile}', 'newick')
+outgroup_name = 'ABlue-winged_TealSouth_CarolinaUSDA-000345-0032021_EPI_ISL_18133416__american_anchor/USA/2021-12-30'
+outgroups = [c for c in tree.get_terminals() if c.name == outgroup_name]
+if outgroups:
+    tree.root_with_outgroup(outgroups[0])
+else:
+    tree.root_at_midpoint()
+Phylo.write(tree, '{output.treefile}', 'newick')
+"
+        """
+
+# =====================================================================
+# Rule: build_main_panel_metadata
+# Derives metadata/main_panel.csv from the pruned-subset concat tree.
+# The CSV (label, id, type_c, date) drives colour/shape logic in R
+# plots, replacing the per-tree iTOL colour file workflow.
+# =====================================================================
+
+MAIN_PANEL_METADATA = "metadata/main_panel.csv"
+
+rule build_main_panel_metadata:
+    input:
+        tree=f"{RESULTS_PHYLOGENY}/iq-tree/subset_concat/subset_concat_final.treefile"
+    output:
+        metadata=MAIN_PANEL_METADATA
+    conda:
+        "../envs/01_ml_trees.yml"
+    shell:
+        r"""
+        python code/01_ml_trees/build_main_panel_metadata.py \
+            --tree   {input.tree} \
+            --output {output.metadata}
         """
 
 # =====================================================================
@@ -461,30 +419,23 @@ rule segment_analysis_rf:
 rule segment_analysis_tanglegram:
     input:
         ha_tree = f"{RESULTS_PHYLOGENY}/iq-tree/HA/HA_final.treefile",
-        na_tree = f"{RESULTS_PHYLOGENY}/iq-tree/NA/NA_final.treefile",
-        concat_except_ha_tree = f"{RESULTS_PHYLOGENY}/segment_analysis/tanglegram/concat_except_HA_final.treefile",
+        pb2_tree = f"{RESULTS_PHYLOGENY}/iq-tree/PB2/PB2_final.treefile",
+        itol_colors = f"{RESULTS_PHYLOGENY}/itol_styles/subset_concat/tree_colors.txt",
     output:
-        ha_vs_na = f"{RESULTS_PHYLOGENY}/segment_analysis/tanglegram_ha_vs_na.png",
-        ha_vs_except_ha = f"{RESULTS_PHYLOGENY}/segment_analysis/tanglegram_ha_vs_concat_except_ha.png",
+        tanglegram = f"{RESULTS_PHYLOGENY}/segment_analysis/tanglegram_ha_vs_pb2.png",
     conda:
         "../envs/01_ml_trees.yml"
     shell:
         r"""
-        # Tanglegram 1: HA vs NA
         python code/segment_analysis/draw_tanglegrams.py \
             --tree1 {input.ha_tree} \
-            --tree2 {input.na_tree} \
+            --tree2 {input.pb2_tree} \
             --label1 "HA Segment" \
-            --label2 "NA Segment" \
-            --output {output.ha_vs_na}
-            
-        # Tanglegram 2: HA vs concat_except_HA
-        python code/segment_analysis/draw_tanglegrams.py \
-            --tree1 {input.ha_tree} \
-            --tree2 {input.concat_except_ha_tree} \
-            --label1 "HA Segment" \
-            --label2 "All Segments except HA (Concat)" \
-            --output {output.ha_vs_except_ha}
+            --label2 "PB2 Segment" \
+            --itol-colors {input.itol_colors} \
+            --collapse-context \
+            --hide-non-core-labels \
+            --output {output.tanglegram}
         """
 
 # =====================================================================
@@ -514,6 +465,25 @@ rule calculate_rf_distances:
             cat {input.trees} > {params.list_file}
             iqtree -rf_all {params.list_file} -pre {params.prefix}
             rm -f {params.list_file}
+            
+            # Now normalize the distance values to 0-1 scale
+            python -c "
+from Bio import Phylo
+tree = Phylo.read('{input.trees}'.split()[0], 'newick')
+N = len(tree.get_terminals())
+rf_max = 2 * (N - 3)
+with open('{output.matrix}', 'r') as f:
+    lines = f.readlines()
+if lines:
+    out_lines = [lines[0]]
+    for line in lines[1:]:
+        parts = line.strip().split()
+        if len(parts) >= 2:
+            norm_dists = ['%.6f' % (float(x)/rf_max) for x in parts[1:]]
+            out_lines.append(parts[0] + ' ' + ' '.join(norm_dists) + '\n')
+    with open('{output.matrix}', 'w') as f:
+        f.writelines(out_lines)
+"
         fi
         """
 
@@ -581,3 +551,29 @@ rule run_iqtree_subset_concat_replicate:
         iqtree -s {input.alignment} -spp {input.partitions} -pre {params.prefix} -seed {params.seed} -nt {threads} -bb {params.bootstrap} -bnni
         cp {params.prefix}.treefile {output.treefile}
         """
+
+# =====================================================================
+# Rule: segment_analysis_ggtree
+# Uses metadata/main_panel.csv for colour logic (no iTOL file needed).
+# =====================================================================
+rule segment_analysis_ggtree:
+    input:
+        tree=lambda wildcards: (
+            f"{RESULTS_PHYLOGENY}/iq-tree/subset_concat/subset_concat_final.treefile"
+            if wildcards.segment == "subset_concat"
+            else f"{RESULTS_PHYLOGENY}/iq-tree/{wildcards.segment}/{wildcards.segment}_final.treefile"
+        ),
+        metadata=MAIN_PANEL_METADATA,
+    output:
+        png="results/figures/{segment}_tree.png"
+    conda:
+        "../envs/ggtree.yml"
+    shell:
+        r"""
+        Rscript code/segment_analysis/plot_ggtree.R \
+            {input.tree} \
+            {input.metadata} \
+            {output.png} \
+            "{wildcards.segment} Tree"
+        """
+

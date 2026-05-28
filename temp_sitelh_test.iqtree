@@ -1,0 +1,789 @@
+IQ-TREE 3.1.2 built May 17 2026
+
+Input file name: data/phylogeny/main_panel/H5N1_HA.fasta
+Type of analysis: ModelFinder + tree reconstruction
+Random seed number: 655527
+
+REFERENCES
+----------
+
+To cite IQ-TREE 3 please use:
+
+Thomas K.F. Wong, Nhan Ly-Trong, Huaiyan Ren, Hector Banos, Andrew J. Roger,
+Edward Susko, Chris Bielow, Nicola De Maio, Nick Goldman, Matthew W. Hahn,
+Gavin Huttley, Robert Lanfear, Bui Quang Minh (2025)
+IQ-TREE 3: Phylogenomic Inference Software using Complex Evolutionary Models.
+Submitted.
+
+Since you used ModelFinder please also cite: 
+
+Subha Kalyaanamoorthy, Bui Quang Minh, Thomas KF Wong, Arndt von Haeseler,
+and Lars S Jermiin (2017) ModelFinder: Fast model selection for
+accurate phylogenetic estimates. Nature Methods, 14:587–589.
+https://doi.org/10.1038/nmeth.4285
+
+SEQUENCE ALIGNMENT
+------------------
+
+NOTE: Alignment sequence type is auto-detected. If in doubt, specify it via -st option.
+Input data: 311 sequences with 1704 nucleotide sites
+Number of constant sites: 1401 (= 82.2183% of all sites)
+Number of invariant (constant or ambiguous constant) sites: 1401 (= 82.2183% of all sites)
+Number of parsimony informative sites: 156
+Number of distinct site patterns: 367
+
+ModelFinder
+-----------
+
+Best-fit model according to BIC: TN+F+G4
+
+List of models sorted by BIC scores: 
+
+Model                  LogL         AIC      w-AIC        AICc     w-AICc         BIC      w-BIC
+TN+F+G4           -5610.018   12226.036 -   0.0301   12648.556 +    0.184   14962.725 +    0.505
+TIM+F+G4          -5607.541   12223.082 +    0.132   12647.636 +    0.292   14965.212 +    0.146
+HKY+F+G4          -5615.364   12234.727 -  0.00039   12655.220 -  0.00658   14965.975 +   0.0994
+TIM2+F+G4         -5608.318   12224.636 +   0.0606   12649.190 +    0.134   14966.766 +    0.067
+TN+F+I            -5612.268   12230.537 -  0.00317   12653.057 -   0.0194   14967.226 +   0.0532
+K3Pu+F+G4         -5612.898   12231.796 -  0.00169   12654.316 -   0.0103   14968.485 -   0.0283
+TN+F+I+G4         -5609.570   12227.140 -   0.0173   12651.694 -   0.0384   14969.270 -   0.0191
+TIM+F+I           -5609.785   12227.569 -    0.014   12652.123 -    0.031   14969.699 -   0.0154
+TPM2u+F+G4        -5613.706   12233.413 - 0.000753   12655.933 -  0.00461   14970.102 -   0.0126
+TIM3+F+G4         -5610.012   12228.025 -   0.0111   12652.578 -   0.0247   14970.154 -   0.0123
+HKY+F+I           -5617.623   12239.245 - 4.08e-05   12659.738 - 0.000688   14970.493 -   0.0104
+TIM2+F+I          -5610.622   12229.243 -  0.00605   12653.797 -   0.0134   14971.373 -  0.00669
+TIM+F+I+G4        -5607.107   12224.213 +   0.0749   12650.807 +   0.0598   14971.784 -  0.00545
+HKY+F+I+G4        -5614.869   12235.738 - 0.000235   12658.258 -  0.00144   14972.427 -  0.00395
+K3Pu+F+I          -5615.150   12236.299 - 0.000178   12658.819 -  0.00109   14972.988 -  0.00298
+TIM2+F+I+G4       -5607.827   12225.654 -   0.0364   12652.249 -   0.0291   14973.225 -  0.00265
+TPM3u+F+G4        -5615.361   12236.723 - 0.000144   12659.243 - 0.000881   14973.412 -  0.00241
+GTR+F+G4          -5604.565   12221.131 +     0.35   12649.773 +      0.1   14974.142 -  0.00168
+TIM3+F+I          -5612.263   12232.525 -  0.00117   12657.079 -   0.0026   14974.655 -   0.0013
+TPM2u+F+I         -5616.008   12238.015 - 7.54e-05   12660.535 - 0.000462   14974.704 -  0.00126
+K3Pu+F+I+G4       -5612.418   12232.836 -    0.001   12657.390 -  0.00222   14974.966 -  0.00111
+TPM2u+F+I+G4      -5613.172   12234.343 - 0.000473   12658.897 -  0.00105   14976.473 - 0.000522
+TIM3+F+I+G4       -5609.564   12229.128 -  0.00642   12655.722 -  0.00512   14976.698 - 0.000467
+TVM+F+G4          -5609.956   12229.912 -  0.00433   12656.506 -  0.00346   14977.482 - 0.000315
+TPM3u+F+I         -5617.621   12241.242 -  1.5e-05   12663.762 - 9.19e-05   14977.931 - 0.000252
+GTR+F+I           -5606.868   12225.735 -    0.035   12654.377 -     0.01   14978.747 - 0.000168
+TPM3u+F+I+G4      -5614.865   12237.729 -  8.7e-05   12662.283 - 0.000193   14979.859 - 9.61e-05
+GTR+F+I+G4        -5604.077   12222.154 +     0.21   12652.850 -   0.0215   14980.606 - 6.61e-05
+TVM+F+I           -5612.248   12234.495 - 0.000438   12661.090 -  0.00035   14982.066 - 3.19e-05
+TVM+F+I+G4        -5609.419   12230.837 -  0.00273   12659.479 - 0.000783   14983.848 - 1.31e-05
+TPM2+G4           -5667.084   12334.168 - 9.95e-26   12750.627 - 1.26e-23   15054.535 - 5.85e-21
+TPM2+G4           -5667.084   12334.168 - 9.95e-26   12750.627 - 1.26e-23   15054.535 - 5.85e-21
+TPM2u+G4          -5667.084   12334.169 - 9.95e-26   12750.628 - 1.26e-23   15054.536 - 5.85e-21
+K2P+G4            -5671.016   12340.031 - 5.31e-27   12754.483 - 1.84e-24   15054.957 - 4.74e-21
+K2P+G4            -5671.016   12340.031 - 5.31e-27   12754.483 - 1.84e-24   15054.957 - 4.74e-21
+HKY+G4            -5671.017   12340.033 -  5.3e-27   12754.485 - 1.83e-24   15054.959 - 4.73e-21
+K3P+G4            -5668.853   12337.706 -  1.7e-26   12754.165 - 2.15e-24   15058.073 - 9.97e-22
+K3P+G4            -5668.853   12337.706 -  1.7e-26   12754.165 - 2.15e-24   15058.073 - 9.97e-22
+K3Pu+G4           -5668.853   12337.706 -  1.7e-26   12754.165 - 2.15e-24   15058.073 - 9.97e-22
+TPM2+I            -5669.763   12339.527 - 6.83e-27   12755.986 - 8.66e-25   15059.894 - 4.01e-22
+TPM2+I            -5669.763   12339.527 - 6.83e-27   12755.986 - 8.66e-25   15059.894 - 4.01e-22
+TPM2u+I           -5669.766   12339.531 - 6.81e-27   12755.990 - 8.64e-25   15059.898 -    4e-22
+K2P+I             -5673.565   12345.129 - 4.15e-28   12759.581 - 1.43e-25   15060.056 -  3.7e-22
+K2P+I             -5673.565   12345.129 - 4.15e-28   12759.581 - 1.43e-25   15060.056 -  3.7e-22
+HKY+I             -5673.566   12345.131 - 4.14e-28   12759.583 - 1.43e-25   15060.058 -  3.7e-22
+TPM2u+I+G4        -5666.136   12334.271 - 9.45e-26   12752.744 - 4.38e-24   15060.079 - 3.66e-22
+TPM2+I+G4         -5666.136   12334.271 - 9.45e-26   12752.744 - 4.38e-24   15060.079 - 3.66e-22
+TPM2+I+G4         -5666.136   12334.271 - 9.45e-26   12752.744 - 4.38e-24   15060.079 - 3.66e-22
+HKY+I+G4          -5670.200   12340.399 - 4.41e-27   12756.858 -  5.6e-25   15060.766 - 2.59e-22
+K2P+I+G4          -5670.200   12340.399 - 4.41e-27   12756.858 -  5.6e-25   15060.766 - 2.59e-22
+K2P+I+G4          -5670.200   12340.399 - 4.41e-27   12756.858 -  5.6e-25   15060.766 - 2.59e-22
+TIM2+G4           -5666.788   12335.575 - 4.93e-26   12754.048 - 2.28e-24   15061.383 - 1.91e-22
+TIM2e+G4          -5666.788   12335.575 - 4.92e-26   12754.048 - 2.28e-24   15061.383 - 1.91e-22
+TIM2e+G4          -5666.788   12335.575 - 4.92e-26   12754.048 - 2.28e-24   15061.383 - 1.91e-22
+TVM+G4            -5663.092   12330.184 -  7.3e-25   12750.677 - 1.23e-23   15061.432 - 1.86e-22
+TVMe+G4           -5663.092   12330.185 - 7.29e-25   12750.678 - 1.23e-23   15061.433 - 1.86e-22
+TVMe+G4           -5663.092   12330.185 - 7.29e-25   12750.678 - 1.23e-23   15061.433 - 1.86e-22
+TN+G4             -5670.690   12341.381 -  2.7e-27   12757.840 - 3.43e-25   15061.748 - 1.59e-22
+TNe+G4            -5670.691   12341.381 -  2.7e-27   12757.840 - 3.43e-25   15061.748 - 1.59e-22
+TNe+G4            -5670.691   12341.381 -  2.7e-27   12757.840 - 3.43e-25   15061.748 - 1.59e-22
+TPM3+G4           -5670.767   12341.534 -  2.5e-27   12757.993 - 3.17e-25   15061.901 - 1.47e-22
+TPM3+G4           -5670.767   12341.534 -  2.5e-27   12757.993 - 3.17e-25   15061.901 - 1.47e-22
+TPM3u+G4          -5670.768   12341.535 -  2.5e-27   12757.994 - 3.17e-25   15061.902 - 1.47e-22
+K3P+I             -5671.400   12342.800 - 1.33e-27   12759.259 - 1.69e-25   15063.167 - 7.81e-23
+K3P+I             -5671.400   12342.800 - 1.33e-27   12759.259 - 1.69e-25   15063.167 - 7.81e-23
+K3Pu+I            -5671.400   12342.800 - 1.33e-27   12759.259 - 1.69e-25   15063.167 - 7.81e-23
+K3Pu+I+G4         -5668.038   12338.075 - 1.41e-26   12756.548 - 6.54e-25   15063.883 - 5.46e-23
+K3P+I+G4          -5668.038   12338.076 - 1.41e-26   12756.548 - 6.54e-25   15063.883 - 5.46e-23
+K3P+I+G4          -5668.038   12338.076 - 1.41e-26   12756.548 - 6.54e-25   15063.883 - 5.46e-23
+TIM+G4            -5668.523   12339.045 - 8.69e-27   12757.518 - 4.02e-25   15064.853 - 3.36e-23
+TIMe+G4           -5668.523   12339.046 - 8.68e-27   12757.519 - 4.02e-25   15064.854 - 3.36e-23
+TIMe+G4           -5668.523   12339.046 - 8.68e-27   12757.519 - 4.02e-25   15064.854 - 3.36e-23
+TIM2+I            -5669.470   12340.941 - 3.37e-27   12759.413 - 1.56e-25   15066.748 -  1.3e-23
+TIM2e+I           -5669.471   12340.941 - 3.37e-27   12759.414 - 1.56e-25   15066.749 -  1.3e-23
+TIM2e+I           -5669.471   12340.941 - 3.37e-27   12759.414 - 1.56e-25   15066.749 -  1.3e-23
+TVM+I             -5665.780   12335.561 - 4.96e-26   12756.054 - 8.37e-25   15066.809 - 1.26e-23
+TVMe+I            -5665.781   12335.562 - 4.96e-26   12756.055 - 8.36e-25   15066.810 - 1.26e-23
+TVMe+I            -5665.781   12335.562 - 4.96e-26   12756.055 - 8.36e-25   15066.810 - 1.26e-23
+TN+I              -5673.244   12346.488 -  2.1e-28   12762.947 - 2.67e-26   15066.855 - 1.24e-23
+TNe+I             -5673.244   12346.489 -  2.1e-28   12762.948 - 2.66e-26   15066.856 - 1.23e-23
+TNe+I             -5673.244   12346.489 -  2.1e-28   12762.948 - 2.66e-26   15066.856 - 1.23e-23
+TVM+I+G4          -5662.120   12330.240 - 7.09e-25   12752.760 - 4.34e-24   15066.929 - 1.19e-23
+TVMe+I+G4         -5662.120   12330.241 - 7.09e-25   12752.761 - 4.34e-24   15066.930 - 1.19e-23
+TVMe+I+G4         -5662.120   12330.241 - 7.09e-25   12752.761 - 4.34e-24   15066.930 - 1.19e-23
+TIM2+I+G4         -5665.851   12335.702 - 4.62e-26   12756.195 -  7.8e-25   15066.950 - 1.18e-23
+TIM2e+I+G4        -5665.851   12335.702 - 4.62e-26   12756.195 -  7.8e-25   15066.951 - 1.18e-23
+TIM2e+I+G4        -5665.851   12335.702 - 4.62e-26   12756.195 -  7.8e-25   15066.951 - 1.18e-23
+TPM3+I            -5673.322   12346.645 - 1.94e-28   12763.104 - 2.46e-26   15067.012 - 1.14e-23
+TPM3+I            -5673.322   12346.645 - 1.94e-28   12763.104 - 2.46e-26   15067.012 - 1.14e-23
+TPM3u+I           -5673.324   12346.647 - 1.94e-28   12763.106 - 2.46e-26   15067.014 - 1.14e-23
+TN+I+G4           -5669.882   12341.765 - 2.23e-27   12760.237 - 1.03e-25   15067.573 - 8.63e-24
+TNe+I+G4          -5669.883   12341.765 - 2.23e-27   12760.238 - 1.03e-25   15067.573 - 8.63e-24
+TNe+I+G4          -5669.883   12341.765 - 2.23e-27   12760.238 - 1.03e-25   15067.573 - 8.63e-24
+TPM3u+I+G4        -5669.933   12341.866 - 2.12e-27   12760.338 - 9.82e-26   15067.673 - 8.21e-24
+TPM3+I+G4         -5669.933   12341.866 - 2.12e-27   12760.338 - 9.82e-26   15067.673 -  8.2e-24
+TPM3+I+G4         -5669.933   12341.866 - 2.12e-27   12760.338 - 9.82e-26   15067.673 -  8.2e-24
+SYM+G4            -5662.792   12331.584 - 3.62e-25   12754.104 - 2.22e-24   15068.273 - 6.08e-24
+SYM+G4            -5662.792   12331.584 - 3.62e-25   12754.104 - 2.22e-24   15068.273 - 6.08e-24
+GTR+G4            -5662.792   12331.584 - 3.62e-25   12754.104 - 2.22e-24   15068.273 - 6.08e-24
+TIM3+G4           -5670.433   12342.865 - 1.29e-27   12761.338 - 5.96e-26   15068.673 - 4.98e-24
+TIM3e+G4          -5670.433   12342.866 - 1.29e-27   12761.338 - 5.96e-26   15068.673 - 4.98e-24
+TIM3e+G4          -5670.433   12342.866 - 1.29e-27   12761.338 - 5.96e-26   15068.673 - 4.98e-24
+TIM+I             -5671.074   12344.148 - 6.77e-28   12762.621 - 3.14e-26   15069.956 - 2.62e-24
+TIMe+I            -5671.074   12344.149 - 6.77e-28   12762.621 - 3.14e-26   15069.956 - 2.62e-24
+TIMe+I            -5671.074   12344.149 - 6.77e-28   12762.621 - 3.14e-26   15069.956 - 2.62e-24
+TIM+I+G4          -5667.720   12339.439 - 7.13e-27   12759.932 -  1.2e-25   15070.688 - 1.82e-24
+TIMe+I+G4         -5667.720   12339.439 - 7.13e-27   12759.932 -  1.2e-25   15070.688 - 1.82e-24
+TIMe+I+G4         -5667.720   12339.439 - 7.13e-27   12759.932 -  1.2e-25   15070.688 - 1.82e-24
+SYM+I             -5665.484   12336.967 - 2.46e-26   12759.487 -  1.5e-25   15073.656 - 4.12e-25
+SYM+I             -5665.484   12336.967 - 2.46e-26   12759.487 -  1.5e-25   15073.656 - 4.12e-25
+GTR+I             -5665.484   12336.968 - 2.45e-26   12759.488 -  1.5e-25   15073.657 - 4.12e-25
+TIM3+I            -5672.993   12347.986 - 9.94e-29   12766.458 - 4.61e-27   15073.793 - 3.85e-25
+TIM3e+I           -5672.993   12347.987 - 9.94e-29   12766.459 -  4.6e-27   15073.794 - 3.85e-25
+TIM3e+I           -5672.993   12347.987 - 9.94e-29   12766.459 -  4.6e-27   15073.794 - 3.85e-25
+GTR+I+G4          -5661.834   12331.669 - 3.47e-25   12756.222 - 7.69e-25   15073.798 - 3.84e-25
+SYM+I+G4          -5661.834   12331.669 - 3.47e-25   12756.222 - 7.69e-25   15073.798 - 3.84e-25
+SYM+I+G4          -5661.834   12331.669 - 3.47e-25   12756.222 - 7.69e-25   15073.798 - 3.84e-25
+TIM3+I+G4         -5669.609   12343.218 - 1.08e-27   12763.711 - 1.82e-26   15074.466 - 2.75e-25
+TIM3e+I+G4        -5669.609   12343.218 - 1.08e-27   12763.711 - 1.82e-26   15074.467 - 2.75e-25
+TIM3e+I+G4        -5669.609   12343.218 - 1.08e-27   12763.711 - 1.82e-26   15074.467 - 2.75e-25
+F81+F+G4          -5841.482   12684.963 - 6.66e-102   13103.436 - 3.09e-100   15410.771 - 2.58e-98
+F81+F+I           -5843.860   12689.720 - 6.18e-103   13108.192 - 2.86e-101   15415.528 - 2.39e-99
+F81+F+I+G4        -5840.871   12685.741 - 4.52e-102   13106.234 - 7.62e-101   15416.990 - 1.15e-99
+F81+G4            -5899.994   12795.989 - 5.19e-126   13208.440 - 4.88e-123   15505.474 - 7.03e-119
+JC+G4             -5900.001   12796.002 - 5.15e-126   13208.454 - 4.84e-123   15505.488 - 6.98e-119
+JC+G4             -5900.001   12796.002 - 5.15e-126   13208.454 - 4.84e-123   15505.488 - 6.98e-119
+F81+I             -5902.530   12801.060 - 4.11e-127   13213.511 - 3.86e-124   15510.545 - 5.57e-120
+JC+I              -5902.537   12801.074 - 4.08e-127   13213.525 - 3.84e-124   15510.559 - 5.53e-120
+JC+I              -5902.537   12801.074 - 4.08e-127   13213.525 - 3.84e-124   15510.559 - 5.53e-120
+F81+I+G4          -5899.192   12796.383 - 4.26e-126   13210.835 - 1.47e-123   15511.310 - 3.8e-120
+JC+I+G4           -5899.198   12796.397 - 4.23e-126   13210.848 - 1.46e-123   15511.323 - 3.77e-120
+JC+I+G4           -5899.198   12796.397 - 4.23e-126   13210.848 - 1.46e-123   15511.323 - 3.77e-120
+JC+R2             -5901.551   12801.101 - 4.02e-127   13215.553 - 1.39e-124   15516.027 - 3.59e-121
+JC+I+R2           -5901.465   12802.929 - 1.61e-127   13219.388 - 2.05e-125   15523.296 - 9.48e-123
+JC+R3             -5898.812   12799.625 - 8.42e-127   13218.097 - 3.9e-125   15525.432 - 3.26e-123
+JC+I+R3           -5899.211   12802.422 - 2.08e-127   13222.915 - 3.51e-126   15533.670 - 5.3e-125
+JC                -5958.180   12910.360 - 7.58e-151   13320.818 - 1.93e-147   15614.405 - 1.56e-142
+
+AIC, w-AIC   : Akaike information criterion scores and weights.
+AICc, w-AICc : Corrected AIC scores and weights.
+BIC, w-BIC   : Bayesian information criterion scores and weights.
+
+Plus signs denote the 95% confidence sets.
+Minus signs denote significant exclusion.
+
+SUBSTITUTION PROCESS
+--------------------
+
+Model of substitution: TN+F+G4
+
+Rate parameter R:
+
+  A-C: 1.0000
+  A-G: 9.0931
+  A-T: 1.0000
+  C-G: 1.0000
+  C-T: 13.3737
+  G-T: 1.0000
+
+State frequencies: (empirical counts from alignment)
+
+  pi(A) = 0.3461
+  pi(C) = 0.1868
+  pi(G) = 0.2313
+  pi(T) = 0.2359
+
+Rate matrix Q:
+
+  A    -0.809   0.05983    0.6736   0.07556
+  C    0.1108    -1.195   0.07408      1.01
+  G     1.008   0.05983    -1.143   0.07556
+  T    0.1108    0.8001   0.07408    -0.985
+
+Model of rate heterogeneity: Gamma with 4 categories
+Gamma shape alpha: 0.3155
+
+ Category  Relative_rate  Proportion
+  1         0.006636       0.25
+  2         0.1166         0.25
+  3         0.6209         0.25
+  4         3.256          0.25
+Relative rates are computed as MEAN of the portion of the Gamma distribution falling in the category.
+
+MAXIMUM LIKELIHOOD TREE
+-----------------------
+
+Log-likelihood of the tree: -5593.6749 (s.e. 174.3691)
+Unconstrained log-likelihood (without tree): -7227.8030
+Number of free parameters (#branches + #model parameters): 503
+Akaike information criterion (AIC) score: 12193.3497
+Corrected Akaike information criterion (AICc) score: 12615.8697
+Bayesian information criterion (BIC) score: 14930.0388
+
+Total tree length (sum of branch lengths): 0.2502
+Sum of internal branch lengths: 0.0591 (23.6104% of tree length)
+
+WARNING: 165 near-zero internal branches (<0.0006) should be treated with caution
+         Such branches are denoted by '**' in the figure below
+
+NOTE: Tree is UNROOTED although outgroup taxon 'Flu-0406/Guayas/2023-10-31' is drawn at root
+
++---------------------------Flu-0406/Guayas/2023-10-31
+|
+|                                                                  +**Flu-0582/Cotopaxi/2022-11-25
+|                                                               +**|
+|                                                               |  +**Flu-0641/Tungurahua/2023-01-20
+|                                                            +**|
+|                                                            |  +**Flu-0586/Cotopaxi/2022-12-13
+|                                                         +**|
+|                                                         |  |                +**Flu-0317/Cotopaxi/2023-07-28
+|                                                         |  |     +----------|
+|                                                         |  |     |          +**Flu-0316/Cotopaxi/2023-07-28
+|                                                         |  |  +**|
+|                                                         |  |  |  |          +**Flu-0613/Pichincha/2023-01-18
+|                                                         |  |  |  |       +**|
+|                                                         |  |  |  |       |  +**Flu-0611/Pichincha/2023-01-18
+|                                                         |  |  |  |  +----|
+|                                                         |  |  |  |  |    +**Flu-0610/Tungurahua/2023-01-16
+|                                                         |  |  |  +**|
+|                                                         |  |  |     +**Flu-0614/Pichincha/2023-01-18
+|                                                         |  +**|
+|                                                         |     |        +**Flu-0592/Cotopaxi/2022-12-14
+|                                                         |     |     +**|
+|                                                         |     |     |  +**Flu-0599/Cotopaxi/2023-01-07
+|                                                         |     |  +**|
+|                                                         |     |  |  +**Flu-0596/Cotopaxi/2023-01-07
+|                                                         |     +**|
+|                                                         |        +**Flu-0654/Azuay/2023-02-19
+|                                                      +**|
+|                                                      |  |  +**Flu-0580/Cotopaxi/2022-11-25
+|                                                      |  +**|
+|                                                      |     +**Flu-0604/Tungurahua/2023-01-12
+|                                                   +**|
+|                                                   |  +**Flu-0600/Cotopaxi/2023-01-07
+|                                     +-------------|
+|                                     |             |    +--Flu-0623/Cotopaxi/2023-01-19
+|                                     |             +----|
+|                                     |                  |  +**Flu-0630/Cotopaxi/2023-01-19
+|                                     |                  +--|
+|                                     |                     |  +**Flu-0653/Azuay/2023-02-19
+|                                     |                     +**|
+|                                     |                        +**Flu-0652/Azuay/2023-02-19
+|                                  +**|
+|                                  |  +-------------------AchickenMagdalenaICA-35032022_EPI_ISL_17353838__regional_context/Magdalena/2022-11-18
+|                             +----|
+|                             |    |                               +**AAmerican_CrowMinnesotaUSDA-009668-0012022_EPI_ISL_18133069__american_anchor/USA/2022-03-29
+|                             |    |                            +**|
+|                             |    |                            |  +**AAmerican_CrowNorth_DakotaUSDA-013145-0012022_EPI_ISL_18133101__american_anchor/USA/2022-04-21
+|                             |    |                         +**|
+|                             |    |                         |  |             +**AAmerican_WigeonSouth_Carolina22-000345-0012021_EPI_ISL_18133029__american_anchor/USA/2021-12-30
+|                             |    |                         |  |          +--|
+|                             |    |                         |  |          |  +**AAmerican_wigeonSouth_CarolinaAH01951452021_EPI_ISL_9869760__american_anchor/USA/2021-12-30
+|                             |    |                         |  |     +----|
+|                             |    |                         |  |     |    |        +**ABald_EagleFloridaUSDA-006544-0052022_EPI_ISL_18132937__american_anchor/USA/2022-02-01
+|                             |    |                         |  |     |    |     +**|
+|                             |    |                         |  |     |    |     |  |  +--ABald_EagleFloridaUSDA-007915-0092022_EPI_ISL_18132927__american_anchor/USA/2022-02-23
+|                             |    |                         |  |     |    |     |  +**|
+|                             |    |                         |  |     |    |     |     |  +**ABald_EagleSouth_CarolinaUSDA-008983-0012022_EPI_ISL_18133018__american_anchor/USA/2022-03-01
+|                             |    |                         |  |     |    |     |     +**|
+|                             |    |                         |  |     |    |     |        |     +----ALesser_ScaupFloridaUSDA-005890-0012022_EPI_ISL_18133262__american_anchor/USA/2022-02-13
+|                             |    |                         |  |     |    |     |        |  +--|
+|                             |    |                         |  |     |    |     |        |  |  |    +**Abald_eagleUnknown23-034211-0022023_EPI_ISL_18914308__regional_context/Unknown/2022-04-22
+|                             |    |                         |  |     |    |     |        |  |  +----|
+|                             |    |                         |  |     |    |     |        |  |       +**Abald_eagleUnknown23-034211-002-original2023_EPI_ISL_19660948__regional_context/Unknown/2022-04-22
+|                             |    |                         |  |     |    |     |        +**|
+|                             |    |                         |  |     |    |     |           +----------------AduckChocoICA-35012022_EPI_ISL_17353839__regional_context/Choco/2022-10-09
+|                             |    |                         |  |     |    |  +**|
+|                             |    |                         |  |     |    |  |  |  +----------Agreat_horned_owlMA22MM001992022_EPI_ISL_16641778__regional_context/Ma/2022-03-03
+|                             |    |                         |  |     |    |  |  +**|
+|                             |    |                         |  |     |    |  |     |       +**Asnowy_owlMA22MM004632022_EPI_ISL_16641797__regional_context/Ma/2022-03-20
+|                             |    |                         |  |     |    |  |     +-------|
+|                             |    |                         |  |     |    |  |             +**Asnowy_owlMA22MM004672022_EPI_ISL_16641798__regional_context/Ma/2022-04-10
+|                             |    |                         |  |     |    +**|
+|                             |    |                         |  |     |       |  +**ABlue-winged_TealSouth_CarolinaUSDA-000345-0032021_EPI_ISL_18133416__american_anchor/USA/2021-12-30
+|                             |    |                         |  |     |       +**|
+|                             |    |                         |  |     |          |          +**AGreat_Black-Backed_GullNLOTH-0114_EPI_ISL_16190849__regional_context/GreatBlackBackedGull/2021-11-04
+|                             |    |                         |  |     |          |  +-------|
+|                             |    |                         |  |     |          |  |       |                      +**Acommon_ternMECOTE_20220612_12022_EPI_ISL_16641784__regional_context/Me/2022-06-12
+|                             |    |                         |  |     |          |  |       |     +----------------|
+|                             |    |                         |  |     |          |  |       |     |                +**Acommon_ternMECOTE_20220614_12022_EPI_ISL_16641785__regional_context/Me/2022-06-14
+|                             |    |                         |  |     |          |  |       |  +**|
+|                             |    |                         |  |     |          |  |       |  |  +----Anorthern_gannetMA22WI000502022_EPI_ISL_16641799__regional_context/Ma/2022-05-10
+|                             |    |                         |  |     |          |  |       +**|
+|                             |    |                         |  |     |          |  |          |          +-------Aperegrine_falconMA22MM007562022_EPI_ISL_16641791__regional_context/Ma/2022-06-16
+|                             |    |                         |  |     |          |  |          +----------|
+|                             |    |                         |  |     |          |  |                     +**Ared-tailed_hawkMA22HP001312022_EPI_ISL_16641767__regional_context/Ma/2022-03-06
+|                             |    |                         |  |     |          +**|
+|                             |    |                         |  |     |             +-------ALesser_scaupMD-LC-EESC-0242022_EPI_ISL_15614805__regional_context/Md/2022-01-23
+|                             |    |                         |  |  +**|
+|                             |    |                         |  |  |  |       +**ABackyard_birdMinnesotaUSDA-010928-0012022_EPI_ISL_18133193__american_anchor/USA/2022-04-11
+|                             |    |                         |  |  |  +-------|
+|                             |    |                         |  |  |          +**ABackyard_birdMinnesotaUSDA-010928-0022022_EPI_ISL_18133185__american_anchor/USA/2022-04-11
+|                             |    |                         |  +**|
+|                             |    |                         |     +----ABald_EagleMinnesotaUSDA-009477-0012022_EPI_ISL_18132924__american_anchor/USA/2022-03-20
+|                             |    |           +-------------|
+|                             |    |           |             +--Aamerican_white_pelicanMinnesota22-017057-0012022_EPI_ISL_19606620__american_anchor/USA/2022-01-01
+|                             |    |        +**|
+|                             |    |        |  +---------------------Acackling_gooseUSA040752-0032022_EPI_ISL_19718386__american_anchor/USA/2022-01-01
+|                             |    |     +**|
+|                             |    |     |  +--Abald_eagleAlaska22-014971-0012022_EPI_ISL_19158221__american_anchor/USA/2022-05-09
+|                             |    |  +**|
+|                             |    |  |  |     +**AArctic_ternAlaska22-020952-0022022_EPI_ISL_19158340__american_anchor/USA/2022-07-22
+|                             |    |  |  |  +--|
+|                             |    |  |  |  |  +**ASabines_gullAlaska22-017953-0072022_EPI_ISL_19158226__american_anchor/USA/2022-06-06
+|                             |    |  |  +**|
+|                             |    |  |     +--Abald_eagleAlaska22-016934-0042022_EPI_ISL_19158213__american_anchor/USA/2022-05-22
+|                             |    +--|
+|                             |       +----ACanada_gooseAlaska22-014435-0012022_EPI_ISL_19158328__american_anchor/USA/2022-05-05
+|                          +**|
+|                          |  |  +**Flu-EPI_ISL_17973458/Guayas/2023-01-11
+|                          |  +--|
+|                          |     +**Flu-EPI_ISL_17973443/Guayas/2023-01-11
+|                       +**|
+|                       |  +--AowlPeru23-005629-0012022_EPI_ISL_17660073__regional_context/Peru/2022-11-11
+|                    +**|
+|                    |  |  +----AChickenArgentina919-32023_EPI_ISL_18698502__regional_context/Argentina/2023-03-13
+|                    |  +--|
+|                    |     |  +**AGuanay_cormorantPeruPIU-SER0242022_EPI_ISL_18265434__regional_context/Peru/2022-11-24
+|                    |     +**|
+|                    |        +**Aguanay_cormorantPeruPIU-0242022_EPI_ISL_18054500__regional_context/Peru/2022-11-24
+|                 +**|
+|                 |  |     +--APhalacrocorax_bougainvilliiIcaUPCH_44102023_EPI_ISL_20359491__regional_context/Ica/2023-02-20
+|                 |  |  +**|
+|                 |  |  |  |          +**AchickenPeruAIS05482022_EPI_ISL_17805994__regional_context/Peru/2022-12-22
+|                 |  |  |  +----------|
+|                 |  |  |             +**AchickenPeruAIS05492022_EPI_ISL_17805996__regional_context/Peru/2022-12-22
+|                 |  +**|
+|                 |     +----AchickenPeruAIS05442022_EPI_ISL_17805991__regional_context/Peru/2022-12-03
+|              +**|
+|              |  +**APelecanus_thagusPeruLIM-QUIM0062023_EPI_ISL_19781426__regional_context/Peru/2023-02-10
+|           +**|
+|           |  +**APhalacrocorax_bougainvilliiIcaUPCH_44182023_EPI_ISL_20359497__regional_context/Ica/2023-02-20
+|        +**|
+|        |  |                                         +**AAvianArgentina579-52023_EPI_ISL_18698485__regional_context/Argentina/2023-02-24
+|        |  |                                      +**|
+|        |  |                                      |  |  +**AChickenArgentina588-42023_EPI_ISL_18698490__regional_context/Argentina/2023-02-24
+|        |  |                                      |  +**|
+|        |  |                                      |     |  +--AChickenArgentina578-22023_EPI_ISL_18698482__regional_context/Argentina/2023-02-23
+|        |  |                                      |     +**|
+|        |  |                                      |        |  +----AChickenArgentina895-12023_EPI_ISL_18698731__regional_context/Argentina/2023-03-09
+|        |  |                                      |        +**|
+|        |  |                                      |           +--Ablack-necked_swanUruguayUDELAR-078-M22023_EPI_ISL_18310957__regional_context/Uruguay/2023-03-15
+|        |  |                                   +**|
+|        |  |                                   |  |     +**AChickenArgentina2049-32023_EPI_ISL_18698521__regional_context/Argentina/2023-05-08
+|        |  |                                   |  |  +--|
+|        |  |                                   |  |  |  +--AChickenArgentina1984-42023_EPI_ISL_18698519__regional_context/Argentina/2023-05-04
+|        |  |                                   |  +**|
+|        |  |                                   |     |     +----AChickenArgentina485-62023_EPI_ISL_18698466__regional_context/Argentina/2023-02-19
+|        |  |                                   |     |  +--|
+|        |  |                                   |     |  |  +**Ablack-necked_swanUruguayUDELAR-014-M32023_EPI_ISL_18310958__regional_context/Uruguay/2023-02-18
+|        |  |                                   |     +**|
+|        |  |                                   |        +-------AChickenArgentina501-12023_EPI_ISL_18698471__regional_context/Argentina/2023-02-20
+|        |  |                                +--|
+|        |  |                                |  +-------AChickenArgentina509-22023_EPI_ISL_18698476__regional_context/Argentina/2023-02-21
+|        |  |                             +--|
+|        |  |                             |  +-------ASeagullSarmiento1651-42023_EPI_ISL_19137653__regional_context/Sarmiento/2023-04-17
+|        |  |                          +**|
+|        |  |                          |  +-------AGooseArgentina389-12023_EPI_ISL_18698459__regional_context/Argentina/2023-02-11
+|        |  |                       +**|
+|        |  |                       |  +**AChickenArgentina1147-22023_EPI_ISL_18698505__regional_context/Argentina/2023-03-21
+|        |  |                    +**|
+|        |  |                    |  |     +-------AChickenArgentina2016-22023_EPI_ISL_18698732__regional_context/Argentina/2023-05-03
+|        |  |                    |  |  +--|
+|        |  |                    |  |  |  +**AChickenArgentina481-22023_EPI_ISL_18698464__regional_context/Argentina/2023-02-18
+|        |  |                    |  +**|
+|        |  |                    |     |  +**ATurkeyChile242908-12023_EPI_ISL_20444524__regional_context/Chile/2023-03-18
+|        |  |                    |     +--|
+|        |  |                    |        +--AchickenChile242908-22023_EPI_ISL_20444456__regional_context/Chile/2023-03-18
+|        |  |                 +**|
+|        |  |                 |  |                 +-------ABlack-Necked_SwanNeuquen1151-12023_EPI_ISL_19836182__regional_context/Neuquen/2023-03-22
+|        |  |                 |  |              +**|
+|        |  |                 |  |              |  |                            +**AGreat_egretAraucania2405182023_EPI_ISL_17885950__regional_context/Araucania/2023-03-07
+|        |  |                 |  |              |  |                         +**|
+|        |  |                 |  |              |  |                         |  +**AgooseAraucania239189-12023_EPI_ISL_17885869__regional_context/Araucania/2023-02-28
+|        |  |                 |  |              |  |                      +**|
+|        |  |                 |  |              |  |                      |  +**AchickenAraucania239189-22023_EPI_ISL_17885958__regional_context/Araucania/2023-02-28
+|        |  |                 |  |              |  |                   +**|
+|        |  |                 |  |              |  |                   |  +--AchickenAraucania239569-12023_EPI_ISL_17885954__regional_context/Araucania/2023-03-02
+|        |  |                 |  |              |  |                +--|
+|        |  |                 |  |              |  |                |  +--AchickenAraucania239569-22023_EPI_ISL_17885952__regional_context/Araucania/2023-03-02
+|        |  |                 |  |              |  |             +**|
+|        |  |                 |  |              |  |             |  |  +--AchickenAraucania241892-22023_EPI_ISL_17885946__regional_context/Araucania/2023-03-14
+|        |  |                 |  |              |  |             |  +--|
+|        |  |                 |  |              |  |             |     +**AturkeyAraucania241892-32023_EPI_ISL_17885966__regional_context/Araucania/2023-03-14
+|        |  |                 |  |              |  |          +**|
+|        |  |                 |  |              |  |          |  +**AchickenAraucania240481-12023_EPI_ISL_17885949__regional_context/Araucania/2023-03-07
+|        |  |                 |  |              |  |       +**|
+|        |  |                 |  |              |  |       |  +----------Abuff-necked_ibisBio_bio247636-12023_EPI_ISL_19418491__regional_context/BioBio/2023-04-07
+|        |  |                 |  |              |  +-------|
+|        |  |                 |  |              |          +-------AchickenAraucania241914-12023_EPI_ISL_17885945__regional_context/Araucania/2023-03-14
+|        |  |                 |  |           +**|
+|        |  |                 |  |           |  |           +--AChickenArgentina1416-32023_EPI_ISL_18698510__regional_context/Argentina/2023-04-03
+|        |  |                 |  |           |  |        +**|
+|        |  |                 |  |           |  |        |  |  +----AChiloe_wigeonOHiggins240893-22023_EPI_ISL_17885965__regional_context/Ohiggins/2023-03-09
+|        |  |                 |  |           |  |        |  +**|
+|        |  |                 |  |           |  |        |     +----------ADuckArgentina1712-52023_EPI_ISL_18698515__regional_context/Argentina/2023-04-19
+|        |  |                 |  |           |  |     +**|
+|        |  |                 |  |           |  |     |  |     +--AChickenArgentina506-22023_EPI_ISL_18698474__regional_context/Argentina/2023-02-20
+|        |  |                 |  |           |  |     |  |  +**|
+|        |  |                 |  |           |  |     |  |  |  |          +**ATurkeyChile245562-12023_EPI_ISL_20444529__regional_context/Chile/2023-03-29
+|        |  |                 |  |           |  |     |  |  |  |       +**|
+|        |  |                 |  |           |  |     |  |  |  |       |  +**ATurkeyChile245558-32023_EPI_ISL_20444523__regional_context/Chile/2023-03-29
+|        |  |                 |  |           |  |     |  |  |  |  +----|
+|        |  |                 |  |           |  |     |  |  |  |  |    +**AturkeyValparaiso245886-32023_EPI_ISL_19410285__regional_context/Valparaiso/2023-03-30
+|        |  |                 |  |           |  |     |  |  |  +**|
+|        |  |                 |  |           |  |     |  |  |     +----AchickenChile2415172023_EPI_ISL_20444499__regional_context/Chile/2023-03-13
+|        |  |                 |  |           |  |     |  +**|
+|        |  |                 |  |           |  |     |     |        +----------AChickenArgentina3346-12023_EPI_ISL_18698528__regional_context/Argentina/2023-07-06
+|        |  |                 |  |           |  |     |     |     +**|
+|        |  |                 |  |           |  |     |     |     |  |       +--AChickenArgentina736-12023_EPI_ISL_18698494__regional_context/Argentina/2023-03-03
+|        |  |                 |  |           |  |     |     |     |  +-------|
+|        |  |                 |  |           |  |     |     |     |          +--AChickenArgentina747-12023_EPI_ISL_18698730__regional_context/Argentina/2023-03-04
+|        |  |                 |  |           |  |     |     |  +--|
+|        |  |                 |  |           |  |     |     |  |  |  +**AChickenArgentina606-12023_EPI_ISL_18698492__regional_context/Argentina/2023-02-27
+|        |  |                 |  |           |  |     |     |  |  +**|
+|        |  |                 |  |           |  |     |     |  |     |                +----ASula_leucogasterBrazil-PRA0001-IBTEC2023_EPI_ISL_18975372__regional_context/BrazilPr/2023-07-25
+|        |  |                 |  |           |  |     |     |  |     |             +**|
+|        |  |                 |  |           |  |     |     |  |     |             |  +----------AThalasseus_acuflavidusParana2277-N2023_EPI_ISL_19215199__regional_context/Parana/2023-11-14
+|        |  |                 |  |           |  |     |     |  |     |          +--|
+|        |  |                 |  |           |  |     |     |  |     |          |  |       +--ASterna_hirundoSaoFranciscoItabapoanaBR1060-N-20242024_EPI_ISL_20299633__regional_context/Saofranciscoitabapoanabr/2024-04-05
+|        |  |                 |  |           |  |     |     |  |     |          |  |  +----|
+|        |  |                 |  |           |  |     |     |  |     |          |  |  |    +**ASterna_hirundoEspirito_Santo0155-N2024_EPI_ISL_19215192__regional_context/EspiritoSanto/2024-02-02
+|        |  |                 |  |           |  |     |     |  |     |          |  +**|
+|        |  |                 |  |           |  |     |     |  |     |          |     |       +**AThalasseus_acuflavidusSao_Paulo0291-N2024_EPI_ISL_19215197__regional_context/SaoPaulo/2024-02-22
+|        |  |                 |  |           |  |     |     |  |     |          |     +-------|
+|        |  |                 |  |           |  |     |     |  |     |          |             +**AThalasseus_maximusSao_Paulo2339-N2023_EPI_ISL_19215200__regional_context/SaoPaulo/2023-12-13
+|        |  |                 |  |           |  |     |     |  |     |  +-------|
+|        |  |                 |  |           |  |     |     |  |     |  |       |  +----AThalasseus_maximusSanta_Catarina1941-N2023_EPI_ISL_19215187__regional_context/SantaCatarina/2023-09-25
+|        |  |                 |  |           |  |     |     |  |     |  |       +**|
+|        |  |                 |  |           |  |     |     |  |     |  |          +--AfrigatebirdRio_de_JaneiroMAPA-1532N2023_EPI_ISL_18755251__regional_context/RioDeJaneiro/2023-06-03
+|        |  |                 |  |           |  |     |     |  |     +**|
+|        |  |                 |  |           |  |     |     |  |        +----Abackyard_chickenUruguayUDELAR-127-M42023_EPI_ISL_18310962__regional_context/Uruguay/2023-04-17
+|        |  |                 |  |           |  |     |     +**|
+|        |  |                 |  |           |  |     |        +--AchickenOHiggins241252-12023_EPI_ISL_17885872__regional_context/Ohiggins/2023-03-12
+|        |  |                 |  |           |  |  +**|
+|        |  |                 |  |           |  |  |  |       +**ANasua_nasuaUruguay145M22023_EPI_ISL_19765475__regional_context/Uruguay/2023-05-04
+|        |  |                 |  |           |  |  |  |    +--|
+|        |  |                 |  |           |  |  |  |    |  +**ANasua_nasuaUruguay145M12023_EPI_ISL_19765465__regional_context/Uruguay/2023-05-04
+|        |  |                 |  |           |  |  |  +----|
+|        |  |                 |  |           |  |  |       |  +**ANasua_nasuaUruguay146M12023_EPI_ISL_19765485__regional_context/Uruguay/2023-05-05
+|        |  |                 |  |           |  |  |       +**|
+|        |  |                 |  |           |  |  |          +**Abackyard_chickenUruguayUDELAR-124-M12023_EPI_ISL_18310964__regional_context/Uruguay/2023-04-16
+|        |  |                 |  |           |  +**|
+|        |  |                 |  |           |     |  +**AChickenArgentina556-62023_EPI_ISL_18698478__regional_context/Argentina/2023-02-23
+|        |  |                 |  |           |     +**|
+|        |  |                 |  |           |        +**AchickenChile241252-62023_EPI_ISL_20444500__regional_context/Chile/2023-03-12
+|        |  |                 |  |        +**|
+|        |  |                 |  |        |  |                           +**ASouth_polar_skuaAntarcticaINACH-UC-UCHILE-SKU52024_EPI_ISL_19410265__regional_context/Antarctica/2024-03-03
+|        |  |                 |  |        |  |                        +**|
+|        |  |                 |  |        |  |                        |  +**ASouth_polar_skuaAntarcticaINACH-UC-UCHILE-SKU42024_EPI_ISL_19410264__regional_context/Antarctica/2024-03-03
+|        |  |                 |  |        |  |  +---------------------|
+|        |  |                 |  |        |  |  |                     +--ASouth_polar_skuaAntarcticaINACH-UC-UCHILE-SKU32024_EPI_ISL_19410263__regional_context/Antarctica/2024-03-03
+|        |  |                 |  |        |  +**|
+|        |  |                 |  |        |     +--AchickenMetropolitana243148-12023_EPI_ISL_18760060__regional_context/Metropolitana/2023-03-20
+|        |  |                 |  |     +--|
+|        |  |                 |  |     |  |  +----AChickenArgentina491-22023_EPI_ISL_18698469__regional_context/Argentina/2023-02-20
+|        |  |                 |  |     |  +**|
+|        |  |                 |  |     |     +--ATurkeyArgentina753-12023_EPI_ISL_18698497__regional_context/Argentina/2023-03-04
+|        |  |                 |  |  +**|
+|        |  |                 |  |  |  |     +--AChickenArgentina1035-12023_EPI_ISL_18698504__regional_context/Argentina/2023-03-16
+|        |  |                 |  |  |  |  +--|
+|        |  |                 |  |  |  |  |  +----ATurkeyArgentina1348-32023_EPI_ISL_18698508__regional_context/Argentina/2023-03-31
+|        |  |                 |  |  |  +**|
+|        |  |                 |  |  |     +-------------AChickenArgentina2034-52023_EPI_ISL_18698520__regional_context/Argentina/2023-05-05
+|        |  |                 |  +**|
+|        |  |                 |     |          +----ASwanChile2465292023_EPI_ISL_20444474__regional_context/Chile/2023-04-03
+|        |  |                 |     |     +----|
+|        |  |                 |     |     |    |     +-------ASwanChile2485362023_EPI_ISL_20444527__regional_context/Chile/2023-04-11
+|        |  |                 |     |     |    |  +**|
+|        |  |                 |     |     |    |  |  +--AchickenAysen250755-22023_EPI_ISL_19404916__regional_context/Aysen/2023-04-19
+|        |  |                 |     |     |    +**|
+|        |  |                 |     |     |       +**ATurkeyArgentina1710-12023_EPI_ISL_18698513__regional_context/Argentina/2023-04-17
+|        |  |                 |     |  +**|
+|        |  |                 |     |  |  +----------ATurkeyArgentina1711-22023_EPI_ISL_18698514__regional_context/Argentina/2023-04-19
+|        |  |                 |     +**|
+|        |  |                 |        |           +**AchickenCochabamba393832023_EPI_ISL_19410268__regional_context/Cochabamba/2023-02-01
+|        |  |                 |        |        +--|
+|        |  |                 |        |        |  +**AchickenCochabamba395072023_EPI_ISL_19410272__regional_context/Cochabamba/2023-03-01
+|        |  |                 |        |     +**|
+|        |  |                 |        |     |  +**AchickenCochabamba394762023_EPI_ISL_19410271__regional_context/Cochabamba/2023-02-18
+|        |  |                 |        |  +**|
+|        |  |                 |        |  |  |  +--AchickenCochabamba393562023_EPI_ISL_19410267__regional_context/Cochabamba/2023-01-26
+|        |  |                 |        |  |  +**|
+|        |  |                 |        |  |     |    +**AchickenCochabamba394252023_EPI_ISL_19410269__regional_context/Cochabamba/2023-02-07
+|        |  |                 |        |  |     +----|
+|        |  |                 |        |  |          +**AchickenPotosi398702023_EPI_ISL_19410299__regional_context/Potosi/2023-06-06
+|        |  |                 |        +--|
+|        |  |                 |           +----AchickenCochabamba395392023_EPI_ISL_19418487__regional_context/Cochabamba/2023-03-03
+|        |  |              +**|
+|        |  |              |  |        +-------AChickenArgentina1708-12023_EPI_ISL_18698512__regional_context/Argentina/2023-04-19
+|        |  |              |  |     +--|
+|        |  |              |  |     |  |  +**AchickenChile2408752023_EPI_ISL_20444503__regional_context/Chile/2023-03-07
+|        |  |              |  |     |  +--|
+|        |  |              |  |     |     +**AchickenChile241681-12023_EPI_ISL_20444496__regional_context/Chile/2023-03-10
+|        |  |              |  |  +**|
+|        |  |              |  |  |  |  +**ATurkeyChile240489-12023_EPI_ISL_20444525__regional_context/Chile/2023-03-07
+|        |  |              |  |  |  +--|
+|        |  |              |  |  |     +**AturkeyNuble240489-12023_EPI_ISL_17885964__regional_context/Nuble/2023-03-07
+|        |  |              |  +**|
+|        |  |              |     |     +--AChickenArgentina464-42023_EPI_ISL_18698460__regional_context/Argentina/2023-02-16
+|        |  |              |     |  +**|
+|        |  |              |     |  |  |    +**Abackyard_chickenUruguayUDELAR-040-M72023_EPI_ISL_18310967__regional_context/Uruguay/2023-03-03
+|        |  |              |     |  |  +----|
+|        |  |              |     |  |       +**Abackyard_chickenUruguayUDELAR-047-M12023_EPI_ISL_18310966__regional_context/Uruguay/2023-03-06
+|        |  |              |     +**|
+|        |  |              |        |     +**AchickenChile242894-42023_EPI_ISL_20444457__regional_context/Chile/2023-03-18
+|        |  |              |        |  +--|
+|        |  |              |        |  |  +**AchickenChile242894-12023_EPI_ISL_20444491__regional_context/Chile/2023-03-18
+|        |  |              |        +**|
+|        |  |              |           |             +**AchickenChile242424-12023_EPI_ISL_20444492__regional_context/Chile/2023-03-16
+|        |  |              |           |  +----------|
+|        |  |              |           |  |          +**AchickenChile2421592023_EPI_ISL_20444494__regional_context/Chile/2023-03-15
+|        |  |              |           +**|
+|        |  |              |              |                   +**AchickenChile248751-22023_EPI_ISL_20444445__regional_context/Chile/2023-04-12
+|        |  |              |              +-------------------|
+|        |  |              |                                  +**AchickenChile248751-62023_EPI_ISL_20444447__regional_context/Chile/2023-04-12
+|        |  |           +**|
+|        |  |           |  |     +----AAvianArgentina586-42023_EPI_ISL_18698487__regional_context/Argentina/2023-02-24
+|        |  |           |  |  +**|
+|        |  |           |  |  |  +----------AChickenArgentina559-82023_EPI_ISL_18698480__regional_context/Argentina/2023-02-22
+|        |  |           |  +**|
+|        |  |           |     |  +--AAvianChile2437172023_EPI_ISL_20444471__regional_context/Chile/2023-03-21
+|        |  |           |     +**|
+|        |  |           |        +--ADuckChile240466-12023_EPI_ISL_20444463__regional_context/Chile/2023-03-07
+|        |  |        +**|
+|        |  |        |  +**ABlack_SkimmerMaule2403792023_EPI_ISL_17885849__regional_context/Maule/2023-03-06
+|        |  |     +--|
+|        |  |     |  +--AChickenArgentina477-52023_EPI_ISL_18698462__regional_context/Argentina/2023-02-18
+|        |  |  +**|
+|        |  |  |  +----APhalacrocorax_bougainvilliiIcaUPCH_44192023_EPI_ISL_20359498__regional_context/Ica/2023-02-20
+|        |  +**|
+|        |     |            +-------AduckPeruLAM-INS-0152023_EPI_ISL_18497950__regional_context/Peru/2023-09-20
+|        |     |  +---------|
+|        |     |  |         +--------------AduckPeruLAM-INS-0142023_EPI_ISL_18497946__regional_context/Peru/2023-09-26
+|        |     +--|
+|        |        +----------Aperuvian_boobyPeruLIM-INS-0122023_EPI_ISL_17777533__regional_context/Peru/2023-04-12
+|     +--|
+|     |  |     +**AchickenPeruAIS05502022_EPI_ISL_17805995__regional_context/Peru/2022-12-12
+|     |  |  +--|
+|     |  |  |  +**AchickenPeruAIS05512022_EPI_ISL_17806001__regional_context/Peru/2022-12-12
+|     |  +**|
+|     |     +------ApelicanPeruPIU-SER0162022_EPI_ISL_18265437__regional_context/Peru/2022-11-24
+|  +**|
+|  |  |                                                                          +--ABand-tailed_gullArica_y_Parinacota232200-12023_EPI_ISL_19131168__regional_context/AricaYParinacota/2023-01-11
+|  |  |                                                                       +**|
+|  |  |                                                                       |  +-------AInca_ternArica_y_Parinacota227519-12022_EPI_ISL_19131159__regional_context/AricaYParinacota/2022-12-12
+|  |  |                                                                    +**|
+|  |  |                                                                    |  |     +----ABand-tailed_gullAntofagasta228525-12022_EPI_ISL_19131166__regional_context/Antofagasta/2022-12-19
+|  |  |                                                                    |  |  +--|
+|  |  |                                                                    |  |  |  +**APelicanAtacama229424-22022_EPI_ISL_17885927__regional_context/Atacama/2022-12-22
+|  |  |                                                                    |  +**|
+|  |  |                                                                    |     +--ApelicanValparaiso233091-22023_EPI_ISL_17885956__regional_context/Valparaiso/2023-01-20
+|  |  |                                                                 +**|
+|  |  |                                                                 |  |     +--ASanderlingArica_y_Parinacota230758-12022_EPI_ISL_17885980__regional_context/AricaYParinacota/2022-12-30
+|  |  |                                                                 |  |  +**|
+|  |  |                                                                 |  |  |  +-------Agray_gullArica239053-12023_EPI_ISL_19410281__regional_context/Arica/2023-02-23
+|  |  |                                                                 |  +**|
+|  |  |                                                                 |     |  +--ASouth_American_ternMaule2385072023_EPI_ISL_17885973__regional_context/Maule/2023-02-23
+|  |  |                                                                 |     +**|
+|  |  |                                                                 |        +--Abrown_boobyPeru23-005629-0032022_EPI_ISL_17660074__regional_context/Peru/2022-11-11
+|  |  |                                                              +**|
+|  |  |                                                              |  |     +--Ablack_skimmerChileC619622022_EPI_ISL_16891402__regional_context/Chile/2022-12-02
+|  |  |                                                              |  |  +**|
+|  |  |                                                              |  |  |  +----AgullBiobio2370122023_EPI_ISL_19410300__regional_context/Biobio/2023-02-15
+|  |  |                                                              |  +**|
+|  |  |                                                              |     +----ApelicanAntofagasta228318-12022_EPI_ISL_17885928__regional_context/Antofagasta/2022-12-16
+|  |  |                                                           +**|
+|  |  |                                                           |  |                          +**AElegant_ternArica_y_Parinacota229476-12022_EPI_ISL_17885955__regional_context/AricaYParinacota/2022-12-24
+|  |  |                                                           |  |                       +--|
+|  |  |                                                           |  |                       |  |  +**APelicanAtacama230158-22022_EPI_ISL_17885924__regional_context/Atacama/2022-12-30
+|  |  |                                                           |  |                       |  +--|
+|  |  |                                                           |  |                       |     +**ASanderlingChile230758-22023_EPI_ISL_19404931__regional_context/Chile/2023-03-17
+|  |  |                                                           |  |                    +**|
+|  |  |                                                           |  |                    |  |        +**AProcellaria_aequinoctialisSao_Paulo2259-N2023_EPI_ISL_19215182__regional_context/SaoPaulo/2023-11-09
+|  |  |                                                           |  |                    |  |     +**|
+|  |  |                                                           |  |                    |  |     |  |  +----ASouthern_FulmarFalkland_Islands1388702023_EPI_ISL_18918640__regional_context/FalklandIslands/2023-11-14
+|  |  |                                                           |  |                    |  |     |  +--|
+|  |  |                                                           |  |                    |  |     |     |  +**ASouth_American_ternArgentinaCH-PD0372023_EPI_ISL_19466210__regional_context/Argentina/2023-10-10
+|  |  |                                                           |  |                    |  |     |     +**|
+|  |  |                                                           |  |                    |  |     |        +**ASouth_American_ternArgentinaRN-PB0152023_EPI_ISL_18945315__regional_context/Argentina/2023-08-26
+|  |  |                                                           |  |                    |  |  +--|
+|  |  |                                                           |  |                    |  |  |  |  +--ASouth_American_ternArgentinaCH-PD0302023_EPI_ISL_19466158__regional_context/Argentina/2023-10-10
+|  |  |                                                           |  |                    |  |  |  +--|
+|  |  |                                                           |  |                    |  |  |     +-------------ASouthamerican_ternArgentina267-22023_EPI_ISL_19823065__regional_context/Argentina/2023-12-24
+|  |  |                                                           |  |                    |  +--|
+|  |  |                                                           |  |                    |     +--Aroyal_ternArgentinaCH-PD0362023_EPI_ISL_19466181__regional_context/Argentina/2023-10-10
+|  |  |                                                           |  |                 +**|
+|  |  |                                                           |  |                 |  |  +**APelicanAntofagasta228246-22022_EPI_ISL_17885934__regional_context/Antofagasta/2022-12-15
+|  |  |                                                           |  |                 |  +**|
+|  |  |                                                           |  |                 |     +**ASanderlingArica_y_Parinacota2402652023_EPI_ISL_17885978__regional_context/AricaYParinacota/2023-03-03
+|  |  |                                                           |  |              +--|
+|  |  |                                                           |  |              |  +--APelecanus_thagusIcaUPCH_44372022_EPI_ISL_20359517__regional_context/Ica/2022-12-11
+|  |  |                                                           |  |           +**|
+|  |  |                                                           |  |           |  |               +**AFranklins_gullOHiggins236195-12023_EPI_ISL_18939722__regional_context/Ohiggins/2023-02-12
+|  |  |                                                           |  |           |  |       +-------|
+|  |  |                                                           |  |           |  |       |       +**AFranklin_gullOHiggins236195-12023_EPI_ISL_19162729__regional_context/Ohiggins/2023-02-12
+|  |  |                                                           |  |           |  |  +----|
+|  |  |                                                           |  |           |  |  |    |  +**APelicanOHiggins233663-12023_EPI_ISL_17885915__regional_context/Ohiggins/2023-01-24
+|  |  |                                                           |  |           |  |  |    +**|
+|  |  |                                                           |  |           |  |  |       +**APelicanOHiggins233721-12023_EPI_ISL_17885912__regional_context/Ohiggins/2023-01-24
+|  |  |                                                           |  |           |  +**|
+|  |  |                                                           |  |           |     |  +**AGreat_grabeAtacama231482-22023_EPI_ISL_19162731__regional_context/Atacama/2023-01-09
+|  |  |                                                           |  |           |     +--|
+|  |  |                                                           |  |           |        +**Agreat_grebeAtacama231482-22023_EPI_ISL_19131196__regional_context/Atacama/2023-01-09
+|  |  |                                                           |  |        +**|
+|  |  |                                                           |  |        |  |  +**AGullChile227023-22022_EPI_ISL_17011964__regional_context/Chile/2022-12-07
+|  |  |                                                           |  |        |  +--|
+|  |  |                                                           |  |        |     +**APeruvian_boobyPeruUNMSM-A2962022_EPI_ISL_18371666__regional_context/Peru/2022-12-01
+|  |  |                                                           |  |     +**|
+|  |  |                                                           |  |     |  |        +**APelicanAtacama229450-22022_EPI_ISL_17885926__regional_context/Atacama/2022-12-26
+|  |  |                                                           |  |     |  |     +--|
+|  |  |                                                           |  |     |  |     |  +-------AchickenPeruAIS05462022_EPI_ISL_17805986__regional_context/Peru/2022-12-18
+|  |  |                                                           |  |     |  |  +**|
+|  |  |                                                           |  |     |  |  |  |  +**AchickenPeruAIS05422022_EPI_ISL_17805989__regional_context/Peru/2022-12-01
+|  |  |                                                           |  |     |  |  |  +--|
+|  |  |                                                           |  |     |  |  |     +**AchickenPeruAIS05432022_EPI_ISL_17805990__regional_context/Peru/2022-12-01
+|  |  |                                                           |  |     |  +**|
+|  |  |                                                           |  |     |     |  +**APelicanTarapaca227436-22022_EPI_ISL_17885942__regional_context/Tarapaca/2022-12-09
+|  |  |                                                           |  |     |     +**|
+|  |  |                                                           |  |     |        |       +**APeruvian_boobyAtacama230579-12023_EPI_ISL_19131164__regional_context/Atacama/2023-01-03
+|  |  |                                                           |  |     |        |  +----|
+|  |  |                                                           |  |     |        |  |    +**APeruvean_boobyAtacama230579-12023_EPI_ISL_19139974__regional_context/Atacama/2023-01-03
+|  |  |                                                           |  |     |        +**|
+|  |  |                                                           |  |     |           +----ATurkey_vultureAntofagasta228252-12022_EPI_ISL_17885970__regional_context/Antofagasta/2022-12-17
+|  |  |                                                           |  |  +**|
+|  |  |                                                           |  |  |  +**ApelicanValparaiso233418-12023_EPI_ISL_17885932__regional_context/Valparaiso/2023-01-20
+|  |  |                                                           |  +**|
+|  |  |                                                           |     +**APelecanusPeruVFAR-1402022_EPI_ISL_17099964__regional_context/Peru/2022-12-01
+|  |  |                                                        +**|
+|  |  |                                                        |  +**ABelcher_gullPeruUNMSM-A2672022_EPI_ISL_18371664__regional_context/Peru/2022-12-01
+|  |  |                                                     +**|
+|  |  |                                                     |  +**AGuanay_cormorantPeruUNMSM-A2752022_EPI_ISL_18371665__regional_context/Peru/2022-12-01
+|  |  |                                                  +**|
+|  |  |                                                  |  +**ABlackish_oystercatcherOHiggins2406282023_EPI_ISL_17885967__regional_context/Ohiggins/2023-03-06
+|  |  |                                               +**|
+|  |  |                                               |  +--AchickenPeruLIM-INS-0032022_EPI_ISL_16249730__regional_context/Peru/2022-11-29
+|  |  |                                            +**|
+|  |  |                                            |  |  +--AKelp_gullMaule2393492023_EPI_ISL_17885972__regional_context/Maule/2023-03-01
+|  |  |                                            |  +**|
+|  |  |                                            |     |          +**AchickenPeruAIS05392022_EPI_ISL_17805987__regional_context/Peru/2022-11-18
+|  |  |                                            |     |       +**|
+|  |  |                                            |     |       |  |  +**AchickenPeru23-005607-0032022_EPI_ISL_17660072__regional_context/Peru/2022-11-11
+|  |  |                                            |     |       |  +--|
+|  |  |                                            |     |       |     +--AchickenPeruLAM-INS-0022022_EPI_ISL_16249681__regional_context/Peru/2022-11-28
+|  |  |                                            |     |    +**|
+|  |  |                                            |     |    |  +**ApelicanPeruPIU-SER0132022_EPI_ISL_18265433__regional_context/Peru/2022-11-23
+|  |  |                                            |     +----|
+|  |  |                                            |          +**ApelicanPeruPIU-0132022_EPI_ISL_18054504__regional_context/Peru/2022-11-23
+|  |  |                                         +--|
+|  |  |                                         |  |  +--AGullChile227023-32022_EPI_ISL_17011958__regional_context/Chile/2022-12-07
+|  |  |                                         |  +**|
+|  |  |                                         |     +----------APelicanAntofagasta228246-32022_EPI_ISL_17885931__regional_context/Antofagasta/2022-12-15
+|  |  |                                      +**|
+|  |  |                                      |  +--AavianChile2728852023_EPI_ISL_20444533__regional_context/Chile/2023-08-25
+|  |  |                                   +**|
+|  |  |                                   |  |  +**AGray_gullTarapaca232825-12023_EPI_ISL_17885951__regional_context/Tarapaca/2023-01-18
+|  |  |                                   |  +**|
+|  |  |                                   |     +**APeruvean_boobyValparaiso2385352023_EPI_ISL_19131163__regional_context/Valparaiso/2023-02-24
+|  |  |                                +**|
+|  |  |                                |  +--AInca_ternAntofagasta2380832023_EPI_ISL_19131156__regional_context/Antofagasta/2023-02-22
+|  |  |                             +**|
+|  |  |                             |  +**AHumboldt_penguinCoquimbo2395902023_EPI_ISL_17885948__regional_context/Coquimbo/2023-02-28
+|  |  |                          +**|
+|  |  |                          |  +----AavianChile2728822023_EPI_ISL_20444534__regional_context/Chile/2023-08-22
+|  |  |                       +**|
+|  |  |                       |  +--Aperuvian_boobyCoquimbo2423042023_EPI_ISL_19410277__regional_context/Coquimbo/2023-03-15
+|  |  |                    +**|
+|  |  |                    |  +**AGullChile2515132023_EPI_ISL_20444470__regional_context/Chile/2023-04-21
+|  |  |                 +**|
+|  |  |                 |  +**AGuanay_cormorantChile2395842023_EPI_ISL_19391460__regional_context/Chile/2023-03-01
+|  |  |              +**|
+|  |  |              |  |        +----AInca_ternCoquimbo2396192023_EPI_ISL_19131162__regional_context/Coquimbo/2023-03-01
+|  |  |              |  |     +**|
+|  |  |              |  |     |  +----------------AavianChile2858202023_EPI_ISL_20444488__regional_context/Chile/2023-12-02
+|  |  |              |  |  +**|
+|  |  |              |  |  |  +----AchickenChile260690-92023_EPI_ISL_20444453__regional_context/Chile/2023-06-03
+|  |  |              |  +--|
+|  |  |              |     +**APeruvian_boobyOHiggins242755-12023_EPI_ISL_18760067__regional_context/Ohiggins/2023-03-17
+|  |  |           +--|
+|  |  |           |  +--AchickenChile2458172023_EPI_ISL_20444438__regional_context/Chile/2023-03-30
+|  |  |        +--|
+|  |  |        |  |  +**AavianChile2406282023_EPI_ISL_20444542__regional_context/Chile/2023-03-06
+|  |  |        |  +**|
+|  |  |        |     +**Aguanay_cormorantAtacama235520-12023_EPI_ISL_19151400__regional_context/Atacama/2023-02-05
+|  |  |     +**|
+|  |  |     |  +-------Aperuvian_boobyPeruCAL-INS-0082023_EPI_ISL_17777529__regional_context/Peru/2023-03-17
+|  |  |  +**|
+|  |  |  |  +--Aperuvian_boobyPeruCAL-INS-0072023_EPI_ISL_17777528__regional_context/Peru/2023-03-17
+|  |  +--|
+|  |     +----------ASula_variegataIcaUPCH_44942023_EPI_ISL_20359554__regional_context/Ica/2023-04-14
++**|
+|  |     +----------AduckPeruCAL-INS-0132023_EPI_ISL_18217104__regional_context/Peru/2023-07-24
+|  |  +**|
+|  |  |  |             +----------------Aperuvian_boobyPeruLIM-INS-0052023_EPI_ISL_17777526__regional_context/Peru/2023-03-20
+|  |  |  +-------------|
+|  |  |                +**Aperuvian_boobyPeruLIM-INS-0042023_EPI_ISL_17777525__regional_context/Peru/2023-04-03
+|  +--|
+|     +**AgullPeruLIM-INS-0062023_EPI_ISL_17777527__regional_context/Peru/2023-03-16
+|
++--Aguanay_cormorantPeruCAL-INS-0092023_EPI_ISL_17777530__regional_context/Peru/2023-03-17
+
+Tree in newick format:
+
+(Flu-0406/Guayas/2023-10-31:0.0059741427,((((((((((((((((((Flu-0582/Cotopaxi/2022-11-25:0.0000010000,Flu-0641/Tungurahua/2023-01-20:0.0000010000):0.0000010000,Flu-0586/Cotopaxi/2022-12-13:0.0000010000):0.0000010000,(((Flu-0317/Cotopaxi/2023-07-28:0.0000022954,Flu-0316/Cotopaxi/2023-07-28:0.0000021595):0.0023618557,(((Flu-0613/Pichincha/2023-01-18:0.0000010000,Flu-0611/Pichincha/2023-01-18:0.0000010000):0.0000021464,Flu-0610/Tungurahua/2023-01-16:0.0000010000):0.0011503679,Flu-0614/Pichincha/2023-01-18:0.0000010000):0.0000273165):0.0000021368,(((Flu-0592/Cotopaxi/2022-12-14:0.0000010000,Flu-0599/Cotopaxi/2023-01-07:0.0000010000):0.0000010000,Flu-0596/Cotopaxi/2023-01-07:0.0000010000):0.0000021393,Flu-0654/Azuay/2023-02-19:0.0000010000):0.0000024224):0.0000010000):0.0000021348,(Flu-0580/Cotopaxi/2022-11-25:0.0000010000,Flu-0604/Tungurahua/2023-01-12:0.0000010000):0.0000010000):0.0000010000,Flu-0600/Cotopaxi/2023-01-07:0.0000010000):0.0000024150,(Flu-0623/Cotopaxi/2023-01-19:0.0005893669,(Flu-0630/Cotopaxi/2023-01-19:0.0000010000,(Flu-0653/Azuay/2023-02-19:0.0000010000,Flu-0652/Azuay/2023-02-19:0.0000010000):0.0000021544):0.0005883230):0.0011793575):0.0029589334,AchickenMagdalenaICA-35032022_EPI_ISL_17353838__regional_context/Magdalena/2022-11-18:0.0041497582):0.0000021780,(((((((AAmerican_CrowMinnesotaUSDA-009668-0012022_EPI_ISL_18133069__american_anchor/USA/2022-03-29:0.0000010000,AAmerican_CrowNorth_DakotaUSDA-013145-0012022_EPI_ISL_18133101__american_anchor/USA/2022-04-21:0.0000010000):0.0000010000,((((AAmerican_WigeonSouth_Carolina22-000345-0012021_EPI_ISL_18133029__american_anchor/USA/2021-12-30:0.0000021543,AAmerican_wigeonSouth_CarolinaAH01951452021_EPI_ISL_9869760__american_anchor/USA/2021-12-30:0.0000021547):0.0005876338,(((ABald_EagleFloridaUSDA-006544-0052022_EPI_ISL_18132937__american_anchor/USA/2022-02-01:0.0005866146,(ABald_EagleFloridaUSDA-007915-0092022_EPI_ISL_18132927__american_anchor/USA/2022-02-23:0.0005868914,(ABald_EagleSouth_CarolinaUSDA-008983-0012022_EPI_ISL_18133018__american_anchor/USA/2022-03-01:0.0000010000,((ALesser_ScaupFloridaUSDA-005890-0012022_EPI_ISL_18133262__american_anchor/USA/2022-02-13:0.0011779794,(Abald_eagleUnknown23-034211-0022023_EPI_ISL_18914308__regional_context/Unknown/2022-04-22:0.0000010000,Abald_eagleUnknown23-034211-002-original2023_EPI_ISL_19660948__regional_context/Unknown/2022-04-22:0.0000010000):0.0011764692):0.0005875242,AduckChocoICA-35012022_EPI_ISL_17353839__regional_context/Choco/2022-10-09:0.0035417294):0.0000010000):0.0000010000):0.0000020645):0.0005866464,(Agreat_horned_owlMA22MM001992022_EPI_ISL_16641778__regional_context/Ma/2022-03-03:0.0023746270,(Asnowy_owlMA22MM004632022_EPI_ISL_16641797__regional_context/Ma/2022-03-20:0.0000010000,Asnowy_owlMA22MM004672022_EPI_ISL_16641798__regional_context/Ma/2022-04-10:0.0000010000):0.0017782444):0.0005792655):0.0000021379,(ABlue-winged_TealSouth_CarolinaUSDA-000345-0032021_EPI_ISL_18133416__american_anchor/USA/2021-12-30:0.0005867267,((AGreat_Black-Backed_GullNLOTH-0114_EPI_ISL_16190849__regional_context/GreatBlackBackedGull/2021-11-04:0.0000010000,(((Acommon_ternMECOTE_20220612_12022_EPI_ISL_16641784__regional_context/Me/2022-06-12:0.0000010000,Acommon_ternMECOTE_20220614_12022_EPI_ISL_16641785__regional_context/Me/2022-06-14:0.0000010000):0.0035593305,Anorthern_gannetMA22WI000502022_EPI_ISL_16641799__regional_context/Ma/2022-05-10:0.0011859754):0.0005801661,(Aperegrine_falconMA22MM007562022_EPI_ISL_16641791__regional_context/Ma/2022-06-16:0.0017684089,Ared-tailed_hawkMA22HP001312022_EPI_ISL_16641767__regional_context/Ma/2022-03-06:0.0005851607):0.0023628890):0.0000027664):0.0017665565,ALesser_scaupMD-LC-EESC-0242022_EPI_ISL_15614805__regional_context/Md/2022-01-23:0.0017636632):0.0000026845):0.0000010000):0.0000021347):0.0011765342,(ABackyard_birdMinnesotaUSDA-010928-0012022_EPI_ISL_18133193__american_anchor/USA/2022-04-11:0.0000010000,ABackyard_birdMinnesotaUSDA-010928-0022022_EPI_ISL_18133185__american_anchor/USA/2022-04-11:0.0000010000):0.0017651373):0.0000027128,ABald_EagleMinnesotaUSDA-009477-0012022_EPI_ISL_18132924__american_anchor/USA/2022-03-20:0.0011778521):0.0000020248):0.0000023965,Aamerican_white_pelicanMinnesota22-017057-0012022_EPI_ISL_19606620__american_anchor/USA/2022-01-01:0.0005870414):0.0029503161,Acackling_gooseUSA040752-0032022_EPI_ISL_19718386__american_anchor/USA/2022-01-01:0.0047575050):0.0000024299,Abald_eagleAlaska22-014971-0012022_EPI_ISL_19158221__american_anchor/USA/2022-05-09:0.0005874722):0.0000025382,((AArctic_ternAlaska22-020952-0022022_EPI_ISL_19158340__american_anchor/USA/2022-07-22:0.0000021186,ASabines_gullAlaska22-017953-0072022_EPI_ISL_19158226__american_anchor/USA/2022-06-06:0.0000010000):0.0005874955,Abald_eagleAlaska22-016934-0042022_EPI_ISL_19158213__american_anchor/USA/2022-05-22:0.0005877517):0.0000021375):0.0000024123,ACanada_gooseAlaska22-014435-0012022_EPI_ISL_19158328__american_anchor/USA/2022-05-05:0.0011774020):0.0005885852):0.0011780902,(Flu-EPI_ISL_17973458/Guayas/2023-01-11:0.0000024928,Flu-EPI_ISL_17973443/Guayas/2023-01-11:0.0000021448):0.0005884150):0.0000021467,AowlPeru23-005629-0012022_EPI_ISL_17660073__regional_context/Peru/2022-11-11:0.0005897113):0.0000021317,(AChickenArgentina919-32023_EPI_ISL_18698502__regional_context/Argentina/2023-03-13:0.0011794823,(AGuanay_cormorantPeruPIU-SER0242022_EPI_ISL_18265434__regional_context/Peru/2022-11-24:0.0000010000,Aguanay_cormorantPeruPIU-0242022_EPI_ISL_18054500__regional_context/Peru/2022-11-24:0.0000010000):0.0000021736):0.0005886444):0.0000021309,((APhalacrocorax_bougainvilliiIcaUPCH_44102023_EPI_ISL_20359491__regional_context/Ica/2023-02-20:0.0005884655,(AchickenPeruAIS05482022_EPI_ISL_17805994__regional_context/Peru/2022-12-22:0.0000010000,AchickenPeruAIS05492022_EPI_ISL_17805996__regional_context/Peru/2022-12-22:0.0000010000):0.0023652566):0.0000021394,AchickenPeruAIS05442022_EPI_ISL_17805991__regional_context/Peru/2022-12-03:0.0011793670):0.0000010000):0.0000010000,APelecanus_thagusPeruLIM-QUIM0062023_EPI_ISL_19781426__regional_context/Peru/2023-02-10:0.0000010000):0.0000010000,APhalacrocorax_bougainvilliiIcaUPCH_44182023_EPI_ISL_20359497__regional_context/Ica/2023-02-20:0.0000010000):0.0000010000,((((((((((((((AAvianArgentina579-52023_EPI_ISL_18698485__regional_context/Argentina/2023-02-24:0.0000010000,(AChickenArgentina588-42023_EPI_ISL_18698490__regional_context/Argentina/2023-02-24:0.0000010000,(AChickenArgentina578-22023_EPI_ISL_18698482__regional_context/Argentina/2023-02-23:0.0005896810,(AChickenArgentina895-12023_EPI_ISL_18698731__regional_context/Argentina/2023-03-09:0.0011809238,Ablack-necked_swanUruguayUDELAR-078-M22023_EPI_ISL_18310957__regional_context/Uruguay/2023-03-15:0.0005898857):0.0000010000):0.0000010000):0.0000010000):0.0000010000,((AChickenArgentina2049-32023_EPI_ISL_18698521__regional_context/Argentina/2023-05-08:0.0000010000,AChickenArgentina1984-42023_EPI_ISL_18698519__regional_context/Argentina/2023-05-04:0.0005895396):0.0005903332,((AChickenArgentina485-62023_EPI_ISL_18698466__regional_context/Argentina/2023-02-19:0.0011791827,Ablack-necked_swanUruguayUDELAR-014-M32023_EPI_ISL_18310958__regional_context/Uruguay/2023-02-18:0.0000010000):0.0005896116,AChickenArgentina501-12023_EPI_ISL_18698471__regional_context/Argentina/2023-02-20:0.0017740635):0.0000020936):0.0000021341):0.0000021494,AChickenArgentina509-22023_EPI_ISL_18698476__regional_context/Argentina/2023-02-21:0.0017705569):0.0005903727,ASeagullSarmiento1651-42023_EPI_ISL_19137653__regional_context/Sarmiento/2023-04-17:0.0017833541):0.0005900009,AGooseArgentina389-12023_EPI_ISL_18698459__regional_context/Argentina/2023-02-11:0.0017701632):0.0000021489,AChickenArgentina1147-22023_EPI_ISL_18698505__regional_context/Argentina/2023-03-21:0.0000010000):0.0000021159,((AChickenArgentina2016-22023_EPI_ISL_18698732__regional_context/Argentina/2023-05-03:0.0017706711,AChickenArgentina481-22023_EPI_ISL_18698464__regional_context/Argentina/2023-02-18:0.0000020103):0.0005897467,(ATurkeyChile242908-12023_EPI_ISL_20444524__regional_context/Chile/2023-03-18:0.0000029805,AchickenChile242908-22023_EPI_ISL_20444456__regional_context/Chile/2023-03-18:0.0005895327):0.0005895476):0.0000010000):0.0000010000,((((((ABlack-Necked_SwanNeuquen1151-12023_EPI_ISL_19836182__regional_context/Neuquen/2023-03-22:0.0017728685,((((((((AGreat_egretAraucania2405182023_EPI_ISL_17885950__regional_context/Araucania/2023-03-07:0.0000010000,AgooseAraucania239189-12023_EPI_ISL_17885869__regional_context/Araucania/2023-02-28:0.0000010000):0.0000010000,AchickenAraucania239189-22023_EPI_ISL_17885958__regional_context/Araucania/2023-02-28:0.0000010000):0.0000010000,AchickenAraucania239569-12023_EPI_ISL_17885954__regional_context/Araucania/2023-03-02:0.0005906839):0.0000021287,AchickenAraucania239569-22023_EPI_ISL_17885952__regional_context/Araucania/2023-03-02:0.0005894256):0.0005897354,(AchickenAraucania241892-22023_EPI_ISL_17885946__regional_context/Araucania/2023-03-14:0.0005896601,AturkeyAraucania241892-32023_EPI_ISL_17885966__regional_context/Araucania/2023-03-14:0.0000010000):0.0005909291):0.0000010000,AchickenAraucania240481-12023_EPI_ISL_17885949__regional_context/Araucania/2023-03-07:0.0000010000):0.0000010000,Abuff-necked_ibisBio_bio247636-12023_EPI_ISL_19418491__regional_context/BioBio/2023-04-07:0.0023791426):0.0000027405,AchickenAraucania241914-12023_EPI_ISL_17885945__regional_context/Araucania/2023-03-14:0.0017726352):0.0017718117):0.0000021473,((((AChickenArgentina1416-32023_EPI_ISL_18698510__regional_context/Argentina/2023-04-03:0.0005890283,(AChiloe_wigeonOHiggins240893-22023_EPI_ISL_17885965__regional_context/Ohiggins/2023-03-09:0.0011799519,ADuckArgentina1712-52023_EPI_ISL_18698515__regional_context/Argentina/2023-04-19:0.0023643345):0.0000010000):0.0000010000,((AChickenArgentina506-22023_EPI_ISL_18698474__regional_context/Argentina/2023-02-20:0.0005897159,(((ATurkeyChile245562-12023_EPI_ISL_20444529__regional_context/Chile/2023-03-29:0.0000010000,ATurkeyChile245558-32023_EPI_ISL_20444523__regional_context/Chile/2023-03-29:0.0000010000):0.0000010000,AturkeyValparaiso245886-32023_EPI_ISL_19410285__regional_context/Valparaiso/2023-03-30:0.0000010000):0.0011796637,AchickenChile2415172023_EPI_ISL_20444499__regional_context/Chile/2023-03-13:0.0011792854):0.0000021577):0.0000010000,(((AChickenArgentina3346-12023_EPI_ISL_18698528__regional_context/Argentina/2023-07-06:0.0023664439,(AChickenArgentina736-12023_EPI_ISL_18698494__regional_context/Argentina/2023-03-03:0.0005916695,AChickenArgentina747-12023_EPI_ISL_18698730__regional_context/Argentina/2023-03-04:0.0005892193):0.0017775261):0.0000027736,(AChickenArgentina606-12023_EPI_ISL_18698492__regional_context/Argentina/2023-02-27:0.0000010000,((((ASula_leucogasterBrazil-PRA0001-IBTEC2023_EPI_ISL_18975372__regional_context/BrazilPr/2023-07-25:0.0011805006,AThalasseus_acuflavidusParana2277-N2023_EPI_ISL_19215199__regional_context/Parana/2023-11-14:0.0023705568):0.0000021031,((ASterna_hirundoSaoFranciscoItabapoanaBR1060-N-20242024_EPI_ISL_20299633__regional_context/Saofranciscoitabapoanabr/2024-04-05:0.0005905551,ASterna_hirundoEspirito_Santo0155-N2024_EPI_ISL_19215192__regional_context/EspiritoSanto/2024-02-02:0.0000020667):0.0011932801,(AThalasseus_acuflavidusSao_Paulo0291-N2024_EPI_ISL_19215197__regional_context/SaoPaulo/2024-02-22:0.0000020976,AThalasseus_maximusSao_Paulo2339-N2023_EPI_ISL_19215200__regional_context/SaoPaulo/2023-12-13:0.0000021456):0.0017783872):0.0005851430):0.0005899628,(AThalasseus_maximusSanta_Catarina1941-N2023_EPI_ISL_19215187__regional_context/SantaCatarina/2023-09-25:0.0011844822,AfrigatebirdRio_de_JaneiroMAPA-1532N2023_EPI_ISL_18755251__regional_context/RioDeJaneiro/2023-06-03:0.0005906813):0.0000024571):0.0017757740,Abackyard_chickenUruguayUDELAR-127-M42023_EPI_ISL_18310962__regional_context/Uruguay/2023-04-17:0.0011796879):0.0000027344):0.0000027422):0.0005892683,AchickenOHiggins241252-12023_EPI_ISL_17885872__regional_context/Ohiggins/2023-03-12:0.0005892483):0.0000021488):0.0000010000):0.0000010000,((ANasua_nasuaUruguay145M22023_EPI_ISL_19765475__regional_context/Uruguay/2023-05-04:0.0000021414,ANasua_nasuaUruguay145M12023_EPI_ISL_19765465__regional_context/Uruguay/2023-05-04:0.0000021620):0.0005885014,(ANasua_nasuaUruguay146M12023_EPI_ISL_19765485__regional_context/Uruguay/2023-05-05:0.0000010000,Abackyard_chickenUruguayUDELAR-124-M12023_EPI_ISL_18310964__regional_context/Uruguay/2023-04-16:0.0000023130):0.0000026996):0.0011816384):0.0000010000,(AChickenArgentina556-62023_EPI_ISL_18698478__regional_context/Argentina/2023-02-23:0.0000010000,AchickenChile241252-62023_EPI_ISL_20444500__regional_context/Chile/2023-03-12:0.0000010000):0.0000010000):0.0000025025):0.0000021724,(((ASouth_polar_skuaAntarcticaINACH-UC-UCHILE-SKU52024_EPI_ISL_19410265__regional_context/Antarctica/2024-03-03:0.0000010000,ASouth_polar_skuaAntarcticaINACH-UC-UCHILE-SKU42024_EPI_ISL_19410264__regional_context/Antarctica/2024-03-03:0.0000010000):0.0000010000,ASouth_polar_skuaAntarcticaINACH-UC-UCHILE-SKU32024_EPI_ISL_19410263__regional_context/Antarctica/2024-03-03:0.0005890201):0.0047490168,AchickenMetropolitana243148-12023_EPI_ISL_18760060__regional_context/Metropolitana/2023-03-20:0.0005898211):0.0000010000):0.0000021304,(AChickenArgentina491-22023_EPI_ISL_18698469__regional_context/Argentina/2023-02-20:0.0011801610,ATurkeyArgentina753-12023_EPI_ISL_18698497__regional_context/Argentina/2023-03-04:0.0005895991):0.0000021344):0.0005906251,((AChickenArgentina1035-12023_EPI_ISL_18698504__regional_context/Argentina/2023-03-16:0.0005897936,ATurkeyArgentina1348-32023_EPI_ISL_18698508__regional_context/Argentina/2023-03-31:0.0011806664):0.0005907254,AChickenArgentina2034-52023_EPI_ISL_18698520__regional_context/Argentina/2023-05-05:0.0029606355):0.0000010000):0.0000021384,(((ASwanChile2465292023_EPI_ISL_20444474__regional_context/Chile/2023-04-03:0.0011796047,((ASwanChile2485362023_EPI_ISL_20444527__regional_context/Chile/2023-04-11:0.0017695214,AchickenAysen250755-22023_EPI_ISL_19404916__regional_context/Aysen/2023-04-19:0.0005895985):0.0000021443,ATurkeyArgentina1710-12023_EPI_ISL_18698513__regional_context/Argentina/2023-04-17:0.0000010000):0.0000021375):0.0011811973,ATurkeyArgentina1711-22023_EPI_ISL_18698514__regional_context/Argentina/2023-04-19:0.0023646075):0.0000023347,((((AchickenCochabamba393832023_EPI_ISL_19410268__regional_context/Cochabamba/2023-02-01:0.0000021359,AchickenCochabamba395072023_EPI_ISL_19410272__regional_context/Cochabamba/2023-03-01:0.0000025226):0.0005908823,AchickenCochabamba394762023_EPI_ISL_19410271__regional_context/Cochabamba/2023-02-18:0.0000010000):0.0000021297,(AchickenCochabamba393562023_EPI_ISL_19410267__regional_context/Cochabamba/2023-01-26:0.0005899240,(AchickenCochabamba394252023_EPI_ISL_19410269__regional_context/Cochabamba/2023-02-07:0.0000024537,AchickenPotosi398702023_EPI_ISL_19410299__regional_context/Potosi/2023-06-06:0.0000010000):0.0011797149):0.0000023947):0.0000021394,AchickenCochabamba395392023_EPI_ISL_19418487__regional_context/Cochabamba/2023-03-03:0.0011796357):0.0005897022):0.0000025592):0.0000010000):0.0000020413,(((AChickenArgentina1708-12023_EPI_ISL_18698512__regional_context/Argentina/2023-04-19:0.0017766257,(AchickenChile2408752023_EPI_ISL_20444503__regional_context/Chile/2023-03-07:0.0000021776,AchickenChile241681-12023_EPI_ISL_20444496__regional_context/Chile/2023-03-10:0.0000026602):0.0005918684):0.0005892997,(ATurkeyChile240489-12023_EPI_ISL_20444525__regional_context/Chile/2023-03-07:0.0000010000,AturkeyNuble240489-12023_EPI_ISL_17885964__regional_context/Nuble/2023-03-07:0.0000010000):0.0005895324):0.0000021474,((AChickenArgentina464-42023_EPI_ISL_18698460__regional_context/Argentina/2023-02-16:0.0005895792,(Abackyard_chickenUruguayUDELAR-040-M72023_EPI_ISL_18310967__regional_context/Uruguay/2023-03-03:0.0000010000,Abackyard_chickenUruguayUDELAR-047-M12023_EPI_ISL_18310966__regional_context/Uruguay/2023-03-06:0.0000010000):0.0011809414):0.0000021357,((AchickenChile242894-42023_EPI_ISL_20444457__regional_context/Chile/2023-03-18:0.0000024900,AchickenChile242894-12023_EPI_ISL_20444491__regional_context/Chile/2023-03-18:0.0000021397):0.0005885903,((AchickenChile242424-12023_EPI_ISL_20444492__regional_context/Chile/2023-03-16:0.0000021911,AchickenChile2421592023_EPI_ISL_20444494__regional_context/Chile/2023-03-15:0.0000026554):0.0023851958,(AchickenChile248751-22023_EPI_ISL_20444445__regional_context/Chile/2023-04-12:0.0000010000,AchickenChile248751-62023_EPI_ISL_20444447__regional_context/Chile/2023-04-12:0.0000010000):0.0041790618):0.0005777090):0.0000021602):0.0000021594):0.0000021205):0.0000010000,((AAvianArgentina586-42023_EPI_ISL_18698487__regional_context/Argentina/2023-02-24:0.0011794426,AChickenArgentina559-82023_EPI_ISL_18698480__regional_context/Argentina/2023-02-22:0.0023644804):0.0000010000,(AAvianChile2437172023_EPI_ISL_20444471__regional_context/Chile/2023-03-21:0.0005887653,ADuckChile240466-12023_EPI_ISL_20444463__regional_context/Chile/2023-03-07:0.0005885355):0.0000021875):0.0000010000):0.0000010000,ABlack_SkimmerMaule2403792023_EPI_ISL_17885849__regional_context/Maule/2023-03-06:0.0000010000):0.0000021271,AChickenArgentina477-52023_EPI_ISL_18698462__regional_context/Argentina/2023-02-18:0.0005888708):0.0005885656,APhalacrocorax_bougainvilliiIcaUPCH_44192023_EPI_ISL_20359498__regional_context/Ica/2023-02-20:0.0011789125):0.0000027383,((AduckPeruLAM-INS-0152023_EPI_ISL_18497950__regional_context/Peru/2023-09-20:0.0016627775,AduckPeruLAM-INS-0142023_EPI_ISL_18497946__regional_context/Peru/2023-09-26:0.0032151718):0.0021518801,Aperuvian_boobyPeruLIM-INS-0122023_EPI_ISL_17777533__regional_context/Peru/2023-04-12:0.0023631645):0.0005941330):0.0000022370):0.0000021590,((AchickenPeruAIS05502022_EPI_ISL_17805995__regional_context/Peru/2022-12-12:0.0000010000,AchickenPeruAIS05512022_EPI_ISL_17806001__regional_context/Peru/2022-12-12:0.0000010000):0.0005878909,ApelicanPeruPIU-SER0162022_EPI_ISL_18265437__regional_context/Peru/2022-11-24:0.0014921554):0.0000013526):0.0005878772,(((((((((((((((((((((((((ABand-tailed_gullArica_y_Parinacota232200-12023_EPI_ISL_19131168__regional_context/AricaYParinacota/2023-01-11:0.0005886497,AInca_ternArica_y_Parinacota227519-12022_EPI_ISL_19131159__regional_context/AricaYParinacota/2022-12-12:0.0017725910):0.0000010000,((ABand-tailed_gullAntofagasta228525-12022_EPI_ISL_19131166__regional_context/Antofagasta/2022-12-19:0.0011809063,APelicanAtacama229424-22022_EPI_ISL_17885927__regional_context/Atacama/2022-12-22:0.0000021530):0.0005897065,ApelicanValparaiso233091-22023_EPI_ISL_17885956__regional_context/Valparaiso/2023-01-20:0.0005882820):0.0000021494):0.0000010000,((ASanderlingArica_y_Parinacota230758-12022_EPI_ISL_17885980__regional_context/AricaYParinacota/2022-12-30:0.0005886472,Agray_gullArica239053-12023_EPI_ISL_19410281__regional_context/Arica/2023-02-23:0.0017728553):0.0000021451,(ASouth_American_ternMaule2385072023_EPI_ISL_17885973__regional_context/Maule/2023-02-23:0.0005882804,Abrown_boobyPeru23-005629-0032022_EPI_ISL_17660074__regional_context/Peru/2022-11-11:0.0005886033):0.0000010000):0.0000010000):0.0000010000,((Ablack_skimmerChileC619622022_EPI_ISL_16891402__regional_context/Chile/2022-12-02:0.0005888116,AgullBiobio2370122023_EPI_ISL_19410300__regional_context/Biobio/2023-02-15:0.0011808478):0.0000010000,ApelicanAntofagasta228318-12022_EPI_ISL_17885928__regional_context/Antofagasta/2022-12-16:0.0011793424):0.0000010000):0.0000010000,(((((((((AElegant_ternArica_y_Parinacota229476-12022_EPI_ISL_17885955__regional_context/AricaYParinacota/2022-12-24:0.0000010000,(APelicanAtacama230158-22022_EPI_ISL_17885924__regional_context/Atacama/2022-12-30:0.0000010000,ASanderlingChile230758-22023_EPI_ISL_19404931__regional_context/Chile/2023-03-17:0.0000010000):0.0005882169):0.0005882438,(((AProcellaria_aequinoctialisSao_Paulo2259-N2023_EPI_ISL_19215182__regional_context/SaoPaulo/2023-11-09:0.0000010000,(ASouthern_FulmarFalkland_Islands1388702023_EPI_ISL_18918640__regional_context/FalklandIslands/2023-11-14:0.0011792307,(ASouth_American_ternArgentinaCH-PD0372023_EPI_ISL_19466210__regional_context/Argentina/2023-10-10:0.0000010000,ASouth_American_ternArgentinaRN-PB0152023_EPI_ISL_18945315__regional_context/Argentina/2023-08-26:0.0000010000):0.0000029424):0.0005896111):0.0000022688,(ASouth_American_ternArgentinaCH-PD0302023_EPI_ISL_19466158__regional_context/Argentina/2023-10-10:0.0005870957,ASouthamerican_ternArgentina267-22023_EPI_ISL_19823065__regional_context/Argentina/2023-12-24:0.0029712021):0.0005914611):0.0005892515,Aroyal_ternArgentinaCH-PD0362023_EPI_ISL_19466181__regional_context/Argentina/2023-10-10:0.0005912080):0.0005880657):0.0000021285,(APelicanAntofagasta228246-22022_EPI_ISL_17885934__regional_context/Antofagasta/2022-12-15:0.0000010000,ASanderlingArica_y_Parinacota2402652023_EPI_ISL_17885978__regional_context/AricaYParinacota/2023-03-03:0.0000010000):0.0000010000):0.0000021495,APelecanus_thagusIcaUPCH_44372022_EPI_ISL_20359517__regional_context/Ica/2022-12-11:0.0005885635):0.0005885758,(((AFranklins_gullOHiggins236195-12023_EPI_ISL_18939722__regional_context/Ohiggins/2023-02-12:0.0000010000,AFranklin_gullOHiggins236195-12023_EPI_ISL_19162729__regional_context/Ohiggins/2023-02-12:0.0000010000):0.0017730607,(APelicanOHiggins233663-12023_EPI_ISL_17885915__regional_context/Ohiggins/2023-01-24:0.0000010000,APelicanOHiggins233721-12023_EPI_ISL_17885912__regional_context/Ohiggins/2023-01-24:0.0000021192):0.0000021691):0.0011785296,(AGreat_grabeAtacama231482-22023_EPI_ISL_19162731__regional_context/Atacama/2023-01-09:0.0000021528,Agreat_grebeAtacama231482-22023_EPI_ISL_19131196__regional_context/Atacama/2023-01-09:0.0000021455):0.0005884594):0.0000021486):0.0000010000,(AGullChile227023-22022_EPI_ISL_17011964__regional_context/Chile/2022-12-07:0.0000010000,APeruvian_boobyPeruUNMSM-A2962022_EPI_ISL_18371666__regional_context/Peru/2022-12-01:0.0000010000):0.0005888684):0.0000021353,(((APelicanAtacama229450-22022_EPI_ISL_17885926__regional_context/Atacama/2022-12-26:0.0000026057,AchickenPeruAIS05462022_EPI_ISL_17805986__regional_context/Peru/2022-12-18:0.0017744146):0.0005887297,(AchickenPeruAIS05422022_EPI_ISL_17805989__regional_context/Peru/2022-12-01:0.0000024369,AchickenPeruAIS05432022_EPI_ISL_17805990__regional_context/Peru/2022-12-01:0.0000028308):0.0005898545):0.0000020402,(APelicanTarapaca227436-22022_EPI_ISL_17885942__regional_context/Tarapaca/2022-12-09:0.0000022071,((APeruvian_boobyAtacama230579-12023_EPI_ISL_19131164__regional_context/Atacama/2023-01-03:0.0000029354,APeruvean_boobyAtacama230579-12023_EPI_ISL_19139974__regional_context/Atacama/2023-01-03:0.0000023558):0.0011791250,ATurkey_vultureAntofagasta228252-12022_EPI_ISL_17885970__regional_context/Antofagasta/2022-12-17:0.0011796553):0.0000021355):0.0000021273):0.0000021327):0.0000010000,ApelicanValparaiso233418-12023_EPI_ISL_17885932__regional_context/Valparaiso/2023-01-20:0.0000010000):0.0000010000,APelecanusPeruVFAR-1402022_EPI_ISL_17099964__regional_context/Peru/2022-12-01:0.0000010000):0.0000010000):0.0000010000,ABelcher_gullPeruUNMSM-A2672022_EPI_ISL_18371664__regional_context/Peru/2022-12-01:0.0000010000):0.0000010000,AGuanay_cormorantPeruUNMSM-A2752022_EPI_ISL_18371665__regional_context/Peru/2022-12-01:0.0000010000):0.0000010000,ABlackish_oystercatcherOHiggins2406282023_EPI_ISL_17885967__regional_context/Ohiggins/2023-03-06:0.0000010000):0.0000010000,AchickenPeruLIM-INS-0032022_EPI_ISL_16249730__regional_context/Peru/2022-11-29:0.0005905545):0.0000021405,(AKelp_gullMaule2393492023_EPI_ISL_17885972__regional_context/Maule/2023-03-01:0.0005886780,(((AchickenPeruAIS05392022_EPI_ISL_17805987__regional_context/Peru/2022-11-18:0.0000010000,(AchickenPeru23-005607-0032022_EPI_ISL_17660072__regional_context/Peru/2022-11-11:0.0000010000,AchickenPeruLAM-INS-0022022_EPI_ISL_16249681__regional_context/Peru/2022-11-28:0.0005899569):0.0005895596):0.0000010000,ApelicanPeruPIU-SER0132022_EPI_ISL_18265433__regional_context/Peru/2022-11-23:0.0000022414):0.0000020775,ApelicanPeruPIU-0132022_EPI_ISL_18054504__regional_context/Peru/2022-11-23:0.0000010000):0.0011774187):0.0000023478):0.0000025015,(AGullChile227023-32022_EPI_ISL_17011958__regional_context/Chile/2022-12-07:0.0005895409,APelicanAntofagasta228246-32022_EPI_ISL_17885931__regional_context/Antofagasta/2022-12-15:0.0023662018):0.0000021300):0.0005887814,AavianChile2728852023_EPI_ISL_20444533__regional_context/Chile/2023-08-25:0.0005891498):0.0000021582,(AGray_gullTarapaca232825-12023_EPI_ISL_17885951__regional_context/Tarapaca/2023-01-18:0.0000010000,APeruvean_boobyValparaiso2385352023_EPI_ISL_19131163__regional_context/Valparaiso/2023-02-24:0.0000010000):0.0000021055):0.0000021526,AInca_ternAntofagasta2380832023_EPI_ISL_19131156__regional_context/Antofagasta/2023-02-22:0.0005902974):0.0005859901,AHumboldt_penguinCoquimbo2395902023_EPI_ISL_17885948__regional_context/Coquimbo/2023-02-28:0.0000010000):0.0000010000,AavianChile2728822023_EPI_ISL_20444534__regional_context/Chile/2023-08-22:0.0011804712):0.0000010000,Aperuvian_boobyCoquimbo2423042023_EPI_ISL_19410277__regional_context/Coquimbo/2023-03-15:0.0005894315):0.0000022051,AGullChile2515132023_EPI_ISL_20444470__regional_context/Chile/2023-04-21:0.0000010000):0.0000029823,AGuanay_cormorantChile2395842023_EPI_ISL_19391460__regional_context/Chile/2023-03-01:0.0000010000):0.0000013710,(((AInca_ternCoquimbo2396192023_EPI_ISL_19131162__regional_context/Coquimbo/2023-03-01:0.0011809167,AavianChile2858202023_EPI_ISL_20444488__regional_context/Chile/2023-12-02:0.0035657346):0.0000025735,AchickenChile260690-92023_EPI_ISL_20444453__regional_context/Chile/2023-06-03:0.0011800789):0.0000021500,APeruvian_boobyOHiggins242755-12023_EPI_ISL_18760067__regional_context/Ohiggins/2023-03-17:0.0000021185):0.0005899768):0.0000021484,AchickenChile2458172023_EPI_ISL_20444438__regional_context/Chile/2023-03-30:0.0005892282):0.0005891276,(AavianChile2406282023_EPI_ISL_20444542__regional_context/Chile/2023-03-06:0.0000010000,Aguanay_cormorantAtacama235520-12023_EPI_ISL_19151400__regional_context/Atacama/2023-02-05:0.0000010000):0.0000024216):0.0005892174,Aperuvian_boobyPeruCAL-INS-0082023_EPI_ISL_17777529__regional_context/Peru/2023-03-17:0.0017738550):0.0000021294,Aperuvian_boobyPeruCAL-INS-0072023_EPI_ISL_17777528__regional_context/Peru/2023-03-17:0.0005895921):0.0000023193,ASula_variegataIcaUPCH_44942023_EPI_ISL_20359554__regional_context/Ica/2023-04-14:0.0023702387):0.0005892133):0.0000021483,((AduckPeruCAL-INS-0132023_EPI_ISL_18217104__regional_context/Peru/2023-07-24:0.0023643319,(Aperuvian_boobyPeruLIM-INS-0052023_EPI_ISL_17777526__regional_context/Peru/2023-03-20:0.0036509545,Aperuvian_boobyPeruLIM-INS-0042023_EPI_ISL_17777525__regional_context/Peru/2023-04-03:0.0000024202):0.0029566526):0.0000021492,AgullPeruLIM-INS-0062023_EPI_ISL_17777527__regional_context/Peru/2023-03-16:0.0000021632):0.0005889018):0.0000021539,Aguanay_cormorantPeruCAL-INS-0092023_EPI_ISL_17777530__regional_context/Peru/2023-03-17:0.0005887048);
+
+
+USER TREES
+----------
+
+See temp_sitelh_test.trees for trees with branch lengths.
+
+Tree      logL    deltaL
+-------------------------
+  1 -6349.317553  754.82
+  2 -6226.598416   632.1
+  3  -6176.98358  582.49
+  4 -5594.494257       0
+  5 -6790.305583  1195.8
+  6  -6791.40554  1196.9
+  7 -7786.358226  2191.9
+  8 -7399.804027  1805.3
+  9 -5659.040255  64.546
+
+
+ALISIM COMMAND
+--------------
+To simulate an alignment of the same length as the original alignment, using the tree and model parameters estimated from this analysis, you can use the following command:
+
+--alisim simulated_MSA -t temp_sitelh_test.treefile -m "TN{9.09311,13.3737}+F{0.346055,0.186781,0.231269,0.235896}+G4{0.315494}" --length 1704
+
+To mimic the alignment used to produce this analysis, i.e. simulate an alignment of the same length as the original alignment, using the tree and model parameters estimated from this analysis *and* copying the same gap positions as the original alignment, you can use the following command:
+
+iqtree -s data/phylogeny/main_panel/H5N1_HA.fasta --alisim mimicked_MSA
+
+To simulate any number of alignments in either of the two commandlines above, use the --num-alignments options, for example mimic 100 alignments you would use the command line:
+
+iqtree -s data/phylogeny/main_panel/H5N1_HA.fasta --alisim mimicked_MSA --num-alignments 100
+
+For more information on using AliSim, please visit: www.iqtree.org/doc/AliSim
+
+TIME STAMP
+----------
+
+Date and time: Wed May 27 17:09:41 2026
+Total CPU time used: 190.03 seconds (0h:3m:10s)
+Total wall-clock time used: 95.486 seconds (0h:1m:35s)
+

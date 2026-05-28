@@ -20,7 +20,7 @@ def merge_trees(tree_paths, output_path):
                 out_f.write(tree_str + "\n")
 
 
-def parse_rfdist(rfdist_file, labels):
+def parse_rfdist(rfdist_file, labels, rf_max):
     if not os.path.exists(rfdist_file):
         raise FileNotFoundError(f"rfdist file not found: {rfdist_file}")
 
@@ -47,7 +47,7 @@ def parse_rfdist(rfdist_file, labels):
         if len(parts) < 2:
             continue
         # parts[0] is 'TreeX', parts[1:] are the distance values
-        dists = [int(float(x)) for x in parts[1:]]  # RF distances are integers
+        dists = [float(x) / rf_max for x in parts[1:]]  # Scale RF distances to 0-1
         matrix.append(dists)
 
     df = pd.DataFrame(matrix, index=labels, columns=labels)
@@ -88,8 +88,14 @@ def main():
     print(f"Running IQ-TREE: {' '.join(cmd)}")
     subprocess.run(cmd, check=True)
 
-    # 3. Parse rfdist file
-    df = parse_rfdist(rfdist_file, labels)
+    # 3. Parse rfdist file and normalize
+    from Bio import Phylo
+    first_tree = Phylo.read(all_tree_paths[0], "newick")
+    N = len(first_tree.get_terminals())
+    rf_max = 2 * (N - 3)
+    print(f"Number of leaves N = {N}, RF max = {rf_max}")
+
+    df = parse_rfdist(rfdist_file, labels, rf_max)
 
     # 4. Save labeled CSV matrix
     os.makedirs(os.path.dirname(args.output), exist_ok=True)

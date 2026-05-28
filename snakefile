@@ -31,21 +31,14 @@ MAIN_PHYLOGENY_TARGETS = [
     f"{RESULTS_PHYLOGENY}/iq-tree/full_concat/H5N1_full_concat.treefile",
     *expand(
         f"{RESULTS_PHYLOGENY}/iq-tree/{{segment}}/rep{{rep}}.treefile",
-        segment=["PB2", "PB1", "PA", "HA", "NP", "NA", "MP", "NS", "concat_except_HA"],
+        segment=["PB2", "PB1", "PA", "HA", "NP", "NA", "MP", "NS"],
         rep=range(1, int(config.get("iqtree_replicates", 5)) + 1)
     ),
     *expand(
         f"{RESULTS_PHYLOGENY}/iq-tree/{{segment}}/{{segment}}_final.treefile",
         segment=["PB2", "PB1", "PA", "HA", "NP", "NA", "MP", "NS"]
     ),
-    *expand(
-        f"{RESULTS_PHYLOGENY}/iq-tree/{{segment}}/rf_dist_matrix.rfdist",
-        segment=["PB2", "PB1", "PA", "HA", "NP", "NA", "MP", "NS", "concat_except_HA"]
-    ),
-    f"{RESULTS_PHYLOGENY}/segment_analysis/au_test_matrix.csv",
-    f"{RESULTS_PHYLOGENY}/segment_analysis/rf_matrix.csv",
-    f"{RESULTS_PHYLOGENY}/segment_analysis/tanglegram_ha_vs_na.png",
-    f"{RESULTS_PHYLOGENY}/segment_analysis/tanglegram_ha_vs_concat_except_ha.png",
+    f"{RESULTS_PHYLOGENY}/segment_analysis/tanglegram_ha_vs_pb2.png",
     f"{RESULTS_PHYLOGENY}/itol_styles/tree_colors.txt",
     f"{RESULTS_PHYLOGENY}/itol_styles/dataset_colorstrip.txt",
 ]
@@ -63,9 +56,11 @@ RTT_AND_ML_SUBSET_TARGETS = [
         rep=range(1, int(config.get("iqtree_replicates", 5)) + 1)
     ),
     f"{RESULTS_PHYLOGENY}/iq-tree/subset_concat/subset_concat_final.treefile",
-    f"{RESULTS_PHYLOGENY}/iq-tree/subset_concat/rf_dist_matrix.rfdist",
-    f"{RESULTS_PHYLOGENY}/itol_styles/subset_concat/tree_colors.txt",
-    f"{RESULTS_PHYLOGENY}/itol_styles/subset_concat/dataset_colorstrip.txt",
+    MAIN_PANEL_METADATA,
+    *expand(
+        "results/figures/{segment}_tree.png",
+        segment=["PB2", "PB1", "PA", "HA", "NP", "NA", "MP", "NS", "subset_concat"]
+    ),
 ]
 
 ALL_VALIDATION_TARGETS = [

@@ -1,0 +1,620 @@
+IQ-TREE version 3.1.2 for Linux x86 64-bit built May 17 2026
+Developed by Bui Quang Minh, Thomas Wong, Nhan Ly-Trong, Huaiyan Ren
+Contributed by Lam-Tung Nguyen, Dominik Schrempf, Chris Bielow,
+Olga Chernomor, Michael Woodhams, Diep Thi Hoang, Heiko Schmidt
+
+Host:    sebas-MS-7D09 (AVX512, FMA3, 46 GB RAM)
+Command: .snakemake/conda/5558fa25f8da5cccfb836f513acd1a07_/bin/iqtree -s data/phylogeny/main_panel/H5N1_HA.fasta -z results/phylogeny/segment_analysis/au/candidate_topologies.trees -n 0 --sitelh -m GTR+G -pre temp_sitelh_test -nt 2 -redo
+Seed:    172057 (Using SPRNG - Scalable Parallel Random Number Generator)
+Time:    Wed May 27 17:09:01 2026
+Kernel:  AVX+FMA - 2 threads (16 CPU cores detected)
+
+Reading alignment file data/phylogeny/main_panel/H5N1_HA.fasta ... Fasta format detected
+Reading fasta file: done in 0.0111582 secs using 81.98% CPU
+Alignment most likely contains DNA/RNA sequences
+Constructing alignment: done in 0.00485992 secs using 171.3% CPU
+Alignment has 311 sequences with 1704 columns, 367 distinct patterns
+156 parsimony-informative, 147 singleton sites, 1401 constant sites
+                                                                                                                               Gap/Ambiguity  Composition  p-value
+Analyzing sequences: done in 0.000236034 secs using 216.1% CPU
+   1  Flu-0406/Guayas/2023-10-31                                                                                                       0.00%    passed     99.34%
+   2  Flu-0582/Cotopaxi/2022-11-25                                                                                                     0.00%    passed     99.98%
+   3  Flu-0317/Cotopaxi/2023-07-28                                                                                                     0.00%    passed     99.99%
+   4  Flu-0316/Cotopaxi/2023-07-28                                                                                                     0.06%    passed     99.97%
+   5  Flu-0586/Cotopaxi/2022-12-13                                                                                                     0.00%    passed     99.98%
+   6  Flu-0584/Cotopaxi/2022-12-02                                                                                                     0.00%    passed     99.98%
+   7  Flu-0593/Cotopaxi/2022-12-14                                                                                                     0.00%    passed     99.98%
+   8  Flu-0589/Cotopaxi/2022-12-13                                                                                                     0.00%    passed     99.98%
+   9  Flu-0592/Cotopaxi/2022-12-14                                                                                                     0.06%    passed     99.97%
+  10  Flu-0583/Cotopaxi/2022-12-02                                                                                                     0.00%    passed     99.98%
+  11  Flu-0580/Cotopaxi/2022-11-25                                                                                                     0.12%    passed     99.98%
+  12  Flu-0600/Cotopaxi/2023-01-07                                                                                                     0.12%    passed     99.97%
+  13  Flu-0604/Tungurahua/2023-01-12                                                                                                   0.12%    passed     99.98%
+  14  Flu-0599/Cotopaxi/2023-01-07                                                                                                     0.06%    passed     99.97%
+  15  Flu-0596/Cotopaxi/2023-01-07                                                                                                     0.18%    passed     99.97%
+  16  Flu-0608/Tungurahua/2023-01-12                                                                                                   0.12%    passed     99.98%
+  17  Flu-0623/Cotopaxi/2023-01-19                                                                                                     0.00%    passed     99.73%
+  18  Flu-0621/Cotopaxi/2023-01-19                                                                                                     0.00%    passed     99.98%
+  19  Flu-0613/Pichincha/2023-01-18                                                                                                    0.12%    passed     99.97%
+  20  Flu-0611/Pichincha/2023-01-18                                                                                                    0.06%    passed     99.98%
+  21  Flu-0614/Pichincha/2023-01-18                                                                                                    0.23%    passed     99.99%
+  22  Flu-0619/Cotopaxi/2023-01-19                                                                                                     0.06%    passed     99.97%
+  23  Flu-0622/Cotopaxi/2023-01-19                                                                                                     0.00%    passed     99.98%
+  24  Flu-0641/Tungurahua/2023-01-20                                                                                                   0.06%    passed     99.95%
+  25  Flu-0630/Cotopaxi/2023-01-19                                                                                                     0.35%    passed     99.93%
+  26  Flu-0653/Azuay/2023-02-19                                                                                                        0.06%    passed     99.84%
+  27  Flu-0654/Azuay/2023-02-19                                                                                                        0.29%    passed     99.93%
+  28  AAmerican_CrowMinnesotaUSDA-009668-0012022_EPI_ISL_18133069__american_anchor/USA/2022-03-29                                      0.00%    passed     99.44%
+  29  Flu-0610/Tungurahua/2023-01-16                                                                                                   0.06%    passed     99.99%
+  30  Flu-0652/Azuay/2023-02-19                                                                                                        0.12%    passed     99.90%
+  31  AAmerican_CrowNorth_DakotaUSDA-013145-0012022_EPI_ISL_18133101__american_anchor/USA/2022-04-21                                   0.00%    passed     99.44%
+  32  AAmerican_WigeonSouth_Carolina22-000345-0012021_EPI_ISL_18133029__american_anchor/USA/2021-12-30                                 0.00%    passed     99.28%
+  33  AAmerican_wigeonSouth_CarolinaAH01951452021_EPI_ISL_9869760__american_anchor/USA/2021-12-30                                      0.00%    passed     99.28%
+  34  AArctic_ternAlaska22-020952-0022022_EPI_ISL_19158340__american_anchor/USA/2022-07-22                                             0.00%    passed     99.74%
+  35  AAvianArgentina579-52023_EPI_ISL_18698485__regional_context/Argentina/2023-02-24                                                 0.00%    passed     99.98%
+  36  AAvianArgentina586-42023_EPI_ISL_18698487__regional_context/Argentina/2023-02-24                                                 0.00%    passed     99.93%
+  37  AAvianChile2437172023_EPI_ISL_20444471__regional_context/Chile/2023-03-21                                                        0.00%    passed     99.98%
+  38  ABackyard_birdMinnesotaUSDA-010928-0012022_EPI_ISL_18133193__american_anchor/USA/2022-04-11                                      0.00%    passed     99.07%
+  39  ABackyard_birdMinnesotaUSDA-010928-0022022_EPI_ISL_18133185__american_anchor/USA/2022-04-11                                      0.00%    passed     99.07%
+  40  ABald_EagleFloridaUSDA-006544-0052022_EPI_ISL_18132937__american_anchor/USA/2022-02-01                                           0.00%    passed     98.94%
+  41  ABald_EagleFloridaUSDA-007915-0092022_EPI_ISL_18132927__american_anchor/USA/2022-02-23                                           0.00%    passed     99.64%
+  42  ABald_EagleMinnesotaUSDA-009477-0012022_EPI_ISL_18132924__american_anchor/USA/2022-03-20                                         0.00%    passed     99.78%
+  43  ABald_EagleSouth_CarolinaUSDA-008983-0012022_EPI_ISL_18133018__american_anchor/USA/2022-03-01                                    0.00%    passed     99.36%
+  44  ABand-tailed_gullArica_y_Parinacota232200-12023_EPI_ISL_19131168__regional_context/AricaYParinacota/2023-01-11                   0.00%    passed     99.98%
+  45  ABand-tailed_gullAntofagasta228525-12022_EPI_ISL_19131166__regional_context/Antofagasta/2022-12-19                               0.00%    passed     99.99%
+  46  ABelcher_gullPeruUNMSM-A2672022_EPI_ISL_18371664__regional_context/Peru/2022-12-01                                               0.00%    passed     99.99%
+  47  ABlack_SkimmerMaule2403792023_EPI_ISL_17885849__regional_context/Maule/2023-03-06                                                0.00%    passed    100.00%
+  48  ABlack-Necked_SwanNeuquen1151-12023_EPI_ISL_19836182__regional_context/Neuquen/2023-03-22                                        0.00%    passed     99.68%
+  49  ABlue-winged_TealSouth_CarolinaUSDA-000345-0032021_EPI_ISL_18133416__american_anchor/USA/2021-12-30                              0.00%    passed     99.36%
+  50  ABlackish_oystercatcherOHiggins2406282023_EPI_ISL_17885967__regional_context/Ohiggins/2023-03-06                                 0.06%    passed     99.99%
+  51  ACanada_gooseAlaska22-014435-0012022_EPI_ISL_19158328__american_anchor/USA/2022-05-05                                            0.00%    passed    100.00%
+  52  AChickenArgentina1147-22023_EPI_ISL_18698505__regional_context/Argentina/2023-03-21                                              0.00%    passed    100.00%
+  53  AChickenArgentina1035-12023_EPI_ISL_18698504__regional_context/Argentina/2023-03-16                                              0.00%    passed     99.98%
+  54  AChickenArgentina1708-12023_EPI_ISL_18698512__regional_context/Argentina/2023-04-19                                              0.00%    passed     99.96%
+  55  AChickenArgentina2016-22023_EPI_ISL_18698732__regional_context/Argentina/2023-05-03                                              0.00%    passed     99.97%
+  56  AChickenArgentina2034-52023_EPI_ISL_18698520__regional_context/Argentina/2023-05-05                                              0.00%    passed     99.91%
+  57  AChickenArgentina2049-32023_EPI_ISL_18698521__regional_context/Argentina/2023-05-08                                              0.00%    passed     99.96%
+  58  AChickenArgentina1984-42023_EPI_ISL_18698519__regional_context/Argentina/2023-05-04                                              0.00%    passed     99.99%
+  59  AChickenArgentina1416-32023_EPI_ISL_18698510__regional_context/Argentina/2023-04-03                                              0.00%    passed     99.99%
+  60  AChickenArgentina506-22023_EPI_ISL_18698474__regional_context/Argentina/2023-02-20                                               0.00%    passed     99.98%
+  61  AChickenArgentina491-22023_EPI_ISL_18698469__regional_context/Argentina/2023-02-20                                               0.00%    passed     99.87%
+  62  AChickenArgentina464-42023_EPI_ISL_18698460__regional_context/Argentina/2023-02-16                                               0.00%    passed     99.99%
+  63  AChickenArgentina3346-12023_EPI_ISL_18698528__regional_context/Argentina/2023-07-06                                              0.00%    passed     99.95%
+  64  AChickenArgentina481-22023_EPI_ISL_18698464__regional_context/Argentina/2023-02-18                                               0.00%    passed     99.98%
+  65  AChickenArgentina477-52023_EPI_ISL_18698462__regional_context/Argentina/2023-02-18                                               0.00%    passed     99.99%
+  66  AChickenArgentina485-62023_EPI_ISL_18698466__regional_context/Argentina/2023-02-19                                               0.00%    passed     99.99%
+  67  AChickenArgentina509-22023_EPI_ISL_18698476__regional_context/Argentina/2023-02-21                                               0.00%    passed     99.99%
+  68  AChickenArgentina501-12023_EPI_ISL_18698471__regional_context/Argentina/2023-02-20                                               0.00%    passed     99.83%
+  69  AChickenArgentina919-32023_EPI_ISL_18698502__regional_context/Argentina/2023-03-13                                               0.00%    passed     99.96%
+  70  AChickenArgentina736-12023_EPI_ISL_18698494__regional_context/Argentina/2023-03-03                                               0.00%    passed     99.72%
+  71  AChickenArgentina588-42023_EPI_ISL_18698490__regional_context/Argentina/2023-02-24                                               0.00%    passed     99.98%
+  72  AChickenArgentina606-12023_EPI_ISL_18698492__regional_context/Argentina/2023-02-27                                               0.00%    passed     99.93%
+  73  AChickenArgentina578-22023_EPI_ISL_18698482__regional_context/Argentina/2023-02-23                                               0.00%    passed     99.90%
+  74  AChickenArgentina895-12023_EPI_ISL_18698731__regional_context/Argentina/2023-03-09                                               0.00%    passed     99.99%
+  75  AChickenArgentina747-12023_EPI_ISL_18698730__regional_context/Argentina/2023-03-04                                               0.00%    passed     99.94%
+  76  AChickenArgentina559-82023_EPI_ISL_18698480__regional_context/Argentina/2023-02-22                                               0.00%    passed     99.88%
+  77  AChickenArgentina556-62023_EPI_ISL_18698478__regional_context/Argentina/2023-02-23                                               0.00%    passed     99.99%
+  78  AChiloe_wigeonOHiggins240893-22023_EPI_ISL_17885965__regional_context/Ohiggins/2023-03-09                                        0.00%    passed     99.95%
+  79  ADuckArgentina1712-52023_EPI_ISL_18698515__regional_context/Argentina/2023-04-19                                                 0.00%    passed     99.99%
+  80  ADuckChile240466-12023_EPI_ISL_20444463__regional_context/Chile/2023-03-07                                                       0.00%    passed     99.99%
+  81  AElegant_ternArica_y_Parinacota229476-12022_EPI_ISL_17885955__regional_context/AricaYParinacota/2022-12-24                       0.00%    passed     99.92%
+  82  AFranklins_gullOHiggins236195-12023_EPI_ISL_18939722__regional_context/Ohiggins/2023-02-12                                       0.00%    passed     99.91%
+  83  AFranklin_gullOHiggins236195-12023_EPI_ISL_19162729__regional_context/Ohiggins/2023-02-12                                        0.00%    passed     99.91%
+  84  AGreat_Black-Backed_GullNLOTH-0114_EPI_ISL_16190849__regional_context/GreatBlackBackedGull/2021-11-04                            0.00%    passed     99.07%
+  85  AGooseArgentina389-12023_EPI_ISL_18698459__regional_context/Argentina/2023-02-11                                                 0.00%    passed     99.99%
+  86  AGray_gullTarapaca232825-12023_EPI_ISL_17885951__regional_context/Tarapaca/2023-01-18                                            0.00%    passed     99.98%
+  87  AGreat_egretAraucania2405182023_EPI_ISL_17885950__regional_context/Araucania/2023-03-07                                          0.06%    passed     99.88%
+  88  AGreat_grabeAtacama231482-22023_EPI_ISL_19162731__regional_context/Atacama/2023-01-09                                            0.00%    passed     99.98%
+  89  AGuanay_cormorantPeruPIU-SER0242022_EPI_ISL_18265434__regional_context/Peru/2022-11-24                                           0.00%    passed    100.00%
+  90  AGuanay_cormorantPeruUNMSM-A2752022_EPI_ISL_18371665__regional_context/Peru/2022-12-01                                           0.00%    passed     99.99%
+  91  AGuanay_cormorantChile2395842023_EPI_ISL_19391460__regional_context/Chile/2023-03-01                                             0.00%    passed     99.91%
+  92  AGullChile2515132023_EPI_ISL_20444470__regional_context/Chile/2023-04-21                                                         0.00%    passed     99.91%
+  93  AGullChile227023-22022_EPI_ISL_17011964__regional_context/Chile/2022-12-07                                                       0.06%    passed     99.98%
+  94  AGullChile227023-32022_EPI_ISL_17011958__regional_context/Chile/2022-12-07                                                       0.18%    passed     99.95%
+  95  AHumboldt_penguinCoquimbo2395902023_EPI_ISL_17885948__regional_context/Coquimbo/2023-02-28                                       0.06%    passed     99.94%
+  96  AInca_ternAntofagasta2380832023_EPI_ISL_19131156__regional_context/Antofagasta/2023-02-22                                        0.06%    passed     99.96%
+  97  ALesser_ScaupFloridaUSDA-005890-0012022_EPI_ISL_18133262__american_anchor/USA/2022-02-13                                         0.00%    passed     99.04%
+  98  AInca_ternArica_y_Parinacota227519-12022_EPI_ISL_19131159__regional_context/AricaYParinacota/2022-12-12                          0.00%    passed     99.99%
+  99  AKelp_gullMaule2393492023_EPI_ISL_17885972__regional_context/Maule/2023-03-01                                                    0.00%    passed    100.00%
+ 100  ALarus_belcheriIcaUPCH_44492022_EPI_ISL_20359535__regional_context/Ica/2022-12-16                                                0.00%    passed     99.99%
+ 101  AInca_ternCoquimbo2396192023_EPI_ISL_19131162__regional_context/Coquimbo/2023-03-01                                              0.06%    passed     99.95%
+ 102  ALesser_scaupMD-LC-EESC-0242022_EPI_ISL_15614805__regional_context/Md/2022-01-23                                                 0.00%    passed     98.57%
+ 103  ANasua_nasuaUruguay145M22023_EPI_ISL_19765475__regional_context/Uruguay/2023-05-04                                               0.00%    passed     99.93%
+ 104  ANasua_nasuaUruguay145M12023_EPI_ISL_19765465__regional_context/Uruguay/2023-05-04                                               0.00%    passed     99.93%
+ 105  ANasua_nasuaUruguay146M12023_EPI_ISL_19765485__regional_context/Uruguay/2023-05-05                                               0.00%    passed     99.95%
+ 106  APelecanusPeruVFAR-1402022_EPI_ISL_17099964__regional_context/Peru/2022-12-01                                                    0.23%    passed     99.94%
+ 107  APelecanus_thagusIcaUPCH_44372022_EPI_ISL_20359517__regional_context/Ica/2022-12-11                                              0.00%    passed     99.90%
+ 108  APelecanus_thagusPeruLIM-QUIM0062023_EPI_ISL_19781426__regional_context/Peru/2023-02-10                                          0.00%    passed     99.99%
+ 109  APelicanAntofagasta228244-22022_EPI_ISL_17885944__regional_context/Antofagasta/2022-12-16                                        0.00%    passed     99.99%
+ 110  APelicanAtacama229450-22022_EPI_ISL_17885926__regional_context/Atacama/2022-12-26                                                0.00%    passed     99.98%
+ 111  APelicanAtacama229424-22022_EPI_ISL_17885927__regional_context/Atacama/2022-12-22                                                0.00%    passed     99.99%
+ 112  APelicanAntofagasta228246-22022_EPI_ISL_17885934__regional_context/Antofagasta/2022-12-15                                        0.00%    passed     99.93%
+ 113  APelicanAtacama230158-22022_EPI_ISL_17885924__regional_context/Atacama/2022-12-30                                                0.00%    passed     99.98%
+ 114  APelicanAntofagasta228246-32022_EPI_ISL_17885931__regional_context/Antofagasta/2022-12-15                                        0.06%    passed     99.94%
+ 115  APelicanOHiggins233663-12023_EPI_ISL_17885915__regional_context/Ohiggins/2023-01-24                                              0.00%    passed     99.99%
+ 116  APelicanNuble233947-22023_EPI_ISL_17885918__regional_context/Nuble/2023-01-26                                                    0.00%    passed     99.99%
+ 117  APelicanOHiggins233721-12023_EPI_ISL_17885912__regional_context/Ohiggins/2023-01-24                                              0.00%    passed     99.99%
+ 118  APelicanTarapaca227436-22022_EPI_ISL_17885942__regional_context/Tarapaca/2022-12-09                                              0.06%    passed    100.00%
+ 119  APeruvian_boobyPeruUNMSM-A2962022_EPI_ISL_18371666__regional_context/Peru/2022-12-01                                             0.00%    passed     99.98%
+ 120  APeruvean_boobyValparaiso2385352023_EPI_ISL_19131163__regional_context/Valparaiso/2023-02-24                                     0.00%    passed     99.98%
+ 121  APeruvian_boobyAtacama230579-12023_EPI_ISL_19131164__regional_context/Atacama/2023-01-03                                         0.06%    passed    100.00%
+ 122  APeruvian_boobyOHiggins242755-12023_EPI_ISL_18760067__regional_context/Ohiggins/2023-03-17                                       0.00%    passed     99.95%
+ 123  APhalacrocorax_bougainvilliiIcaUPCH_44192023_EPI_ISL_20359498__regional_context/Ica/2023-02-20                                   0.00%    passed     99.98%
+ 124  APeruvean_boobyAtacama230579-12023_EPI_ISL_19139974__regional_context/Atacama/2023-01-03                                         0.06%    passed    100.00%
+ 125  APhalacrocorax_bougainvilliiIcaUPCH_44182023_EPI_ISL_20359497__regional_context/Ica/2023-02-20                                   0.00%    passed     99.99%
+ 126  AProcellaria_aequinoctialisSao_Paulo2259-N2023_EPI_ISL_19215182__regional_context/SaoPaulo/2023-11-09                            0.00%    passed    100.00%
+ 127  APhalacrocorax_bougainvilliiIcaUPCH_44102023_EPI_ISL_20359491__regional_context/Ica/2023-02-20                                   0.00%    passed     99.93%
+ 128  ASanderlingArica_y_Parinacota230758-12022_EPI_ISL_17885980__regional_context/AricaYParinacota/2022-12-30                         0.00%    passed     99.98%
+ 129  ASabines_gullAlaska22-017953-0072022_EPI_ISL_19158226__american_anchor/USA/2022-06-06                                            0.00%    passed     99.74%
+ 130  ASanderlingArica_y_Parinacota2402652023_EPI_ISL_17885978__regional_context/AricaYParinacota/2023-03-03                           0.00%    passed     99.93%
+ 131  ASanderlingChile230758-22023_EPI_ISL_19404931__regional_context/Chile/2023-03-17                                                 0.00%    passed     99.98%
+ 132  ASanderlingPeruPIU-SER0052022_EPI_ISL_18265432__regional_context/Peru/2022-11-22                                                 0.00%    passed     99.99%
+ 133  ASeagullSarmiento1651-42023_EPI_ISL_19137653__regional_context/Sarmiento/2023-04-17                                              0.06%    passed     99.94%
+ 134  ASouthern_FulmarFalkland_Islands1388702023_EPI_ISL_18918640__regional_context/FalklandIslands/2023-11-14                         0.00%    passed     99.99%
+ 135  ASouth_American_ternArgentinaCH-PD0302023_EPI_ISL_19466158__regional_context/Argentina/2023-10-10                                0.00%    passed     99.93%
+ 136  ASouth_American_ternMaule2385072023_EPI_ISL_17885973__regional_context/Maule/2023-02-23                                          0.00%    passed     99.98%
+ 137  ASouthamerican_ternArgentina267-22023_EPI_ISL_19823065__regional_context/Argentina/2023-12-24                                    0.00%    passed     99.99%
+ 138  ASouth_American_ternArgentinaCH-PD0372023_EPI_ISL_19466210__regional_context/Argentina/2023-10-10                                0.06%    passed     99.97%
+ 139  ASouth_American_ternArgentinaRN-PB0152023_EPI_ISL_18945315__regional_context/Argentina/2023-08-26                                0.00%    passed     99.99%
+ 140  ASouth_polar_skuaAntarcticaINACH-UC-UCHILE-SKU52024_EPI_ISL_19410265__regional_context/Antarctica/2024-03-03                     0.00%    passed     99.97%
+ 141  ASouth_polar_skuaAntarcticaINACH-UC-UCHILE-SKU32024_EPI_ISL_19410263__regional_context/Antarctica/2024-03-03                     0.00%    passed     99.90%
+ 142  ASouth_polar_skuaAntarcticaINACH-UC-UCHILE-SKU42024_EPI_ISL_19410264__regional_context/Antarctica/2024-03-03                     0.00%    passed     99.97%
+ 143  ASula_leucogasterBrazil-PRA0001-IBTEC2023_EPI_ISL_18975372__regional_context/BrazilPr/2023-07-25                                 0.00%    passed     99.92%
+ 144  ASula_variegataIcaUPCH_44942023_EPI_ISL_20359554__regional_context/Ica/2023-04-14                                                0.00%    passed     99.48%
+ 145  ASterna_hirundoSaoFranciscoItabapoanaBR1060-N-20242024_EPI_ISL_20299633__regional_context/Saofranciscoitabapoanabr/2024-04-05    0.00%    passed     98.93%
+ 146  ASterna_hirundoEspirito_Santo0155-N2024_EPI_ISL_19215192__regional_context/EspiritoSanto/2024-02-02                              0.00%    passed     99.40%
+ 147  ASwanChile2465292023_EPI_ISL_20444474__regional_context/Chile/2023-04-03                                                         0.00%    passed     99.93%
+ 148  ASwanChile2475242023_EPI_ISL_20444528__regional_context/Chile/2023-04-05                                                         0.00%    passed    100.00%
+ 149  AThalasseus_acuflavidusSao_Paulo0291-N2024_EPI_ISL_19215197__regional_context/SaoPaulo/2024-02-22                                0.00%    passed     99.92%
+ 150  ASwanChile2485362023_EPI_ISL_20444527__regional_context/Chile/2023-04-11                                                         0.00%    passed     99.97%
+ 151  AThalasseus_maximusSanta_Catarina1941-N2023_EPI_ISL_19215187__regional_context/SantaCatarina/2023-09-25                          0.00%    passed     99.42%
+ 152  AThalasseus_maximusSao_Paulo2339-N2023_EPI_ISL_19215200__regional_context/SaoPaulo/2023-12-13                                    0.00%    passed     99.92%
+ 153  AThalasseus_acuflavidusParana2277-N2023_EPI_ISL_19215199__regional_context/Parana/2023-11-14                                     0.00%    passed     99.09%
+ 154  ATurkeyArgentina1710-12023_EPI_ISL_18698513__regional_context/Argentina/2023-04-17                                               0.00%    passed     99.99%
+ 155  ATurkeyArgentina1348-32023_EPI_ISL_18698508__regional_context/Argentina/2023-03-31                                               0.00%    passed     99.99%
+ 156  ATurkeyChile240489-12023_EPI_ISL_20444525__regional_context/Chile/2023-03-07                                                     0.00%    passed     99.99%
+ 157  ATurkeyChile245562-12023_EPI_ISL_20444529__regional_context/Chile/2023-03-29                                                     0.00%    passed     99.99%
+ 158  ATurkeyChile245558-32023_EPI_ISL_20444523__regional_context/Chile/2023-03-29                                                     0.00%    passed     99.99%
+ 159  ATurkeyChile245562-22023_EPI_ISL_20444522__regional_context/Chile/2023-03-29                                                     0.00%    passed     99.99%
+ 160  ATurkeyChile255558-42023_EPI_ISL_20444521__regional_context/Chile/2023-03-29                                                     0.00%    passed     99.99%
+ 161  ATurkeyArgentina753-12023_EPI_ISL_18698497__regional_context/Argentina/2023-03-04                                                0.00%    passed     99.99%
+ 162  ATurkey_vultureAntofagasta228252-12022_EPI_ISL_17885970__regional_context/Antofagasta/2022-12-17                                 0.06%    passed     99.97%
+ 163  ATurkeyArgentina1711-22023_EPI_ISL_18698514__regional_context/Argentina/2023-04-19                                               0.00%    passed     99.96%
+ 164  ATurkeyChile242908-12023_EPI_ISL_20444524__regional_context/Chile/2023-03-18                                                     0.00%    passed     99.99%
+ 165  Aamerican_crowMinnesota22-015674-0012022_EPI_ISL_19606630__american_anchor/USA/2022-01-01                                        0.00%    passed     99.44%
+ 166  Aamerican_white_pelicanMinnesota22-017057-0012022_EPI_ISL_19606620__american_anchor/USA/2022-01-01                               0.00%    passed     99.67%
+ 167  AavianChile2406282023_EPI_ISL_20444542__regional_context/Chile/2023-03-06                                                        0.00%    passed     99.98%
+ 168  AavianChile2728852023_EPI_ISL_20444533__regional_context/Chile/2023-08-25                                                        0.00%    passed     99.91%
+ 169  AavianChile2728822023_EPI_ISL_20444534__regional_context/Chile/2023-08-22                                                        0.00%    passed     99.61%
+ 170  AavianPeruAISA04512022_EPI_ISL_17805998__regional_context/Peru/2022-11-22                                                        0.00%    passed     99.99%
+ 171  Abackyard_chickenUruguayUDELAR-040-M72023_EPI_ISL_18310967__regional_context/Uruguay/2023-03-03                                  0.00%    passed     99.94%
+ 172  Abackyard_chickenUruguayUDELAR-047-M12023_EPI_ISL_18310966__regional_context/Uruguay/2023-03-06                                  0.00%    passed     99.94%
+ 173  AavianPeruAISA04462022_EPI_ISL_17805997__regional_context/Peru/2022-11-22                                                        0.00%    passed     99.99%
+ 174  AavianChile2858202023_EPI_ISL_20444488__regional_context/Chile/2023-12-02                                                        0.00%    passed     99.74%
+ 175  Abackyard_chickenUruguayUDELAR-040-M52023_EPI_ISL_18310942__regional_context/Uruguay/2023-03-03                                  0.00%    passed     99.94%
+ 176  Abackyard_chickenUruguayUDELAR-047-M32023_EPI_ISL_18310965__regional_context/Uruguay/2023-03-06                                  0.00%    passed     99.94%
+ 177  Abackyard_chickenUruguayUDELAR-124-M12023_EPI_ISL_18310964__regional_context/Uruguay/2023-04-16                                  0.00%    passed     99.95%
+ 178  Abackyard_turkeyUruguayUDELAR-124-M62023_EPI_ISL_18310959__regional_context/Uruguay/2023-04-16                                   0.00%    passed     99.95%
+ 179  Abald_eagleAlaska22-014971-0012022_EPI_ISL_19158221__american_anchor/USA/2022-05-09                                              0.00%    passed     99.84%
+ 180  Abackyard_duckUruguayUDELAR-124-M32023_EPI_ISL_18310960__regional_context/Uruguay/2023-04-16                                     0.00%    passed     99.95%
+ 181  Abackyard_chickenUruguayUDELAR-127-M42023_EPI_ISL_18310962__regional_context/Uruguay/2023-04-17                                  0.00%    passed     99.99%
+ 182  Abald_eagleAlaska22-016934-0042022_EPI_ISL_19158213__american_anchor/USA/2022-05-22                                              0.00%    passed     99.90%
+ 183  Abald_eagleUnknown23-034211-0022023_EPI_ISL_18914308__regional_context/Unknown/2022-04-22                                        0.00%    passed     97.76%
+ 184  Abald_eagleUnknown23-034211-002-original2023_EPI_ISL_19660948__regional_context/Unknown/2022-04-22                               0.00%    passed     97.76%
+ 185  Ablack-necked_swanUruguayUDELAR-014-M32023_EPI_ISL_18310958__regional_context/Uruguay/2023-02-18                                 0.00%    passed     99.99%
+ 186  Ablack-necked_swanUruguayUDELAR-078-M22023_EPI_ISL_18310957__regional_context/Uruguay/2023-03-15                                 0.00%    passed     99.99%
+ 187  Ablack_skimmerChileC619622022_EPI_ISL_16891402__regional_context/Chile/2022-12-02                                                0.00%    passed    100.00%
+ 188  Abrown_boobyPeru23-005629-0032022_EPI_ISL_17660074__regional_context/Peru/2022-11-11                                             0.00%    passed     99.98%
+ 189  Acackling_gooseUSA040752-0032022_EPI_ISL_19718386__american_anchor/USA/2022-01-01                                                0.00%    passed     99.82%
+ 190  Abuff-necked_ibisBio_bio247636-12023_EPI_ISL_19418491__regional_context/BioBio/2023-04-07                                        0.06%    passed     99.56%
+ 191  AchickenAraucania239189-22023_EPI_ISL_17885958__regional_context/Araucania/2023-02-28                                            0.00%    passed     99.94%
+ 192  AchickenAraucania240481-12023_EPI_ISL_17885949__regional_context/Araucania/2023-03-07                                            0.00%    passed     99.93%
+ 193  AchickenAtacama235254-22023_EPI_ISL_18760074__regional_context/Atacama/2023-02-04                                                0.00%    passed     99.99%
+ 194  AchickenAraucania239569-12023_EPI_ISL_17885954__regional_context/Araucania/2023-03-02                                            0.00%    passed     99.88%
+ 195  AchickenAraucania241914-12023_EPI_ISL_17885945__regional_context/Araucania/2023-03-14                                            0.00%    passed     99.82%
+ 196  AchickenAraucania239569-22023_EPI_ISL_17885952__regional_context/Araucania/2023-03-02                                            0.00%    passed     99.91%
+ 197  AchickenAraucania241892-22023_EPI_ISL_17885946__regional_context/Araucania/2023-03-14                                            0.00%    passed     99.95%
+ 198  AchickenAysen250755-22023_EPI_ISL_19404916__regional_context/Aysen/2023-04-19                                                    0.06%    passed     99.95%
+ 199  AchickenChile2408752023_EPI_ISL_20444503__regional_context/Chile/2023-03-07                                                      0.00%    passed     99.96%
+ 200  AchickenChile242894-42023_EPI_ISL_20444457__regional_context/Chile/2023-03-18                                                    0.00%    passed     99.99%
+ 201  AchickenChile241681-12023_EPI_ISL_20444496__regional_context/Chile/2023-03-10                                                    0.00%    passed     99.96%
+ 202  AchickenChile241252-62023_EPI_ISL_20444500__regional_context/Chile/2023-03-12                                                    0.00%    passed     99.99%
+ 203  AchickenChile241252-32023_EPI_ISL_20444501__regional_context/Chile/2023-03-12                                                    0.00%    passed     99.99%
+ 204  AchickenChile242424-12023_EPI_ISL_20444492__regional_context/Chile/2023-03-16                                                    0.00%    passed     99.95%
+ 205  AchickenChile242894-12023_EPI_ISL_20444491__regional_context/Chile/2023-03-18                                                    0.00%    passed     99.99%
+ 206  AchickenChile2421592023_EPI_ISL_20444494__regional_context/Chile/2023-03-15                                                      0.00%    passed     99.95%
+ 207  AchickenChile2415172023_EPI_ISL_20444499__regional_context/Chile/2023-03-13                                                      0.00%    passed    100.00%
+ 208  AchickenChile241557-22023_EPI_ISL_20444498__regional_context/Chile/2023-03-10                                                    0.00%    passed     99.96%
+ 209  AchickenChile241252-12023_EPI_ISL_20444502__regional_context/Chile/2023-03-12                                                    0.00%    passed     99.99%
+ 210  AchickenChile241557-12023_EPI_ISL_20444505__regional_context/Chile/2023-03-10                                                    0.00%    passed     99.96%
+ 211  AchickenChile242908-22023_EPI_ISL_20444456__regional_context/Chile/2023-03-18                                                    0.00%    passed    100.00%
+ 212  AchickenChile241681-22023_EPI_ISL_20444495__regional_context/Chile/2023-03-10                                                    0.00%    passed     99.96%
+ 213  AchickenChile243881-12023_EPI_ISL_20444455__regional_context/Chile/2023-03-22                                                    0.00%    passed    100.00%
+ 214  AchickenChile243881-22023_EPI_ISL_20444454__regional_context/Chile/2023-03-22                                                    0.00%    passed    100.00%
+ 215  AchickenChile2458172023_EPI_ISL_20444438__regional_context/Chile/2023-03-30                                                      0.00%    passed     99.80%
+ 216  AchickenChile247652-42023_EPI_ISL_20444443__regional_context/Chile/2023-04-07                                                    0.00%    passed    100.00%
+ 217  AchickenChile248751-22023_EPI_ISL_20444445__regional_context/Chile/2023-04-12                                                    0.00%    passed     99.99%
+ 218  AchickenChile2473962023_EPI_ISL_20444439__regional_context/Chile/2023-04-05                                                      0.00%    passed    100.00%
+ 219  AchickenChile248751-62023_EPI_ISL_20444447__regional_context/Chile/2023-04-12                                                    0.00%    passed     99.99%
+ 220  AchickenChile260690-92023_EPI_ISL_20444453__regional_context/Chile/2023-06-03                                                    0.00%    passed     99.76%
+ 221  AchickenCochabamba393832023_EPI_ISL_19410268__regional_context/Cochabamba/2023-02-01                                             0.00%    passed     99.91%
+ 222  AchickenCochabamba393562023_EPI_ISL_19410267__regional_context/Cochabamba/2023-01-26                                             0.00%    passed     99.96%
+ 223  AchickenCochabamba394762023_EPI_ISL_19410271__regional_context/Cochabamba/2023-02-18                                             0.00%    passed     99.98%
+ 224  AchickenCochabamba395072023_EPI_ISL_19410272__regional_context/Cochabamba/2023-03-01                                             0.00%    passed     99.91%
+ 225  AchickenCochabamba394252023_EPI_ISL_19410269__regional_context/Cochabamba/2023-02-07                                             0.00%    passed     99.99%
+ 226  AchickenCochabamba395392023_EPI_ISL_19418487__regional_context/Cochabamba/2023-03-03                                             0.06%    passed     99.73%
+ 227  AchickenMagdalenaICA-35032022_EPI_ISL_17353838__regional_context/Magdalena/2022-11-18                                            0.00%    passed     98.57%
+ 228  AchickenMetropolitana243148-12023_EPI_ISL_18760060__regional_context/Metropolitana/2023-03-20                                    0.00%    passed     99.93%
+ 229  AchickenOHiggins241252-12023_EPI_ISL_17885872__regional_context/Ohiggins/2023-03-12                                              0.00%    passed     99.93%
+ 230  AchickenNuble2406842023_EPI_ISL_17885876__regional_context/Nuble/2023-03-08                                                      0.00%    passed     99.96%
+ 231  AchickenNuble241557-12023_EPI_ISL_17885874__regional_context/Nuble/2023-03-10                                                    0.00%    passed     99.96%
+ 232  AchickenNuble241681-12023_EPI_ISL_17885873__regional_context/Nuble/2023-03-10                                                    0.00%    passed     99.96%
+ 233  AchickenNuble2391362023_EPI_ISL_17885878__regional_context/Nuble/2023-02-27                                                      0.00%    passed    100.00%
+ 234  AchickenNuble2401552023_EPI_ISL_17885877__regional_context/Nuble/2023-03-06                                                      0.00%    passed     99.99%
+ 235  AchickenOHiggins241252-62023_EPI_ISL_17885870__regional_context/Ohiggins/2023-03-12                                              0.00%    passed     99.99%
+ 236  AchickenOHiggins241252-32023_EPI_ISL_17885871__regional_context/Ohiggins/2023-03-12                                              0.00%    passed     99.99%
+ 237  AchickenPeru23-005607-0022022_EPI_ISL_17660071__regional_context/Peru/2022-11-11                                                 0.00%    passed     99.99%
+ 238  AchickenPeru23-005607-0012022_EPI_ISL_17660070__regional_context/Peru/2022-11-11                                                 0.00%    passed     99.99%
+ 239  AchickenPeruAIS05392022_EPI_ISL_17805987__regional_context/Peru/2022-11-18                                                       0.00%    passed     99.90%
+ 240  AchickenPeru23-005607-0032022_EPI_ISL_17660072__regional_context/Peru/2022-11-11                                                 0.00%    passed     99.91%
+ 241  AchickenPeruAIS05402022_EPI_ISL_17805988__regional_context/Peru/2022-11-28                                                       0.00%    passed     99.99%
+ 242  AchickenPeruAIS05422022_EPI_ISL_17805989__regional_context/Peru/2022-12-01                                                       0.00%    passed    100.00%
+ 243  AchickenPeruAIS05442022_EPI_ISL_17805991__regional_context/Peru/2022-12-03                                                       0.00%    passed     99.91%
+ 244  AchickenPeruAIS05432022_EPI_ISL_17805990__regional_context/Peru/2022-12-01                                                       0.00%    passed    100.00%
+ 245  AchickenPeruAIS05502022_EPI_ISL_17805995__regional_context/Peru/2022-12-12                                                       0.00%    passed     99.96%
+ 246  AchickenPeruAIS05462022_EPI_ISL_17805986__regional_context/Peru/2022-12-18                                                       0.00%    passed     99.85%
+ 247  AchickenPeruLAM-INS-0022022_EPI_ISL_16249681__regional_context/Peru/2022-11-28                                                   0.00%    passed     99.75%
+ 248  AchickenPeruAIS05482022_EPI_ISL_17805994__regional_context/Peru/2022-12-22                                                       0.00%    passed     99.84%
+ 249  AchickenPeruAIS05492022_EPI_ISL_17805996__regional_context/Peru/2022-12-22                                                       0.00%    passed     99.84%
+ 250  AchickenPeruLIM-INS-0032022_EPI_ISL_16249730__regional_context/Peru/2022-11-29                                                   0.06%    passed     99.95%
+ 251  AchickenPotosi398702023_EPI_ISL_19410299__regional_context/Potosi/2023-06-06                                                     0.06%    passed     99.97%
+ 252  AchickenPeruAIS05512022_EPI_ISL_17806001__regional_context/Peru/2022-12-12                                                       0.00%    passed     99.96%
+ 253  Acommon_ternMECOTE_20220612_12022_EPI_ISL_16641784__regional_context/Me/2022-06-12                                               0.00%    passed     99.32%
+ 254  Acommon_ternMECOTE_20220614_12022_EPI_ISL_16641785__regional_context/Me/2022-06-14                                               0.00%    passed     99.32%
+ 255  AduckChocoICA-35012022_EPI_ISL_17353839__regional_context/Choco/2022-10-09                                                       0.00%    passed     99.14%
+ 256  AduckPeruLAM-INS-0152023_EPI_ISL_18497950__regional_context/Peru/2023-09-20                                                     61.33%    passed      8.21%
+ 257  AduckPeruCAL-INS-0132023_EPI_ISL_18217104__regional_context/Peru/2023-07-24                                                      0.00%    passed     99.99%
+ 258  AduckPeruLAM-INS-0142023_EPI_ISL_18497946__regional_context/Peru/2023-09-26                                                      0.00%    passed     98.10%
+ 259  AfrigatebirdRio_de_JaneiroMAPA-1532N2023_EPI_ISL_18755251__regional_context/RioDeJaneiro/2023-06-03                              0.00%    passed     99.29%
+ 260  AgooseAraucania239189-12023_EPI_ISL_17885869__regional_context/Araucania/2023-02-28                                              0.00%    passed     99.94%
+ 261  Agray_gullArica239053-12023_EPI_ISL_19410281__regional_context/Arica/2023-02-23                                                  0.06%    passed     99.97%
+ 262  Agreat_grebeAtacama231482-22023_EPI_ISL_19131196__regional_context/Atacama/2023-01-09                                            0.00%    passed     99.98%
+ 263  Agreat_horned_owlMA22MM001992022_EPI_ISL_16641778__regional_context/Ma/2022-03-03                                                0.00%    passed     98.48%
+ 264  Aguanay_cormorantAtacama235520-12023_EPI_ISL_19151400__regional_context/Atacama/2023-02-05                                       0.00%    passed     99.98%
+ 265  Aguanay_cormorantPeruPIU-0242022_EPI_ISL_18054500__regional_context/Peru/2022-11-24                                              0.00%    passed    100.00%
+ 266  Aguanay_cormorantPeruCAL-INS-0092023_EPI_ISL_17777530__regional_context/Peru/2023-03-17                                          0.00%    passed     99.99%
+ 267  AgullBiobio2370122023_EPI_ISL_19410300__regional_context/Biobio/2023-02-15                                                       0.00%    passed     99.91%
+ 268  AgullPeruLIM-INS-0062023_EPI_ISL_17777527__regional_context/Peru/2023-03-16                                                      0.00%    passed     99.99%
+ 269  Anorthern_gannetMA22WI000502022_EPI_ISL_16641799__regional_context/Ma/2022-05-10                                                 0.00%    passed     99.44%
+ 270  AowlPeru23-005629-0012022_EPI_ISL_17660073__regional_context/Peru/2022-11-11                                                     0.00%    passed     99.99%
+ 271  ApelicanAntofagasta228318-12022_EPI_ISL_17885928__regional_context/Antofagasta/2022-12-16                                        0.00%    passed     99.99%
+ 272  ApelicanChile229424-42022_EPI_ISL_19391461__regional_context/Chile/2022-12-22                                                    0.00%    passed     99.99%
+ 273  ApelicanPeruAIS05412022_EPI_ISL_17806002__regional_context/Peru/2022-11-16                                                       0.00%    passed     99.99%
+ 274  ApelicanBio_Bio2365742023_EPI_ISL_18760061__regional_context/BioBio/2023-02-13                                                   0.00%    passed     99.99%
+ 275  ApelicanPeruAIS05382022_EPI_ISL_17806000__regional_context/Peru/2022-11-10                                                       0.00%    passed     99.99%
+ 276  ApelicanPeruAISA04642022_EPI_ISL_17806003__regional_context/Peru/2022-11-22                                                      0.00%    passed     99.99%
+ 277  ApelicanPeruPIU-0132022_EPI_ISL_18054504__regional_context/Peru/2022-11-23                                                      35.04%    passed     87.60%
+ 278  ApelicanPeruPIU-0282022_EPI_ISL_18054507__regional_context/Peru/2022-11-24                                                       0.00%    passed     99.99%
+ 279  ApelicanPeruPIU-0192022_EPI_ISL_18054506__regional_context/Peru/2022-11-24                                                       0.00%    passed     99.99%
+ 280  ApelicanPeruPIU-SER0132022_EPI_ISL_18265433__regional_context/Peru/2022-11-23                                                   35.04%    passed     87.60%
+ 281  ApelicanPeruPIU-SER0192022_EPI_ISL_18265435__regional_context/Peru/2022-11-24                                                    0.00%    passed     99.99%
+ 282  ApelicanPeruPIU-SER0282022_EPI_ISL_18265436__regional_context/Peru/2022-11-24                                                    0.00%    passed     99.99%
+ 283  Aperegrine_falconAntofagasta235144-12023_EPI_ISL_19410283__regional_context/Antofagasta/2023-02-03                               0.00%    passed     99.98%
+ 284  Aperegrine_falconMA22MM007562022_EPI_ISL_16641791__regional_context/Ma/2022-06-16                                                0.00%    passed     98.64%
+ 285  ApelicanValparaiso233091-22023_EPI_ISL_17885956__regional_context/Valparaiso/2023-01-20                                          0.00%    passed     99.98%
+ 286  ApelicanValparaiso233091-12023_EPI_ISL_17885930__regional_context/Valparaiso/2023-01-20                                          0.00%    passed     99.99%
+ 287  ApelicanValparaiso2340402023_EPI_ISL_17885982__regional_context/Valparaiso/2023-01-25                                            0.00%    passed     99.99%
+ 288  ApelicanValparaiso233450-12023_EPI_ISL_17885983__regional_context/Valparaiso/2023-01-23                                          0.00%    passed     99.99%
+ 289  ApelicanPeruPIU-SER0162022_EPI_ISL_18265437__regional_context/Peru/2022-11-24                                                   19.07%    passed     92.21%
+ 290  ApelicanValparaiso233418-12023_EPI_ISL_17885932__regional_context/Valparaiso/2023-01-20                                          0.12%    passed     99.99%
+ 291  Aperuvian_boobyPeruCAL-INS-0082023_EPI_ISL_17777529__regional_context/Peru/2023-03-17                                            0.00%    passed     99.48%
+ 292  Aperuvian_boobyPeruCAL-INS-0072023_EPI_ISL_17777528__regional_context/Peru/2023-03-17                                            0.00%    passed     99.74%
+ 293  Aperuvian_boobyCoquimbo2423042023_EPI_ISL_19410277__regional_context/Coquimbo/2023-03-15                                         0.06%    passed     99.98%
+ 294  Aperuvian_boobyPeruLIM-INS-0052023_EPI_ISL_17777526__regional_context/Peru/2023-03-20                                           49.30%    passed     29.50%
+ 295  Aperuvian_boobyPeruLIM-INS-0042023_EPI_ISL_17777525__regional_context/Peru/2023-04-03                                            0.00%    passed     99.97%
+ 296  Aperuvian_boobyPeruLIM-INS-0122023_EPI_ISL_17777533__regional_context/Peru/2023-04-12                                            0.00%    passed     99.77%
+ 297  Ared-tailed_hawkMA22HP001312022_EPI_ISL_16641767__regional_context/Ma/2022-03-06                                                 0.00%    passed     98.48%
+ 298  Aroyal_ternArgentinaCH-PD0362023_EPI_ISL_19466181__regional_context/Argentina/2023-10-10                                         0.00%    passed     99.99%
+ 299  AsanderlingPeruPIU-0052022_EPI_ISL_18054501__regional_context/Peru/2022-11-22                                                    0.00%    passed     99.99%
+ 300  Asnowy_owlMA22MM004632022_EPI_ISL_16641797__regional_context/Ma/2022-03-20                                                       0.00%    passed     99.64%
+ 301  Asnowy_owlMA22MM004672022_EPI_ISL_16641798__regional_context/Ma/2022-04-10                                                       0.00%    passed     99.64%
+ 302  Asnowy_owlMA22MM003232022_EPI_ISL_16641796__regional_context/Ma/2022-02-07                                                       0.00%    passed     99.64%
+ 303  AturkeyAraucania241892-32023_EPI_ISL_17885966__regional_context/Araucania/2023-03-14                                             0.00%    passed     99.92%
+ 304  AturkeyNuble240489-12023_EPI_ISL_17885964__regional_context/Nuble/2023-03-07                                                     0.00%    passed     99.99%
+ 305  AturkeyNuble241568-12023_EPI_ISL_17885962__regional_context/Nuble/2023-03-10                                                     0.00%    passed     99.96%
+ 306  AturkeyValparaiso245886-52023_EPI_ISL_19410286__regional_context/Valparaiso/2023-03-30                                           0.00%    passed     99.99%
+ 307  AturkeyValparaiso245886-12023_EPI_ISL_19410284__regional_context/Valparaiso/2023-03-30                                           0.00%    passed     99.99%
+ 308  AturkeyValparaiso245562-12023_EPI_ISL_18760063__regional_context/Valparaiso/2023-03-29                                           0.00%    passed     99.99%
+ 309  AturkeyValparaiso245886-32023_EPI_ISL_19410285__regional_context/Valparaiso/2023-03-30                                           0.06%    passed     99.97%
+ 310  Flu-EPI_ISL_17973458/Guayas/2023-01-11                                                                                          22.18%    passed     63.13%
+ 311  Flu-EPI_ISL_17973443/Guayas/2023-01-11                                                                                           0.00%    passed     99.98%
+WARNING: 1 sequences contain more than 50% gaps/ambiguity
+****  TOTAL                                                                                                                            0.73%  0 sequences failed composition chi2 test (p-value<5%; df=3)
+NOTE: Flu-0586/Cotopaxi/2022-12-13 is identical to Flu-0582/Cotopaxi/2022-11-25 but kept for subsequent analysis
+NOTE: Flu-0599/Cotopaxi/2023-01-07 is identical to Flu-0592/Cotopaxi/2022-12-14 but kept for subsequent analysis
+NOTE: Flu-0604/Tungurahua/2023-01-12 is identical to Flu-0580/Cotopaxi/2022-11-25 but kept for subsequent analysis
+NOTE: AAmerican_CrowNorth_DakotaUSDA-013145-0012022_EPI_ISL_18133101__american_anchor/USA/2022-04-21 is identical to AAmerican_CrowMinnesotaUSDA-009668-0012022_EPI_ISL_18133069__american_anchor/USA/2022-03-29 but kept for subsequent analysis
+NOTE: AAmerican_wigeonSouth_CarolinaAH01951452021_EPI_ISL_9869760__american_anchor/USA/2021-12-30 is identical to AAmerican_WigeonSouth_Carolina22-000345-0012021_EPI_ISL_18133029__american_anchor/USA/2021-12-30 but kept for subsequent analysis
+NOTE: ASabines_gullAlaska22-017953-0072022_EPI_ISL_19158226__american_anchor/USA/2022-06-06 is identical to AArctic_ternAlaska22-020952-0022022_EPI_ISL_19158340__american_anchor/USA/2022-07-22 but kept for subsequent analysis
+NOTE: AChickenArgentina588-42023_EPI_ISL_18698490__regional_context/Argentina/2023-02-24 is identical to AAvianArgentina579-52023_EPI_ISL_18698485__regional_context/Argentina/2023-02-24 but kept for subsequent analysis
+NOTE: ABackyard_birdMinnesotaUSDA-010928-0022022_EPI_ISL_18133185__american_anchor/USA/2022-04-11 is identical to ABackyard_birdMinnesotaUSDA-010928-0012022_EPI_ISL_18133193__american_anchor/USA/2022-04-11 but kept for subsequent analysis
+NOTE: AGuanay_cormorantPeruUNMSM-A2752022_EPI_ISL_18371665__regional_context/Peru/2022-12-01 is identical to ABelcher_gullPeruUNMSM-A2672022_EPI_ISL_18371664__regional_context/Peru/2022-12-01 but kept for subsequent analysis
+NOTE: AChickenArgentina1147-22023_EPI_ISL_18698505__regional_context/Argentina/2023-03-21 is identical to ABlack_SkimmerMaule2403792023_EPI_ISL_17885849__regional_context/Maule/2023-03-06 but kept for subsequent analysis
+NOTE: AchickenChile241252-62023_EPI_ISL_20444500__regional_context/Chile/2023-03-12 is identical to AChickenArgentina556-62023_EPI_ISL_18698478__regional_context/Argentina/2023-02-23 but kept for subsequent analysis
+NOTE: AFranklin_gullOHiggins236195-12023_EPI_ISL_19162729__regional_context/Ohiggins/2023-02-12 is identical to AFranklins_gullOHiggins236195-12023_EPI_ISL_18939722__regional_context/Ohiggins/2023-02-12 but kept for subsequent analysis
+NOTE: APeruvean_boobyValparaiso2385352023_EPI_ISL_19131163__regional_context/Valparaiso/2023-02-24 is identical to AGray_gullTarapaca232825-12023_EPI_ISL_17885951__regional_context/Tarapaca/2023-01-18 but kept for subsequent analysis
+NOTE: Agreat_grebeAtacama231482-22023_EPI_ISL_19131196__regional_context/Atacama/2023-01-09 is identical to AGreat_grabeAtacama231482-22023_EPI_ISL_19162731__regional_context/Atacama/2023-01-09 but kept for subsequent analysis
+NOTE: Aguanay_cormorantPeruPIU-0242022_EPI_ISL_18054500__regional_context/Peru/2022-11-24 is identical to AGuanay_cormorantPeruPIU-SER0242022_EPI_ISL_18265434__regional_context/Peru/2022-11-24 but kept for subsequent analysis
+NOTE: AGullChile2515132023_EPI_ISL_20444470__regional_context/Chile/2023-04-21 is identical to AGuanay_cormorantChile2395842023_EPI_ISL_19391460__regional_context/Chile/2023-03-01 but kept for subsequent analysis
+NOTE: ANasua_nasuaUruguay145M12023_EPI_ISL_19765465__regional_context/Uruguay/2023-05-04 is identical to ANasua_nasuaUruguay145M22023_EPI_ISL_19765475__regional_context/Uruguay/2023-05-04 but kept for subsequent analysis
+NOTE: Abackyard_chickenUruguayUDELAR-124-M12023_EPI_ISL_18310964__regional_context/Uruguay/2023-04-16 is identical to ANasua_nasuaUruguay146M12023_EPI_ISL_19765485__regional_context/Uruguay/2023-05-05 but kept for subsequent analysis
+NOTE: APhalacrocorax_bougainvilliiIcaUPCH_44182023_EPI_ISL_20359497__regional_context/Ica/2023-02-20 is identical to APelecanus_thagusPeruLIM-QUIM0062023_EPI_ISL_19781426__regional_context/Peru/2023-02-10 but kept for subsequent analysis
+NOTE: ASanderlingArica_y_Parinacota2402652023_EPI_ISL_17885978__regional_context/AricaYParinacota/2023-03-03 is identical to APelicanAntofagasta228246-22022_EPI_ISL_17885934__regional_context/Antofagasta/2022-12-15 but kept for subsequent analysis
+NOTE: ASanderlingChile230758-22023_EPI_ISL_19404931__regional_context/Chile/2023-03-17 is identical to APelicanAtacama230158-22022_EPI_ISL_17885924__regional_context/Atacama/2022-12-30 but kept for subsequent analysis
+NOTE: APelicanOHiggins233721-12023_EPI_ISL_17885912__regional_context/Ohiggins/2023-01-24 is identical to APelicanOHiggins233663-12023_EPI_ISL_17885915__regional_context/Ohiggins/2023-01-24 but kept for subsequent analysis
+NOTE: APeruvean_boobyAtacama230579-12023_EPI_ISL_19139974__regional_context/Atacama/2023-01-03 is identical to APeruvian_boobyAtacama230579-12023_EPI_ISL_19131164__regional_context/Atacama/2023-01-03 but kept for subsequent analysis
+NOTE: ASouth_polar_skuaAntarcticaINACH-UC-UCHILE-SKU42024_EPI_ISL_19410264__regional_context/Antarctica/2024-03-03 is identical to ASouth_polar_skuaAntarcticaINACH-UC-UCHILE-SKU52024_EPI_ISL_19410265__regional_context/Antarctica/2024-03-03 but kept for subsequent analysis
+NOTE: AThalasseus_maximusSao_Paulo2339-N2023_EPI_ISL_19215200__regional_context/SaoPaulo/2023-12-13 is identical to AThalasseus_acuflavidusSao_Paulo0291-N2024_EPI_ISL_19215197__regional_context/SaoPaulo/2024-02-22 but kept for subsequent analysis
+NOTE: AturkeyNuble240489-12023_EPI_ISL_17885964__regional_context/Nuble/2023-03-07 is identical to ATurkeyChile240489-12023_EPI_ISL_20444525__regional_context/Chile/2023-03-07 but kept for subsequent analysis
+NOTE: ATurkeyChile245558-32023_EPI_ISL_20444523__regional_context/Chile/2023-03-29 is identical to ATurkeyChile245562-12023_EPI_ISL_20444529__regional_context/Chile/2023-03-29 but kept for subsequent analysis
+NOTE: Aguanay_cormorantAtacama235520-12023_EPI_ISL_19151400__regional_context/Atacama/2023-02-05 is identical to AavianChile2406282023_EPI_ISL_20444542__regional_context/Chile/2023-03-06 but kept for subsequent analysis
+NOTE: Abackyard_chickenUruguayUDELAR-047-M12023_EPI_ISL_18310966__regional_context/Uruguay/2023-03-06 is identical to Abackyard_chickenUruguayUDELAR-040-M72023_EPI_ISL_18310967__regional_context/Uruguay/2023-03-03 but kept for subsequent analysis
+NOTE: Abald_eagleUnknown23-034211-002-original2023_EPI_ISL_19660948__regional_context/Unknown/2022-04-22 is identical to Abald_eagleUnknown23-034211-0022023_EPI_ISL_18914308__regional_context/Unknown/2022-04-22 but kept for subsequent analysis
+NOTE: AgooseAraucania239189-12023_EPI_ISL_17885869__regional_context/Araucania/2023-02-28 is identical to AchickenAraucania239189-22023_EPI_ISL_17885958__regional_context/Araucania/2023-02-28 but kept for subsequent analysis
+NOTE: AchickenChile241681-12023_EPI_ISL_20444496__regional_context/Chile/2023-03-10 is identical to AchickenChile2408752023_EPI_ISL_20444503__regional_context/Chile/2023-03-07 but kept for subsequent analysis
+NOTE: AchickenChile242894-12023_EPI_ISL_20444491__regional_context/Chile/2023-03-18 is identical to AchickenChile242894-42023_EPI_ISL_20444457__regional_context/Chile/2023-03-18 but kept for subsequent analysis
+NOTE: AchickenChile2421592023_EPI_ISL_20444494__regional_context/Chile/2023-03-15 is identical to AchickenChile242424-12023_EPI_ISL_20444492__regional_context/Chile/2023-03-16 but kept for subsequent analysis
+NOTE: AchickenChile248751-62023_EPI_ISL_20444447__regional_context/Chile/2023-04-12 is identical to AchickenChile248751-22023_EPI_ISL_20444445__regional_context/Chile/2023-04-12 but kept for subsequent analysis
+NOTE: AchickenCochabamba395072023_EPI_ISL_19410272__regional_context/Cochabamba/2023-03-01 is identical to AchickenCochabamba393832023_EPI_ISL_19410268__regional_context/Cochabamba/2023-02-01 but kept for subsequent analysis
+NOTE: AchickenPeruAIS05432022_EPI_ISL_17805990__regional_context/Peru/2022-12-01 is identical to AchickenPeruAIS05422022_EPI_ISL_17805989__regional_context/Peru/2022-12-01 but kept for subsequent analysis
+NOTE: AchickenPeruAIS05512022_EPI_ISL_17806001__regional_context/Peru/2022-12-12 is identical to AchickenPeruAIS05502022_EPI_ISL_17805995__regional_context/Peru/2022-12-12 but kept for subsequent analysis
+NOTE: AchickenPeruAIS05492022_EPI_ISL_17805996__regional_context/Peru/2022-12-22 is identical to AchickenPeruAIS05482022_EPI_ISL_17805994__regional_context/Peru/2022-12-22 but kept for subsequent analysis
+NOTE: Acommon_ternMECOTE_20220614_12022_EPI_ISL_16641785__regional_context/Me/2022-06-14 is identical to Acommon_ternMECOTE_20220612_12022_EPI_ISL_16641784__regional_context/Me/2022-06-12 but kept for subsequent analysis
+NOTE: ApelicanPeruPIU-SER0132022_EPI_ISL_18265433__regional_context/Peru/2022-11-23 is identical to ApelicanPeruPIU-0132022_EPI_ISL_18054504__regional_context/Peru/2022-11-23 but kept for subsequent analysis
+NOTE: Asnowy_owlMA22MM004672022_EPI_ISL_16641798__regional_context/Ma/2022-04-10 is identical to Asnowy_owlMA22MM004632022_EPI_ISL_16641797__regional_context/Ma/2022-03-20 but kept for subsequent analysis
+Checking for duplicate sequences: done in 0.00266314 secs using 154.8% CPU
+Identifying sites to remove: done in 0.00277114 secs using 199.3% CPU
+NOTE: 61 identical sequences (see below) will be ignored for subsequent analysis
+NOTE: Flu-0584/Cotopaxi/2022-12-02 (identical to Flu-0582/Cotopaxi/2022-11-25) is ignored but added at the end
+NOTE: Flu-0593/Cotopaxi/2022-12-14 (identical to Flu-0582/Cotopaxi/2022-11-25) is ignored but added at the end
+NOTE: Flu-0589/Cotopaxi/2022-12-13 (identical to Flu-0582/Cotopaxi/2022-11-25) is ignored but added at the end
+NOTE: Flu-0583/Cotopaxi/2022-12-02 (identical to Flu-0582/Cotopaxi/2022-11-25) is ignored but added at the end
+NOTE: Flu-0621/Cotopaxi/2023-01-19 (identical to Flu-0582/Cotopaxi/2022-11-25) is ignored but added at the end
+NOTE: Flu-0622/Cotopaxi/2023-01-19 (identical to Flu-0582/Cotopaxi/2022-11-25) is ignored but added at the end
+NOTE: Flu-0619/Cotopaxi/2023-01-19 (identical to Flu-0592/Cotopaxi/2022-12-14) is ignored but added at the end
+NOTE: Flu-0608/Tungurahua/2023-01-12 (identical to Flu-0580/Cotopaxi/2022-11-25) is ignored but added at the end
+NOTE: Aamerican_crowMinnesota22-015674-0012022_EPI_ISL_19606630__american_anchor/USA/2022-01-01 (identical to AAmerican_CrowMinnesotaUSDA-009668-0012022_EPI_ISL_18133069__american_anchor/USA/2022-03-29) is ignored but added at the end
+NOTE: ALarus_belcheriIcaUPCH_44492022_EPI_ISL_20359535__regional_context/Ica/2022-12-16 (identical to ABelcher_gullPeruUNMSM-A2672022_EPI_ISL_18371664__regional_context/Peru/2022-12-01) is ignored but added at the end
+NOTE: APelicanAntofagasta228244-22022_EPI_ISL_17885944__regional_context/Antofagasta/2022-12-16 (identical to ABelcher_gullPeruUNMSM-A2672022_EPI_ISL_18371664__regional_context/Peru/2022-12-01) is ignored but added at the end
+NOTE: APelicanNuble233947-22023_EPI_ISL_17885918__regional_context/Nuble/2023-01-26 (identical to ABelcher_gullPeruUNMSM-A2672022_EPI_ISL_18371664__regional_context/Peru/2022-12-01) is ignored but added at the end
+NOTE: AavianPeruAISA04512022_EPI_ISL_17805998__regional_context/Peru/2022-11-22 (identical to ABelcher_gullPeruUNMSM-A2672022_EPI_ISL_18371664__regional_context/Peru/2022-12-01) is ignored but added at the end
+NOTE: AavianPeruAISA04462022_EPI_ISL_17805997__regional_context/Peru/2022-11-22 (identical to ABelcher_gullPeruUNMSM-A2672022_EPI_ISL_18371664__regional_context/Peru/2022-12-01) is ignored but added at the end
+NOTE: AchickenAtacama235254-22023_EPI_ISL_18760074__regional_context/Atacama/2023-02-04 (identical to ABelcher_gullPeruUNMSM-A2672022_EPI_ISL_18371664__regional_context/Peru/2022-12-01) is ignored but added at the end
+NOTE: AchickenPeru23-005607-0022022_EPI_ISL_17660071__regional_context/Peru/2022-11-11 (identical to ABelcher_gullPeruUNMSM-A2672022_EPI_ISL_18371664__regional_context/Peru/2022-12-01) is ignored but added at the end
+NOTE: AchickenPeru23-005607-0012022_EPI_ISL_17660070__regional_context/Peru/2022-11-11 (identical to ABelcher_gullPeruUNMSM-A2672022_EPI_ISL_18371664__regional_context/Peru/2022-12-01) is ignored but added at the end
+NOTE: AchickenPeruAIS05402022_EPI_ISL_17805988__regional_context/Peru/2022-11-28 (identical to ABelcher_gullPeruUNMSM-A2672022_EPI_ISL_18371664__regional_context/Peru/2022-12-01) is ignored but added at the end
+NOTE: ApelicanPeruAISA04642022_EPI_ISL_17806003__regional_context/Peru/2022-11-22 (identical to ABelcher_gullPeruUNMSM-A2672022_EPI_ISL_18371664__regional_context/Peru/2022-12-01) is ignored but added at the end
+NOTE: ApelicanValparaiso233091-12023_EPI_ISL_17885930__regional_context/Valparaiso/2023-01-20 (identical to ABelcher_gullPeruUNMSM-A2672022_EPI_ISL_18371664__regional_context/Peru/2022-12-01) is ignored but added at the end
+NOTE: ApelicanValparaiso233450-12023_EPI_ISL_17885983__regional_context/Valparaiso/2023-01-23 (identical to ABelcher_gullPeruUNMSM-A2672022_EPI_ISL_18371664__regional_context/Peru/2022-12-01) is ignored but added at the end
+NOTE: ASwanChile2475242023_EPI_ISL_20444528__regional_context/Chile/2023-04-05 (identical to ABlack_SkimmerMaule2403792023_EPI_ISL_17885849__regional_context/Maule/2023-03-06) is ignored but added at the end
+NOTE: AchickenChile243881-12023_EPI_ISL_20444455__regional_context/Chile/2023-03-22 (identical to ABlack_SkimmerMaule2403792023_EPI_ISL_17885849__regional_context/Maule/2023-03-06) is ignored but added at the end
+NOTE: AchickenChile243881-22023_EPI_ISL_20444454__regional_context/Chile/2023-03-22 (identical to ABlack_SkimmerMaule2403792023_EPI_ISL_17885849__regional_context/Maule/2023-03-06) is ignored but added at the end
+NOTE: AchickenChile247652-42023_EPI_ISL_20444443__regional_context/Chile/2023-04-07 (identical to ABlack_SkimmerMaule2403792023_EPI_ISL_17885849__regional_context/Maule/2023-03-06) is ignored but added at the end
+NOTE: AchickenChile2473962023_EPI_ISL_20444439__regional_context/Chile/2023-04-05 (identical to ABlack_SkimmerMaule2403792023_EPI_ISL_17885849__regional_context/Maule/2023-03-06) is ignored but added at the end
+NOTE: AchickenNuble2391362023_EPI_ISL_17885878__regional_context/Nuble/2023-02-27 (identical to ABlack_SkimmerMaule2403792023_EPI_ISL_17885849__regional_context/Maule/2023-03-06) is ignored but added at the end
+NOTE: AchickenChile241252-32023_EPI_ISL_20444501__regional_context/Chile/2023-03-12 (identical to AChickenArgentina556-62023_EPI_ISL_18698478__regional_context/Argentina/2023-02-23) is ignored but added at the end
+NOTE: AchickenChile241252-12023_EPI_ISL_20444502__regional_context/Chile/2023-03-12 (identical to AChickenArgentina556-62023_EPI_ISL_18698478__regional_context/Argentina/2023-02-23) is ignored but added at the end
+NOTE: AchickenOHiggins241252-62023_EPI_ISL_17885870__regional_context/Ohiggins/2023-03-12 (identical to AChickenArgentina556-62023_EPI_ISL_18698478__regional_context/Argentina/2023-02-23) is ignored but added at the end
+NOTE: AchickenOHiggins241252-32023_EPI_ISL_17885871__regional_context/Ohiggins/2023-03-12 (identical to AChickenArgentina556-62023_EPI_ISL_18698478__regional_context/Argentina/2023-02-23) is ignored but added at the end
+NOTE: Abackyard_turkeyUruguayUDELAR-124-M62023_EPI_ISL_18310959__regional_context/Uruguay/2023-04-16 (identical to ANasua_nasuaUruguay146M12023_EPI_ISL_19765485__regional_context/Uruguay/2023-05-05) is ignored but added at the end
+NOTE: Abackyard_duckUruguayUDELAR-124-M32023_EPI_ISL_18310960__regional_context/Uruguay/2023-04-16 (identical to ANasua_nasuaUruguay146M12023_EPI_ISL_19765485__regional_context/Uruguay/2023-05-05) is ignored but added at the end
+NOTE: ASanderlingPeruPIU-SER0052022_EPI_ISL_18265432__regional_context/Peru/2022-11-22 (identical to APelecanus_thagusPeruLIM-QUIM0062023_EPI_ISL_19781426__regional_context/Peru/2023-02-10) is ignored but added at the end
+NOTE: ApelicanPeruAIS05412022_EPI_ISL_17806002__regional_context/Peru/2022-11-16 (identical to APelecanus_thagusPeruLIM-QUIM0062023_EPI_ISL_19781426__regional_context/Peru/2023-02-10) is ignored but added at the end
+NOTE: ApelicanPeruAIS05382022_EPI_ISL_17806000__regional_context/Peru/2022-11-10 (identical to APelecanus_thagusPeruLIM-QUIM0062023_EPI_ISL_19781426__regional_context/Peru/2023-02-10) is ignored but added at the end
+NOTE: ApelicanPeruPIU-0282022_EPI_ISL_18054507__regional_context/Peru/2022-11-24 (identical to APelecanus_thagusPeruLIM-QUIM0062023_EPI_ISL_19781426__regional_context/Peru/2023-02-10) is ignored but added at the end
+NOTE: ApelicanPeruPIU-0192022_EPI_ISL_18054506__regional_context/Peru/2022-11-24 (identical to APelecanus_thagusPeruLIM-QUIM0062023_EPI_ISL_19781426__regional_context/Peru/2023-02-10) is ignored but added at the end
+NOTE: ApelicanPeruPIU-SER0192022_EPI_ISL_18265435__regional_context/Peru/2022-11-24 (identical to APelecanus_thagusPeruLIM-QUIM0062023_EPI_ISL_19781426__regional_context/Peru/2023-02-10) is ignored but added at the end
+NOTE: ApelicanPeruPIU-SER0282022_EPI_ISL_18265436__regional_context/Peru/2022-11-24 (identical to APelecanus_thagusPeruLIM-QUIM0062023_EPI_ISL_19781426__regional_context/Peru/2023-02-10) is ignored but added at the end
+NOTE: AsanderlingPeruPIU-0052022_EPI_ISL_18054501__regional_context/Peru/2022-11-22 (identical to APelecanus_thagusPeruLIM-QUIM0062023_EPI_ISL_19781426__regional_context/Peru/2023-02-10) is ignored but added at the end
+NOTE: AchickenNuble2401552023_EPI_ISL_17885877__regional_context/Nuble/2023-03-06 (identical to APelicanOHiggins233663-12023_EPI_ISL_17885915__regional_context/Ohiggins/2023-01-24) is ignored but added at the end
+NOTE: ApelicanChile229424-42022_EPI_ISL_19391461__regional_context/Chile/2022-12-22 (identical to APelicanOHiggins233663-12023_EPI_ISL_17885915__regional_context/Ohiggins/2023-01-24) is ignored but added at the end
+NOTE: ApelicanBio_Bio2365742023_EPI_ISL_18760061__regional_context/BioBio/2023-02-13 (identical to APelicanOHiggins233663-12023_EPI_ISL_17885915__regional_context/Ohiggins/2023-01-24) is ignored but added at the end
+NOTE: ApelicanValparaiso2340402023_EPI_ISL_17885982__regional_context/Valparaiso/2023-01-25 (identical to APelicanOHiggins233663-12023_EPI_ISL_17885915__regional_context/Ohiggins/2023-01-24) is ignored but added at the end
+NOTE: ATurkeyChile245562-22023_EPI_ISL_20444522__regional_context/Chile/2023-03-29 (identical to ATurkeyChile245562-12023_EPI_ISL_20444529__regional_context/Chile/2023-03-29) is ignored but added at the end
+NOTE: ATurkeyChile255558-42023_EPI_ISL_20444521__regional_context/Chile/2023-03-29 (identical to ATurkeyChile245562-12023_EPI_ISL_20444529__regional_context/Chile/2023-03-29) is ignored but added at the end
+NOTE: AturkeyValparaiso245886-52023_EPI_ISL_19410286__regional_context/Valparaiso/2023-03-30 (identical to ATurkeyChile245562-12023_EPI_ISL_20444529__regional_context/Chile/2023-03-29) is ignored but added at the end
+NOTE: AturkeyValparaiso245886-12023_EPI_ISL_19410284__regional_context/Valparaiso/2023-03-30 (identical to ATurkeyChile245562-12023_EPI_ISL_20444529__regional_context/Chile/2023-03-29) is ignored but added at the end
+NOTE: AturkeyValparaiso245562-12023_EPI_ISL_18760063__regional_context/Valparaiso/2023-03-29 (identical to ATurkeyChile245562-12023_EPI_ISL_20444529__regional_context/Chile/2023-03-29) is ignored but added at the end
+NOTE: Aperegrine_falconAntofagasta235144-12023_EPI_ISL_19410283__regional_context/Antofagasta/2023-02-03 (identical to AavianChile2406282023_EPI_ISL_20444542__regional_context/Chile/2023-03-06) is ignored but added at the end
+NOTE: Abackyard_chickenUruguayUDELAR-040-M52023_EPI_ISL_18310942__regional_context/Uruguay/2023-03-03 (identical to Abackyard_chickenUruguayUDELAR-040-M72023_EPI_ISL_18310967__regional_context/Uruguay/2023-03-03) is ignored but added at the end
+NOTE: Abackyard_chickenUruguayUDELAR-047-M32023_EPI_ISL_18310965__regional_context/Uruguay/2023-03-06 (identical to Abackyard_chickenUruguayUDELAR-040-M72023_EPI_ISL_18310967__regional_context/Uruguay/2023-03-03) is ignored but added at the end
+NOTE: AchickenChile241557-22023_EPI_ISL_20444498__regional_context/Chile/2023-03-10 (identical to AchickenChile2408752023_EPI_ISL_20444503__regional_context/Chile/2023-03-07) is ignored but added at the end
+NOTE: AchickenChile241557-12023_EPI_ISL_20444505__regional_context/Chile/2023-03-10 (identical to AchickenChile2408752023_EPI_ISL_20444503__regional_context/Chile/2023-03-07) is ignored but added at the end
+NOTE: AchickenChile241681-22023_EPI_ISL_20444495__regional_context/Chile/2023-03-10 (identical to AchickenChile2408752023_EPI_ISL_20444503__regional_context/Chile/2023-03-07) is ignored but added at the end
+NOTE: AchickenNuble2406842023_EPI_ISL_17885876__regional_context/Nuble/2023-03-08 (identical to AchickenChile2408752023_EPI_ISL_20444503__regional_context/Chile/2023-03-07) is ignored but added at the end
+NOTE: AchickenNuble241557-12023_EPI_ISL_17885874__regional_context/Nuble/2023-03-10 (identical to AchickenChile2408752023_EPI_ISL_20444503__regional_context/Chile/2023-03-07) is ignored but added at the end
+NOTE: AchickenNuble241681-12023_EPI_ISL_17885873__regional_context/Nuble/2023-03-10 (identical to AchickenChile2408752023_EPI_ISL_20444503__regional_context/Chile/2023-03-07) is ignored but added at the end
+NOTE: AturkeyNuble241568-12023_EPI_ISL_17885962__regional_context/Nuble/2023-03-10 (identical to AchickenChile2408752023_EPI_ISL_20444503__regional_context/Chile/2023-03-07) is ignored but added at the end
+NOTE: Asnowy_owlMA22MM003232022_EPI_ISL_16641796__regional_context/Ma/2022-02-07 (identical to Asnowy_owlMA22MM004632022_EPI_ISL_16641797__regional_context/Ma/2022-03-20) is ignored but added at the end
+Alignment was printed to temp_sitelh_test.uniqueseq.phy
+
+For your convenience alignment with unique sequences printed to temp_sitelh_test.uniqueseq.phy
+Creating fast initial parsimony tree by random order stepwise addition...
+0.181 seconds, parsimony score: 420 (based on 303 sites)
+
+NOTE: 12 MB RAM (0 GB) is required!
+Estimate model parameters (epsilon = 0.010)
+1. Initial log-likelihood: -5876.262
+2. Current log-likelihood: -5627.674
+3. Current log-likelihood: -5627.653
+Optimal log-likelihood: -5627.653
+Rate parameters:  A-C: 1.22407  A-G: 7.43150  A-T: 0.85506  C-G: 0.27051  C-T: 11.10607  G-T: 1.00000
+Base frequencies:  A: 0.346  C: 0.187  G: 0.231  T: 0.236
+Gamma shape alpha: 0.304
+Parameters optimization took 3 rounds (0.526 sec)
+Wrote distance file to... 
+BEST SCORE FOUND : -5627.653
+Site log-likelihoods printed to temp_sitelh_test.sitelh
+Total tree length: 0.252
+
+Total number of iterations: 0
+CPU time used for tree search: 0.000 sec (0h:0m:0s)
+Wall-clock time used for tree search: 0.000 sec (0h:0m:0s)
+Total CPU time used: 1.430 sec (0h:0m:1s)
+Total wall-clock time used: 0.722 sec (0h:0m:0s)
+Reading trees in results/phylogeny/segment_analysis/au/candidate_topologies.trees ...
+
+9 trees detected
+Tree 1 / LogL: -6342.765
+Tree 2 / LogL: -6220.771
+Tree 3 / LogL: -6169.985
+Tree 4 / LogL: -5589.189
+Tree 5 / LogL: -6783.066
+Tree 6 / LogL: -6782.267
+Tree 7 / LogL: -7777.522
+Tree 8 / LogL: -7388.778
+Tree 9 / LogL: -5653.582
+Time for evaluating all trees: 0.655 sec.
+
+Analysis results written to: 
+  IQ-TREE report:                temp_sitelh_test.iqtree
+  Maximum-likelihood tree:       temp_sitelh_test.treefile
+  Site log-likelihoods:          temp_sitelh_test.sitelh
+  Evaluated user trees:          temp_sitelh_test.trees
+  Screen log file:               temp_sitelh_test.log
+
+Date and Time: Wed May 27 17:09:02 2026
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    Iteration 40 / LogL: -5590.922 / Time: 0h:0m:16s (0h:0m:36s left)
+Iteration 50 / LogL: -5590.931 / Time: 0h:0m:19s (0h:0m:32s left)
+Iteration 60 / LogL: -5600.763 / Time: 0h:0m:23s (0h:0m:27s left)
+Iteration 70 / LogL: -5591.948 / Time: 0h:0m:27s (0h:0m:23s left)
+Iteration 80 / LogL: -5591.457 / Time: 0h:0m:30s (0h:0m:19s left)
+Iteration 90 / LogL: -5630.465 / Time: 0h:0m:34s (0h:0m:15s left)
+Iteration 100 / LogL: -5589.391 / Time: 0h:0m:37s (0h:0m:11s left)
+Iteration 110 / LogL: -5600.078 / Time: 0h:0m:40s (0h:0m:7s left)
+Iteration 120 / LogL: -5589.401 / Time: 0h:0m:44s (0h:0m:3s left)
+Iteration 130 / LogL: -5589.399 / Time: 0h:0m:47s (0h:0m:0s left)
+TREE SEARCH COMPLETED AFTER 131 ITERATIONS / Time: 0h:0m:48s
+
+--------------------------------------------------------------------
+|                    FINALIZING TREE SEARCH                        |
+--------------------------------------------------------------------
+Performs final model parameters optimization
+Estimate model parameters (epsilon = 0.010)
+1. Initial log-likelihood: -5589.318
+Optimal log-likelihood: -5589.318
+Rate parameters:  A-C: 1.34540  A-G: 8.20706  A-T: 0.81122  C-G: 0.29394  C-T: 12.08331  G-T: 1.00000
+Base frequencies:  A: 0.346  C: 0.187  G: 0.231  T: 0.236
+Gamma shape alpha: 0.315
+Parameters optimization took 1 rounds (0.054 sec)
+BEST SCORE FOUND : -5589.318
+Site log-likelihoods printed to temp_sitelh_test.sitelh
+Total tree length: 0.250
+
+Total number of iterations: 131
+CPU time used for tree search: 94.075 sec (0h:1m:34s)
+Wall-clock time used for tree search: 47.024 sec (0h:0m:47s)
+Total CPU time used: 96.233 sec (0h:1m:36s)
+Total wall-clock time used: 48.073 sec (0h:0m:48s)
+Reading trees in results/phylogeny/segment_analysis/au/candidate_topologies.trees ...
+
+9 trees detected
+Note: 1.488 MB of RAM required!
+Creating 1000 bootstrap replicates...
+done
+Tree 1 / LogL: -6343.728
+Tree 2 / LogL: -6221.699
+Tree 3 / LogL: -6170.745
+Tree 4 / LogL: -5588.907
+Tree 5 / LogL: -6784.299
+Tree 6 / LogL: -6784.578
+Tree 7 / LogL: -7779.870
+Tree 8 / LogL: -7392.454
+Tree 9 / LogL: -5653.710
+Performing RELL-BP test...
+Performing KH and SH test...
+Performing ELW test...
+Performing approximately unbiased (AU) test...
+WARNING: Too few replicates for AU test. At least -zb 10000 for reliable results!
+0 MB required for AU test
+Generating 10 x 1000 multiscale bootstrap replicates... 0.083 seconds
+TreeID	AU	RSS	d	c
+1	0.000	2.166	3.600	0.171
+2	0.003	1.832	3.350	0.606
+3	0.000	0.032	4.897	0.137
+4	0.981	4.258	-2.041	0.024
+5	0.000	0.067	5.709	-0.713
+6	0.000	0.210	14.926	-5.724
+7	0.000	1.247	10.899	-3.504
+8	0.000	0.459	3.398	-0.044
+9	0.019	4.258	2.041	-0.024
+Time for AU test: 0.084 seconds
+Time for evaluating all trees: 0.687 sec.
+
+Analysis results written to: 
+  IQ-TREE report:                temp_sitelh_test.iqtree
+  Maximum-likelihood tree:       temp_sitelh_test.treefile
+  Likelihood distances:          temp_sitelh_test.mldist
+  Site log-likelihoods:          temp_sitelh_test.sitelh
+  Evaluated user trees:          temp_sitelh_test.trees
+  Screen log file:               temp_sitelh_test.log
+
+Date and Time: Wed May 27 17:09:35 2026
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       Iteration 110 / LogL: -5627.808 / Time: 0h:0m:58s (0h:0m:24s left)
+Estimate model parameters (epsilon = 0.100)
+BETTER TREE FOUND at iteration 116: -5593.675
+Iteration 120 / LogL: -5593.706 / Time: 0h:1m:2s (0h:0m:33s left)
+Iteration 130 / LogL: -5603.117 / Time: 0h:1m:5s (0h:0m:29s left)
+Iteration 140 / LogL: -5608.506 / Time: 0h:1m:9s (0h:0m:26s left)
+Iteration 150 / LogL: -5609.175 / Time: 0h:1m:13s (0h:0m:23s left)
+Iteration 160 / LogL: -5618.016 / Time: 0h:1m:17s (0h:0m:19s left)
+Iteration 170 / LogL: -5603.791 / Time: 0h:1m:20s (0h:0m:16s left)
+Iteration 180 / LogL: -5601.696 / Time: 0h:1m:24s (0h:0m:12s left)
+Iteration 190 / LogL: -5598.186 / Time: 0h:1m:27s (0h:0m:9s left)
+Iteration 200 / LogL: -5599.096 / Time: 0h:1m:30s (0h:0m:5s left)
+Iteration 210 / LogL: -5593.708 / Time: 0h:1m:33s (0h:0m:2s left)
+TREE SEARCH COMPLETED AFTER 217 ITERATIONS / Time: 0h:1m:35s
+
+--------------------------------------------------------------------
+|                    FINALIZING TREE SEARCH                        |
+--------------------------------------------------------------------
+Performs final model parameters optimization
+Estimate model parameters (epsilon = 0.010)
+1. Initial log-likelihood: -5593.675
+Optimal log-likelihood: -5593.675
+Rate parameters:  A-C: 1.00000  A-G: 9.09311  A-T: 1.00000  C-G: 1.00000  C-T: 13.37372  G-T: 1.00000
+Base frequencies:  A: 0.346  C: 0.187  G: 0.231  T: 0.236
+Gamma shape alpha: 0.315
+Parameters optimization took 1 rounds (0.031 sec)
+BEST SCORE FOUND : -5593.675
+Site log-likelihoods printed to temp_sitelh_test.sitelh
+Total tree length: 0.250
+
+Total number of iterations: 217
+CPU time used for tree search: 147.664 sec (0h:2m:27s)
+Wall-clock time used for tree search: 73.853 sec (0h:1m:13s)
+Total CPU time used: 190.031 sec (0h:3m:10s)
+Total wall-clock time used: 95.051 sec (0h:1m:35s)
+Reading trees in results/phylogeny/segment_analysis/au/candidate_topologies.trees ...
+
+9 trees detected
+Tree 1 / LogL: -6349.318
+Tree 2 / LogL: -6226.598
+Tree 3 / LogL: -6176.984
+Tree 4 / LogL: -5594.494
+Tree 5 / LogL: -6790.306
+Tree 6 / LogL: -6791.406
+Tree 7 / LogL: -7786.358
+Tree 8 / LogL: -7399.804
+Tree 9 / LogL: -5659.040
+Time for evaluating all trees: 0.430 sec.
+
+Analysis results written to: 
+  IQ-TREE report:                temp_sitelh_test.iqtree
+  Maximum-likelihood tree:       temp_sitelh_test.treefile
+  Likelihood distances:          temp_sitelh_test.mldist
+  Site log-likelihoods:          temp_sitelh_test.sitelh
+  Evaluated user trees:          temp_sitelh_test.trees
+  Screen log file:               temp_sitelh_test.log
+
+Date and Time: Wed May 27 17:09:41 2026
