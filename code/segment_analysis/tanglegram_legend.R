@@ -7,6 +7,8 @@ source("code/segment_analysis/lineage_palette.R")
 LEGEND_ROW_SPACING <- 1.0
 LEGEND_SECTION_GAP <- 1.4
 LEGEND_TITLE_OFFSET <- 1.0
+LEGEND_ECUADOR_TIP_SIZE <- 4
+LEGEND_CONTEXT_TIP_SIZE <- LEGEND_ECUADOR_TIP_SIZE
 
 lineage_color_for <- function(lineage, palette) {
   if (is.na(lineage) || lineage == "" || tolower(lineage) == "unknown") {
@@ -75,62 +77,53 @@ layout_legend_sections <- function(
   )
 }
 
-draw_legend_section <- function(section) {
-  items <- section$items
-  layers <- list(
-    ggplot2::annotate(
-      "text",
-      x = 0,
-      y = section$title_y,
-      label = section$title,
-      hjust = 0,
-      fontface = "bold",
-      size = 3.2
-    ),
-    ggplot2::geom_text(
-      data = items,
-      ggplot2::aes(x = 0.65, y = y, label = label),
-      hjust = 0,
-      size = if (items$marker[1] == "circle") 2.6 else 2.8
-    )
-  )
+draw_legend_markers <- function(items) {
+  layers <- list()
+  marker_types <- unique(items$marker)
 
-  if (all(items$marker == "ribbon")) {
+  if ("ribbon" %in% marker_types) {
+    ribbon_items <- items[items$marker == "ribbon", , drop = FALSE]
     layers <- c(
       layers,
       list(
         ggplot2::geom_segment(
-          data = items,
+          data = ribbon_items,
           ggplot2::aes(x = 0, xend = 0.55, y = y, yend = y),
           linewidth = 3.5,
           lineend = "round",
-          color = items$color
+          color = ribbon_items$color
         )
       )
     )
-  } else if (all(items$marker == "triangle")) {
+  }
+
+  if ("triangle" %in% marker_types) {
+    triangle_items <- items[items$marker == "triangle", , drop = FALSE]
     layers <- c(
       layers,
       list(
         ggplot2::geom_point(
-          data = items,
+          data = triangle_items,
           ggplot2::aes(x = 0.28, y = y),
           shape = 17,
-          size = 5,
-          color = items$color
+          size = LEGEND_ECUADOR_TIP_SIZE,
+          color = triangle_items$color
         )
       )
     )
-  } else {
+  }
+
+  if ("circle" %in% marker_types) {
+    circle_items <- items[items$marker == "circle", , drop = FALSE]
     layers <- c(
       layers,
       list(
         ggplot2::geom_point(
-          data = items,
+          data = circle_items,
           ggplot2::aes(x = 0.28, y = y),
           shape = CONTEXT_TIP_SHAPE,
-          size = 3.2,
-          color = items$color
+          size = LEGEND_CONTEXT_TIP_SIZE,
+          color = circle_items$color
         )
       )
     )
@@ -139,19 +132,47 @@ draw_legend_section <- function(section) {
   layers
 }
 
+draw_legend_section <- function(section) {
+  items <- section$items
+  c(
+    list(
+      ggplot2::annotate(
+        "text",
+        x = 0,
+        y = section$title_y,
+        label = section$title,
+        hjust = 0,
+        fontface = "bold",
+        size = 3.2
+      ),
+      ggplot2::geom_text(
+        data = items,
+        ggplot2::aes(x = 0.65, y = y, label = label),
+        hjust = 0,
+        size = 2.7
+      )
+    ),
+    draw_legend_markers(items)
+  )
+}
+
 build_tanglegram_legend <- function(
     ribbon_roles = NULL,
-    lineage_col_label = "HA_lineage",
+    lineage_col_label = "lineage",
     context_lineages = NULL,
     lineage_palette = NULL,
-    flu_alpha = 0.90,
-    context_alpha = 0.32
+    flu_alpha = 1,
+    context_alpha = 0.30
 ) {
   if (is.null(ribbon_roles)) {
     show_roles <- PANEL_TYPE_RIBBON_ORDER
   } else {
     show_roles <- PANEL_TYPE_RIBBON_ORDER[
-      PANEL_TYPE_RIBBON_ORDER %in% unique(as.character(ribbon_roles))
+      PANEL_TYPE_RIBBON_ORDER %in% unique(vapply(
+        ribbon_roles,
+        normalize_ecuador_role,
+        character(1)
+      ))
     ]
   }
 
@@ -165,38 +186,31 @@ build_tanglegram_legend <- function(
     marker = "ribbon"
   )
 
+  # Only show Ecuador tip roles that are actually present in the tanglegram tips
+  tangle_ecuador_roles <- intersect(FLU_TIP_DISPLAY_ROLES, unique(ribbon_roles))
   ecuador_items <- legend_items_df(
-    labels = unname(flu_tip_labels[FLU_TIP_ROLES]),
-    colors = unname(flu_tip_colors[FLU_TIP_ROLES]),
+    labels = unname(flu_tip_labels[tangle_ecuador_roles]),
+    colors = unname(flu_tip_colors[tangle_ecuador_roles]),
     marker = "triangle"
   )
 
+  tip_items <- ecuador_items
+  if (!is.null(context_lineages) && length(context_lineages) > 0) {
+    family_legend <- lineage_family_legend_breaks(context_lineages)
+    if (length(family_legend$labels) > 0) {
+      context_items <- legend_items_df(
+        labels = family_legend$labels,
+        colors = family_legend$colors,
+        marker = "circle"
+      )
+      tip_items <- rbind(ecuador_items, context_items)
+    }
+  }
+
   sections <- list(
     list(title = "Ribbons (sample type)", items = ribbon_items),
-    list(title = "Ecuador tips (type color)", items = ecuador_items)
+    list(title = "Tree tips", items = tip_items)
   )
-
-  if (!is.null(context_lineages) && length(context_lineages) > 0) {
-    lineage_names <- order_lineages_for_legend(context_lineages)
-    context_items <- legend_items_df(
-      labels = lineage_names,
-      colors = vapply(
-        lineage_names,
-        function(lin) lineage_color_for(lin, lineage_palette),
-        character(1)
-      ),
-      marker = "circle"
-    )
-    sections <- append(
-      sections,
-      list(
-        list(
-          title = paste0("Context tips (", lineage_col_label, ")"),
-          items = context_items
-        )
-      )
-    )
-  }
 
   layout <- layout_legend_sections(sections)
   p <- ggplot2::ggplot()

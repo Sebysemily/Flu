@@ -6,6 +6,7 @@ DATA_COMBINED_CONTEXT_EC = config.get("data_combined_context_ecuador", "data/sta
 DATA_PHYLOGENY = config.get("data_phylogeny", "data/phylogeny")
 PHYLO_SEGMENTS = ["PB2", "PB1", "PA", "HA", "NP", "NA", "MP", "NS"]
 MAIN_PANEL_METADATA = "metadata/H5N1_context.csv"
+CONTEXT_BASE_METADATA = "metadata/context_base.csv"
 CONTEXT_DIR = config.get("context_dir", "data/context")
 CONTEXT_GENOFLU_RUN = config.get("context_genoflu_run", f"{CONTEXT_DIR}/genoflu_run")
 GENOFLU_DIR = "resources/GenoFLU-multi"
@@ -194,6 +195,7 @@ rule build_h5n1_context_metadata:
         genoflu_ecuador_done="metadata/genoflu_results.done",
         genoflu_context_inputs=f"{CONTEXT_GENOFLU_RUN}/.genoflu_inputs.done",
     output:
+        context_base=CONTEXT_BASE_METADATA,
         metadata=MAIN_PANEL_METADATA,
     params:
         ecuador_date_source="collection",
@@ -207,6 +209,7 @@ rule build_h5n1_context_metadata:
             --flu-filtrado {input.flu_filtrado} \
             --genoflu-context-results {input.genoflu_context} \
             --ecuador-date-source {params.ecuador_date_source} \
+            --context-base-out {output.context_base} \
             --metadata-out {output.metadata}
         """
 
@@ -215,13 +218,12 @@ rule build_h5n1_context_metadata:
 # =====================================================================
 rule plot_flu_lineage:
     input:
-        metadata="metadata/flu_filtrado.csv",
-        done="metadata/genoflu_results.done"
+        metadata=MAIN_PANEL_METADATA,
     output:
         plot="figures/build_inputs/flu_lineage.png",
         rds="figures/build_inputs/flu_lineage.rds",
     params:
-        script="code/build_inputs/flu_lineage.R"
+        script="code/segment_analysis/flu_lineage_heatmap.R"
     conda:
         "../envs/r.yml"
     shell:

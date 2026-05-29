@@ -3,40 +3,30 @@ digraph snakemake_dag {
     node[shape=box, style=rounded, fontname=sans,                 fontsize=10, penwidth=2];
     edge[penwidth=2, color=grey];
 	0[label = "all", color = "0.00 0.6 0.85", style="rounded"];
-	1[label = "process_raw_to_segments", color = "0.44 0.6 0.85", style="rounded"];
-	2[label = "build_gisaid_input_from_mira", color = "0.05 0.6 0.85", style="rounded"];
-	3[label = "iqtree_fast_ha", color = "0.38 0.6 0.85", style="rounded"];
-	4[label = "filter_alignments_by_nextclade_qc", color = "0.26 0.6 0.85", style="rounded"];
-	5[label = "run_nextclade_alignment_per_segment", color = "0.56 0.6 0.85", style="rounded"];
-	6[label = "download_nextclade_db", color = "0.21 0.6 0.85", style="rounded"];
-	7[label = "extract_segment_reference", color = "0.23 0.6 0.85", style="rounded"];
-	8[label = "segment_analysis_ggtree_fast_ha", color = "0.64 0.6 0.85", style="rounded"];
-	9[label = "build_h5n1_context_metadata", color = "0.08 0.6 0.85", style="rounded"];
-	10[label = "genoflu_context_multi", color = "0.28 0.6 0.85", style="rounded"];
-	11[label = "genoflu_results_to_metadata", color = "0.36 0.6 0.85", style="rounded"];
-	12[label = "genoflu_multi", color = "0.33 0.6 0.85", style="rounded"];
-	13[label = "prune_tree_by_distance_to_core", color = "0.46 0.6 0.85", style="rounded"];
-	14[label = "build_treetime_dates_subsets", color = "0.13 0.6 0.85", style="rounded"];
-	15[label = "apply_panel_to_segment_alignments", color = "0.03 0.6 0.85", style="rounded"];
-	16[label = "run_root_to_tip_subsets", color = "0.59 0.6 0.85", style="rounded"];
-	17[label = "copy_subset_concat_final_tree", color = "0.15 0.6 0.85", style="rounded"];
-	18[label = "run_iqtree_subset_concat_replicate", color = "0.54 0.6 0.85", style="rounded"];
-	19[label = "segment_analysis_ggtree", color = "0.62 0.6 0.85", style="rounded"];
-	20[label = "copy_trees_for_segment_analysis", color = "0.18 0.6 0.85", style="rounded"];
-	21[label = "run_iqtree_codon_segment_replicate", color = "0.49 0.6 0.85", style="rounded"];
-	22[label = "build_single_segment_codon_partition", color = "0.10 0.6 0.85", style="rounded"];
-	23[label = "run_iqtree_simple_segment_replicate", color = "0.51 0.6 0.85", style="rounded"];
-	13 -> 0
-	17 -> 0
+	1[label = "process_raw_to_segments", color = "0.43 0.6 0.85", style="rounded"];
+	2[label = "build_gisaid_input_from_mira", color = "0.04 0.6 0.85", style="rounded"];
+	3[label = "filter_lineage_pb2_ha_alignments", color = "0.24 0.6 0.85", style="rounded"];
+	4[label = "filter_alignments_by_nextclade_qc", color = "0.22 0.6 0.85", style="rounded"];
+	5[label = "run_nextclade_alignment_per_segment", color = "0.54 0.6 0.85", style="rounded"];
+	6[label = "download_nextclade_db", color = "0.17 0.6 0.85", style="rounded"];
+	7[label = "extract_segment_reference", color = "0.19 0.6 0.85", style="rounded"];
+	8[label = "iqtree_fast_ha", color = "0.34 0.6 0.85", style="rounded"];
+	9[label = "iqtree_fast_pb2", color = "0.37 0.6 0.85", style="rounded"];
+	10[label = "segment_analysis_ggtree_lineage", color = "0.65 0.6 0.85", style="rounded"];
+	11[label = "build_h5n1_context_metadata", color = "0.06 0.6 0.85", style="rounded"];
+	12[label = "genoflu_context_multi", color = "0.26 0.6 0.85", style="rounded"];
+	13[label = "prepare_context_genoflu_fastas", color = "0.41 0.6 0.85", style="rounded"];
+	14[label = "genoflu_multi", color = "0.30 0.6 0.85", style="rounded"];
+	15[label = "genoflu_results_to_metadata", color = "0.32 0.6 0.85", style="rounded"];
+	16[label = "segment_analysis_composite_lineage", color = "0.58 0.6 0.85", style="rounded"];
+	17[label = "plot_flu_lineage", color = "0.39 0.6 0.85", style="rounded"];
+	1 -> 0
+	11 -> 0
 	16 -> 0
-	15 -> 0
-	19 -> 0
+	9 -> 0
+	10 -> 0
 	3 -> 0
 	8 -> 0
-	18 -> 0
-	1 -> 0
-	9 -> 0
-	14 -> 0
 	2 -> 1
 	4 -> 3
 	5 -> 4
@@ -45,29 +35,20 @@ digraph snakemake_dag {
 	6 -> 5
 	1 -> 7
 	3 -> 8
-	9 -> 8
-	11 -> 9
-	10 -> 9
+	3 -> 9
+	11 -> 10
+	8 -> 10
+	9 -> 10
 	12 -> 11
-	2 -> 12
-	3 -> 13
-	4 -> 13
-	9 -> 13
-	9 -> 14
-	13 -> 15
-	4 -> 15
-	15 -> 16
+	15 -> 11
+	13 -> 11
+	14 -> 12
+	13 -> 12
+	2 -> 14
+	14 -> 15
+	11 -> 16
+	8 -> 16
+	9 -> 16
 	17 -> 16
-	14 -> 16
-	18 -> 17
-	15 -> 18
-	17 -> 19
-	20 -> 19
-	9 -> 19
-	23 -> 20
-	21 -> 20
-	15 -> 21
-	22 -> 21
-	15 -> 22
-	15 -> 23
+	11 -> 17
 }            

@@ -1,6 +1,108 @@
 # lineage_palette.R
 # Shared GenoFLU sub-lineage colors: am* = Oranges, ea* = Blues, other = Greens.
 
+# Canonical colours for simplified tanglegram / composite display.
+COLLAPSED_AM_COLOR <- "#FDAE6B"   # am1.2 orange (reference for all am* tips)
+CANONICAL_EA1_COLOR <- "#4292C6"  # lighter blue for all ea* tips (vs andine navy)
+COLLAPSED_EA_COLOR <- CANONICAL_EA1_COLOR
+AM21_RIBBON_COLOR <- "#E6550D"    # am2.1 — american-anchor ribbon colour
+
+LEGEND_AM_KEY <- ".legend_am"
+LEGEND_EA_KEY <- ".legend_ea"
+
+LINEAGE_FAMILY_LABELS <- c(am = "AM", ea = "EA")
+LINEAGE_FAMILY_COLORS <- c(
+  am = COLLAPSED_AM_COLOR,
+  ea = COLLAPSED_EA_COLOR
+)
+
+LINEAGE_COLOR_OVERRIDES <- c(
+  ea1 = CANONICAL_EA1_COLOR
+)
+
+apply_lineage_color_overrides <- function(palette) {
+  for (lin in names(LINEAGE_COLOR_OVERRIDES)) {
+    if (lin %in% names(palette)) {
+      palette[lin] <- LINEAGE_COLOR_OVERRIDES[lin]
+    }
+  }
+
+  # Keep sub-lineages with distinct shades instead of collapsing
+  # am_names <- names(palette)[grepl("^am", names(palette), ignore.case = TRUE)]
+  # if (length(am_names) > 0) {
+  #   palette[am_names] <- COLLAPSED_AM_COLOR
+  # }
+
+  # ea_names <- names(palette)[grepl("^ea", names(palette), ignore.case = TRUE)]
+  # if (length(ea_names) > 0) {
+  #   palette[ea_names] <- COLLAPSED_EA_COLOR
+  # }
+
+  palette
+}
+
+lineage_families_present <- function(lineages, unknown_label = "unknown") {
+  lineages <- unique(as.character(lineages))
+  lineages <- lineages[!is.na(lineages) & lineages != ""]
+  lineages <- lineages[tolower(lineages) != unknown_label]
+
+  fams <- character()
+  if (any(grepl("^am", lineages, ignore.case = TRUE))) {
+    fams <- c(fams, "am")
+  }
+  if (any(grepl("^ea", lineages, ignore.case = TRUE))) {
+    fams <- c(fams, "ea")
+  }
+  fams
+}
+
+lineage_family_legend_breaks <- function(lineages = NULL, unknown_label = "unknown") {
+  lineages_vec <- if (is.null(lineages)) {
+    character()
+  } else {
+    vals <- unique(as.character(lineages))
+    vals[!is.na(vals) & vals != "" & tolower(vals) != unknown_label]
+  }
+
+  fams <- if (length(lineages_vec) == 0) {
+    c("am", "ea")
+  } else {
+    lineage_families_present(lineages_vec, unknown_label = unknown_label)
+  }
+
+  keys <- character()
+  labels <- character()
+  colors <- character()
+
+  if ("am" %in% fams) {
+    am_key <- if (length(lineages_vec) > 0) {
+      sort(lineages_vec[grepl("^am", lineages_vec, ignore.case = TRUE)])[1]
+    } else {
+      LEGEND_AM_KEY
+    }
+    keys <- c(keys, am_key)
+    labels <- c(labels, LINEAGE_FAMILY_LABELS["am"])
+    colors <- c(colors, LINEAGE_FAMILY_COLORS["am"])
+  }
+
+  if ("ea" %in% fams) {
+    ea_key <- if (length(lineages_vec) > 0) {
+      sort(lineages_vec[grepl("^ea", lineages_vec, ignore.case = TRUE)])[1]
+    } else {
+      LEGEND_EA_KEY
+    }
+    keys <- c(keys, ea_key)
+    labels <- c(labels, LINEAGE_FAMILY_LABELS["ea"])
+    colors <- c(colors, LINEAGE_FAMILY_COLORS["ea"])
+  }
+
+  list(
+    keys = unname(keys),
+    labels = unname(labels),
+    colors = unname(colors)
+  )
+}
+
 build_lineage_palette <- function(
     lineages,
     unknown_label = "unknown",
@@ -56,7 +158,7 @@ build_lineage_palette <- function(
     palette[costa_marker_fill] <- costa_marker_color
   }
 
-  palette
+  apply_lineage_color_overrides(palette)
 }
 
 order_lineages_for_legend <- function(lineages, unknown_label = "unknown") {
@@ -90,6 +192,13 @@ extend_lineage_palette <- function(
   if (costa_marker_fill %in% names(base_palette)) {
     full_palette[costa_marker_fill] <- unname(base_palette[costa_marker_fill])
   }
+
+  # For the tanglegram, collapse all am* to one orange and all ea* to one blue
+  am_names <- names(full_palette)[grepl("^am", names(full_palette), ignore.case = TRUE)]
+  if (length(am_names) > 0) full_palette[am_names] <- COLLAPSED_AM_COLOR
+
+  ea_names <- names(full_palette)[grepl("^ea", names(full_palette), ignore.case = TRUE)]
+  if (length(ea_names) > 0) full_palette[ea_names] <- COLLAPSED_EA_COLOR
 
   full_palette
 }

@@ -30,6 +30,7 @@ if (!file.exists(metadata_file)) stop(paste("Metadata file not found:", metadata
 
 tree <- read.newick(tree_file)
 tree <- midpoint.root(tree)
+tree <- ape::ladderize(tree, right = FALSE)  # largest clades at bottom
 
 metadata <- read_csv(metadata_file, show_col_types = FALSE) |>
   select(file_name, expected_role) |>
@@ -42,17 +43,22 @@ tip_df <- data.frame(label = tree$tip.label, stringsAsFactors = FALSE) |>
   mutate(
     type_c = if_else(
       expected_role %in% FLU_TIP_ROLES,
-      expected_role,
+      vapply(expected_role, normalize_ecuador_role, character(1)),
       NA_character_
     )
   )
 
 flu_tips <- tip_df |> filter(!is.na(type_c))
 
-p <- ggtree(tree, layout = "roundrect", color = "grey40", linewidth = 0.8) %<+% tip_df
+# ladderize=FALSE tells ggtree not to re-order (we already ladderized above);
+# coord_flip() rotates so the root appears at the bottom of the screen.
+p <- ggtree(tree, layout = "rectangular", ladderize = FALSE,
+            color = "grey40", linewidth = 0.8) %<+% tip_df +
+  coord_flip() +
+  scale_x_reverse()
 
 if (nrow(flu_tips) > 0) {
-  present <- intersect(FLU_TIP_ROLES, unique(flu_tips$type_c))
+  present <- intersect(FLU_TIP_DISPLAY_ROLES, unique(flu_tips$type_c))
   p <- p +
     geom_tippoint(
       aes(subset = !is.na(type_c), color = type_c, shape = type_c),

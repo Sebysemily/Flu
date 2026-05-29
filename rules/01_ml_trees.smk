@@ -240,7 +240,7 @@ rule iqtree_fast_ha:
     shell:
         r"""
         mkdir -p $(dirname {params.prefix})
-        iqtree -s {input.alignment} -pre {params.prefix} --fast -seed {params.seed} -nt {threads}
+        iqtree -s {input.alignment} -pre {params.prefix} --pathogen -seed {params.seed} -nt {threads}
         cp {params.prefix}.treefile {output.treefile}
         """
 
@@ -262,7 +262,7 @@ rule iqtree_fast_pb2:
     shell:
         r"""
         mkdir -p $(dirname {params.prefix})
-        iqtree -s {input.alignment} -pre {params.prefix} --fast -seed {params.seed} -nt {threads}
+        iqtree -s {input.alignment} -pre {params.prefix} --pathogen -seed {params.seed} -nt {threads}
         cp {params.prefix}.treefile {output.treefile}
         """
 
@@ -286,7 +286,7 @@ rule segment_analysis_ggtree_lineage:
     wildcard_constraints:
         segment="|".join(LINEAGE_GGTREE_SEGMENTS),
     conda:
-        "../envs/ggtree.yml"
+        "../envs/r.yml"
     shell:
         r"""
         mkdir -p {params.figures_dir}
@@ -315,8 +315,9 @@ rule segment_analysis_composite_lineage_preview:
         figures_dir=LINEAGE_FIGURES_DIR,
         max_tips=60,
         ribbon_segment="HA",
+        outgroup_sample=config.get("outgroup_root_sample", ""),
     conda:
-        "../envs/ggtree.yml"
+        "../envs/r.yml"
     shell:
         r"""
         ulimit -s unlimited || true
@@ -328,7 +329,8 @@ rule segment_analysis_composite_lineage_preview:
             {input.panel_metadata} \
             {output.png} \
             {params.max_tips} \
-            {params.ribbon_segment}
+            {params.ribbon_segment} \
+            "{params.outgroup_sample}"
         test -s {output.png}
         """
 
@@ -343,8 +345,9 @@ rule segment_analysis_composite_lineage:
     params:
         figures_dir=LINEAGE_FIGURES_DIR,
         ribbon_segment="HA",
+        outgroup_sample=config.get("outgroup_root_sample", ""),
     conda:
-        "../envs/ggtree.yml"
+        "../envs/r.yml"
     shell:
         r"""
         ulimit -s unlimited || true
@@ -356,7 +359,8 @@ rule segment_analysis_composite_lineage:
             {input.panel_metadata} \
             {output.png} \
             "" \
-            {params.ribbon_segment}
+            {params.ribbon_segment} \
+            "{params.outgroup_sample}"
         test -s {output.png}
         """
 
@@ -506,7 +510,7 @@ rule segment_analysis_ggtree:
     output:
         png="results/figures/{segment}_tree.png"
     conda:
-        "../envs/ggtree.yml"
+        "../envs/r.yml"
     shell:
         r"""
         Rscript code/segment_analysis/plot_ggtree.R \

@@ -25,10 +25,24 @@ MAATE_METADATA = {
 COASTAL_EPI_ISLS = set(MAATE_METADATA.keys())
 
 
-def ecuador_expected_role(sample_id: str, epi_isl: str) -> str:
-    """Classify Ecuador samples as coastal (flu_costa) or sierra (flu_sierra)."""
-    if sample_id == "Flu-0406" or epi_isl in COASTAL_EPI_ISLS:
+def ecuador_expected_role(sample_id: str, epi_isl: str, provincia: str = "") -> str:
+    """Classify Ecuador samples as coastal (flu_costa), sierra (flu_sierra), or amazonia (flu_amazonia)."""
+    if epi_isl in ("EPI_ISL_16161673", "EPI_ISL_16161675"):
+        return "flu_sierra"
+    
+    # Normalize province: strip accents, keep only alphanumeric, uppercase
+    # e.g., "Manabí" -> "MANABI", "Los Ríos" -> "LOSRIOS", "Santa Elena" -> "SANTAELENA"
+    import unicodedata
+    prov_norm = unicodedata.normalize('NFKD', str(provincia or ""))
+    prov_clean = "".join(c for c in prov_norm if c.isalnum()).upper()
+    
+    coastal_provs = {"GUAYAS", "MANABI", "ESMERALDAS", "ELORO", "LOSRIOS", "SANTAELENA"}
+    amazonia_provs = {"PASTAZA", "MORONASANTIAGO", "NAPO", "SUCUMBIOS", "ORELLANA", "ZAMORACHINCHIPE"}
+    
+    if sample_id in ("Flu-0402", "Flu-0406", "Flu-0407") or epi_isl in COASTAL_EPI_ISLS or prov_clean in coastal_provs:
         return "flu_costa"
+    elif prov_clean in amazonia_provs:
+        return "flu_amazonia"
     return "flu_sierra"
 
 
@@ -48,11 +62,12 @@ def build_ecuador_metadata_rows(df_filt: pd.DataFrame, date_source: str) -> list
         date_val = pick_ecuador_date(row.to_dict(), date_source)
         if not date_val:
             continue
+        provincia = row.get("Provincia", "")
         rows.append({
             "file_name": epi_isl,
             "collection_date": date_val,
             "country": "Ecuador",
-            "expected_role": ecuador_expected_role(sample_id, epi_isl),
+            "expected_role": ecuador_expected_role(sample_id, epi_isl, provincia),
         })
         seen.add(epi_isl)
     return rows
@@ -184,6 +199,8 @@ def extract_metadata_from_isolate(isolate):
     north_america_set = {s.lower().replace("_", "").replace(" ", "") for s in NORTH_AMERICA_PLACES}
     if place_clean in north_america_set:
         context_type = "american_anchor"
+    elif place_clean == "ecuador":
+        context_type = "flu_costa"
     else:
         context_type = "regional_context"
 
@@ -253,11 +270,13 @@ def filter_complete_context_isolates(isolates_data: dict, local_epi_isls: set):
             extracted_date = None
             for _seg_name, (_epi_isl, _seq, orig_hdr) in segs.items():
                 hdr_parts = [p.strip() for p in orig_hdr.split("|")]
-                if len(hdr_parts) >= 3:
-                    parsed_date = parse_collection_date(hdr_parts[2])
+                for part in hdr_parts:
+                    parsed_date = parse_collection_date(part)
                     if parsed_date:
                         extracted_date = parsed_date
                         break
+                if extracted_date:
+                    break
             date_value = extracted_date if extracted_date else "UNKNOWN"
 
         if date_value != "UNKNOWN" and date_value:
@@ -269,15 +288,15 @@ def filter_complete_context_isolates(isolates_data: dict, local_epi_isls: set):
     return complete_context, context_dates, context_places, context_types
 
 
-def build_context_epi_maps(complete_context: dict) -> tuple[dict[str, str], dict[str, str]]:
-    """Map segment EPI_ISL to segment name and parent isolate."""
-    epi_to_segment = {}
-    epi_to_isolate = {}
+def build_context_epi_maps(complete_context: dict) -> tuple[dict[str, set[str]], dict[str, str]]:
+    """Map segment EPI_ISL to all segment names and parent isolate."""
+    epi_to_segments: dict[str, set[str]] = {}
+    epi_to_isolate: dict[str, str] = {}
     for isolate, segs in complete_context.items():
         for seg, (epi_isl, _seq, _hdr) in segs.items():
-            epi_to_segment[epi_isl] = seg
+            epi_to_segments.setdefault(epi_isl, set()).add(seg)
             epi_to_isolate[epi_isl] = isolate
-    return epi_to_segment, epi_to_isolate
+    return epi_to_segments, epi_to_isolate
 
 
 def parse_ecuador_header(header):

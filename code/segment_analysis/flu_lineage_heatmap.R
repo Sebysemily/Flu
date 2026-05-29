@@ -1,7 +1,55 @@
+#!/usr/bin/env Rscript
 # flu_lineage_heatmap.R
-# Shared GenoFLU constellation heatmap builder (Ecuador panel).
+# GenoFLU constellation heatmap (Ecuador panel).
+#
+# Usage:
+#   Rscript code/segment_analysis/flu_lineage_heatmap.R <metadata_csv> [output_png]
+#
+# Expects metadata/H5N1_context.csv (Ecuador rows with expected_role + segment lineages).
+# When sourced, exposes build_flu_lineage_heatmap() only (no side effects).
 
 source("code/segment_analysis/lineage_palette.R")
+
+ECUADOR_PANEL_ROLES <- c("flu_costa", "flu_andine", "flu_sierra", "flu_amazonia")
+
+compose_heatmap_with_legend <- function(p, costa_star_color) {
+  legend_panel <- cowplot::get_legend(p)
+  coastal_note <- cowplot::ggdraw() +
+    cowplot::draw_label(
+      label = "*",
+      x = 0.22,
+      y = 0.90,
+      hjust = 0.5,
+      vjust = 0.5,
+      color = costa_star_color,
+      fontface = "bold",
+      size = 20
+    ) +
+    cowplot::draw_label(
+      label = "coastal",
+      x = 0.22,
+      y = 0.60,
+      hjust = 0.5,
+      vjust = 0.5,
+      color = "black",
+      size = 6
+    )
+
+  legend_column <- cowplot::plot_grid(
+    legend_panel,
+    coastal_note,
+    ncol = 1,
+    rel_heights = c(1, 0.10)
+  )
+
+  cowplot::plot_grid(
+    p + ggplot2::theme(legend.position = "none"),
+    legend_column,
+    ncol = 2,
+    rel_widths = c(1, 0.20),
+    align = "h"
+  )
+}
 
 build_flu_lineage_heatmap <- function(
     metadata_path,
@@ -10,7 +58,18 @@ build_flu_lineage_heatmap <- function(
 ) {
   flu_data <- read.csv(metadata_path, stringsAsFactors = FALSE, check.names = FALSE)
 
-  key_col <- if ("EPI_ISL" %in% colnames(flu_data)) {
+  if (!"expected_role" %in% colnames(flu_data)) {
+    stop("metadata must contain expected_role (use metadata/H5N1_context.csv)")
+  }
+
+  flu_data <- flu_data[flu_data$expected_role %in% ECUADOR_PANEL_ROLES, , drop = FALSE]
+  if (nrow(flu_data) == 0) {
+    stop("no Ecuador panel samples (flu_costa / flu_andine / flu_sierra / flu_amazonia) in metadata")
+  }
+
+  key_col <- if ("file_name" %in% colnames(flu_data)) {
+    "file_name"
+  } else if ("EPI_ISL" %in% colnames(flu_data)) {
     "EPI_ISL"
   } else if (ncol(flu_data) >= 2) {
     colnames(flu_data)[2]
@@ -20,11 +79,9 @@ build_flu_lineage_heatmap <- function(
 
   segments <- c("PB2", "PB1", "PA", "HA", "NP", "NA", "MP", "NS")
   unknown_label <- "unknown"
-  coastal_epi_isls <- c(
-    "EPI_ISL_17973443", "EPI_ISL_17973458", "EPI_ISL_18137671"
-  )
   costa_marker_fill <- ".flu_costa_panel"
-  legend_title <- "Sub‑Lineage / Status"
+  costa_star_color <- "#FF0000"
+  legend_title <- "Sub-lineage"
   segment_levels <- c(rev(segments), "Panel")
 
   segment_flags <- flu_data %>%
@@ -64,36 +121,12 @@ build_flu_lineage_heatmap <- function(
       )
     )
 
-  usfq_col <- if ("Código USFQ" %in% colnames(flu_data)) {
-    "Código USFQ"
-  } else if ("Codigo USFQ" %in% colnames(flu_data)) {
-    "Codigo USFQ"
-  } else {
-    NA_character_
-  }
-
   sample_roles <- flu_data %>%
     dplyr::transmute(
       Sample_ID = .data[[key_col]],
-      usfq = if (!is.na(usfq_col)) .data[[usfq_col]] else NA_character_,
-      expected_role = if ("expected_role" %in% colnames(flu_data)) {
-        .data[["expected_role"]]
-      } else {
-        NA_character_
-      }
+      expected_role = .data[["expected_role"]]
     ) %>%
-    dplyr::distinct() %>%
-    dplyr::mutate(
-      expected_role = dplyr::if_else(
-        !is.na(expected_role) & expected_role != "",
-        expected_role,
-        dplyr::if_else(
-          usfq == "Flu-0406" | Sample_ID %in% coastal_epi_isls,
-          "flu_costa",
-          "flu_sierra"
-        )
-      )
-    )
+    dplyr::distinct()
 
   plotted_samples <- clean_metadata %>%
     dplyr::distinct(Sample_ID) %>%
@@ -137,9 +170,27 @@ build_flu_lineage_heatmap <- function(
     unknown_label = unknown_label,
     costa_marker_fill = costa_marker_fill
   )
-  fill_legend_breaks <- setdiff(names(palette), costa_marker_fill)
-  fill_breaks <- c(fill_legend_breaks, costa_marker_fill)
-  fill_labels <- c(fill_legend_breaks, "* Ecuador (coastal)")
+
+  # Build legend with individual sub-lineages (am1.1, am1.2, ea1, etc.)
+  # ordered am* first (light→dark orange), then ea* (light→dark blue)
+  ordered_lins <- order_lineages_for_legend(unique_lineages, unknown_label = unknown_label)
+  ordered_lins <- ordered_lins[
+    tolower(ordered_lins) != unknown_label & ordered_lins != "" &
+    !grepl("^\\.flu_costa", ordered_lins)
+  ]
+
+  fill_breaks <- ordered_lins
+  fill_labels <- ordered_lins
+
+  heatmap_legend_key_size <- grid::unit(1.1, "cm")
+
+  draw_flu_fill_key <- function(data, params, size) {
+    grid::rectGrob(
+      width = grid::unit(1, "npc"),
+      height = grid::unit(1, "npc"),
+      gp = grid::gpar(fill = data$fill, col = "white", linewidth = 0.4)
+    )
+  }
 
   plot_data <- dplyr::bind_rows(clean_metadata, costa_panel_markers)
 
@@ -151,15 +202,16 @@ build_flu_lineage_heatmap <- function(
     ggplot2::geom_text(
       data = costa_panel_markers,
       ggplot2::aes(label = star),
-      color = "#FF0000",
-      size = 10,
+      color = costa_star_color,
+      size = 5,
       fontface = "bold"
     ) +
     ggplot2::scale_fill_manual(
       values = palette,
       breaks = fill_breaks,
       labels = fill_labels,
-      name = legend_title
+      name = legend_title,
+      drop = FALSE
     ) +
     ggplot2::scale_y_discrete(
       labels = c(setNames(rev(segments), rev(segments)), Panel = "")
@@ -173,8 +225,12 @@ build_flu_lineage_heatmap <- function(
     ggplot2::theme(
       axis.text.x = ggplot2::element_blank(),
       axis.ticks.x = ggplot2::element_blank(),
-      axis.text.y = ggplot2::element_text(size = 6),
-      axis.title.x = ggplot2::element_text(size = 12, face = "bold"),
+      axis.text.y = ggplot2::element_text(
+        size = c(4, 4, 4, 4, 12, 4, 4, 12, 4),
+        face = c("plain", "plain", "plain", "plain", "bold", "plain", "plain", "bold", "plain")
+      ),
+      axis.title.x = ggplot2::element_blank(),
+      axis.title.x.ticks = ggplot2::element_blank(),
       axis.title.y = ggplot2::element_text(size = 8, face = "bold"),
       legend.title = ggplot2::element_text(size = 8, face = "bold", angle = 90),
       legend.text = ggplot2::element_text(size = 8),
@@ -188,9 +244,14 @@ build_flu_lineage_heatmap <- function(
       fill = ggplot2::guide_legend(
         title.position = "left",
         title.hjust = 0.5,
-        title.vjust = 0.5
+        title.vjust = 0.5,
+        keywidth = heatmap_legend_key_size,
+        keyheight = heatmap_legend_key_size,
+        draw.key = draw_flu_fill_key
       )
     )
+
+  p <- compose_heatmap_with_legend(p, costa_star_color)
 
   list(
     plot = p,
@@ -198,4 +259,44 @@ build_flu_lineage_heatmap <- function(
     sample_order = sample_order,
     costa_marker_fill = costa_marker_fill
   )
+}
+
+if (sys.nframe() == 0L) {
+  suppressPackageStartupMessages({
+    library(dplyr)
+    library(tidyr)
+    library(stringr)
+    library(ggplot2)
+    library(RColorBrewer)
+    library(cowplot)
+  })
+
+  args <- commandArgs(trailingOnly = TRUE)
+  if (length(args) < 1) {
+    stop(
+      "Usage: Rscript flu_lineage_heatmap.R ",
+      "<metadata_csv> [output_png]"
+    )
+  }
+
+  metadata_path <- args[1]
+  output_path <- if (length(args) >= 2) args[2] else "flu_lineage.png"
+
+  heatmap_obj <- build_flu_lineage_heatmap(metadata_path = metadata_path)
+
+  dir.create(dirname(output_path), showWarnings = FALSE, recursive = TRUE)
+  ggplot2::ggsave(
+    filename = output_path,
+    plot = heatmap_obj$plot,
+    width = 12,
+    height = 3.2,
+    dpi = 300,
+    bg = "white"
+  )
+
+  rds_path <- sub("\\.[^.]+$", ".rds", output_path)
+  saveRDS(heatmap_obj, rds_path)
+
+  cat("Plot saved to", output_path, "\n")
+  cat("Heatmap object saved to", rds_path, "\n")
 }

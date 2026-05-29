@@ -97,7 +97,7 @@ def parse_date_for_tip(label: str, meta: Dict[str, Dict[str, str]]) -> str:
     return "UNKNOWN"
 
 
-CORE_ROLES = {"flu_costa", "flu_sierra", "flu_epi_isl"}
+CORE_ROLES = {"flu_costa", "flu_sierra", "flu_amazonia", "flu_epi_isl"}
 
 def write_panel(path: str, rows: List[Tuple[str, str, str, float]]) -> None:
     out_dir = os.path.dirname(path)
@@ -146,11 +146,12 @@ def main() -> None:
 
     core_costa = [t for t in core_tips if role_for_tip(t) == "flu_costa"]
     core_sierra = [t for t in core_tips if role_for_tip(t) == "flu_sierra"]
+    core_amazonia = [t for t in core_tips if role_for_tip(t) == "flu_amazonia"]
     core_epi = [t for t in core_tips if role_for_tip(t) == "flu_epi_isl"]
 
     print(f"Loaded tree with {len(tree_tips)} tips.")
     print(f"Found {len(core_tips)} Ecuador core tips (metadata roles).")
-    print(f"  flu_costa: {len(core_costa)}, flu_sierra: {len(core_sierra)}, flu_epi_isl: {len(core_epi)}")
+    print(f"  flu_costa: {len(core_costa)}, flu_sierra: {len(core_sierra)}, flu_amazonia: {len(core_amazonia)}, flu_epi_isl: {len(core_epi)}")
     print(f"Found {len(american_anchor_tips)} American anchor tips.")
     print(f"Found {len(regional_context_tips)} Regional context tips.")
 
@@ -295,6 +296,7 @@ def main() -> None:
         writer.writerow(["ecuador_core_tips", len(core_tips)])
         writer.writerow(["flu_costa_tips", len(core_costa)])
         writer.writerow(["flu_sierra_tips", len(core_sierra)])
+        writer.writerow(["flu_amazonia_tips", len(core_amazonia)])
         writer.writerow(["flu_epi_isl_tips", len(core_epi)])
         writer.writerow(["tips_missing_metadata_role", len(tips_missing_role)])
         writer.writerow(["american_anchors_total", len(american_anchor_tips)])

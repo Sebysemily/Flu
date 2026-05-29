@@ -24,3 +24,7 @@ treetime_parameters:
 iqtree_replicates: 5
 # IQ-TREE bootstrap replicates (Ultrafast Bootstrap)
 iqtree_bootstrap: 1000
+
+# Outgroup root sample
+outgroup_root_sample: "EPI_ISL_18133416" #muestra mas antigua para root
+
