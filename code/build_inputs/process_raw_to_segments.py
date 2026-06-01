@@ -121,6 +121,62 @@ PLACE_ALIASES = {
 }
 
 
+GEOGRAPHIC_MAPPINGS = {
+    # US states (2-letter codes)
+    "al": "UnitedStates", "ak": "UnitedStates", "az": "UnitedStates", "ar": "UnitedStates",
+    "ca": "UnitedStates", "co": "UnitedStates", "ct": "UnitedStates", "de": "UnitedStates",
+    "fl": "UnitedStates", "ga": "UnitedStates", "hi": "UnitedStates", "id": "UnitedStates",
+    "il": "UnitedStates", "in": "UnitedStates", "ia": "UnitedStates", "ks": "UnitedStates",
+    "ky": "UnitedStates", "la": "UnitedStates", "me": "UnitedStates", "md": "UnitedStates",
+    "ma": "UnitedStates", "mi": "UnitedStates", "mn": "UnitedStates", "ms": "UnitedStates",
+    "mo": "UnitedStates", "mt": "UnitedStates", "ne": "UnitedStates", "nv": "UnitedStates",
+    "nh": "UnitedStates", "nj": "UnitedStates", "nm": "UnitedStates", "ny": "UnitedStates",
+    "nc": "UnitedStates", "nd": "UnitedStates", "oh": "UnitedStates", "ok": "UnitedStates",
+    "or": "UnitedStates", "pa": "UnitedStates", "ri": "UnitedStates", "sc": "UnitedStates",
+    "sd": "UnitedStates", "tn": "UnitedStates", "tx": "UnitedStates", "ut": "UnitedStates",
+    "vt": "UnitedStates", "va": "UnitedStates", "wa": "UnitedStates", "wv": "UnitedStates",
+    "wi": "UnitedStates", "wy": "UnitedStates",
+    
+    # Chile regions/cities
+    "antofagasta": "Chile", "araucania": "Chile", "arica": "Chile", "aricayparinacota": "Chile",
+    "atacama": "Chile", "aysen": "Chile", "biobio": "Chile", "coquimbo": "Chile",
+    "metropolitana": "Chile", "maule": "Chile", "nuble": "Chile", "ohiggins": "Chile",
+    "tarapaca": "Chile", "valparaiso": "Chile",
+    
+    # Argentina provinces/cities
+    "chaco": "Argentina", "cordoba": "Argentina", "madryn": "Argentina", "sarmiento": "Argentina",
+    "neuquen": "Argentina",
+    
+    # Uruguay departments
+    "canelones": "Uruguay", "maldonado": "Uruguay", "lavalleja": "Uruguay",
+    
+    # Colombia departments
+    "choco": "Colombia", "magdalena": "Colombia", "bolivar": "Colombia",
+    
+    # Bolivia departments
+    "cochabamba": "Bolivia", "potosi": "Bolivia",
+    
+    # Peru departments
+    "ica": "Peru", "lima": "Peru",
+    
+    # Brazil states/cities
+    "riodejaneiro": "Brazil", "espiritosanto": "Brazil", "parana": "Brazil",
+    "saopaulo": "Brazil", "saofranciscodosul": "Brazil", "matogrossodosul": "Brazil",
+    "santacatarina": "Brazil", "santoantoniodabarra": "Brazil", "barueri": "Brazil",
+    "riograndedosul": "Brazil", "acre": "Brazil", "alagoas": "Brazil", "amapa": "Brazil",
+    "amazonas": "Brazil", "bahia": "Brazil", "ceara": "Brazil", "distritofederal": "Brazil",
+    "goias": "Brazil", "maranhao": "Brazil", "matogrosso": "Brazil", "minasgerais": "Brazil",
+    "para": "Brazil", "paraiba": "Brazil", "pernambuco": "Brazil", "piaui": "Brazil",
+    "riograndedonorte": "Brazil", "rondonia": "Brazil", "roraima": "Brazil",
+    "sergipe": "Brazil", "tocantins": "Brazil",
+    
+    # Other places
+    "nl": "Netherlands",
+    "antarctica": "Antarctica", "antartic": "Antarctica",
+    "falklandislands": "FalklandIslands",
+}
+
+
 def clean_ascii(text):
     text = "" if text is None else str(text)
     text = text.strip()
@@ -138,6 +194,13 @@ def normalize_place(text):
         return cleaned
 
     compact_key = re.sub(r"[^A-Za-z0-9]", "", cleaned).lower()
+    
+    if compact_key in GEOGRAPHIC_MAPPINGS:
+        return GEOGRAPHIC_MAPPINGS[compact_key]
+        
+    if compact_key.endswith("br") or compact_key.startswith("brazil"):
+        return "Brazil"
+
     if compact_key in PLACE_ALIASES:
         return PLACE_ALIASES[compact_key]
 
@@ -186,12 +249,20 @@ def extract_metadata_from_isolate(isolate):
     year = year_match.group(0) if year_match else "UNKNOWN"
     date_val = parse_collection_date(year) if year != "UNKNOWN" else "UNKNOWN"
 
-    if len(parts) >= 5:
-        place_raw = parts[2]
-    elif len(parts) == 4:
-        place_raw = parts[1]
+    # Robust place extraction based on parts structure
+    last_part = parts[-1].strip()
+    has_year_at_end = bool(re.match(r"^\d{4}$", last_part) or re.match(r"^\d{2}$", last_part))
+    
+    if has_year_at_end:
+        if len(parts) >= 5:
+            place_raw = parts[2]
+        else:
+            place_raw = parts[1]
     else:
-        place_raw = parts[1]
+        if len(parts) >= 4:
+            place_raw = parts[2]
+        else:
+            place_raw = parts[1]
 
     place = normalize_place(place_raw)
 
@@ -240,14 +311,14 @@ def parse_context_isolates(context_fasta: str) -> dict:
 
 
 def filter_complete_context_isolates(isolates_data: dict, local_epi_isls: set):
-    """Keep complete non-local context isolates with usable collection dates."""
+    """Keep context isolates (with one or more segments) with usable collection dates."""
     complete_context = {}
     context_dates = {}
     context_places = {}
     context_types = {}
 
     for isolate, segs in isolates_data.items():
-        if len(segs) != 8:
+        if not segs:
             continue
 
         if any(epi_isl in local_epi_isls for epi_isl, _seq, _hdr in segs.values()):
@@ -263,7 +334,8 @@ def filter_complete_context_isolates(isolates_data: dict, local_epi_isls: set):
         if place_clean in us_places:
             place = "USA"
 
-        epi_isl_rep = segs["HA"][0]
+        # Get any available segment's EPI ID as a representative
+        epi_isl_rep = next(iter(segs.values()))[0]
         if epi_isl_rep in MAATE_METADATA:
             date_value = MAATE_METADATA[epi_isl_rep]["date"]
         else:
@@ -413,10 +485,11 @@ def main():
             
             # B. Write Context sequences
             for isolate, segs in sorted(complete_context.items()):
-                epi_isl, seq, orig_hdr = segs[seg]
-                clean_seq = sanitize_dna(seq).replace("-", "")
-                f.write(f">{epi_isl}\n")
-                f.write(wrap_seq(clean_seq) + "\n")
+                if seg in segs:
+                    epi_isl, seq, orig_hdr = segs[seg]
+                    clean_seq = sanitize_dna(seq).replace("-", "")
+                    f.write(f">{epi_isl}\n")
+                    f.write(wrap_seq(clean_seq) + "\n")
         
         print(f"Wrote segment file: {out_fasta}")
 

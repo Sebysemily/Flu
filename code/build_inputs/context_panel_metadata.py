@@ -8,7 +8,7 @@ from build_inputs.process_raw_to_segments import (
     parse_context_isolates,
 )
 
-PANEL_COLUMNS = ["file_name", "collection_date", "country", "expected_role"]
+PANEL_COLUMNS = ["file_name", "host", "collection_date", "country", "expected_role"]
 
 
 def is_ecuador_country(country: str) -> bool:
@@ -35,10 +35,13 @@ def build_gisaid_context_rows(context_fasta: str, local_epi_isls: set[str]) -> l
         country = context_places[isolate]
         date_value = context_dates[isolate]
         role = context_expected_role(country, context_types[isolate])
+        parts = isolate.split("/")
+        host = parts[1] if (len(parts) > 1 and parts[0] == "A") else "unknown"
         for _seg, (epi_isl, _seq, _hdr) in segs.items():
             rows.append(
                 {
                     "file_name": epi_isl,
+                    "host": host,
                     "collection_date": date_value,
                     "country": country,
                     "expected_role": role,

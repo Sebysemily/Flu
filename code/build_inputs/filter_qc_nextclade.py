@@ -30,26 +30,70 @@ def write_fasta(path, records):
             wrapped = "\n".join(seq[i : i + width] for i in range(0, len(seq), width))
             out_fh.write(wrapped + "\n")
 
+def load_core_ids(metadata_path):
+    import csv
+    import re
+    core_ids = set()
+    if not metadata_path or not os.path.exists(metadata_path):
+        return core_ids
+    with open(metadata_path, "r", encoding="utf-8") as handle:
+        reader = csv.DictReader(handle)
+        for row in reader:
+            name = (row.get("EPI_ISL") or row.get("file_name") or list(row.values())[0]).strip()
+            role = row.get("expected_role")
+            if role is not None:
+                if name and role.strip() and re.match(r"^flu_.*", role.strip(), re.IGNORECASE):
+                    core_ids.add(name)
+            else:
+                # If expected_role is not present (e.g. flu_filtrado.csv), assume all are core ids
+                if name:
+                    core_ids.add(name)
+    return core_ids
+
 def main():
-    parser = argparse.ArgumentParser(description="Filter segment alignments using Nextclade HA QC report.")
-    parser.add_argument("--input-dir", required=True, help="Directory containing input alignments")
-    parser.add_argument("--report", required=True, help="Path to Nextclade HA report TSV")
-    parser.add_argument("--output-dir", required=True, help="Directory to write filtered alignments")
+    parser = argparse.ArgumentParser(description="Filter segment alignments using Nextclade QC report.")
+    parser.add_argument("--input-alignment", help="Path to single input alignment file")
+    parser.add_argument("--output-alignment", help="Path to single output alignment file")
+    parser.add_argument("--input-dir", help="Directory containing input alignments")
+    parser.add_argument("--output-dir", help="Directory to write filtered alignments")
+    parser.add_argument("--report", required=True, help="Path to Nextclade report TSV or CSV")
+    parser.add_argument("--metadata", default=None, help="Path to metadata CSV to protect core flu sequences")
     parser.add_argument("--discarded-csv", default=None, help="Path to write CSV listing discarded sequences and reasons")
+    parser.add_argument("--skip-filter", action="store_true", help="Do not filter out any sequences from alignment, but still generate reports")
     args = parser.parse_args()
 
-    os.makedirs(args.output_dir, exist_ok=True)
 
-    # 1. Load Nextclade report
+    if (args.input_alignment or args.output_alignment) and not (args.input_alignment and args.output_alignment):
+        print("Error: Both --input-alignment and --output-alignment must be specified if one is.")
+        sys.exit(1)
+    if not args.input_alignment and not args.input_dir:
+        print("Error: Must specify either --input-alignment or --input-dir.")
+        sys.exit(1)
+
+    # 1. Load Nextclade report and core ids
     if not os.path.exists(args.report):
         print(f"Error: Nextclade report {args.report} does not exist.")
         sys.exit(1)
 
-    df = pd.read_csv(args.report, sep="\t")
+    sep = None
+    if args.report.endswith(".csv"):
+        # Detect if nextclade used semicolon or comma
+        with open(args.report, "r", encoding="utf-8") as f:
+            first_line = f.readline()
+        if ";" in first_line:
+            sep = ";"
+        elif "," in first_line:
+            sep = ","
+    
+    if sep is None:
+        sep = "," if args.report.endswith(".csv") else "\t"
+
+    df = pd.read_csv(args.report, sep=sep)
+    core_ids = load_core_ids(args.metadata)
     
     # 2. Identify failed sequences (where totalFrameShifts > 0, qc.stopCodons.totalStopCodons > 0, or qc.overallStatus == 'bad')
     discard_set = set()
-    discarded_records = []
+    failed_rows = []
     
     frameshift_col = "totalFrameShifts" if "totalFrameShifts" in df.columns else None
     stopcodon_col = "qc.stopCodons.totalStopCodons" if "qc.stopCodons.totalStopCodons" in df.columns else None
@@ -92,44 +136,61 @@ def main():
                 reasons.append(f"{val} overall status")
                 
         if failed:
-            is_local_core = seq_name.lower().startswith("flu")
+            is_local_core = (seq_name in core_ids)
             reason_str = " & ".join(reasons)
             
+            row_dict = row.to_dict()
             if is_local_core:
-                discarded_records.append({
-                    "sequence": seq_name,
-                    "status": "KEPT",
-                    "reason": f"Local Core - Kept despite: {reason_str}"
-                })
+                row_dict["qc_action"] = "KEPT"
+                row_dict["discard_reason"] = f"Local Core - Kept despite: {reason_str}"
                 print(f"Sequence '{seq_name}' kept (Local Core) despite QC issues: {reason_str}")
+            elif args.skip_filter:
+                row_dict["qc_action"] = "KEPT"
+                row_dict["discard_reason"] = f"Filter Skipped - Kept despite: {reason_str}"
+                print(f"Sequence '{seq_name}' kept (Filter Skipped) despite QC issues: {reason_str}")
             else:
                 discard_set.add(seq_name)
-                discarded_records.append({
-                    "sequence": seq_name,
-                    "status": "DISCARDED",
-                    "reason": reason_str
-                })
+                row_dict["qc_action"] = "DISCARDED"
+                row_dict["discard_reason"] = reason_str
                 print(f"Sequence '{seq_name}' discarded due to: {reason_str}")
+            failed_rows.append(row_dict)
 
-    print(f"Total sequences discarded based on HA Nextclade QC: {len(discard_set)}")
+
+    print(f"Total sequences discarded based on Nextclade QC: {len(discard_set)}")
     if discard_set:
         print(f"Discarded IDs: {sorted(list(discard_set))}")
 
     # Write discarded CSV if requested
     if args.discarded_csv:
         os.makedirs(os.path.dirname(args.discarded_csv), exist_ok=True)
-        # Sort records by sequence ID
-        discarded_records = sorted(discarded_records, key=lambda x: (x["status"], x["sequence"]))
-        pd.DataFrame(discarded_records).to_csv(args.discarded_csv, index=False)
+        if failed_rows:
+            discarded_df = pd.DataFrame(failed_rows)
+            # Reorder columns to put seqName, qc_action, discard_reason at the front
+            cols = list(discarded_df.columns)
+            if "qc_action" in cols:
+                cols.remove("qc_action")
+            if "discard_reason" in cols:
+                cols.remove("discard_reason")
+            if "seqName" in cols:
+                cols.remove("seqName")
+                new_cols = ["seqName", "qc_action", "discard_reason"] + cols
+            else:
+                new_cols = ["qc_action", "discard_reason"] + cols
+            discarded_df = discarded_df[new_cols]
+            # Sort records by action and sequence ID
+            discarded_df = discarded_df.sort_values(by=["qc_action", "seqName"])
+            discarded_df.to_csv(args.discarded_csv, index=False)
+        else:
+            empty_df = pd.DataFrame(columns=["seqName", "qc_action", "discard_reason"])
+            empty_df.to_csv(args.discarded_csv, index=False)
         print(f"Written QC report CSV: {args.discarded_csv}")
 
-    # 3. Filter each fasta alignment file in the input directory
-    for file_name in os.listdir(args.input_dir):
-        if not file_name.endswith(".mafft"):
-            continue
-            
-        in_path = os.path.join(args.input_dir, file_name)
-        out_path = os.path.join(args.output_dir, file_name)
+
+    # 3. Filter alignment files
+    if args.input_alignment and args.output_alignment:
+        in_path = args.input_alignment
+        out_path = args.output_alignment
+        os.makedirs(os.path.dirname(out_path) or ".", exist_ok=True)
         
         filtered_records = []
         total_count = 0
@@ -138,14 +199,41 @@ def main():
         for header, seq in read_fasta(in_path):
             total_count += 1
             clean_header = header.strip()
-            if clean_header in discard_set:
+            seq_id = clean_header.split()[0]
+            if clean_header in discard_set or seq_id in discard_set:
                 continue
                 
             filtered_records.append((header, seq))
             kept_count += 1
             
         write_fasta(out_path, filtered_records)
-        print(f"Filtered {file_name}: kept {kept_count}/{total_count} sequences (discarded {total_count - kept_count})")
+        print(f"Filtered {in_path}: kept {kept_count}/{total_count} sequences (discarded {total_count - kept_count})")
+    
+    elif args.input_dir and args.output_dir:
+        os.makedirs(args.output_dir, exist_ok=True)
+        for file_name in os.listdir(args.input_dir):
+            if not file_name.endswith(".mafft"):
+                continue
+                
+            in_path = os.path.join(args.input_dir, file_name)
+            out_path = os.path.join(args.output_dir, file_name)
+            
+            filtered_records = []
+            total_count = 0
+            kept_count = 0
+            
+            for header, seq in read_fasta(in_path):
+                total_count += 1
+                clean_header = header.strip()
+                seq_id = clean_header.split()[0]
+                if clean_header in discard_set or seq_id in discard_set:
+                    continue
+                    
+                filtered_records.append((header, seq))
+                kept_count += 1
+                
+            write_fasta(out_path, filtered_records)
+            print(f"Filtered {file_name}: kept {kept_count}/{total_count} sequences (discarded {total_count - kept_count})")
 
 if __name__ == "__main__":
     main()

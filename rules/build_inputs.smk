@@ -78,17 +78,16 @@ rule process_raw_to_segments:
         """
 
 # =====================================================================
-# Rule: genoflu_multi (Ecuador / data/input)
+# Rule: genoflu_multi (All sequences post-QC)
 # =====================================================================
-INPUT_FASTAS = sorted(glob.glob(os.path.join(DATA_INPUT, "*.fasta")))
 
 rule genoflu_multi:
     input:
-        input_fastas=INPUT_FASTAS
+        input_fastas=expand(f"{DATA_PHYLOGENY}/by_segment_qc_filtered/H5N1_{{segment}}.fasta", segment=PHYLO_SEGMENTS)
     output:
         results="metadata/genoflu_results.tsv"
     params:
-        fasta_dir=DATA_INPUT,
+        fasta_dir=f"{DATA_PHYLOGENY}/by_segment_qc_filtered",
         genoflu_dir=GENOFLU_DIR,
     conda:
         GENOFLU_CONDA
@@ -130,59 +129,8 @@ rule genoflu_results_to_metadata:
         touch {output.done}
         """
 
-# =====================================================================
-# Rule: prepare_context_genoflu_fastas (one multi-segment FASTA per isolate)
-# =====================================================================
-rule prepare_context_genoflu_fastas:
-    input:
-        context_fasta=CONTEXT_FASTA_RAW,
-        flu_filtrado=FILTRADO_CSV,
-    output:
-        sentinel=f"{CONTEXT_GENOFLU_RUN}/.genoflu_inputs.done",
-    params:
-        output_dir=CONTEXT_GENOFLU_RUN,
-    conda:
-        GENOFLU_CONDA
-    shell:
-        r"""
-        export PYTHONPATH=code:${{PYTHONPATH:-}}
-        python code/build_inputs/prepare_context_genoflu_fastas.py \
-            --context-fasta {input.context_fasta} \
-            --flu-filtrado {input.flu_filtrado} \
-            --output-dir {params.output_dir}
-        touch {output.sentinel}
-        """
-
-# =====================================================================
-# Rule: genoflu_context_multi (per-isolate FASTAs in data/context/genoflu_run)
-# =====================================================================
-rule genoflu_context_multi:
-    input:
-        sentinel=f"{CONTEXT_GENOFLU_RUN}/.genoflu_inputs.done",
-        ecuador_genoflu="metadata/genoflu_results.tsv",
-    output:
-        results="metadata/genoflu_context_results.tsv",
-    params:
-        fasta_dir=CONTEXT_GENOFLU_RUN,
-        genoflu_dir=GENOFLU_DIR,
-    conda:
-        GENOFLU_CONDA
-    shell:
-        r"""
-        if [ -n "$(ls -A {params.fasta_dir}/*.fasta 2>/dev/null)" ]; then
-            mkdir -p {params.fasta_dir}/results
-            python {params.genoflu_dir}/bin/genoflu-multi.py \
-                -f {params.fasta_dir} -m --run_incomplete --mpcores 8
-            if [ -f {params.fasta_dir}/results/results.tsv ]; then
-                cp {params.fasta_dir}/results/results.tsv {output.results}
-            else
-                touch {output.results}
-            fi
-        else
-            touch {output.results}
-        fi
-        rm -rf "{params.fasta_dir}/results" "{params.fasta_dir}/temp" "{params.fasta_dir}/blast"
-        """
+# Removed prepare_context_genoflu_fastas and genoflu_context_multi
+# Since genoflu_multi now runs on all QC-filtered sequences.
 
 # =====================================================================
 # Rule: build_h5n1_context_metadata
@@ -191,9 +139,8 @@ rule build_h5n1_context_metadata:
     input:
         flu_filtrado=FILTRADO_CSV,
         context_fasta=CONTEXT_FASTA_RAW,
-        genoflu_context="metadata/genoflu_context_results.tsv",
+        genoflu_context="metadata/genoflu_results.tsv",
         genoflu_ecuador_done="metadata/genoflu_results.done",
-        genoflu_context_inputs=f"{CONTEXT_GENOFLU_RUN}/.genoflu_inputs.done",
     output:
         context_base=CONTEXT_BASE_METADATA,
         metadata=MAIN_PANEL_METADATA,

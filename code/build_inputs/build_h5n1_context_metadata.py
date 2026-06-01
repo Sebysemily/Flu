@@ -51,7 +51,34 @@ FILTRADO_COLUMNS_EXCLUDE = {
     "RT-PCR gen M",
     "Gel amplicon sequencing",
     "Secuenciamiento",
+    "Código USFQ",
+    "EPI_ISL",
+    "Código procedencia",
+    "run",
 }
+
+
+
+def get_clean_host(species: str) -> str:
+    if not species or pd.isna(species):
+        return "unknown"
+    s = str(species).strip().lower().replace(" ", "_")
+    host_aliases = {
+        "aves_de_corral": "chicken",
+        "pato": "duck",
+        "patos": "duck",
+        "condor": "condor",
+        "fragata": "frigatebird",
+        "fregata_magnificens": "frigatebird",
+        "pardela_gris": "shearwater",
+        "ardenna_grisea": "shearwater",
+        "puffinus_sp": "shearwater",
+        "piquero_peruano": "booby",
+        "sula_nebouxii": "booby",
+        "thalasseus_elegans": "tern",
+        "gallinazo": "vulture",
+    }
+    return host_aliases.get(s, s)
 
 
 def build_panel_rows(context_fasta: str, filtrado_df: pd.DataFrame, date_source: str) -> list[dict[str, str]]:
@@ -60,6 +87,19 @@ def build_panel_rows(context_fasta: str, filtrado_df: pd.DataFrame, date_source:
         local_epi_isls = set(filtrado_df["EPI_ISL"].dropna().str.strip())
 
     ecuador_rows = build_ecuador_metadata_rows(filtrado_df, date_source)
+    
+    # Map local Ecuador sequences to their species/host
+    epi_to_host = {}
+    if "EPI_ISL" in filtrado_df.columns and "Especie" in filtrado_df.columns:
+        for _, row in filtrado_df.iterrows():
+            epi = str(row["EPI_ISL"]).strip() if pd.notna(row["EPI_ISL"]) else ""
+            spec = str(row["Especie"]).strip() if pd.notna(row["Especie"]) else ""
+            if epi and spec:
+                epi_to_host[epi] = get_clean_host(spec)
+                
+    for row in ecuador_rows:
+        row["host"] = epi_to_host.get(row["file_name"], "unknown")
+
     context_rows = build_gisaid_context_rows(context_fasta, local_epi_isls)
 
     panel_rows = dedupe_metadata_rows(ecuador_rows + context_rows)
@@ -99,6 +139,11 @@ def apply_context_lineages(
         lineage = lineages.get(seg, "")
         if lineage:
             row[f"{seg}_lineage"] = lineage
+
+    genotype = lineages.get("_genotype", "")
+    if genotype:
+        row["genotype"] = genotype
+
 
 
 def write_panel_csv(rows: list[dict[str, str]], path: str) -> None:
@@ -146,7 +191,8 @@ def main() -> None:
     lineages_by_epi = lineages_by_epi_isl(lineages_by_strain)
 
     merge_cols = filtrado_merge_columns(filtrado_df)
-    output_columns = PANEL_COLUMNS + merge_cols
+    output_columns = PANEL_COLUMNS + merge_cols + [f"{seg}_lineage" for seg in SEGMENTS]
+
 
     rows: list[dict[str, str]] = []
     for panel_row in panel_rows:
@@ -173,15 +219,15 @@ def main() -> None:
 
     n_ecuador = sum(1 for row in rows if row["file_name"] in filtrado_by_epi)
     n_context_si = sum(
-        1 for row in rows if row["file_name"] not in filtrado_by_epi and any(row[seg] == "SI" for seg in SEGMENTS)
+        1 for row in rows if row["file_name"] not in filtrado_by_epi and row["file_name"] in epi_to_segments
     )
-    n_context_lin = sum(
-        1 for row in rows if row["file_name"] not in filtrado_by_epi and any(row[f"{seg}_lineage"] for seg in SEGMENTS)
+    n_context_geno = sum(
+        1 for row in rows if row["file_name"] not in filtrado_by_epi and row.get("genotype", "")
     )
     print(
         f"Wrote {args.metadata_out}: {len(rows)} rows "
         f"(Ecuador local={n_ecuador}, GISAID context={len(rows) - n_ecuador}, "
-        f"context SI={n_context_si}, context with lineage={n_context_lin})"
+        f"context SI={n_context_si}, context with genotype={n_context_geno})"
     )
 
 

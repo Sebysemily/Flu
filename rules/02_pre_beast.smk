@@ -1,4 +1,4 @@
-
+RTT_DIR = "results/pre_beast/rtt_HA"
 PRE_BEAST_DATES = f"{RTT_DIR}/dates_from_headers.tsv"
 PRE_BEAST_ROOT_TO_TIP_OUTLIERS = f"{RTT_DIR}/outliers.tsv"
 PRE_BEAST_ROOT_TO_TIP_LOG = f"{RTT_DIR}/treetime_clock.log"
@@ -6,7 +6,7 @@ PRE_BEAST_ROOT_TO_TIP_DONE = f"{RTT_DIR}/treetime_clock.done"
 
 rule build_treetime_dates_subsets:
     input:
-        metadata=MAIN_PANEL_METADATA,
+        metadata="metadata/H5N1_context.csv",
     output:
         dates=PRE_BEAST_DATES,
     conda:
@@ -19,11 +19,10 @@ rule build_treetime_dates_subsets:
             --out {output.dates}
         """
 
-
-rule run_root_to_tip_subsets:
+rule run_root_to_tip_subsets_HA:
     input:
-        tree=f"{RESULTS_PHYLOGENY}/iq-tree/subset_concat/subset_concat_final.treefile",
-        alignment=MAIN_PANEL_ALIGNMENT,
+        tree="results/phylogeny/iq-tree/HA/HA.treefile",
+        alignment="data/phylogeny/main_panel/H5N1_HA.fasta",
         dates=PRE_BEAST_DATES,
     output:
         outliers=PRE_BEAST_ROOT_TO_TIP_OUTLIERS,
@@ -44,5 +43,3 @@ rule run_root_to_tip_subsets:
             --log {output.log} \
             --done {output.done}
         """
-
-

@@ -17,19 +17,26 @@ source("code/segment_analysis/tree_aesthetics.R")
 
 args <- commandArgs(trailingOnly = TRUE)
 if (length(args) < 3) {
-  stop("Usage: Rscript plot_ggtree.R <tree_file> <metadata_csv> <output_file> [title]")
+  stop("Usage: Rscript plot_ggtree.R <tree_file> <metadata_csv> <output_file> [title] [outgroup_sample]")
 }
 
-tree_file     <- args[1]
-metadata_file <- args[2]
-output_file   <- args[3]
-title         <- if (length(args) >= 4) args[4] else "Phylogenetic Tree"
+tree_file       <- args[1]
+metadata_file   <- args[2]
+output_file     <- args[3]
+title           <- if (length(args) >= 4) args[4] else "Phylogenetic Tree"
+outgroup_sample <- if (length(args) >= 5 && nzchar(args[5])) args[5] else NA_character_
 
 if (!file.exists(tree_file))     stop(paste("Tree file not found:", tree_file))
 if (!file.exists(metadata_file)) stop(paste("Metadata file not found:", metadata_file))
 
 tree <- read.newick(tree_file)
-tree <- midpoint.root(tree)
+
+if (!is.na(outgroup_sample) && outgroup_sample %in% tree$tip.label) {
+  tree <- ape::root(tree, outgroup = outgroup_sample, resolve.root = TRUE)
+} else {
+  tree <- phytools::midpoint.root(tree)
+}
+
 tree <- ape::ladderize(tree, right = FALSE)  # largest clades at bottom
 
 metadata <- read_csv(metadata_file, show_col_types = FALSE) |>

@@ -2,21 +2,27 @@ digraph snakemake_dag {
     graph[bgcolor=white, margin=0];
     node[shape=box, style=rounded, fontname=sans,                 fontsize=10, penwidth=2];
     edge[penwidth=2, color=grey];
-	0[label = "genoflu_metadata", color = "0.28 0.6 0.85", style="rounded"];
+	0[label = "genoflu_metadata", color = "0.22 0.6 0.85", style="rounded"];
 	1[label = "build_h5n1_context_metadata", color = "0.06 0.6 0.85", style="rounded"];
-	2[label = "genoflu_context_multi", color = "0.26 0.6 0.85", style="rounded"];
-	3[label = "prepare_context_genoflu_fastas", color = "0.41 0.6 0.85", style="rounded"];
-	4[label = "genoflu_multi", color = "0.30 0.6 0.85", style="rounded"];
+	2[label = "genoflu_multi", color = "0.24 0.6 0.85", style="rounded"];
+	3[label = "filter_alignments_by_nextclade_qc_others", color = "0.18 0.6 0.85", style="rounded"];
+	4[label = "process_raw_to_segments", color = "0.41 0.6 0.85", style="rounded"];
 	5[label = "build_gisaid_input_from_mira", color = "0.04 0.6 0.85", style="rounded"];
-	6[label = "genoflu_results_to_metadata", color = "0.32 0.6 0.85", style="rounded"];
-	2 -> 0
+	6[label = "filter_alignments_by_nextclade_qc_ha", color = "0.16 0.6 0.85", style="rounded"];
+	7[label = "run_nextclade_alignment_all", color = "0.51 0.6 0.85", style="rounded"];
+	8[label = "download_nextclade_db", color = "0.14 0.6 0.85", style="rounded"];
+	9[label = "genoflu_results_to_metadata", color = "0.25 0.6 0.85", style="rounded"];
 	1 -> 0
-	6 -> 0
-	3 -> 1
+	9 -> 0
 	2 -> 1
-	6 -> 1
+	9 -> 1
+	6 -> 2
 	3 -> 2
-	4 -> 2
+	4 -> 3
 	5 -> 4
+	7 -> 6
 	4 -> 6
+	8 -> 7
+	4 -> 7
+	2 -> 9
 }            

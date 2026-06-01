@@ -3,15 +3,20 @@
 
 from __future__ import annotations
 
-import re
 
 import pandas as pd
+
 
 SEGMENTS = ["PB2", "PB1", "PA", "HA", "NP", "NA", "MP", "NS"]
 
 
 def parse_genoflu_results(path: str) -> dict[str, dict[str, str]]:
-    """Return strain -> {segment: lineage} from a GenoFLU-multi results TSV."""
+    """Return strain -> {"_genotype": genotype} from a GenoFLU-multi results TSV.
+
+    The special key ``_genotype`` holds the combined genotype assignment (e.g.
+    ``B3.13``) taken directly from the ``Genotype`` column.  Per-segment
+    lineage keys are no longer returned.
+    """
     try:
         df = pd.read_csv(path, sep="\t", dtype=str)
     except pd.errors.EmptyDataError:
@@ -20,28 +25,14 @@ def parse_genoflu_results(path: str) -> dict[str, dict[str, str]]:
     if df.empty:
         return {}
 
-    list_col = next((c for c in df.columns if c.startswith("Genotype List Used")), None)
-    if not list_col:
+    if "Genotype" not in df.columns:
         return {}
 
     strain_to_lineages: dict[str, dict[str, str]] = {}
     for _, row in df.iterrows():
         strain = str(row["Strain"]).strip()
-        val = row[list_col]
-        if pd.notna(val) and val:
-            parts = [p.strip() for p in re.split(r"[;,]", str(val)) if p.strip()]
-            for part in parts:
-                if ":" in part:
-                    seg, lineage = part.split(":", 1)
-                elif "=" in part:
-                    seg, lineage = part.split("=", 1)
-                else:
-                    continue
-                seg = seg.strip().upper()
-                lineage = lineage.strip()
-                if seg in SEGMENTS:
-                    strain_to_lineages.setdefault(strain, {})[seg] = lineage
-        strain_to_lineages.setdefault(strain, {})
+        genotype = str(row.get("Genotype", "")).strip() if pd.notna(row.get("Genotype")) else ""
+        strain_to_lineages[strain] = {"_genotype": genotype}
 
     return strain_to_lineages
 

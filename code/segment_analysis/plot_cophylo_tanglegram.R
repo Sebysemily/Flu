@@ -77,7 +77,8 @@ render_cophylo_tanglegram <- function(
     ftype = "off",
     pts = FALSE,
     frame = FALSE,
-    edge.width = edge_lwd
+    edge.width = edge_lwd,
+    scale.bar = c(0, 0)
   )
 
   plot_obj <- get("last_plot.cophylo", envir = ape::.PlotPhyloEnv)

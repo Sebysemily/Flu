@@ -2,6 +2,7 @@ RANDOM_SEED = config.get("random_seed", 39809473)
 MAX_THREADS = int(config.get("max_threads", 18))
 
 PHYLO_SEGMENTS = ["PB2", "PB1", "PA", "HA", "NP", "NA", "MP", "NS"]
+LINEAGE_SEGMENTS = ["HA", "PB2"]
 CODON_SEGMENTS = ["PB2", "PB1", "PA", "HA", "NP", "NA"]
 SIMPLE_SEGMENTS = ["NS", "MP"]
 MAIN_PANEL_METADATA = "metadata/H5N1_context.csv"
@@ -14,76 +15,56 @@ FILTRADO_CSV = config.get("flu_filtrado", "metadata/flu_filtrado.csv")
 # Rule: download_nextclade_db
 # =====================================================================
 
+def get_nextclade_dataset(segment):
+    if segment == "HA":
+        return "community/moncla-lab/iav-h5/ha/2.3.4.4"
+    elif segment == "NA":
+        return "nextstrain/flu/h1n1pdm/na/MW626056"
+    else:
+        return f"nextstrain/flu/h1n1pdm/{segment.lower()}"
+
 rule download_nextclade_db:
     output:
-        ref=directory("resources/nextclade_h5n1_ha")
+        ref=directory("resources/nextclade_{segment}")
+    params:
+        dataset=lambda wildcards: get_nextclade_dataset(wildcards.segment)
     conda:
         "../envs/01_ml_trees.yml"
     shell:
         """
         mkdir -p {output.ref}
         nextclade dataset get \
-          --name 'community/moncla-lab/iav-h5/ha/2.3.4.4' \
+          --name '{params.dataset}' \
           --output-dir {output.ref}
         """
 
 # =====================================================================
-# Rule: extract_segment_reference
-# =====================================================================
-
-rule extract_segment_reference:
-    input:
-        fasta=f"{DATA_PHYLOGENY}/by_segment/H5N1_{{segment}}.fasta"
-    output:
-        ref=temp(f"{DATA_PHYLOGENY}/by_segment/H5N1_{{segment}}_ref.fasta")
-    params:
-        reference_id=config.get("reference_id", "Flu-0316")
-    conda:
-        "../envs/01_ml_trees.yml"
-    shell:
-        r"""
-        python code/build_inputs/extract_reference.py \
-            --input-fasta {input.fasta} \
-            --reference-id {params.reference_id} \
-            --output-fasta {output.ref}
-        """
-
-# =====================================================================
-# Rule: run_nextclade_alignment_per_segment
+# Rule: run_nextclade_alignment_all
 # =====================================================================
 
 PROCESSED_ALIGNMENTS_CODON_AWARE = config.get("processed_alignments_codon_aware", "data/processed_alignments/codon_aware")
 RESULTS_QC_METRICS = config.get("results_qc_metrics", "results/qc_metrics")
 
-rule run_nextclade_alignment_per_segment:
+rule run_nextclade_alignment_all:
     input:
         fasta=f"{DATA_PHYLOGENY}/by_segment/H5N1_{{segment}}.fasta",
-        db="resources/nextclade_h5n1_ha",
-        ref_seq=f"{DATA_PHYLOGENY}/by_segment/H5N1_{{segment}}_ref.fasta"
+        db="resources/nextclade_{segment}"
     output:
-        trimmed=f"{PROCESSED_ALIGNMENTS_CODON_AWARE}/H5N1_{{segment}}.mafft",
-        report=f"{RESULTS_QC_METRICS}/alignments/nextclade_{{segment}}_report.tsv"
+        trimmed=f"{RESULTS_QC_METRICS}/nextclade/{{segment}}/alignment.fasta",
+        report=f"{RESULTS_QC_METRICS}/nextclade/{{segment}}/nextclade_report.csv"
     conda:
         "../envs/01_ml_trees.yml"
     threads: MAX_THREADS
     shell:
         r"""
-        if [ "{wildcards.segment}" = "HA" ]; then
-            nextclade run \
-                --input-dataset {input.db} \
-                --output-fasta {output.trimmed} \
-                --output-tsv {output.report} \
-                --jobs {threads} \
-                {input.fasta}
-        else
-            nextclade run \
-                --input-ref {input.ref_seq} \
-                --output-fasta {output.trimmed} \
-                --output-tsv {output.report} \
-                --jobs {threads} \
-                {input.fasta}
-        fi
+        nextclade run \
+            --input-dataset {input.db} \
+            --output-fasta {output.trimmed} \
+            --output-csv {output.report} \
+            --jobs {threads} \
+            {input.fasta}
         """
+
 
 # =====================================================================
 # Rule: filter_alignments_by_nextclade_qc
@@ -91,55 +72,68 @@ rule run_nextclade_alignment_per_segment:
 
 PROCESSED_ALIGNMENTS_QC_FILTERED = config.get("processed_alignments_qc_filtered", "data/processed_alignments/qc_filtered")
 
-rule filter_alignments_by_nextclade_qc:
+rule filter_alignments_by_nextclade_qc_ha:
     input:
-        alignments=expand(f"{PROCESSED_ALIGNMENTS_CODON_AWARE}/H5N1_{{segment}}.mafft", segment=PHYLO_SEGMENTS),
-        report=f"{RESULTS_QC_METRICS}/alignments/nextclade_HA_report.tsv"
+        alignment=f"{DATA_PHYLOGENY}/by_segment/H5N1_HA.fasta",
+        report=f"{RESULTS_QC_METRICS}/nextclade/HA/nextclade_report.csv",
+        metadata=FILTRADO_CSV
     output:
-        filtered=expand(f"{PROCESSED_ALIGNMENTS_QC_FILTERED}/H5N1_{{segment}}.mafft", segment=PHYLO_SEGMENTS),
-        discarded_csv=f"{RESULTS_QC_METRICS}/alignments/qc_discarded_sequences.csv"
+        filtered=f"{DATA_PHYLOGENY}/by_segment_qc_filtered/H5N1_HA.fasta",
+        discarded_csv=f"{RESULTS_QC_METRICS}/nextclade/HA_eliminated.csv"
     conda:
         "../envs/01_ml_trees.yml"
     shell:
         r"""
         python code/build_inputs/filter_qc_nextclade.py \
-            --input-dir {PROCESSED_ALIGNMENTS_CODON_AWARE} \
+            --input-alignment {input.alignment} \
             --report {input.report} \
-            --output-dir {PROCESSED_ALIGNMENTS_QC_FILTERED} \
+            --output-alignment {output.filtered} \
+            --metadata {input.metadata} \
             --discarded-csv {output.discarded_csv}
         """
 
-# =====================================================================
-# Rule: filter_lineage_pb2_ha_alignments
-# =====================================================================
-
-PROCESSED_ALIGNMENTS_HA_PB2_LINEAGE = config.get(
-    "processed_alignments_ha_pb2_lineage", "data/processed_alignments/HA_PB2_lineage"
-)
-
-rule filter_lineage_pb2_ha_alignments:
+rule filter_alignments_by_nextclade_qc_others:
     input:
-        pb2=f"{PROCESSED_ALIGNMENTS_QC_FILTERED}/H5N1_PB2.mafft",
-        ha=f"{PROCESSED_ALIGNMENTS_QC_FILTERED}/H5N1_HA.mafft",
-        flu_filtrado=FILTRADO_CSV,
+        alignment=f"{DATA_PHYLOGENY}/by_segment/H5N1_{{segment}}.fasta"
     output:
-        pb2=f"{PROCESSED_ALIGNMENTS_HA_PB2_LINEAGE}/H5N1_PB2.mafft",
-        ha=f"{PROCESSED_ALIGNMENTS_HA_PB2_LINEAGE}/H5N1_HA.mafft",
-        audit=f"{RESULTS_QC_METRICS}/alignments/pb2_ha_lineage_filter_audit.csv",
-    params:
-        output_dir=PROCESSED_ALIGNMENTS_HA_PB2_LINEAGE,
+        filtered=f"{DATA_PHYLOGENY}/by_segment_qc_filtered/H5N1_{{segment}}.fasta"
+    wildcard_constraints:
+        segment="PB2|PB1|PA|NP|NA|MP|NS"
+    shell:
+        "cp {input.alignment} {output.filtered}"
+
+rule mafft_align_segment:
+    input:
+        fasta=f"{DATA_PHYLOGENY}/by_segment_qc_filtered/H5N1_{{segment}}.fasta"
+    output:
+        alignment=f"{PROCESSED_ALIGNMENTS_CODON_AWARE}/H5N1_{{segment}}.mafft"
+    conda:
+        "../envs/01_ml_trees.yml"
+    threads: MAX_THREADS
+    shell:
+        r"""
+        mafft --auto --thread {threads} {input.fasta} > {output.alignment}
+        """
+
+rule trim_and_filter_mafft:
+    input:
+        alignment=f"{PROCESSED_ALIGNMENTS_CODON_AWARE}/H5N1_{{segment}}.mafft"
+    output:
+        filtered=f"{PROCESSED_ALIGNMENTS_QC_FILTERED}/H5N1_{{segment}}.mafft"
     conda:
         "../envs/01_ml_trees.yml"
     shell:
         r"""
-        export PYTHONPATH=code:${{PYTHONPATH:-}}
-        python code/01_ml_trees/filter_pb2_ha_lineage_alignments.py \
-            --pb2-alignment {input.pb2} \
-            --ha-alignment {input.ha} \
-            --flu-filtrado {input.flu_filtrado} \
-            --output-dir {params.output_dir} \
-            --audit-csv {output.audit}
+        python code/01_ml_trees/trim_and_filter_mafft.py \
+            --input {input.alignment} \
+            --output {output.filtered} \
+            --max-divergence 0.1
         """
+
+
+
+
+
 
 # =====================================================================
 # Rule: build_single_segment_codon_partition
@@ -167,24 +161,21 @@ rule build_single_segment_codon_partition:
         """
 
 # =====================================================================
-# Rule: run_iqtree_codon_segment_replicate
+# Rule: run_iqtree_codon_segment
 # =====================================================================
-
-def get_iqtree_replicate_seed(wildcards):
-    return RANDOM_SEED + int(wildcards.rep)
 
 RESULTS_PHYLOGENY = config.get("results_phylogeny", "results/phylogeny")
 
-rule run_iqtree_codon_segment_replicate:
+rule run_iqtree_codon_segment:
     input:
         alignment=f"{MAIN_PANEL_DIR}/H5N1_{{segment}}.fasta",
         partitions=f"{MAIN_PANEL_DIR}/H5N1_{{segment}}.partitions"
     output:
-        treefile=f"{RESULTS_PHYLOGENY}/iq-tree/{{segment}}/rep{{rep}}.treefile"
+        treefile=f"{RESULTS_PHYLOGENY}/iq-tree/{{segment}}/{{segment}}.treefile"
     params:
-        prefix=f"{RESULTS_PHYLOGENY}/iq-tree/{{segment}}/rep{{rep}}/rep{{rep}}",
-        seed=get_iqtree_replicate_seed,
-        bootstrap=config.get("iqtree_bootstrap", 1000)
+        prefix=f"{RESULTS_PHYLOGENY}/iq-tree/{{segment}}/workdir/{{segment}}",
+        seed=RANDOM_SEED,
+        bootstrap=1000
     wildcard_constraints:
         segment="|".join(CODON_SEGMENTS)
     threads: 4
@@ -198,18 +189,18 @@ rule run_iqtree_codon_segment_replicate:
         """
 
 # =====================================================================
-# Rule: run_iqtree_simple_segment_replicate
+# Rule: run_iqtree_simple_segment
 # =====================================================================
 
-rule run_iqtree_simple_segment_replicate:
+rule run_iqtree_simple_segment:
     input:
         alignment=f"{MAIN_PANEL_DIR}/H5N1_{{segment}}.fasta"
     output:
-        treefile=f"{RESULTS_PHYLOGENY}/iq-tree/{{segment}}/rep{{rep}}.treefile"
+        treefile=f"{RESULTS_PHYLOGENY}/iq-tree/{{segment}}/{{segment}}.treefile"
     params:
-        prefix=f"{RESULTS_PHYLOGENY}/iq-tree/{{segment}}/rep{{rep}}/rep{{rep}}",
-        seed=get_iqtree_replicate_seed,
-        bootstrap=config.get("iqtree_bootstrap", 1000)
+        prefix=f"{RESULTS_PHYLOGENY}/iq-tree/{{segment}}/workdir/{{segment}}",
+        seed=RANDOM_SEED,
+        bootstrap=1000
     wildcard_constraints:
         segment="|".join(SIMPLE_SEGMENTS)
     threads: 4
@@ -223,46 +214,74 @@ rule run_iqtree_simple_segment_replicate:
         """
 
 # =====================================================================
-# Rule: iqtree_fast_ha (lineage panel)
+# Rule: build_lineage_codon_partition
 # =====================================================================
 
-rule iqtree_fast_ha:
+rule build_lineage_codon_partition:
     input:
-        alignment=f"{PROCESSED_ALIGNMENTS_HA_PB2_LINEAGE}/H5N1_HA.mafft",
+        alignment=f"{PROCESSED_ALIGNMENTS_QC_FILTERED}/H5N1_{{segment}}.mafft"
     output:
-        treefile=f"{RESULTS_PHYLOGENY}/iq-tree/HA/lineage/H5N1_HA_fast.treefile"
+        partition=f"{PROCESSED_ALIGNMENTS_QC_FILTERED}/H5N1_{{segment}}.partitions"
+    wildcard_constraints:
+        segment="|".join(CODON_SEGMENTS)
+    conda:
+        "../envs/01_ml_trees.yml"
+    shell:
+        r"""
+        python code/01_ml_trees/build_single_segment_codon_partition.py \
+            --alignment {input.alignment} \
+            --segment {wildcards.segment} \
+            --output {output.partition}
+        """
+
+# =====================================================================
+# Rule: iqtree_fast_codon_segment
+# =====================================================================
+
+rule iqtree_fast_codon_segment:
+    input:
+        alignment=f"{PROCESSED_ALIGNMENTS_QC_FILTERED}/H5N1_{{segment}}.mafft",
+        partitions=f"{PROCESSED_ALIGNMENTS_QC_FILTERED}/H5N1_{{segment}}.partitions"
+    output:
+        treefile=f"{RESULTS_PHYLOGENY}/iq-tree/{{segment}}/lineage/H5N1_{{segment}}_fast.treefile"
     params:
-        prefix=f"{RESULTS_PHYLOGENY}/iq-tree/HA/lineage/fast_ha/fast_ha",
-        seed=RANDOM_SEED
+        prefix=f"{RESULTS_PHYLOGENY}/iq-tree/{{segment}}/lineage/fast_run/fast_{{segment}}",
+        seed=RANDOM_SEED,
+        bootstrap=1000
+    wildcard_constraints:
+        segment="|".join(CODON_SEGMENTS)
     threads: MAX_THREADS
     conda:
         "../envs/01_ml_trees.yml"
     shell:
         r"""
         mkdir -p $(dirname {params.prefix})
-        iqtree -s {input.alignment} -pre {params.prefix} --pathogen -seed {params.seed} -nt {threads}
+        iqtree -s {input.alignment} -spp {input.partitions} -pre {params.prefix} -seed {params.seed} -nt {threads} -bb {params.bootstrap} -bnni
         cp {params.prefix}.treefile {output.treefile}
         """
 
 # =====================================================================
-# Rule: iqtree_fast_pb2 (lineage panel)
+# Rule: iqtree_fast_simple_segment
 # =====================================================================
 
-rule iqtree_fast_pb2:
+rule iqtree_fast_simple_segment:
     input:
-        alignment=f"{PROCESSED_ALIGNMENTS_HA_PB2_LINEAGE}/H5N1_PB2.mafft",
+        alignment=f"{PROCESSED_ALIGNMENTS_QC_FILTERED}/H5N1_{{segment}}.mafft"
     output:
-        treefile=f"{RESULTS_PHYLOGENY}/iq-tree/PB2/lineage/H5N1_PB2_fast.treefile"
+        treefile=f"{RESULTS_PHYLOGENY}/iq-tree/{{segment}}/lineage/H5N1_{{segment}}_fast.treefile"
     params:
-        prefix=f"{RESULTS_PHYLOGENY}/iq-tree/PB2/lineage/fast_pb2/fast_pb2",
-        seed=RANDOM_SEED
+        prefix=f"{RESULTS_PHYLOGENY}/iq-tree/{{segment}}/lineage/fast_run/fast_{{segment}}",
+        seed=RANDOM_SEED,
+        bootstrap=1000
+    wildcard_constraints:
+        segment="|".join(SIMPLE_SEGMENTS)
     threads: MAX_THREADS
     conda:
         "../envs/01_ml_trees.yml"
     shell:
         r"""
         mkdir -p $(dirname {params.prefix})
-        iqtree -s {input.alignment} -pre {params.prefix} --pathogen -seed {params.seed} -nt {threads}
+        iqtree -s {input.alignment} -pre {params.prefix} -seed {params.seed} -nt {threads} -bb {params.bootstrap} -bnni
         cp {params.prefix}.treefile {output.treefile}
         """
 
@@ -283,6 +302,7 @@ rule segment_analysis_ggtree_lineage:
     params:
         title=lambda wildcards: f"{wildcards.segment} lineage (PB2+HA panel, fast ML)",
         figures_dir=LINEAGE_FIGURES_DIR,
+        outgroup_sample=config.get("outgroup_root_sample", "EPI_ISL_18133416")
     wildcard_constraints:
         segment="|".join(LINEAGE_GGTREE_SEGMENTS),
     conda:
@@ -294,7 +314,8 @@ rule segment_analysis_ggtree_lineage:
             {input.tree} \
             {input.metadata} \
             {output.png} \
-            "{params.title}"
+            "{params.title}" \
+            "{params.outgroup_sample}"
         test -s {output.png}
         test -s {output.rds}
         """
@@ -365,157 +386,226 @@ rule segment_analysis_composite_lineage:
         """
 
 # =====================================================================
-# Rule: prune_tree_by_distance_to_core
-# =====================================================================
+PRUNED_HA_DIR = "data/phylogeny/main_panel/pre-alignment"
+MAIN_PANEL_CONTEXT_TAXA = f"{PRUNED_HA_DIR}/context_taxa.txt"
+MAIN_PANEL_FILTERED_AUDIT = f"{PRUNED_HA_DIR}/pruning.audit.tsv"
 
-RTT_DIR = "results/phylogeny/rtt"
-RTT_DATA_DIR = "data/phylogeny/rtt"
-MAIN_PANEL_FILTERED_ALIGNMENT = f"{RTT_DATA_DIR}/panel_main_concat.filtered.fasta"
-MAIN_PANEL_FILTERED_TREE = f"{RTT_DATA_DIR}/panel_main_concat.filtered.nwk"
-MAIN_PANEL_FILTERED_AUDIT = f"{RTT_DATA_DIR}/panel_main_concat.filtered.audit.tsv"
-
-rule prune_tree_by_distance_to_core:
+rule augur_filter_context:
     input:
-        alignment=f"{PROCESSED_ALIGNMENTS_QC_FILTERED}/H5N1_HA.mafft",
-        tree=f"{RESULTS_PHYLOGENY}/iq-tree/HA/H5N1_HA_fast.treefile",
         metadata=MAIN_PANEL_METADATA,
     output:
-        alignment=MAIN_PANEL_FILTERED_ALIGNMENT,
-        tree=MAIN_PANEL_FILTERED_TREE,
-        audit=MAIN_PANEL_FILTERED_AUDIT,
-        discarded_csv=f"{RESULTS_QC_METRICS}/alignments/pruning_discarded_sequences.csv",
+        context_taxa=MAIN_PANEL_CONTEXT_TAXA,
+        include_list=f"{PRUNED_HA_DIR}/augur_include.txt",
     conda:
         "../envs/01_ml_trees.yml"
     params:
-        n_closest=config.get("prunning_parameters", {}).get("n_closest", 200),
-        max_distance=config.get("prunning_parameters", {}).get("max_distance", 0.08),
-        protect_anchors_per_month=config.get("prunning_parameters", {}).get("protect_anchors_per_month", 2),
-        protect_regional_per_month=config.get("prunning_parameters", {}).get("protect_regional_per_month", 3),
-        temp_audit=f"{RTT_DATA_DIR}/panel_distance_audit.tsv",
+        outgroup_root_sample=config.get("outgroup_root_sample", "EPI_ISL_18133416"),
+        seed=RANDOM_SEED
     shell:
         r"""
-        python code/01_ml_trees/prune_panel_by_distance.py \
-            --alignment {input.alignment} \
-            --tree {input.tree} \
+        python -c "
+import pandas as pd
+df = pd.read_csv('{input.metadata}', dtype=str)
+df['date'] = df['collection_date']
+
+# Select up to 5 american anchors per month/year to protect
+anchors = df[df['expected_role'] == 'american_anchor'].copy()
+def get_year_month(d):
+    if pd.isna(d):
+        return 'unknown'
+    parts = d.split('-')
+    if len(parts) >= 2:
+        return parts[0] + '-' + parts[1]
+    return parts[0]
+anchors['year_month'] = anchors['collection_date'].apply(get_year_month)
+
+protected_anchors = []
+for ym, gp in anchors.groupby('year_month'):
+    protected_anchors.extend(gp.head(5)['file_name'].tolist())
+
+# Write all protected strains to include_list (Ecuador + monthly anchors + outgroup)
+flu_strains = df[df['expected_role'].str.startswith('flu_', na=False)]['file_name'].tolist()
+final_include = list(set(['{params.outgroup_root_sample}'] + flu_strains + protected_anchors))
+
+with open('{output.include_list}', 'w') as f:
+    for strain in sorted(final_include):
+        f.write(strain + '\n')
+
+# Prepare temporary metadata file with is_subsamplable column
+df['is_subsamplable'] = df['expected_role'].apply(
+    lambda r: 'yes' if r in ['american_anchor', 'regional_context'] else 'no'
+)
+df.to_csv('{input.metadata}.tmp.csv', index=False)
+
+# Create weights TSV file with integer weights
+weights_content = 'expected_role\tweight\nregional_context\t3\namerican_anchor\t1\ndefault\t1\n'
+with open('{output.context_taxa}.weights.tsv', 'w') as f:
+    f.write(weights_content)
+"
+
+        # Execute single weighted augur filter call
+        augur filter \
+            --metadata {input.metadata}.tmp.csv \
+            --metadata-id-columns file_name \
+            --exclude-where is_subsamplable=no \
+            --include {output.include_list} \
+            --group-by expected_role \
+            --group-by-weights {output.context_taxa}.weights.tsv \
+            --subsample-max-sequences 400 \
+            --subsample-seed {params.seed} \
+            --output-strains {output.context_taxa}
+
+        # Cleanup temporary files
+        rm -f {input.metadata}.tmp.csv {output.context_taxa}.weights.tsv
+        """
+
+
+# =====================================================================
+# Rule: subset_segments_pre_alignment
+# =====================================================================
+
+# =====================================================================
+# Rule: subset_ha_pre_alignment
+# =====================================================================
+
+rule subset_ha_pre_alignment:
+    input:
+        unaligned_fasta=f"{DATA_PHYLOGENY}/by_segment/H5N1_HA.fasta",
+        context_list=MAIN_PANEL_CONTEXT_TAXA,
+        metadata=MAIN_PANEL_METADATA,
+    output:
+        fasta=f"{PRUNED_HA_DIR}/H5N1_HA_pruned.fasta",
+    conda:
+        "../envs/01_ml_trees.yml"
+    shell:
+        r"""
+        python code/01_ml_trees/subset_segment_fastas.py \
+            --unaligned-fasta {input.unaligned_fasta} \
+            --context-list {input.context_list} \
             --metadata {input.metadata} \
-            --out-alignment {output.alignment} \
-            --out-tree {output.tree} \
-            --audit-out {output.audit} \
-            --distance-audit-out {params.temp_audit} \
-            --discarded-csv {output.discarded_csv} \
-            --n-closest {params.n_closest} \
-            --max-distance {params.max_distance} \
-            --protect-anchors-per-month {params.protect_anchors_per_month} \
-            --protect-regional-per-month {params.protect_regional_per_month}
+            --out-fasta {output.fasta}
         """
 
 # =====================================================================
-# Rule: copy_trees_for_segment_analysis
+# Rule: run_nextclade_alignment_pruned_ha
 # =====================================================================
-rule copy_trees_for_segment_analysis:
+
+rule run_mafft_alignment_pruned_ha:
     input:
-        treefile=f"{RESULTS_PHYLOGENY}/iq-tree/{{segment}}/rep1.treefile"
+        fasta=f"{PRUNED_HA_DIR}/H5N1_HA_pruned.fasta"
     output:
-        treefile=f"{RESULTS_PHYLOGENY}/iq-tree/{{segment}}/{{segment}}_final.treefile"
-    wildcard_constraints:
-        segment="|".join(PHYLO_SEGMENTS)
+        trimmed=f"{PRUNED_HA_DIR}/H5N1_HA_pruned.mafft"
+    conda:
+        "../envs/01_ml_trees.yml"
+    threads: MAX_THREADS
     shell:
-        "cp {input.treefile} {output.treefile}"
+        r"""
+        mafft --auto --thread {threads} {input.fasta} > {output.trimmed}
+        """
 
-
-rule copy_subset_concat_final_tree:
+rule trim_and_filter_pruned_ha:
     input:
-        treefile=f"{RESULTS_PHYLOGENY}/iq-tree/subset_concat/rep1.treefile"
+        alignment=f"{PRUNED_HA_DIR}/H5N1_HA_pruned.mafft"
     output:
-        treefile=f"{RESULTS_PHYLOGENY}/iq-tree/subset_concat/subset_concat_final.treefile"
-    shell:
-        "cp {input.treefile} {output.treefile}"
-
-# =====================================================================
-# Rule: apply_panel_to_segment_alignments
-# =====================================================================
-
-rule apply_panel_to_segment_alignments:
-    # Applies the distance-pruned taxa list to each per-segment MAFFT alignment,
-    # and also builds the concatenated alignment and partitions for the subset.
-    input:
-        alignments=expand("data/processed_alignments/qc_filtered/H5N1_{segment}.mafft", segment=PHYLO_SEGMENTS),
-        panel_tree=MAIN_PANEL_FILTERED_TREE,
-    output:
-        segment_alignments=expand(f"{MAIN_PANEL_DIR}/H5N1_{{segment}}.fasta", segment=PHYLO_SEGMENTS),
-        aligned=MAIN_PANEL_ALIGNMENT,
-        partitions=MAIN_PANEL_PARTITIONS,
-    params:
-        segments=PHYLO_SEGMENTS,
-        segment_order=",".join(PHYLO_SEGMENTS),
-        codon_segments=",".join(CODON_SEGMENTS),
-        final_panel_dir=MAIN_PANEL_DIR
+        filtered=f"{MAIN_PANEL_DIR}/H5N1_HA.fasta"
     conda:
         "../envs/01_ml_trees.yml"
     shell:
         r"""
-        # 1. Subset each segment alignment
-        for seg in {params.segments}; do
-            python code/02_Beast/subset_alignment_by_taxa.py \
-                --alignment data/processed_alignments/qc_filtered/H5N1_${{seg}}.mafft \
-                --taxa-tree {input.panel_tree} \
-                --out-alignment {params.final_panel_dir}/H5N1_${{seg}}.fasta
-        done
-        
-        # 2. Build concatenated alignment and partitions
-        python code/01_ml_trees/build_concat_codon_partitions.py \
-            --segment-order {params.segment_order} \
-            --codon-segments {params.codon_segments} \
-            --output-alignment {output.aligned} \
-            --output-partitions {output.partitions} \
-            {output.segment_alignments}
+        python code/01_ml_trees/trim_and_filter_mafft.py \
+            --input {input.alignment} \
+            --output {output.filtered} \
+            --max-divergence 0.05
         """
 
 # =====================================================================
-# =====================================================================
-# Rule: run_iqtree_subset_concat_replicate
+# Rule: iqtree_pruned_ha
 # =====================================================================
 
-rule run_iqtree_subset_concat_replicate:
+rule iqtree_pruned_ha:
     input:
-        alignment=MAIN_PANEL_ALIGNMENT,
-        partitions=MAIN_PANEL_PARTITIONS
+        alignment=f"{MAIN_PANEL_DIR}/H5N1_HA.fasta"
     output:
-        treefile=f"{RESULTS_PHYLOGENY}/iq-tree/subset_concat/rep{{rep}}.treefile"
+        treefile=f"{RESULTS_PHYLOGENY}/iq-tree/HA/HA.treefile"
     params:
-        prefix=f"{RESULTS_PHYLOGENY}/iq-tree/subset_concat/rep{{rep}}/rep{{rep}}",
-        seed=get_iqtree_replicate_seed,
-        bootstrap=config.get("iqtree_bootstrap", 1000)
-    threads: MAX_THREADS
+        prefix=f"{RESULTS_PHYLOGENY}/iq-tree/HA/workdir/HA",
+        seed=RANDOM_SEED,
+        bootstrap=1000
+    threads: 4
     conda:
         "../envs/01_ml_trees.yml"
     shell:
         r"""
         mkdir -p $(dirname {params.prefix})
-        iqtree -s {input.alignment} -spp {input.partitions} -pre {params.prefix} -seed {params.seed} -nt {threads} -bb {params.bootstrap} -bnni
+        iqtree -s {input.alignment} -pre {params.prefix} -seed {params.seed} -nt {threads} -bb {params.bootstrap} -bnni
         cp {params.prefix}.treefile {output.treefile}
         """
 
 # =====================================================================
-# Rule: segment_analysis_ggtree
+# Rule: plot_8_segments_composite
 # =====================================================================
-rule segment_analysis_ggtree:
+
+rule plot_8_segments_composite:
     input:
-        tree=lambda wildcards: (
-            f"{RESULTS_PHYLOGENY}/iq-tree/subset_concat/subset_concat_final.treefile"
-            if wildcards.segment == "subset_concat"
-            else f"{RESULTS_PHYLOGENY}/iq-tree/{wildcards.segment}/{wildcards.segment}_final.treefile"
-        ),
-        metadata=MAIN_PANEL_METADATA,
+        trees=expand(f"{RESULTS_PHYLOGENY}/iq-tree/{{segment}}/lineage/H5N1_{{segment}}_fast.treefile", segment=PHYLO_SEGMENTS),
+        metadata=MAIN_PANEL_METADATA
     output:
-        png="results/figures/{segment}_tree.png"
+        png="figures/main_panel_8_segments_collapsed.png"
     conda:
         "../envs/r.yml"
+    params:
+        outgroup=config.get("outgroup_root_sample", "EPI_ISL_18133416")
     shell:
         r"""
-        Rscript code/segment_analysis/plot_ggtree.R \
-            {input.tree} \
+        Rscript code/segment_analysis/plot_8_segments.R \
             {input.metadata} \
+            "{params.outgroup}" \
             {output.png} \
-            "{wildcards.segment} Tree"
+            {input.trees}
+        """
+
+# =====================================================================
+# Rule: flumut_update_db
+# =====================================================================
+rule flumut_update_db:
+    output:
+        done="resources/flumut_update.done"
+    conda:
+        "../envs/01_ml_trees.yml"
+    shell:
+        r"""
+        flumut --update
+        touch {output.done}
+        """
+
+# =====================================================================
+# Rule: prepare_flumut_fasta
+# =====================================================================
+rule prepare_flumut_fasta:
+    input:
+        fastas=expand(f"{DATA_PHYLOGENY}/by_segment_qc_filtered/H5N1_{{segment}}.fasta", segment=PHYLO_SEGMENTS)
+    output:
+        fasta="data/phylogeny/flu_mut/flumut_input.fasta"
+    conda:
+        "../envs/01_ml_trees.yml"
+    shell:
+        r"""
+        python code/build_inputs/build_flumut_fasta.py {output.fasta} {input.fastas}
+        """
+
+# =====================================================================
+# Rule: run_flumut
+# =====================================================================
+rule run_flumut:
+    input:
+        fasta="data/phylogeny/flu_mut/flumut_input.fasta",
+        db_done="resources/flumut_update.done"
+    output:
+        markers="results/phylogeny/flu_mut/flumut_report_markers.tsv",
+        mutations="results/phylogeny/flu_mut/flumut_report_mutations.tsv"
+    conda:
+        "../envs/01_ml_trees.yml"
+    shell:
+        r"""
+        flumut -m {output.markers} -M {output.mutations} --relaxed {input.fasta}
         """

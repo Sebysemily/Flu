@@ -14,6 +14,7 @@ def main() -> None:
     parser.add_argument("--log", required=True)
     parser.add_argument("--done", required=True)
     parser.add_argument("--clock-filter", type=float, default=3.0)
+    parser.add_argument("--prune-outliers", action="store_true", help="Remove detected outliers from the output tree")
     args = parser.parse_args()
 
     os.makedirs(args.outdir, exist_ok=True)
@@ -26,6 +27,8 @@ def main() -> None:
         "--outdir", args.outdir,
         "--clock-filter", str(args.clock_filter),
     ]
+    if args.prune_outliers:
+        cmd.append("--prune-outliers")
 
     with open(args.log, "w", encoding="utf-8") as log_handle:
         proc = subprocess.run(cmd, stdout=log_handle, stderr=subprocess.STDOUT, check=False)

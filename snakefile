@@ -10,26 +10,35 @@ BY_SEGMENT_FASTAS = expand(
     segment=["PB2", "PB1", "PA", "HA", "NP", "NA", "MP", "NS"],
 )
 
-LINEAGE_PB2_HA_TARGETS = [
-    f"{PROCESSED_ALIGNMENTS_HA_PB2_LINEAGE}/H5N1_PB2.mafft",
-    f"{PROCESSED_ALIGNMENTS_HA_PB2_LINEAGE}/H5N1_HA.mafft",
-    f"{RESULTS_QC_METRICS}/alignments/pb2_ha_lineage_filter_audit.csv",
-    f"{RESULTS_PHYLOGENY}/iq-tree/HA/lineage/H5N1_HA_fast.treefile",
-    f"{RESULTS_PHYLOGENY}/iq-tree/PB2/lineage/H5N1_PB2_fast.treefile",
+LINEAGE_ALIGNMENT_TARGETS = [
+    *expand(f"{PROCESSED_ALIGNMENTS_QC_FILTERED}/H5N1_{{segment}}.mafft", segment=["PB2", "PB1", "PA", "HA", "NP", "NA", "MP", "NS"]),
+    f"{RESULTS_QC_METRICS}/nextclade/HA_eliminated.csv",
+    f"{RESULTS_QC_METRICS}/nextclade/HA/nextclade_report.csv",
+
     *expand("figures/HA_PB2_lineage/{segment}_lineage_fast_tree.png", segment=["HA", "PB2"]),
     *expand("figures/HA_PB2_lineage/{segment}_lineage_fast_tree.rds", segment=["HA", "PB2"]),
     "figures/HA_PB2_lineage/HA_PB2_lineage_composite.png",
 ]
 
+MAIN_PANEL_TREES = expand(
+    f"{RESULTS_PHYLOGENY}/iq-tree/{{segment}}/lineage/H5N1_{{segment}}_fast.treefile",
+    segment=["PB2", "PB1", "PA", "HA", "NP", "NA", "MP", "NS"]
+)
+
 MAIN_PHYLOGENY_TARGETS = [
     *BY_SEGMENT_FASTAS,
-    *LINEAGE_PB2_HA_TARGETS,
+    *LINEAGE_ALIGNMENT_TARGETS,
     MAIN_PANEL_METADATA,
+    *MAIN_PANEL_TREES,
 ]
 
 ALL_VALIDATION_TARGETS = [
     *MAIN_PHYLOGENY_TARGETS,
     FILTRADO_CSV,
+    "figures/main_panel_8_segments_collapsed.png",
+    "results/pre_beast/rtt_HA/treetime_clock.done",
+    "results/phylogeny/flu_mut/flumut_report_markers.tsv",
+    "results/phylogeny/flu_mut/flumut_report_mutations.tsv"
 ]
 
 GENOFLU_METADATA_TARGETS = [

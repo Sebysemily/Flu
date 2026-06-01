@@ -28,3 +28,9 @@ processed_alignments_ha_pb2_lineage: "data/processed_alignments/HA_PB2_lineage"
 # -----------------------------
 results_phylogeny: "results/phylogeny"
 results_qc_metrics: "results/qc_metrics"
+
+# -----------------------------
+# Metadata reports (contains HA glycosylations, cleavage sites, etc.)
+# -----------------------------
+ha_main_panel_report: "results/qc_metrics/alignments/nextclade_main_panel_HA_report.tsv"
+

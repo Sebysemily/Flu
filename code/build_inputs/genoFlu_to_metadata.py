@@ -9,12 +9,12 @@ _CODE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if _CODE_DIR not in sys.path:
     sys.path.insert(0, _CODE_DIR)
 
-from build_inputs.genoflu_parse import SEGMENTS, lineages_by_epi_isl, parse_genoflu_results  # noqa: E402
+from build_inputs.genoflu_parse import lineages_by_epi_isl, parse_genoflu_results  # noqa: E402
 
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Parse GenoFLU-multi results and add {segment}_lineage columns to metadata file."
+        description="Parse GenoFLU-multi results and add a 'genotype' column to the metadata file."
     )
     parser.add_argument("--genoflu-results", required=True, help="Path to metadata/genoflu_results.tsv")
     parser.add_argument("--metadata-csv", required=True, help="Path to metadata/flu_filtrado.csv")
@@ -46,18 +46,13 @@ def main():
 
     print(f"Using column '{key_col}' as key matching to GenoFLU results.")
 
-    for seg in SEGMENTS:
-        col_name = f"{seg}_lineage"
-        if col_name not in df_meta.columns:
-            df_meta[col_name] = ""
+    if "genotype" not in df_meta.columns:
+        df_meta["genotype"] = ""
 
     for idx, row in df_meta.iterrows():
         key_val = str(row[key_col]).strip()
         if key_val in by_epi:
-            lineages = by_epi[key_val]
-            for seg in SEGMENTS:
-                col_name = f"{seg}_lineage"
-                df_meta.at[idx, col_name] = lineages.get(seg, "")
+            df_meta.at[idx, "genotype"] = by_epi[key_val].get("_genotype", "")
 
     df_meta.to_csv(args.metadata_csv, index=False)
     print(f"Successfully updated metadata file: {args.metadata_csv}")

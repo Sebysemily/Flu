@@ -18,5 +18,6 @@ dependencies:
   - r-dendextend
   - r-patchwork
   - r-cowplot
+  - r-phangorn
   - r-png
   - r-scales

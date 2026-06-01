@@ -3,28 +3,15 @@
 # -----------------------------
 random_seed: 39809473   # Base seed reused across steps that require randomization, to ensure reproducibility.
 max_threads: 16         # Default thread cap 
-# -----------------------------
-# qc and prunning
-# -----------------------------
-prunning_parameters:
-  n_closest: 200
-  max_distance: 0.08
-  protect_anchors_per_month: 3
-  protect_regional_per_month: 3
-# Nextclade alignment reference sequence ID
-reference_id: "Flu-0316" # done to obtain a reference for the 7 segments not present in db  
+
 # -----------------------------
 # treetime prunning values
 # -----------------------------
 treetime_parameters:
-  clock_filter: 3.0   # Outlier detection threshold (number of interquartile ranges from regression)
+  clock_filter: 4.0   # Outlier detection threshold (number of interquartile ranges from regression)
 # -----------------------------
 # ML_parameters
-# Maximum Likelihood (ML) tree replicates
-iqtree_replicates: 5
-# IQ-TREE bootstrap replicates (Ultrafast Bootstrap)
-iqtree_bootstrap: 1000
 
 # Outgroup root sample
-outgroup_root_sample: "EPI_ISL_18133416" #muestra mas antigua para root
+outgroup_root_sample: "EPI_ISL_18133029" #muestra mas antigua para root
 
