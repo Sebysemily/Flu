@@ -1,3 +1,6 @@
+# GenoFLU-multi submodule: use upstream as-is; ignore local pointer/content drift in this repo
+resources/GenoFLU-multi/
+
 results/*
 results/**
 results/***

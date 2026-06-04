@@ -1,3 +1,5 @@
 [submodule "resources/GenoFLU-multi"]
 	path = resources/GenoFLU-multi
 	url = https://github.com/moncla-lab/GenoFLU-multi.git
+	# Do not commit local submodule drift from this repo (upstream: moncla-lab/GenoFLU-multi)
+	ignore = all
