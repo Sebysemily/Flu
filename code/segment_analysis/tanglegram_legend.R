@@ -21,7 +21,9 @@ lineage_color_for <- function(lineage, palette) {
 }
 
 legend_items_df <- function(labels, colors, marker = c("ribbon", "triangle", "circle")) {
-  marker <- match.arg(marker)
+  if (length(marker) == 1) {
+    marker <- match.arg(marker)
+  }
   data.frame(
     label = labels,
     color = colors,
@@ -186,26 +188,39 @@ build_tanglegram_legend <- function(
     marker = "ribbon"
   )
 
-  # Only show Ecuador tip roles that are actually present in the tanglegram tips
-  tangle_ecuador_roles <- intersect(FLU_TIP_DISPLAY_ROLES, unique(ribbon_roles))
-  ecuador_items <- legend_items_df(
-    labels = unname(flu_tip_labels[tangle_ecuador_roles]),
-    colors = unname(flu_tip_colors[tangle_ecuador_roles]),
-    marker = "triangle"
+  # Build the tree tips legend to show genotype colors instead of geographic ones.
+  b41_color <- lineage_color_for("B4.1", lineage_palette)
+  
+  labels <- c(
+    "B3.2", 
+    "B2.2", 
+    "B1.3", 
+    "B4.1", 
+    "Others", 
+    "unknown"
   )
-
-  tip_items <- ecuador_items
-  if (!is.null(context_lineages) && length(context_lineages) > 0) {
-    family_legend <- lineage_family_legend_breaks(context_lineages)
-    if (length(family_legend$labels) > 0) {
-      context_items <- legend_items_df(
-        labels = family_legend$labels,
-        colors = family_legend$colors,
-        marker = "circle"
-      )
-      tip_items <- rbind(ecuador_items, context_items)
-    }
-  }
+  colors <- c(
+    scales::alpha("#0000FF", 0.7),      # B3.2 - alpha 0.7 (Blue)
+    scales::alpha("#FF0000", 0.7),      # B2.2 - alpha 0.7 (Red)
+    scales::alpha("#FF8C00", 0.7),      # B1.3 - alpha 0.7 (Orange)
+    scales::alpha(b41_color, 0.7),     # B4.1 - alpha 0.7
+    scales::alpha("#78C67A", 0.7),     # Others (B2.1 pastel green) - alpha 0.7
+    scales::alpha("grey85", 0.7)       # unknown - alpha 0.7
+  )
+  markers <- c(
+    "circle", 
+    "circle", 
+    "circle", 
+    "circle", 
+    "circle", 
+    "circle"
+  )
+  
+  tip_items <- legend_items_df(
+    labels = labels,
+    colors = colors,
+    marker = markers
+  )
 
   sections <- list(
     list(title = "Ribbons (sample type)", items = ribbon_items),

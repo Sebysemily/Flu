@@ -16,9 +16,10 @@ if _CODE_DIR not in sys.path:
 from build_inputs.context_panel_metadata import (  # noqa: E402
     PANEL_COLUMNS,
     build_gisaid_context_rows,
+    classify_host_type,
+    read_epi_isls_from_fasta,
 )
 from build_inputs.genoflu_parse import (  # noqa: E402
-    SEGMENTS,
     lineages_by_epi_isl,
     parse_genoflu_results,
 )
@@ -55,6 +56,12 @@ FILTRADO_COLUMNS_EXCLUDE = {
     "EPI_ISL",
     "Código procedencia",
     "run",
+    # Segment presence / lineage columns — excluded from H5N1_context output
+    # (genotype is kept — it is added explicitly below, not via merge_cols)
+    "PB2", "PB1", "PA", "HA", "NP", "NA", "MP", "NS",
+    "PB2_lineage", "PB1_lineage", "PA_lineage", "HA_lineage",
+    "NP_lineage", "NA_lineage", "MP_lineage", "NS_lineage",
+    "genotype",
 }
 
 
@@ -81,13 +88,19 @@ def get_clean_host(species: str) -> str:
     return host_aliases.get(s, s)
 
 
-def build_panel_rows(context_fasta: str, filtrado_df: pd.DataFrame, date_source: str) -> list[dict[str, str]]:
+def build_panel_rows(
+    context_fasta: str,
+    filtrado_df: pd.DataFrame,
+    date_source: str,
+    human_epi_isls: frozenset[str] = frozenset(),
+    avian_epi_isls: frozenset[str] = frozenset(),
+) -> list[dict[str, str]]:
     local_epi_isls = set()
     if "EPI_ISL" in filtrado_df.columns:
         local_epi_isls = set(filtrado_df["EPI_ISL"].dropna().str.strip())
 
     ecuador_rows = build_ecuador_metadata_rows(filtrado_df, date_source)
-    
+
     # Map local Ecuador sequences to their species/host
     epi_to_host = {}
     if "EPI_ISL" in filtrado_df.columns and "Especie" in filtrado_df.columns:
@@ -96,11 +109,15 @@ def build_panel_rows(context_fasta: str, filtrado_df: pd.DataFrame, date_source:
             spec = str(row["Especie"]).strip() if pd.notna(row["Especie"]) else ""
             if epi and spec:
                 epi_to_host[epi] = get_clean_host(spec)
-                
+
     for row in ecuador_rows:
         row["host"] = epi_to_host.get(row["file_name"], "unknown")
+        # Ecuador samples are always avian; host_type already set in build_ecuador_metadata_rows
+        row.setdefault("host_type", "avian")
 
-    context_rows = build_gisaid_context_rows(context_fasta, local_epi_isls)
+    context_rows = build_gisaid_context_rows(
+        context_fasta, local_epi_isls, human_epi_isls, avian_epi_isls
+    )
 
     panel_rows = dedupe_metadata_rows(ecuador_rows + context_rows)
     panel_rows.sort(key=lambda row: (row["expected_role"], row["file_name"]))
@@ -114,35 +131,6 @@ def filtrado_merge_columns(filtrado_df: pd.DataFrame) -> list[str]:
         if col not in PANEL_COLUMNS and col not in FILTRADO_COLUMNS_EXCLUDE
     ]
 
-
-def apply_context_lineages(
-    row: dict[str, str],
-    file_name: str,
-    epi_to_segments: dict[str, set[str]],
-    epi_to_isolate: dict[str, str],
-    lineages_by_epi: dict[str, dict[str, str]],
-    lineages_by_strain: dict[str, dict[str, str]],
-) -> None:
-    for segment in sorted(epi_to_segments.get(file_name, ())):
-        row[segment] = "SI"
-
-    lineages = lineages_by_epi.get(file_name)
-    if not lineages:
-        isolate = epi_to_isolate.get(file_name)
-        if isolate:
-            lineages = lineages_by_strain.get(isolate)
-
-    if not lineages:
-        return
-
-    for seg in SEGMENTS:
-        lineage = lineages.get(seg, "")
-        if lineage:
-            row[f"{seg}_lineage"] = lineage
-
-    genotype = lineages.get("_genotype", "")
-    if genotype:
-        row["genotype"] = genotype
 
 
 
@@ -161,12 +149,22 @@ def main() -> None:
     parser.add_argument("--ecuador-date-source", default="collection")
     parser.add_argument("--context-base-out", default="metadata/context_base.csv")
     parser.add_argument("--metadata-out", default="metadata/H5N1_context.csv")
+    parser.add_argument("--human-fasta", default="",
+                        help="FASTA with human-host sequences (EPI_ISLs → host_type=human)")
+    parser.add_argument("--avian-fasta", default="",
+                        help="FASTA with avian-only sequences (EPI_ISLs → host_type=avian)")
     args = parser.parse_args()
+
+    human_epi_isls = read_epi_isls_from_fasta(args.human_fasta)
+    avian_epi_isls = read_epi_isls_from_fasta(args.avian_fasta)
+    print(f"Host-type override sets: human={len(human_epi_isls)}, avian={len(avian_epi_isls)}")
 
     filtrado_df = pd.read_csv(args.flu_filtrado, dtype=str)
     local_epi_isls = set(filtrado_df["EPI_ISL"].dropna().str.strip()) if "EPI_ISL" in filtrado_df.columns else set()
 
-    context_rows = build_gisaid_context_rows(args.context_fasta, local_epi_isls)
+    context_rows = build_gisaid_context_rows(
+        args.context_fasta, local_epi_isls, human_epi_isls, avian_epi_isls
+    )
     write_panel_csv(context_rows, args.context_base_out)
 
     n_ecuador_gisaid = sum(1 for row in context_rows if row["expected_role"] == "flu_costa")
@@ -175,7 +173,10 @@ def main() -> None:
         f"(Ecuador coastal={n_ecuador_gisaid})"
     )
 
-    panel_rows = build_panel_rows(args.context_fasta, filtrado_df, args.ecuador_date_source)
+    panel_rows = build_panel_rows(
+        args.context_fasta, filtrado_df, args.ecuador_date_source,
+        human_epi_isls, avian_epi_isls,
+    )
 
     filtrado_by_epi = {
         str(row["EPI_ISL"]).strip(): row
@@ -185,31 +186,38 @@ def main() -> None:
 
     isolates_data = parse_context_isolates(args.context_fasta)
     complete_context, *_ = filter_complete_context_isolates(isolates_data, local_epi_isls)
-    epi_to_segments, epi_to_isolate = build_context_epi_maps(complete_context)
+    epi_to_isolate = build_context_epi_maps(complete_context)[1]
 
     lineages_by_strain = parse_genoflu_results(args.genoflu_context_results)
     lineages_by_epi = lineages_by_epi_isl(lineages_by_strain)
 
     merge_cols = filtrado_merge_columns(filtrado_df)
-    output_columns = PANEL_COLUMNS + merge_cols + [f"{seg}_lineage" for seg in SEGMENTS]
-
+    output_columns = PANEL_COLUMNS + merge_cols + ["genotype"]
 
     rows: list[dict[str, str]] = []
     for panel_row in panel_rows:
         file_name = panel_row["file_name"]
         row = {col: "" for col in output_columns}
         for col in PANEL_COLUMNS:
-            row[col] = panel_row[col]
+            row[col] = panel_row.get(col, "")
 
         if file_name in filtrado_by_epi:
             filt_row = filtrado_by_epi[file_name]
             for col in merge_cols:
                 value = filt_row.get(col, "")
                 row[col] = "" if pd.isna(value) else str(value).strip()
+            # Ecuador genotype from flu_filtrado
+            geno_val = filt_row.get("genotype", "")
+            row["genotype"] = "" if pd.isna(geno_val) else str(geno_val).strip()
         else:
-            apply_context_lineages(
-                row, file_name, epi_to_segments, epi_to_isolate, lineages_by_epi, lineages_by_strain
-            )
+            # GISAID context genotype from genoflu results
+            lineages = lineages_by_epi.get(file_name)
+            if not lineages:
+                isolate = epi_to_isolate.get(file_name)
+                if isolate:
+                    lineages = lineages_by_strain.get(isolate)
+            if lineages:
+                row["genotype"] = lineages.get("_genotype", "")
 
         rows.append(row)
 
@@ -218,16 +226,11 @@ def main() -> None:
     out_df.to_csv(args.metadata_out, index=False)
 
     n_ecuador = sum(1 for row in rows if row["file_name"] in filtrado_by_epi)
-    n_context_si = sum(
-        1 for row in rows if row["file_name"] not in filtrado_by_epi and row["file_name"] in epi_to_segments
-    )
-    n_context_geno = sum(
-        1 for row in rows if row["file_name"] not in filtrado_by_epi and row.get("genotype", "")
-    )
+    n_with_genotype = sum(1 for row in rows if row.get("genotype", ""))
     print(
         f"Wrote {args.metadata_out}: {len(rows)} rows "
         f"(Ecuador local={n_ecuador}, GISAID context={len(rows) - n_ecuador}, "
-        f"context SI={n_context_si}, context with genotype={n_context_geno})"
+        f"with genotype={n_with_genotype})"
     )
 
 

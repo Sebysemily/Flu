@@ -67,7 +67,7 @@ def main():
     print(f"Merged: added {added_count} new isolates from extra FASTA. Total isolates = {len(merged_isolates)}")
 
     # 4. Filter complete context isolates (len(segs) == 8, not local, valid date)
-    complete_context, context_dates, context_places, context_types = filter_complete_context_isolates(
+    complete_context, context_dates, context_places, context_types, context_provinces = filter_complete_context_isolates(
         merged_isolates, local_epi_isls
     )
     print(f"Total complete, non-local context isolates: {len(complete_context)}")

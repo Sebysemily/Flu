@@ -1,9 +1,20 @@
 BEAST_ENABLED = bool(config.get("beast", {}).get("enabled", True))
-BEAST_THREADS = int(config.get("beast", {}).get("threads", 4))
+# BEAST 1.x uses ~1 CPU per chain; Snakemake threads reserve a core per job.
+BEAST_THREADS_PER_CHAIN = int(config.get("beast", {}).get("threads_per_chain", 1))
+BEAST_MAX_PARALLEL_CHAINS = int(config.get("beast", {}).get("max_parallel_chains", 2))
+BEAST_THREADS = int(config.get("max_threads", 16))
 BEAST_MAX_HOURS = int(config.get("beast", {}).get("max_hours", 12))
 BEAST_BINARY = config.get("beast", {}).get("binary") or ""
 BEAST_SEED_OFFSET = 100000
 BEAST_REPLICATES = ["r1", "r2"]
+BEAST_PREPARED_XMLS = {
+    "strict_const": "template_beast/strict_const.xml",
+    "strict_exp": "template_beast/strict_exp.xml",
+    "strict_bay": "template_beast/strict_bay.xml",
+    "ucln_const": "template_beast/ucln_const.xml",
+    "ucln_exp": "template_beast/ucln_exp.xml",
+    "ucln_bay": "template_beast/ucln_bay.xml"
+}
 BEAST_RUN_SCENARIOS = list(BEAST_PREPARED_XMLS.keys())
 BEAST_SEEDS_CONFIG = config.get("beast", {}).get("seeds", {})
 BEAST_BEAGLE_CONFIG = config.get("beast", {}).get("beagle", {})
@@ -46,34 +57,113 @@ def beast_seed_for(scenario, replicate):
 
 BEAST_RUN_TARGETS = expand(f"{RESULTS_BEAST}/runs/{{scenario}}/run.done", scenario=BEAST_RUN_SCENARIOS)
 BEAST_FINAL_TARGETS = [STRICT_CONSTANT_FINAL_DONE, STRICT_CONSTANT_LUGAR_FINAL_DONE]
+
+# Only target scenarios for GSS test runs that actually have an XML file created
+BEAST_GSS_SCENARIOS = [s for s, xml in BEAST_PREPARED_XMLS.items() if os.path.exists(xml)]
+BEAST_GSS_TARGETS = expand("results/beast/GSS/{scenario}/run.done", scenario=BEAST_GSS_SCENARIOS)
+
 BEAST_PUBLIC_TARGETS = (
-    [*BEAST_RUN_TARGETS, *BEAST_FINAL_TARGETS]
+    [*BEAST_RUN_TARGETS, *BEAST_FINAL_TARGETS, *BEAST_GSS_TARGETS]
     if BEAST_ENABLED
     else []
 )
 
 
-rule validate_beast_xml:
+# =====================================================================
+# Rule: update_beast_xml_params
+# Updates the XML in-place if config.yml changes.
+# =====================================================================
+rule update_beast_xml_params:
+    input:
+        config="config/config.yml"
+    output:
+        stamp="results/beast/GSS/{scenario}/xml_params.json",
+    params:
+        xml=lambda wildcards: BEAST_PREPARED_XMLS[wildcards.scenario]
+    shell:
+        r"""
+        python code/03_beast/update_beast_xmls.py {wildcards.scenario} \
+            --config {input.config} \
+            --stamp {output.stamp}
+        """
+
+# =====================================================================
+# Rule: run_beast_single
+# Single chain runs with -resume support, reading directly from template_beast.
+# =====================================================================
+rule run_beast_single:
     input:
         xml=lambda wildcards: BEAST_PREPARED_XMLS[wildcards.scenario],
+        stamp="results/beast/GSS/{scenario}/xml_params.json",
     output:
-        validated=f"{RESULTS_BEAST}/xml/{{scenario}}.validated",
-    wildcard_constraints:
-        scenario="|".join(BEAST_RUN_SCENARIOS),
+        done="results/beast/GSS/{scenario}/run.done"
+    params:
+        outdir="results/beast/GSS/{scenario}",
+        seed=config.get("random_seed", 1001)
+    threads: BEAST_THREADS_PER_CHAIN
     conda:
         "../envs/03_beast.yml"
     shell:
         r"""
-        python code/02_Beast/validate_beast_xml.py \
-            --xml {input.xml} \
-            --out {output.validated}
+        mkdir -p {params.outdir}
+        cd {params.outdir}
+        
+        # Calculate relative path to xml from the working directory
+        REL_XML="../../../../{input.xml}"
+        
+        # Find checkpoint file if it exists
+        CHKPT=$(ls *.state *.chkpt 2>/dev/null | head -n 1 || true)
+        
+        if [ -n "$CHKPT" ]; then
+            echo "Resuming from checkpoint $CHKPT..."
+            # BEAST 1.x does not append natively without truncating. Protect existing data by renaming it.
+            TIMESTAMP=$(date +%s)
+            mkdir -p logs
+            for f in *.log *.trees *.ops; do
+                if [ -f "$f" ]; then
+                    mv "$f" "logs/$f.part_$TIMESTAMP"
+                fi
+            done
+            # Also move any existing part files to keep it tidy
+            for f in *.part_*; do
+                if [ -f "$f" ]; then
+                    mv "$f" "logs/"
+                fi
+            done
+
+            # Calculate remaining states needed to reach the target chainLength
+            TARGET_LENGTH=$(grep -oP 'chainLength="\K[0-9]+' $REL_XML | head -n 1)
+            LAST_STATE=$(cat logs/*.log.part_* 2>/dev/null | awk '/^[0-9]/ {{print $1}}' | sort -n | tail -n 1 || echo 0)
+            
+            if [ -z "$LAST_STATE" ]; then LAST_STATE=0; fi
+
+            REMAINING=$(( TARGET_LENGTH - LAST_STATE ))
+            echo "Target length: $TARGET_LENGTH, Last state: $LAST_STATE, Remaining: $REMAINING"
+
+            if [ "$REMAINING" -le 0 ]; then
+                echo "Target chainLength already reached or exceeded ($LAST_STATE >= $TARGET_LENGTH). Finishing gracefully."
+            else
+                # Modify a local copy of the XML to only run the remaining states
+                cp $REL_XML local.xml
+                sed -i "s/chainLength=\"[0-9]*\"/chainLength=\"$REMAINING\"/" local.xml
+                beast -load_state "$CHKPT" -seed {params.seed} local.xml
+            fi
+        else
+            if ls *.log *.trees >/dev/null 2>&1; then
+                echo "ERROR: Logs exist but no checkpoint was found! Aborting to protect your data."
+                exit 1
+            fi
+            echo "No checkpoint found. Starting fresh BEAST chain..."
+            beast -seed {params.seed} $REL_XML
+        fi
+        
+        touch run.done
         """
 
 
 rule run_beast_replicate:
     input:
         xml=lambda wildcards: BEAST_PREPARED_XMLS[wildcards.scenario],
-        validated=f"{RESULTS_BEAST}/xml/{{scenario}}.validated",
         previous_done=lambda wildcards: []
         if wildcards.replicate == "r1"
         else f"{RESULTS_BEAST}/runs/{wildcards.scenario}/r1/run.done",

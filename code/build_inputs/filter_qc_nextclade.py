@@ -2,7 +2,20 @@
 import argparse
 import os
 import sys
+from pathlib import Path
+
 import pandas as pd
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from qc.flu_role_utils import load_role_map, write_discarded_rows
+
+NEXTCLADE_DISCARD_FIELDS = [
+    "seqName",
+    "expected_role",
+    "qc_action",
+    "discard_reason",
+    "filter_step",
+]
 
 def read_fasta(path):
     header = None
@@ -59,16 +72,38 @@ def main():
     parser.add_argument("--report", required=True, help="Path to Nextclade report TSV or CSV")
     parser.add_argument("--metadata", default=None, help="Path to metadata CSV to protect core flu sequences")
     parser.add_argument("--discarded-csv", default=None, help="Path to write CSV listing discarded sequences and reasons")
+    parser.add_argument(
+        "--role-metadata",
+        default=None,
+        help="Metadata with file_name and expected_role (e.g. H5N1_context.csv)",
+    )
+    parser.add_argument(
+        "--filter-step",
+        default="nextclade_ha",
+        help="Label for filter_step column in discarded CSV",
+    )
     parser.add_argument("--skip-filter", action="store_true", help="Do not filter out any sequences from alignment, but still generate reports")
+    parser.add_argument(
+        "--discarded-csv-only",
+        action="store_true",
+        help="Only write discarded/flu-discarded CSVs; do not read or write alignment FASTA",
+    )
     args = parser.parse_args()
 
 
-    if (args.input_alignment or args.output_alignment) and not (args.input_alignment and args.output_alignment):
-        print("Error: Both --input-alignment and --output-alignment must be specified if one is.")
-        sys.exit(1)
-    if not args.input_alignment and not args.input_dir:
-        print("Error: Must specify either --input-alignment or --input-dir.")
-        sys.exit(1)
+    if args.discarded_csv_only:
+        if not args.discarded_csv:
+            print("Error: --discarded-csv-only requires --discarded-csv.")
+            sys.exit(1)
+    else:
+        if (args.input_alignment or args.output_alignment) and not (
+            args.input_alignment and args.output_alignment
+        ):
+            print("Error: Both --input-alignment and --output-alignment must be specified if one is.")
+            sys.exit(1)
+        if not args.input_alignment and not args.input_dir:
+            print("Error: Must specify either --input-alignment or --input-dir.")
+            sys.exit(1)
 
     # 1. Load Nextclade report and core ids
     if not os.path.exists(args.report):
@@ -90,6 +125,7 @@ def main():
 
     df = pd.read_csv(args.report, sep=sep)
     core_ids = load_core_ids(args.metadata)
+    role_map = load_role_map(args.role_metadata)
     
     # 2. Identify failed sequences (where totalFrameShifts > 0, qc.stopCodons.totalStopCodons > 0, or qc.overallStatus == 'bad')
     discard_set = set()
@@ -155,36 +191,30 @@ def main():
                 print(f"Sequence '{seq_name}' discarded due to: {reason_str}")
             failed_rows.append(row_dict)
 
+    summary_rows = []
+    for row_dict in failed_rows:
+        seq_name = str(row_dict.get("seqName", "")).strip()
+        role = role_map.get(seq_name, "")
+        summary_rows.append(
+            {
+                "seqName": seq_name,
+                "expected_role": role,
+                "qc_action": row_dict.get("qc_action", ""),
+                "discard_reason": row_dict.get("discard_reason", ""),
+                "filter_step": args.filter_step,
+            }
+        )
 
     print(f"Total sequences discarded based on Nextclade QC: {len(discard_set)}")
     if discard_set:
         print(f"Discarded IDs: {sorted(list(discard_set))}")
 
-    # Write discarded CSV if requested
+    discarded_only = [r for r in summary_rows if r.get("qc_action") == "DISCARDED"]
     if args.discarded_csv:
-        os.makedirs(os.path.dirname(args.discarded_csv), exist_ok=True)
-        if failed_rows:
-            discarded_df = pd.DataFrame(failed_rows)
-            # Reorder columns to put seqName, qc_action, discard_reason at the front
-            cols = list(discarded_df.columns)
-            if "qc_action" in cols:
-                cols.remove("qc_action")
-            if "discard_reason" in cols:
-                cols.remove("discard_reason")
-            if "seqName" in cols:
-                cols.remove("seqName")
-                new_cols = ["seqName", "qc_action", "discard_reason"] + cols
-            else:
-                new_cols = ["qc_action", "discard_reason"] + cols
-            discarded_df = discarded_df[new_cols]
-            # Sort records by action and sequence ID
-            discarded_df = discarded_df.sort_values(by=["qc_action", "seqName"])
-            discarded_df.to_csv(args.discarded_csv, index=False)
-        else:
-            empty_df = pd.DataFrame(columns=["seqName", "qc_action", "discard_reason"])
-            empty_df.to_csv(args.discarded_csv, index=False)
-        print(f"Written QC report CSV: {args.discarded_csv}")
-
+        write_discarded_rows(args.discarded_csv, discarded_only, NEXTCLADE_DISCARD_FIELDS)
+        print(f"Written QC report CSV: {args.discarded_csv} ({len(discarded_only)} discarded)")
+    if args.discarded_csv_only:
+        return
 
     # 3. Filter alignment files
     if args.input_alignment and args.output_alignment:

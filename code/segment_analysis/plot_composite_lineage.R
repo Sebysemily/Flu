@@ -85,10 +85,8 @@ lineage_palette <- heatmap_obj$palette
 panel_meta <- read.csv(panel_metadata_path, stringsAsFactors = FALSE, check.names = FALSE)
 
 tip_roles <- normalize_role_vector(setNames(panel_meta$expected_role, panel_meta$file_name))
-tip_lineages_ha <- setNames(str_trim(panel_meta$HA_lineage), panel_meta$file_name)
-tip_lineages_pb2 <- setNames(str_trim(panel_meta$PB2_lineage), panel_meta$file_name)
-tip_lineages_ha[is.na(tip_lineages_ha) | tip_lineages_ha == ""] <- "unknown"
-tip_lineages_pb2[is.na(tip_lineages_pb2) | tip_lineages_pb2 == ""] <- "unknown"
+tip_genotype <- setNames(str_trim(panel_meta$genotype), panel_meta$file_name)
+tip_genotype[is.na(tip_genotype) | tip_genotype == ""] <- "unknown"
 
 tree_ha <- read.tree(ha_tree_path)
 tree_pb2 <- read.tree(pb2_tree_path)
@@ -122,10 +120,14 @@ if (!is.na(outgroup_sample) && outgroup_sample %in% tree_pb2$tip.label) {
 tree_ha <- ape::ladderize(tree_ha, right = FALSE)   # largest clades at bottom
 tree_pb2 <- ape::ladderize(tree_pb2, right = FALSE)  # largest clades at bottom
 
-ribbon_palette <- extend_lineage_palette(
-  lineage_palette,
-  c(tip_lineages_ha[common_tips], tip_lineages_pb2[common_tips])
-)
+genotype_palette <- extend_lineage_palette(
+   lineage_palette,
+   tip_genotype[common_tips]
+ )
+genotype_palette["B3.2"] <- "#0000FF"
+genotype_palette["b3.2"] <- "#0000FF"
+genotype_palette["B4.1"] <- "#00BFFF"
+genotype_palette["b4.1"] <- "#00BFFF"
 
 n_tips <- length(common_tips)
 tangle_height_in <- if (is.na(max_tips)) 42 else max(8, min(24, n_tips * 0.18))
@@ -145,20 +147,18 @@ grDevices::png(
 )
 
 cophylo_plot <- render_cophylo_tanglegram(
-  tree_ha = tree_ha,
-  tree_pb2 = tree_pb2,
-  tip_roles = tip_roles,
-  tip_lineages_ha = tip_lineages_ha,
-  tip_lineages_pb2 = tip_lineages_pb2,
-  lineage_palette = ribbon_palette
-)
+   tree_ha = tree_ha,
+   tree_pb2 = tree_pb2,
+   tip_roles = tip_roles,
+   tip_lineages_ha = tip_genotype,
+   tip_lineages_pb2 = tip_genotype,
+   lineage_palette = genotype_palette
+ )
 tip_order <- cophylo_plot$tip_order
 
 grDevices::dev.off()
 
-context_lineages <- context_lineages_in_panel(
-  tip_order, tip_roles, tip_lineages_ha, tip_lineages_pb2
-)
+context_lineages <- unique(tip_genotype[tip_order])
 
 tangle_img <- png::readPNG(tangle_tmp)
 p_tanglegram <- cowplot::ggdraw() +
@@ -191,17 +191,14 @@ p_tanglegram <- cowplot::ggdraw() +
   )
 
 p_tangle_legend <- build_tanglegram_legend(
-  ribbon_roles = tip_roles[tip_order],
-  lineage_col_label = "lineage",
-  context_lineages = context_lineages,
-  lineage_palette = ribbon_palette
-) +
-  ggplot2::theme(plot.tag = ggplot2::element_blank())
+   ribbon_roles = tip_roles[tip_order],
+   lineage_col_label = "genotype",
+   context_lineages = context_lineages,
+   lineage_palette = genotype_palette
+ ) +
+   ggplot2::theme(plot.tag = ggplot2::element_blank())
 
-composite_plot <- p_heatmap /
-  (p_tanglegram + p_tangle_legend + patchwork::plot_layout(widths = c(4, 1))) +
-  patchwork::plot_layout(heights = c(1, 3)) +
-  patchwork::plot_annotation(tag_levels = "A")
+composite_plot <- (p_tanglegram + p_tangle_legend + patchwork::plot_layout(widths = c(4, 1)))
 
 dir.create(dirname(output_png), showWarnings = FALSE, recursive = TRUE)
 ggsave(

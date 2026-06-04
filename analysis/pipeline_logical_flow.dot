@@ -2,5 +2,5 @@ digraph snakemake_dag {
     graph[bgcolor=white, margin=0];
     node[shape=box, style=rounded, fontname=sans,                 fontsize=10, penwidth=2];
     edge[penwidth=2, color=grey];
-	2[label = "build_gisaid_input_from_mira", color = "0.04 0.6 0.85", style="rounded"];
+	2[label = "build_gisaid_input_from_mira", color = "0.07 0.6 0.85", style="rounded"];
 }            

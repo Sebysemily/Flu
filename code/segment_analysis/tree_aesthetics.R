@@ -89,3 +89,37 @@ ribbon_color_for_type <- function(role, flu_alpha = 1, context_alpha = 0.30) {
   }
   scales::alpha(base, context_alpha)
 }
+
+
+get_custom_genotype_style <- function(genotype, is_ec, palette = NULL) {
+  if (is.na(genotype) || genotype == "" || tolower(genotype) == "none") {
+    genotype <- "unknown"
+  }
+  
+  geno_clean <- tolower(trimws(genotype))
+  
+  # Default values
+  pch <- 16L
+  label <- "Others"
+  base_color <- "#78C67A" # Default B2.1 pastel green
+  
+  if (geno_clean == "b3.2") {
+    base_color <- "#0000FF" # Blue
+    pch <- 16L
+    label <- "B3.2"
+  } else if (geno_clean == "b2.2") {
+    base_color <- "#FF0000" # Red
+    label <- "B2.2"
+  } else if (geno_clean == "b1.3") {
+    base_color <- "#FF8C00" # Orange/Gold
+    label <- "B1.3"
+  } else if (geno_clean == "b4.1") {
+    base_color <- "#00BFFF" # Celeste / Deep Sky Blue
+    label <- "B4.1"
+  } else if (geno_clean == "unknown") {
+    base_color <- "grey85"
+    label <- "unknown"
+  }
+  
+  list(color = base_color, pch = pch, label = label)
+}

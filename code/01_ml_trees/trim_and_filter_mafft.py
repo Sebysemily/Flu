@@ -1,16 +1,28 @@
+#!/usr/bin/env python3
+"""Trim alignment to CDS ORF and drop sequences with excess gaps/ambiguities."""
 import argparse
+import os
 import sys
-import numpy as np
 from collections import Counter
+from pathlib import Path
 
-def read_fasta(path):
-    records = []
+import numpy as np
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from qc.flu_role_utils import load_role_map, write_discarded_rows
+
+DEFAULT_MAX_DIVERGENCE = 0.10
+
+
+def read_fasta(path: str) -> list[tuple[str, str]]:
+    records: list[tuple[str, str]] = []
     header = None
-    chunks = []
-    with open(path, "r") as f:
-        for line in f:
+    chunks: list[str] = []
+    with open(path, encoding="utf-8") as handle:
+        for line in handle:
             line = line.strip()
-            if not line: continue
+            if not line:
+                continue
             if line.startswith(">"):
                 if header is not None:
                     records.append((header, "".join(chunks)))
@@ -22,107 +34,204 @@ def read_fasta(path):
         records.append((header, "".join(chunks)))
     return records
 
-def write_fasta(path, records):
-    with open(path, "w") as out:
-        for h, s in records:
-            out.write(f">{h}\n{s}\n")
 
-def get_consensus_and_trim_limits(records):
-    # Convert to matrix
-    seqs = [list(s.upper()) for h, s in records]
-    mat = np.array(seqs)
-    
-    n_seqs, aln_len = mat.shape
-    consensus_chars = []
-    
-    for i in range(aln_len):
-        col = mat[:, i]
-        # Most common character, ignoring gaps if possible, but if gap is overwhelming, keep it?
-        # Actually, just count all
-        counts = Counter(col)
-        # remove Ns and gaps if we just want to find the consensus nucleotide
-        # but if it's an insertion in only 1 sequence, gap will be majority.
-        most_common = counts.most_common(1)[0][0]
-        consensus_chars.append(most_common)
-        
-    cons_array = np.array(consensus_chars)
-    
-    # Map from ungapped consensus to alignment column
-    ungapped_cons = []
-    col_map = []
-    for i, c in enumerate(cons_array):
-        if c not in ('-', 'N'):
-            ungapped_cons.append(c)
+def write_fasta(path: str, records: list[tuple[str, str]]) -> None:
+    out_dir = os.path.dirname(path)
+    if out_dir:
+        os.makedirs(out_dir, exist_ok=True)
+    with open(path, "w", encoding="utf-8") as handle:
+        for header, seq in records:
+            handle.write(f">{header}\n{seq}\n")
+
+
+def load_protected_ids(path: str | None) -> set[str]:
+    if not path:
+        return set()
+    with open(path, encoding="utf-8") as handle:
+        return {line.strip() for line in handle if line.strip()}
+
+
+def gap_n_fraction(seq: str, valid_len: int) -> float:
+    if valid_len <= 0:
+        return 0.0
+    bad = sum(1 for base in seq if base in "-N")
+    return bad / valid_len
+
+
+def get_consensus_and_trim_limits(records: list[tuple[str, str]]) -> tuple[int, int, np.ndarray]:
+    mat = np.array([list(s.upper()) for _, s in records])
+    aln_len = mat.shape[1]
+    consensus = np.array(
+        [Counter(mat[:, i]).most_common(1)[0][0] for i in range(aln_len)]
+    )
+
+    ungapped_cons: list[str] = []
+    col_map: list[int] = []
+    for i, char in enumerate(consensus):
+        if char not in ("-", "N"):
+            ungapped_cons.append(char)
             col_map.append(i)
-            
-    ungapped_str = "".join(ungapped_cons)
-    
-    # Find longest ORF in ungapped consensus
-    best_start = -1
-    best_end = -1
-    max_len = -1
-    
-    # Simple longest ORF finder (forward strand)
-    for i in range(len(ungapped_str) - 2):
-        if ungapped_str[i:i+3] == "ATG":
-            # find stop
-            for j in range(i+3, len(ungapped_str) - 2, 3):
-                codon = ungapped_str[j:j+3]
-                if codon in ("TAA", "TAG", "TGA"):
-                    orf_len = j + 3 - i
-                    if orf_len > max_len:
-                        max_len = orf_len
-                        best_start = i
-                        best_end = j + 3
-                    break
-                    
-    if best_start == -1:
-        # Fallback if no ORF found
-        print("Warning: No clear ORF found. Falling back to whole alignment.")
-        return 0, aln_len, cons_array
-        
-    start_col = col_map[best_start]
-    end_col = col_map[best_end - 1] + 1
-    
-    return start_col, end_col, cons_array
 
-def main():
-    parser = argparse.ArgumentParser()
+    ungapped_str = "".join(ungapped_cons)
+    best_start, best_end, max_len = -1, -1, -1
+    for i in range(len(ungapped_str) - 2):
+        if ungapped_str[i : i + 3] != "ATG":
+            continue
+        for j in range(i + 3, len(ungapped_str) - 2, 3):
+            if ungapped_str[j : j + 3] in ("TAA", "TAG", "TGA"):
+                orf_len = j + 3 - i
+                if orf_len > max_len:
+                    max_len, best_start, best_end = orf_len, i, j + 3
+                break
+
+    if best_start == -1:
+        print("Warning: No clear ORF found. Falling back to whole alignment.")
+        return 0, aln_len, consensus
+
+    return col_map[best_start], col_map[best_end - 1] + 1, consensus
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--input", required=True)
-    parser.add_argument("--output", required=True)
-    parser.add_argument("--max-divergence", type=float, default=0.10, help="Max fraction of gaps or Ns (ambiguities) in CDS")
+    parser.add_argument("--output", default=None)
+    parser.add_argument(
+        "--max-divergence",
+        type=float,
+        default=DEFAULT_MAX_DIVERGENCE,
+        help="Max fraction of gaps/N in trimmed CDS (default 0.10)",
+    )
+    parser.add_argument(
+        "--protect-ids",
+        default=None,
+        help="Taxon IDs kept regardless of gap/N rate (one per line)",
+    )
+    parser.add_argument(
+        "--qc-audit",
+        default=None,
+        help="Optional TSV of protected taxa kept above --max-divergence",
+    )
+    parser.add_argument(
+        "--discarded-csv",
+        default=None,
+        help="CSV of sequences dropped by gap/N threshold",
+    )
+    parser.add_argument(
+        "--role-metadata",
+        default=None,
+        help="Metadata CSV with file_name and expected_role (e.g. H5N1_context.csv)",
+    )
+    parser.add_argument(
+        "--filter-step",
+        default="trim_gap_n",
+        help="Label written to discarded CSV (e.g. trim_gap_n_HA, trim_gap_n_panel_HA)",
+    )
+    parser.add_argument(
+        "--discarded-csv-only",
+        action="store_true",
+        help="Only write discarded CSVs; do not read/write --output alignment",
+    )
     args = parser.parse_args()
-    
+    if not args.discarded_csv_only and not args.output:
+        parser.error("--output is required unless --discarded-csv-only is set")
+    if args.discarded_csv_only and not args.discarded_csv:
+        parser.error("--discarded-csv-only requires --discarded-csv")
+    return args
+
+
+DISCARD_FIELDS = [
+    "taxon",
+    "expected_role",
+    "gap_n_fraction",
+    "max_divergence",
+    "filter_step",
+    "discard_reason",
+]
+
+
+def evaluate_trim(
+    records: list[tuple[str, str]],
+    max_divergence: float,
+    protected: set[str],
+) -> tuple[list[tuple[str, str]], list[dict], list[tuple[str, float]]]:
+    start_col, end_col, consensus = get_consensus_and_trim_limits(records)
+    trimmed_cons = consensus[start_col:end_col]
+    valid_len = len(trimmed_cons)
+    print(f"Trimming columns {start_col}:{end_col} (CDS length {valid_len})")
+
+    kept: list[tuple[str, str]] = []
+    dropped_rows: list[dict] = []
+    protected_kept: list[tuple[str, float]] = []
+
+    for header, seq in records:
+        trimmed = seq[start_col:end_col].upper()
+        div = gap_n_fraction(trimmed, valid_len)
+        if header in protected or div <= max_divergence:
+            kept.append((header, trimmed))
+            if header in protected and div > max_divergence:
+                protected_kept.append((header, div))
+        else:
+            dropped_rows.append(
+                {
+                    "taxon": header,
+                    "gap_n_fraction": f"{div:.4f}",
+                    "max_divergence": max_divergence,
+                    "discard_reason": f"gaps/N > {max_divergence:.0%} in trimmed CDS",
+                }
+            )
+
+    return kept, dropped_rows, protected_kept
+
+
+def main() -> None:
+    args = parse_args()
+    protected = load_protected_ids(args.protect_ids)
+    role_map = load_role_map(args.role_metadata)
+
     records = read_fasta(args.input)
     if not records:
         print("Empty input.")
-        write_fasta(args.output, [])
+        if not args.discarded_csv_only and args.output:
+            write_fasta(args.output, [])
         return
-        
-    start_col, end_col, consensus = get_consensus_and_trim_limits(records)
-    print(f"Trimming alignment from column {start_col} to {end_col}")
-    
-    trimmed_cons = consensus[start_col:end_col]
-    
-    filtered_records = []
-    dropped = 0
-    
-    for h, s in records:
-        trimmed_seq = s[start_col:end_col].upper()
-        
-        # Calculate fraction of gaps / Ns in the trimmed region
-        diffs = sum(1 for sc in trimmed_seq if sc == '-' or sc == 'N')
-        valid_len = len(trimmed_cons)
-        
-        div = diffs / valid_len if valid_len > 0 else 0
-        
-        if div > args.max_divergence:
-            dropped += 1
-        else:
-            filtered_records.append((h, trimmed_seq))
-            
-    print(f"Dropped {dropped} sequences due to >{args.max_divergence*100}% gaps or Ns.")
-    write_fasta(args.output, filtered_records)
+
+    kept, dropped_rows, protected_kept = evaluate_trim(
+        records, args.max_divergence, protected
+    )
+
+    for row in dropped_rows:
+        row["expected_role"] = role_map.get(row["taxon"], "")
+        row["filter_step"] = args.filter_step
+
+    flu_dropped = [r for r in dropped_rows if r["expected_role"].startswith("flu_")]
+    print(
+        f"Kept {len(kept)} / {len(records)} sequences; dropped {len(dropped_rows)} "
+        f"(>{args.max_divergence:.0%} gaps/N); flu_* dropped: {len(flu_dropped)}."
+    )
+    if protected:
+        print(f"Protected set size: {len(protected)}; kept above threshold: {len(protected_kept)}")
+
+    if args.discarded_csv:
+        write_discarded_rows(args.discarded_csv, dropped_rows, DISCARD_FIELDS)
+        print(f"Written discarded CSV: {args.discarded_csv} ({len(dropped_rows)} rows)")
+
+    if args.discarded_csv_only:
+        return
+
+    write_fasta(args.output, kept)
+
+    if args.qc_audit:
+        import csv
+
+        audit_dir = os.path.dirname(args.qc_audit)
+        if audit_dir:
+            os.makedirs(audit_dir, exist_ok=True)
+        with open(args.qc_audit, "w", encoding="utf-8", newline="") as handle:
+            writer = csv.writer(handle, delimiter="\t")
+            writer.writerow(["taxon", "gap_n_fraction", "note"])
+            for taxon, div in protected_kept:
+                writer.writerow([taxon, f"{div:.4f}", "protected_kept"])
+
 
 if __name__ == "__main__":
     main()

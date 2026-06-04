@@ -21,8 +21,8 @@ rule build_treetime_dates_subsets:
 
 rule run_root_to_tip_subsets_HA:
     input:
-        tree="results/phylogeny/iq-tree/HA/HA.treefile",
-        alignment="data/phylogeny/main_panel/H5N1_HA.fasta",
+        tree="results/pre_beast/model_selection/HA.treefile",
+        alignment=MAIN_PANEL_HA_POSTQC,
         dates=PRE_BEAST_DATES,
     output:
         outliers=PRE_BEAST_ROOT_TO_TIP_OUTLIERS,
@@ -42,4 +42,20 @@ rule run_root_to_tip_subsets_HA:
             --clock-filter {params.clock_filter} \
             --log {output.log} \
             --done {output.done}
+        """
+
+rule build_beast_metadata:
+    input:
+        metadata="metadata/H5N1_context.csv",
+        alignment=MAIN_PANEL_HA_POSTQC
+    output:
+        tsv="metadata/beast/metadata_beast.tsv"
+    conda:
+        "../envs/02_pre_beast.yml"
+    shell:
+        r"""
+        python code/02_Beast/build_beast_metadata.py \
+            --metadata {input.metadata} \
+            --aln {input.alignment} \
+            --out {output.tsv}
         """

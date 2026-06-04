@@ -62,11 +62,14 @@ def build_ecuador_metadata_rows(df_filt: pd.DataFrame, date_source: str) -> list
         date_val = pick_ecuador_date(row.to_dict(), date_source)
         if not date_val:
             continue
-        provincia = row.get("Provincia", "")
+        provincia_raw = row.get("Provincia", "")
+        provincia = "" if pd.isna(provincia_raw) else str(provincia_raw).strip()
         rows.append({
             "file_name": epi_isl,
             "collection_date": date_val,
             "country": "Ecuador",
+            "province": provincia,
+            "host_type": "avian",
             "expected_role": ecuador_expected_role(sample_id, epi_isl, provincia),
         })
         seen.add(epi_isl)
@@ -136,29 +139,35 @@ GEOGRAPHIC_MAPPINGS = {
     "sd": "UnitedStates", "tn": "UnitedStates", "tx": "UnitedStates", "ut": "UnitedStates",
     "vt": "UnitedStates", "va": "UnitedStates", "wa": "UnitedStates", "wv": "UnitedStates",
     "wi": "UnitedStates", "wy": "UnitedStates",
-    
-    # Chile regions/cities
+
+    # Chile regions
     "antofagasta": "Chile", "araucania": "Chile", "arica": "Chile", "aricayparinacota": "Chile",
     "atacama": "Chile", "aysen": "Chile", "biobio": "Chile", "coquimbo": "Chile",
     "metropolitana": "Chile", "maule": "Chile", "nuble": "Chile", "ohiggins": "Chile",
     "tarapaca": "Chile", "valparaiso": "Chile",
-    
-    # Argentina provinces/cities
+    "losrios": "Chile", "loslagos": "Chile", "magallanes": "Chile",
+    "aysendegeneralcarlosibanezdelcampo": "Chile",
+
+    # Argentina provinces
     "chaco": "Argentina", "cordoba": "Argentina", "madryn": "Argentina", "sarmiento": "Argentina",
-    "neuquen": "Argentina",
-    
+    "neuquen": "Argentina", "chubut": "Argentina", "rionegro": "Argentina",
+    "santacruz": "Argentina", "tierradelfuego": "Argentina", "misiones": "Argentina",
+    "entrerios": "Argentina", "mendoza": "Argentina", "sanjuan": "Argentina",
+    "sanluis": "Argentina", "lapampa": "Argentina", "buenosaires": "Argentina",
+    "peninsulavaldes": "Argentina",
+
     # Uruguay departments
     "canelones": "Uruguay", "maldonado": "Uruguay", "lavalleja": "Uruguay",
-    
+
     # Colombia departments
     "choco": "Colombia", "magdalena": "Colombia", "bolivar": "Colombia",
-    
+
     # Bolivia departments
     "cochabamba": "Bolivia", "potosi": "Bolivia",
-    
+
     # Peru departments
     "ica": "Peru", "lima": "Peru",
-    
+
     # Brazil states/cities
     "riodejaneiro": "Brazil", "espiritosanto": "Brazil", "parana": "Brazil",
     "saopaulo": "Brazil", "saofranciscodosul": "Brazil", "matogrossodosul": "Brazil",
@@ -169,11 +178,74 @@ GEOGRAPHIC_MAPPINGS = {
     "para": "Brazil", "paraiba": "Brazil", "pernambuco": "Brazil", "piaui": "Brazil",
     "riograndedonorte": "Brazil", "rondonia": "Brazil", "roraima": "Brazil",
     "sergipe": "Brazil", "tocantins": "Brazil",
-    
+
     # Other places
     "nl": "Netherlands",
     "antarctica": "Antarctica", "antartic": "Antarctica",
     "falklandislands": "FalklandIslands",
+}
+
+# Maps a compact place key to its canonical province/region name (for entries that are
+# sub-country administrative units). Only populated where the FASTA encodes a province.
+PROVINCE_NAMES: dict[str, str] = {
+    # Chile regions
+    "antofagasta": "Antofagasta", "araucania": "Araucania", "arica": "Arica",
+    "aricayparinacota": "Arica y Parinacota", "atacama": "Atacama", "aysen": "Aysen",
+    "biobio": "Bio-Bio", "coquimbo": "Coquimbo", "metropolitana": "Metropolitana",
+    "maule": "Maule", "nuble": "Nuble", "ohiggins": "O'Higgins", "tarapaca": "Tarapaca",
+    "valparaiso": "Valparaiso", "losrios": "Los Rios", "loslagos": "Los Lagos",
+    "magallanes": "Magallanes", "aysendegeneralcarlosibanezdelcampo": "Aysen",
+    # Argentina provinces
+    "chaco": "Chaco", "cordoba": "Cordoba", "madryn": "Chubut", "sarmiento": "Chubut",
+    "neuquen": "Neuquen", "chubut": "Chubut", "rionegro": "Rio Negro",
+    "santacruz": "Santa Cruz", "tierradelfuego": "Tierra del Fuego", "misiones": "Misiones",
+    "entrerios": "Entre Rios", "mendoza": "Mendoza", "sanjuan": "San Juan",
+    "sanluis": "San Luis", "lapampa": "La Pampa", "buenosaires": "Buenos Aires",
+    "peninsulavaldes": "Chubut",
+    # Uruguay departments
+    "canelones": "Canelones", "maldonado": "Maldonado", "lavalleja": "Lavalleja",
+    # Colombia departments
+    "choco": "Choco", "magdalena": "Magdalena", "bolivar": "Bolivar",
+    # Bolivia departments
+    "cochabamba": "Cochabamba", "potosi": "Potosi",
+    # Peru departments
+    "ica": "Ica", "lima": "Lima",
+    # Brazil states
+    "riodejaneiro": "Rio de Janeiro", "espiritosanto": "Espirito Santo", "parana": "Parana",
+    "saopaulo": "Sao Paulo", "santacatarina": "Santa Catarina",
+    "riograndedosul": "Rio Grande do Sul", "acre": "Acre", "alagoas": "Alagoas",
+    "amapa": "Amapa", "amazonas": "Amazonas", "bahia": "Bahia", "ceara": "Ceara",
+    "goias": "Goias", "maranhao": "Maranhao", "matogrosso": "Mato Grosso",
+    "minasgerais": "Minas Gerais", "para": "Para", "paraiba": "Paraiba",
+    "pernambuco": "Pernambuco", "piaui": "Piaui",
+    "riograndedonorte": "Rio Grande do Norte", "rondonia": "Rondonia", "roraima": "Roraima",
+    "sergipe": "Sergipe", "tocantins": "Tocantins",
+}
+
+
+US_STATES_MAP: dict[str, str] = {
+    # 2-letter codes
+    "al": "Alabama", "ak": "Alaska", "az": "Arizona", "ar": "Arkansas", "ca": "California",
+    "co": "Colorado", "ct": "Connecticut", "de": "Delaware", "fl": "Florida", "ga": "Georgia",
+    "hi": "Hawaii", "id": "Idaho", "il": "Illinois", "in": "Indiana", "ia": "Iowa",
+    "ks": "Kansas", "ky": "Kentucky", "la": "Louisiana", "me": "Maine", "md": "Maryland",
+    "ma": "Massachusetts", "mi": "Michigan", "mn": "Minnesota", "ms": "Mississippi", "mo": "Missouri",
+    "mt": "Montana", "ne": "Nebraska", "nv": "Nevada", "nh": "New Hampshire", "nj": "New Jersey",
+    "nm": "New Mexico", "ny": "New York", "nc": "North Carolina", "nd": "North Dakota", "oh": "Ohio",
+    "ok": "Oklahoma", "or": "Oregon", "pa": "Pennsylvania", "ri": "Rhode Island", "sc": "South Carolina",
+    "sd": "South Dakota", "tn": "Tennessee", "tx": "Texas", "ut": "Utah", "vt": "Vermont",
+    "va": "Virginia", "wa": "Washington", "wv": "West Virginia", "wi": "Wisconsin", "wy": "Wyoming",
+    # Full names (lowercase, no non-alphanumeric chars)
+    "alabama": "Alabama", "alaska": "Alaska", "arizona": "Arizona", "arkansas": "Arkansas", "california": "California",
+    "colorado": "Colorado", "connecticut": "Connecticut", "delaware": "Delaware", "florida": "Florida", "georgia": "Georgia",
+    "hawaii": "Hawaii", "idaho": "Idaho", "illinois": "Illinois", "indiana": "Indiana", "iowa": "Iowa",
+    "kansas": "Kansas", "kentucky": "Kentucky", "louisiana": "Louisiana", "maine": "Maine", "maryland": "Maryland",
+    "massachusetts": "Massachusetts", "michigan": "Michigan", "minnesota": "Minnesota", "mississippi": "Mississippi", "missouri": "Missouri",
+    "montana": "Montana", "nebraska": "Nebraska", "nevada": "Nevada", "newhampshire": "New Hampshire", "newjersey": "New Jersey",
+    "newmexico": "New Mexico", "newyork": "New York", "northcarolina": "North Carolina", "northdakota": "North Dakota", "ohio": "Ohio",
+    "oklahoma": "Oklahoma", "oregon": "Oregon", "pennsylvania": "Pennsylvania", "rhodeisland": "Rhode Island", "southcarolina": "South Carolina",
+    "southdakota": "South Dakota", "tennessee": "Tennessee", "texas": "Texas", "utah": "Utah", "vermont": "Vermont",
+    "virginia": "Virginia", "washington": "Washington", "westvirginia": "West Virginia", "wisconsin": "Wisconsin", "wyoming": "Wyoming"
 }
 
 
@@ -188,28 +260,39 @@ def clean_ascii(text):
     return text or "UNKNOWN"
 
 
-def normalize_place(text):
+def normalize_place(text) -> tuple[str, str]:
+    """Return (country, province) for a raw place string from a FASTA header.
+
+    ``province`` is an empty string when no sub-country information is available.
+    Returns ("UNKNOWN", "") when the place cannot be resolved.
+    """
     cleaned = clean_ascii(text)
-    if cleaned == "UNKNOWN":
-        return cleaned
+    if cleaned == "UNKNOWN" or cleaned.lower() == "unknown":
+        return "UNKNOWN", ""
 
     compact_key = re.sub(r"[^A-Za-z0-9]", "", cleaned).lower()
-    
+
+    if compact_key in US_STATES_MAP:
+        return "UnitedStates", US_STATES_MAP[compact_key]
+
     if compact_key in GEOGRAPHIC_MAPPINGS:
-        return GEOGRAPHIC_MAPPINGS[compact_key]
-        
+        country = GEOGRAPHIC_MAPPINGS[compact_key]
+        province = PROVINCE_NAMES.get(compact_key, "")
+        return country, province
+
     if compact_key.endswith("br") or compact_key.startswith("brazil"):
-        return "Brazil"
+        return "Brazil", ""
 
     if compact_key in PLACE_ALIASES:
-        return PLACE_ALIASES[compact_key]
+        return PLACE_ALIASES[compact_key], ""
 
     tokens = re.split(r"[^A-Za-z0-9]+", cleaned)
     tokens = [token for token in tokens if token]
     if not tokens:
-        return "UNKNOWN"
+        return "UNKNOWN", ""
 
-    return "".join(token[:1].upper() + token[1:].lower() for token in tokens)
+    country = "".join(token[:1].upper() + token[1:].lower() for token in tokens)
+    return country, ""
 
 
 def read_fasta(path):
@@ -239,10 +322,11 @@ def sanitize_dna(seq):
     return re.sub(r"[^ACGTN-]", "N", str(seq).upper())
 
 
-def extract_metadata_from_isolate(isolate):
+def extract_metadata_from_isolate(isolate) -> tuple[str, str, str, str]:
+    """Return (country, province, date_val, context_type) for an isolate name."""
     parts = isolate.split("/")
     if len(parts) < 3 or parts[0] != "A":
-        return "UNKNOWN", "UNKNOWN", "regional_context"
+        return "UNKNOWN", "", "UNKNOWN", "regional_context"
 
     year_raw = parts[-1]
     year_match = re.search(r"\d{4}", year_raw)
@@ -252,30 +336,24 @@ def extract_metadata_from_isolate(isolate):
     # Robust place extraction based on parts structure
     last_part = parts[-1].strip()
     has_year_at_end = bool(re.match(r"^\d{4}$", last_part) or re.match(r"^\d{2}$", last_part))
-    
+
     if has_year_at_end:
-        if len(parts) >= 5:
-            place_raw = parts[2]
-        else:
-            place_raw = parts[1]
+        place_raw = parts[2] if len(parts) >= 5 else parts[1]
     else:
-        if len(parts) >= 4:
-            place_raw = parts[2]
-        else:
-            place_raw = parts[1]
+        place_raw = parts[2] if len(parts) >= 4 else parts[1]
 
-    place = normalize_place(place_raw)
+    country, province = normalize_place(place_raw)
 
-    place_clean = place.lower().replace("_", "").replace(" ", "")
+    country_clean = country.lower().replace("_", "").replace(" ", "")
     north_america_set = {s.lower().replace("_", "").replace(" ", "") for s in NORTH_AMERICA_PLACES}
-    if place_clean in north_america_set:
+    if country_clean in north_america_set:
         context_type = "american_anchor"
-    elif place_clean == "ecuador":
+    elif country_clean == "ecuador":
         context_type = "flu_costa"
     else:
         context_type = "regional_context"
 
-    return place, date_val, context_type
+    return country, province, date_val, context_type
 
 
 def parse_context_isolates(context_fasta: str) -> dict:
@@ -311,11 +389,26 @@ def parse_context_isolates(context_fasta: str) -> dict:
 
 
 def filter_complete_context_isolates(isolates_data: dict, local_epi_isls: set):
-    """Keep context isolates (with one or more segments) with usable collection dates."""
+    """Keep context isolates (with one or more segments) with usable collection dates.
+
+    Returns:
+        complete_context   – {isolate: segs}
+        context_dates      – {isolate: date_str}
+        context_places     – {isolate: country}
+        context_types      – {isolate: role}
+        context_provinces  – {isolate: province}  (empty string when not applicable)
+    """
     complete_context = {}
     context_dates = {}
     context_places = {}
     context_types = {}
+    context_provinces = {}
+
+    us_places = {
+        s.lower().replace("_", "").replace(" ", "")
+        for s in NORTH_AMERICA_PLACES
+        if s not in {"honduras", "panama"}
+    }
 
     for isolate, segs in isolates_data.items():
         if not segs:
@@ -324,15 +417,18 @@ def filter_complete_context_isolates(isolates_data: dict, local_epi_isls: set):
         if any(epi_isl in local_epi_isls for epi_isl, _seq, _hdr in segs.values()):
             continue
 
-        place, _, context_type = extract_metadata_from_isolate(isolate)
-        place_clean = place.lower().replace("_", "").replace(" ", "")
-        us_places = {
-            s.lower().replace("_", "").replace(" ", "")
-            for s in NORTH_AMERICA_PLACES
-            if s not in {"honduras", "panama"}
-        }
-        if place_clean in us_places:
-            place = "USA"
+        country, province, _, context_type = extract_metadata_from_isolate(isolate)
+
+        # Skip isolates where the place is genuinely unknown
+        if country == "UNKNOWN":
+            continue
+
+        country_clean = country.lower().replace("_", "").replace(" ", "")
+        if country_clean in us_places:
+            if not province:
+                if country_clean not in {"usa", "unitedstates"}:
+                    province = US_STATES_MAP.get(country_clean, country)
+            country = "USA"
 
         # Get any available segment's EPI ID as a representative
         epi_isl_rep = next(iter(segs.values()))[0]
@@ -354,10 +450,11 @@ def filter_complete_context_isolates(isolates_data: dict, local_epi_isls: set):
         if date_value != "UNKNOWN" and date_value:
             complete_context[isolate] = segs
             context_dates[isolate] = date_value
-            context_places[isolate] = place
+            context_places[isolate] = country
             context_types[isolate] = context_type
+            context_provinces[isolate] = province
 
-    return complete_context, context_dates, context_places, context_types
+    return complete_context, context_dates, context_places, context_types, context_provinces
 
 
 def build_context_epi_maps(complete_context: dict) -> tuple[dict[str, set[str]], dict[str, str]]:
@@ -436,7 +533,7 @@ def main():
     isolates_data = parse_context_isolates(args.context_fasta)
     print(f"Loaded context isolates: {len(isolates_data)}")
 
-    complete_context, context_dates, context_places, context_types = filter_complete_context_isolates(
+    complete_context, context_dates, context_places, context_types, context_provinces = filter_complete_context_isolates(
         isolates_data, local_epi_isls
     )
     print(f"Complete context isolates kept: {len(complete_context)}")
@@ -449,6 +546,7 @@ def main():
         context_meta_rows = []
         for isolate, segs in sorted(complete_context.items()):
             place = context_places[isolate]
+            province = context_provinces[isolate]
             date_value = context_dates[isolate]
             context_type = context_types[isolate]
             for seg, (epi_isl, seq, orig_hdr) in segs.items():
@@ -456,6 +554,7 @@ def main():
                     "file_name": epi_isl,
                     "collection_date": date_value,
                     "country": place,
+                    "province": province,
                     "expected_role": context_type,
                 })
 
@@ -464,7 +563,8 @@ def main():
 
         with open(args.metadata_out, "w", newline="", encoding="utf-8") as f:
             writer = csv.DictWriter(
-                f, fieldnames=["file_name", "collection_date", "country", "expected_role"]
+                f, fieldnames=["file_name", "collection_date", "country", "province", "expected_role"],
+                extrasaction="ignore",
             )
             writer.writeheader()
             writer.writerows(unified_meta)

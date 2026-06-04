@@ -7,20 +7,28 @@ source("code/segment_analysis/tanglegram_legend.R")
 
 tip_style_for_phylo <- function(tip_labels, roles, lineages, palette) {
   n <- length(tip_labels)
-  pch <- rep(CONTEXT_TIP_SHAPE, n)
+  pch <- rep(16L, n)
   col <- rep("grey80", n)
   cex <- rep(COPHYLO_CONTEXT_TIP_CEX, n)
 
   for (i in seq_len(n)) {
     tip <- tip_labels[i]
     role <- normalize_ecuador_role(roles[tip])
-    if (is_ecuador_tip(roles[tip])) {
-      pch[i] <- flu_tip_shapes[role]
-      col[i] <- unname(flu_tip_colors[role])
+    is_ec <- is_ecuador_tip(roles[tip])
+    
+    genotype <- lineages[tip]
+    style <- get_custom_genotype_style(genotype, is_ec, palette)
+
+    # Determine transparency (alpha) and size (cex)
+    if (is_ec) {
+      col[i] <- scales::alpha(style$color, 1.0) # Ecuador has no alpha
       cex[i] <- COPHYLO_FLU_TIP_CEX
     } else {
-      col[i] <- lineage_color_for(lineages[tip], palette)
+      col[i] <- scales::alpha(style$color, 0.7) # Rest have alpha 0.7
+      cex[i] <- COPHYLO_CONTEXT_TIP_CEX
     }
+
+    pch[i] <- style$pch
   }
 
   list(pch = pch, col = col, cex = cex)
