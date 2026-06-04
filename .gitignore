@@ -1,6 +1,15 @@
 # GenoFLU-multi submodule: use upstream as-is; ignore local pointer/content drift in this repo
 resources/GenoFLU-multi/
 
+# BEAST / MCMC outputs (large; keep under results/beast on disk only)
+*.trees
+*.chkpt
+*.ops
+*.log.part_*
+H5N1_HA_*.mafft.*
+H5N1_HA_panel_postQC.*
+test_resume/
+
 results/*
 results/**
 results/***
