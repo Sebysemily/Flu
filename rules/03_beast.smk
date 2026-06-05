@@ -1,7 +1,6 @@
 BEAST_ENABLED = bool(config.get("beast", {}).get("enabled", True))
 # BEAST 1.x uses ~1 CPU per chain; Snakemake threads reserve a core per job.
 BEAST_THREADS_PER_CHAIN = int(config.get("beast", {}).get("threads_per_chain", 1))
-BEAST_MAX_PARALLEL_CHAINS = int(config.get("beast", {}).get("max_parallel_chains", 2))
 BEAST_THREADS = int(config.get("max_threads", 16))
 BEAST_MAX_HOURS = int(config.get("beast", {}).get("max_hours", 12))
 BEAST_BINARY = config.get("beast", {}).get("binary") or ""
@@ -16,7 +15,23 @@ BEAST_PREPARED_XMLS = {
     "ucln_bay": "template_beast/ucln_bay.xml"
 }
 BEAST_RUN_SCENARIOS = list(BEAST_PREPARED_XMLS.keys())
+BEAST_MODELS_CONFIG = config.get("beast", {}).get("models", {})
 BEAST_SEEDS_CONFIG = config.get("beast", {}).get("seeds", {})
+
+
+def template_has_gss_block(xml_path: str) -> bool:
+    if not os.path.exists(xml_path):
+        return False
+    with open(xml_path, encoding="utf-8") as handle:
+        return "marginalLikelihoodEstimator" in handle.read()
+
+
+def beast_model_wants_gss(scenario: str) -> bool:
+    """Whether to run GSS after MCMC. Prefer explicit config; else detect XML block."""
+    entry = BEAST_MODELS_CONFIG.get(scenario, {})
+    if "gss" in entry:
+        return bool(entry["gss"])
+    return template_has_gss_block(BEAST_PREPARED_XMLS[scenario])
 BEAST_BEAGLE_CONFIG = config.get("beast", {}).get("beagle", {})
 BEAST_CHAIN_LENGTHS = config.get("beast", {}).get("chain_length", {})
 BEAST_DEFAULT_SEEDS = {
@@ -80,6 +95,8 @@ rule update_beast_xml_params:
         stamp="results/beast/GSS/{scenario}/xml_params.json",
     params:
         xml=lambda wildcards: BEAST_PREPARED_XMLS[wildcards.scenario]
+    conda:
+        "../envs/03_beast.yml"
     shell:
         r"""
         python code/03_beast/update_beast_xmls.py {wildcards.scenario} \
@@ -99,7 +116,8 @@ rule run_beast_single:
         done="results/beast/GSS/{scenario}/run.done"
     params:
         outdir="results/beast/GSS/{scenario}",
-        seed=config.get("random_seed", 1001)
+        seed=config.get("random_seed", 1001),
+        has_gss=lambda wildcards: 1 if beast_model_wants_gss(wildcards.scenario) else 0,
     threads: BEAST_THREADS_PER_CHAIN
     conda:
         "../envs/03_beast.yml"
@@ -111,42 +129,112 @@ rule run_beast_single:
         # Calculate relative path to xml from the working directory
         REL_XML="../../../../{input.xml}"
         
-        # Find checkpoint file if it exists
-        CHKPT=$(ls *.state *.chkpt 2>/dev/null | head -n 1 || true)
+        # Checkpoint file path (distinct from CHKPT state number below).
+        CHKPT_FILE=$(ls *.state *.chkpt 2>/dev/null | head -n 1 || true)
         
-        if [ -n "$CHKPT" ]; then
-            echo "Resuming from checkpoint $CHKPT..."
-            # BEAST 1.x does not append natively without truncating. Protect existing data by renaming it.
-            TIMESTAMP=$(date +%s)
+        HAS_GSS={params.has_gss}
+
+        # chainLength/checkpointFinal synced from config via update_beast_xml_params stamp input
+        TARGET_LENGTH=$(grep -oP '<mcmc[^>]*chainLength="\K[0-9]+' $REL_XML | head -n 1)
+        MERGE_PY=../../../../code/03_beast/merge_beast_traces.py
+        refresh_chain_state() {{
+            eval $(python "$MERGE_PY" --run-dir . --query-state --shell)
+        }}
+        refresh_chain_state
+        echo "MCMC target: $TARGET_LENGTH, logged: $LOGGED, chkpt_state: $CHKPT, effective: $EFFECTIVE"
+
+        run_beast() {{
+            echo "Starting BEAST at $(date -Is) in $(pwd)..."
+            echo "Console log: $(pwd)/beast_console.log"
+            set +e
+            beast "$@" 2>&1 | tee -a beast_console.log
+            local beast_rc=${{PIPESTATUS[0]}}
+            set -e
+            if [ "$beast_rc" -ne 0 ]; then
+                echo "ERROR: BEAST exited with code $beast_rc. run.done not created."
+                echo "See beast_console.log in this directory, then rerun Snakemake."
+                exit 1
+            fi
+            echo "BEAST finished at $(date -Is)."
+        }}
+
+        on_term() {{
+            echo "WARNING: Received stop signal; partial MCMC progress is kept (log/chkpt). Rerun Snakemake to continue."
+            exit 130
+        }}
+        trap on_term TERM INT
+
+        if [ -n "$CHKPT_FILE" ]; then
+            echo "Resuming from checkpoint file $CHKPT_FILE..."
             mkdir -p logs
-            for f in *.log *.trees *.ops; do
+            python "$MERGE_PY" --run-dir . --recover-incomplete-merge
+
+            TIMESTAMP=$(date +%s)
+            for f in *.ops; do
                 if [ -f "$f" ]; then
                     mv "$f" "logs/$f.part_$TIMESTAMP"
                 fi
             done
-            # Also move any existing part files to keep it tidy
-            for f in *.part_*; do
-                if [ -f "$f" ]; then
-                    mv "$f" "logs/"
+
+            refresh_chain_state
+            echo "Resume state: logged=$LOGGED checkpoint=$CHKPT effective=$EFFECTIVE / target $TARGET_LENGTH"
+
+            RAN_MCM_EXT=0
+            if [ "$CHKPT" -ge "$TARGET_LENGTH" ] || [ "$LOGGED" -ge "$TARGET_LENGTH" ]; then
+                echo "MCMC target reached (checkpoint=$CHKPT, logged=$LOGGED). Skipping MCMC extension."
+                python "$MERGE_PY" --run-dir . --reconcile-checkpoint --target "$TARGET_LENGTH"
+                refresh_chain_state
+                if [ "$HAS_GSS" -eq 1 ] && [ ! -f H5N1_HA_panel_postQC.mle.result.log ]; then
+                    echo "Running GSS only..."
+                    python "$MERGE_PY" --run-dir . --ensure-combined-log
+                    python ../../../../code/03_beast/prepare_beast_resume.py \
+                        --scenario {wildcards.scenario} \
+                        --run-dir . \
+                        --template-xml "$REL_XML" \
+                        --target-chain-length "$TARGET_LENGTH" \
+                        --output local.xml \
+                        --gss-only \
+                        --with-gss
+                    # No -overwrite: keep full MCMC log for GSS reference priors (burnin=1M).
+                    run_beast -load_state "$CHKPT_FILE" -seed {params.seed} local.xml
+                else
+                    echo "MCMC complete; GSS not requested or already done."
                 fi
-            done
-
-            # Calculate remaining states needed to reach the target chainLength
-            TARGET_LENGTH=$(grep -oP 'chainLength="\K[0-9]+' $REL_XML | head -n 1)
-            LAST_STATE=$(cat logs/*.log.part_* 2>/dev/null | awk '/^[0-9]/ {{print $1}}' | sort -n | tail -n 1 || echo 0)
-            
-            if [ -z "$LAST_STATE" ]; then LAST_STATE=0; fi
-
-            REMAINING=$(( TARGET_LENGTH - LAST_STATE ))
-            echo "Target length: $TARGET_LENGTH, Last state: $LAST_STATE, Remaining: $REMAINING"
-
-            if [ "$REMAINING" -le 0 ]; then
-                echo "Target chainLength already reached or exceeded ($LAST_STATE >= $TARGET_LENGTH). Finishing gracefully."
+            elif [ "$EFFECTIVE" -lt "$TARGET_LENGTH" ]; then
+                RAN_MCM_EXT=1
+                REMAINING=$(( TARGET_LENGTH - CHKPT ))
+                if [ "$CHKPT" -le 0 ]; then
+                    REMAINING=$(( TARGET_LENGTH - LOGGED ))
+                fi
+                echo "Extending MCMC by ~$REMAINING states from chkpt_state $CHKPT (MCMC only; GSS follows if configured)..."
+                python "$MERGE_PY" --run-dir . --snapshot-prior
+                python ../../../../code/03_beast/prepare_beast_resume.py \
+                    --scenario {wildcards.scenario} \
+                    --run-dir . \
+                    --template-xml "$REL_XML" \
+                    --target-chain-length "$TARGET_LENGTH" \
+                    --output local.xml
+                run_beast -overwrite -load_state "$CHKPT_FILE" -seed {params.seed} local.xml
+                python "$MERGE_PY" --run-dir . --merge-mcmc
             else
-                # Modify a local copy of the XML to only run the remaining states
-                cp $REL_XML local.xml
-                sed -i "s/chainLength=\"[0-9]*\"/chainLength=\"$REMAINING\"/" local.xml
-                beast -load_state "$CHKPT" -seed {params.seed} local.xml
+                echo "MCMC and GSS outputs already present; nothing to run."
+            fi
+
+            if [ "$RAN_MCM_EXT" -eq 1 ] && [ "$HAS_GSS" -eq 1 ] && [ ! -f H5N1_HA_panel_postQC.mle.result.log ]; then
+                refresh_chain_state
+                if [ "$EFFECTIVE" -ge "$TARGET_LENGTH" ]; then
+                    echo "MCMC extension done (effective=$EFFECTIVE). Starting GSS in same job..."
+                    python "$MERGE_PY" --run-dir . --ensure-combined-log
+                    python ../../../../code/03_beast/prepare_beast_resume.py \
+                        --scenario {wildcards.scenario} \
+                        --run-dir . \
+                        --template-xml "$REL_XML" \
+                        --target-chain-length "$TARGET_LENGTH" \
+                        --output local.xml \
+                        --gss-only \
+                        --with-gss
+                    run_beast -load_state "$CHKPT_FILE" -seed {params.seed} local.xml
+                fi
             fi
         else
             if ls *.log *.trees >/dev/null 2>&1; then
@@ -154,10 +242,32 @@ rule run_beast_single:
                 exit 1
             fi
             echo "No checkpoint found. Starting fresh BEAST chain..."
-            beast -seed {params.seed} $REL_XML
+            cp "$REL_XML" mcmc_source.xml
+            run_beast -overwrite -seed {params.seed} $REL_XML
         fi
-        
-        touch run.done
+
+        refresh_chain_state
+        FINAL_STATE=$EFFECTIVE
+        if [ "$FINAL_STATE" -lt "$TARGET_LENGTH" ]; then
+            echo "ERROR: MCMC incomplete (effective=$FINAL_STATE, logged=$LOGGED, checkpoint=$CHKPT < $TARGET_LENGTH). run.done not created."
+            echo "Normal if Snakemake/BEAST was stopped early. Rerun the same target when ready (no run.done here)."
+            exit 1
+        fi
+        if [ "$HAS_GSS" -eq 1 ] && [ ! -f H5N1_HA_panel_postQC.mle.result.log ]; then
+            echo "ERROR: MCMC done but GSS result missing (H5N1_HA_panel_postQC.mle.result.log). run.done not created."
+            echo "Rerun Snakemake for this scenario; it should run GSS-only from the checkpoint."
+            exit 1
+        fi
+        MLE_DONE=no
+        if [ -f H5N1_HA_panel_postQC.mle.result.log ]; then
+            MLE_DONE=yes
+        fi
+        cat > run.done <<EOF
+final_state=$FINAL_STATE
+target_length=$TARGET_LENGTH
+has_gss=$HAS_GSS
+mle_done=$MLE_DONE
+EOF
         """
 
 

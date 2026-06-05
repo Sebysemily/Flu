@@ -4,5 +4,6 @@ channels:
   - bioconda
 dependencies:
   - python=3.11
+  - pyyaml
   - openjdk
   - beast

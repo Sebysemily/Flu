@@ -6,6 +6,10 @@ resources/GenoFLU-multi/
 *.chkpt
 *.ops
 *.log.part_*
+*.log.prior
+*.trees.prior
+*.log.new
+*.trees.new
 H5N1_HA_*.mafft.*
 H5N1_HA_panel_postQC.*
 test_resume/

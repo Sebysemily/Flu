@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
-"""Sync BEAST XML MCMC settings from config/config.yml (beast.models)."""
+"""Sync BEAST XML MCMC settings from config/config.yml (beast.models).
+
+Only the main <mcmc> block is updated (chainLength, logEvery, logTree, logCheckpoint).
+Marginal-likelihood / GSS settings after </mcmc> are left unchanged.
+"""
 from __future__ import annotations
 
 import argparse
@@ -18,22 +22,101 @@ def load_config(path: str) -> dict:
         return yaml.safe_load(handle)
 
 
-def read_xml_params(content: str) -> dict[str, int | None]:
-    mcmc = re.search(r"<mcmc\b[^>]*\bchainLength=\"(\d+)\"", content)
-    logs = re.findall(r"<log\b[^>]*\blogEvery=\"(\d+)\"", content)
-    chk = re.search(
-        r"<logCheckpoint\b[^>]*\bcheckpointFinal=\"(\d+)\"", content
+def split_mcmc_block(content: str) -> tuple[str, str]:
+    """Return (mcmc_block_including_close_tag, rest_after_mcmc)."""
+    end = content.find("</mcmc>")
+    if end == -1:
+        raise ValueError("No </mcmc> closing tag found in BEAST XML.")
+    close_end = end + len("</mcmc>")
+    return content[:close_end], content[close_end:]
+
+
+def read_gss_params(content: str) -> dict[str, int | None]:
+    tail = split_mcmc_block(content)[1]
+    mle = re.search(
+        r"<marginalLikelihoodEstimator\b[^>]*\bchainLength=\"(\d+)\"", tail
     )
-    chk_every = re.search(
-        r"<logCheckpoint\b[^>]*\bcheckpointEvery=\"(\d+)\"", content
+    mle_log = re.search(
+        r"<log\s+id=\"MLELog\"[^>]*\blogEvery=\"(\d+)\"", tail
     )
     return {
+        "gssChainLength": int(mle.group(1)) if mle else None,
+        "gssLogEvery": int(mle_log.group(1)) if mle_log else None,
+    }
+
+
+def read_xml_params(content: str) -> dict[str, int | None]:
+    mcmc_block, _ = split_mcmc_block(content)
+    mcmc = re.search(r"<mcmc\b[^>]*\bchainLength=\"(\d+)\"", mcmc_block)
+    logs = re.findall(r"<log\b[^>]*\blogEvery=\"(\d+)\"", mcmc_block)
+    chk = re.search(
+        r"<logCheckpoint\b[^>]*\bcheckpointFinal=\"(\d+)\"", mcmc_block
+    )
+    chk_every = re.search(
+        r"<logCheckpoint\b[^>]*\bcheckpointEvery=\"(\d+)\"", mcmc_block
+    )
+    out = {
         "chainLength": int(mcmc.group(1)) if mcmc else None,
         "logEvery": int(logs[0]) if logs else None,
         "logEvery_all": [int(x) for x in logs],
         "checkpointFinal": int(chk.group(1)) if chk else None,
         "checkpointEvery": int(chk_every.group(1)) if chk_every else None,
     }
+    out.update(read_gss_params(content))
+    return out
+
+
+def apply_mcmc_params(
+    mcmc_block: str,
+    chain_length: int,
+    log_every: int,
+    checkpoint_every: int | None = None,
+) -> str:
+    mcmc_block = re.sub(
+        r"(<mcmc\b[^>]*\bchainLength=\")(\d+)(\")",
+        rf"\g<1>{chain_length}\g<3>",
+        mcmc_block,
+        count=1,
+    )
+    if mcmc_block.count(f'chainLength="{chain_length}"') != 1:
+        raise ValueError("Expected exactly one mcmc chainLength attribute after update.")
+
+    mcmc_block = re.sub(
+        r"(<log\b[^>]*\blogEvery=\")(\d+)(\")",
+        rf"\g<1>{log_every}\g<3>",
+        mcmc_block,
+    )
+    mcmc_block = re.sub(
+        r"(<logTree\b[^>]*\blogEvery=\")(\d+)(\")",
+        rf"\g<1>{log_every}\g<3>",
+        mcmc_block,
+    )
+    if checkpoint_every is None:
+        checkpoint_every = max(1_000_000, chain_length // 50)
+    if re.search(r"<logCheckpoint\b", mcmc_block):
+        mcmc_block = re.sub(
+            r"(<logCheckpoint\b[^>]*\bcheckpointEvery=\")(\d+)(\")",
+            rf"\g<1>{checkpoint_every}\g<3>",
+            mcmc_block,
+            count=1,
+        )
+        mcmc_block = re.sub(
+            r"(<logCheckpoint\b[^>]*\bcheckpointFinal=\")(\d+)(\")",
+            rf"\g<1>{chain_length}\g<3>",
+            mcmc_block,
+            count=1,
+        )
+    mcmc_block = re.sub(
+        r"(<log\s+[^>]*?)overwrite=\"false\"([^>]*>)",
+        r"\1\2",
+        mcmc_block,
+    )
+    mcmc_block = re.sub(
+        r"(<logTree\s+[^>]*?)overwrite=\"false\"([^>]*>)",
+        r"\1\2",
+        mcmc_block,
+    )
+    return mcmc_block
 
 
 def apply_params(
@@ -42,51 +125,16 @@ def apply_params(
     log_every: int,
     checkpoint_every: int | None = None,
 ) -> str:
-    content = re.sub(
-        r"(<mcmc\b[^>]*\bchainLength=\")(\d+)(\")",
-        rf"\g<1>{chain_length}\g<3>",
-        content,
-        count=1,
-    )
-    if content.count(f'chainLength="{chain_length}"') != 1:
-        raise ValueError("Expected exactly one mcmc chainLength attribute after update.")
-
-    content = re.sub(
-        r"(<log\b[^>]*\blogEvery=\")(\d+)(\")",
-        rf"\g<1>{log_every}\g<3>",
-        content,
-    )
-    content = re.sub(
-        r"(<logTree\b[^>]*\blogEvery=\")(\d+)(\")",
-        rf"\g<1>{log_every}\g<3>",
-        content,
-    )
-    if checkpoint_every is None:
-        checkpoint_every = max(1_000_000, chain_length // 50)
-    if re.search(r"<logCheckpoint\b", content):
-        content = re.sub(
-            r"(<logCheckpoint\b[^>]*\bcheckpointEvery=\")(\d+)(\")",
-            rf"\g<1>{checkpoint_every}\g<3>",
-            content,
-            count=1,
+    gss_before = read_gss_params(content)
+    mcmc_block, tail = split_mcmc_block(content)
+    mcmc_block = apply_mcmc_params(mcmc_block, chain_length, log_every, checkpoint_every)
+    updated = mcmc_block + tail
+    gss_after = read_gss_params(updated)
+    if gss_before != gss_after:
+        raise ValueError(
+            f"GSS block changed unexpectedly: before={gss_before} after={gss_after}"
         )
-        content = re.sub(
-            r"(<logCheckpoint\b[^>]*\bcheckpointFinal=\")(\d+)(\")",
-            rf"\g<1>{chain_length}\g<3>",
-            content,
-            count=1,
-        )
-    content = re.sub(
-        r"(<log\s+[^>]*?)overwrite=\"false\"([^>]*>)",
-        r"\1\2",
-        content,
-    )
-    content = re.sub(
-        r"(<logTree\s+[^>]*?)overwrite=\"false\"([^>]*>)",
-        r"\1\2",
-        content,
-    )
-    return content
+    return updated
 
 
 def update_xml(
@@ -117,6 +165,13 @@ def update_xml(
         "changed": changed,
     }
     return changed, summary
+
+
+def model_gss_flag(models: dict, scenario: str) -> bool | None:
+    entry = models.get(scenario, {})
+    if "gss" not in entry:
+        return None
+    return bool(entry["gss"])
 
 
 def write_stamp(path: str, summary: dict) -> None:
@@ -183,13 +238,28 @@ def main() -> None:
         any_change = any_change or changed
         status = "updated" if changed else "unchanged"
         after = summary["after"]
+        gss = summary["before"].get("gssChainLength")
+        gss_note = f", GSS chainLength={gss} (unchanged)" if gss is not None else ""
         print(
             f"{status} {xml_path}: "
             f"chainLength {summary['before'].get('chainLength')} -> {after.get('chainLength')}, "
             f"logEvery {summary['before'].get('logEvery')} -> {after.get('logEvery')}, "
             f"checkpointFinal {summary['before'].get('checkpointFinal')} -> {after.get('checkpointFinal')}"
+            f"{gss_note}"
         )
         if args.stamp and scenario == (args.scenario or scenario):
+            gss_cfg = model_gss_flag(models, scenario)
+            xml_has_gss = read_gss_params(open(xml_path, encoding="utf-8").read()).get(
+                "gssChainLength"
+            )
+            summary["gss_enabled"] = gss_cfg
+            summary["template_has_gss"] = xml_has_gss is not None
+            if gss_cfg and xml_has_gss is None:
+                print(
+                    f"WARNING {scenario}: config gss=true but {xml_path} has no "
+                    f"marginalLikelihoodEstimator block.",
+                    file=sys.stderr,
+                )
             write_stamp(args.stamp, summary)
 
     failed = False

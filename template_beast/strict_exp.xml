@@ -2186,7 +2186,7 @@
 		<frequencies>
 			<frequencyModel dataType="nucleotide">
 				<frequencies>
-					<parameter id="frequencies" value="0.25 0.25 0.25 0.25"/>
+					<parameter id="CP1+2.frequencies" value="0.25 0.25 0.25 0.25"/>
 				</frequencies>
 			</frequencyModel>
 		</frequencies>
@@ -2200,7 +2200,7 @@
 		<frequencies>
 			<frequencyModel dataType="nucleotide">
 				<frequencies>
-					<parameter idref="frequencies"/>
+					<parameter id="CP3.frequencies" value="0.25 0.25 0.25 0.25"/>
 				</frequencies>
 			</frequencyModel>
 		</frequencies>
@@ -2278,7 +2278,10 @@
 			<parameter idref="CP3.kappa"/>
 		</scaleOperator>
 		<deltaExchange delta="0.01" weight="1">
-			<parameter idref="frequencies"/>
+			<parameter idref="CP1+2.frequencies"/>
+		</deltaExchange>
+		<deltaExchange delta="0.01" weight="1">
+			<parameter idref="CP3.frequencies"/>
 		</deltaExchange>
 		<scaleOperator scaleFactor="0.75" weight="1">
 			<parameter idref="CP1+2.alpha"/>
@@ -2326,7 +2329,10 @@
 					<parameter idref="CP3.kappa"/>
 				</logNormalPrior>
 				<dirichletPrior alpha="1.0" sumsTo="1.0">
-					<parameter idref="frequencies"/>
+					<parameter idref="CP1+2.frequencies"/>
+				</dirichletPrior>
+				<dirichletPrior alpha="1.0" sumsTo="1.0">
+					<parameter idref="CP3.frequencies"/>
 				</dirichletPrior>
 				<exponentialPrior mean="0.5" offset="0.0">
 					<parameter idref="CP1+2.alpha"/>
@@ -2391,7 +2397,8 @@
 			<parameter idref="exponential.growthRate"/>
 			<parameter idref="CP1+2.kappa"/>
 			<parameter idref="CP3.kappa"/>
-			<parameter idref="frequencies"/>
+			<parameter idref="CP1+2.frequencies"/>
+			<parameter idref="CP3.frequencies"/>
 			<parameter idref="CP1+2.alpha"/>
 			<parameter idref="CP3.alpha"/>
 			<compoundParameter idref="allNus"/>
@@ -2418,6 +2425,89 @@
 		<logCheckpoint id="checkpointFileLog" checkpointEvery="1000000" checkpointFinal="50000000" fileName="H5N1_HA_panel_postQC.chkpt" overwrite="false"/>
 	</mcmc>
 	
+
+	<!-- START Marginal Likelihood Estimator                                     -->
+
+	<!-- A working prior for the exponential growth model.                       -->
+	<exponentialGrowth id="exponentialReference" units="years">
+		<populationSize>
+			<parameter id="exponentialReference.popSize" parameterColumn="exponential.popSize" fileName="H5N1_HA_panel_postQC.log" burnin="1000000"/>
+		</populationSize>
+		<growthRate>
+			<parameter id="exponentialReference.growthRate" parameterColumn="exponential.growthRate" fileName="H5N1_HA_panel_postQC.log" burnin="1000000"/>
+		</growthRate>
+	</exponentialGrowth>
+
+	<!-- A working prior for the coalescent.                                     -->
+	<coalescentLikelihood id="coalescentReference">
+		<model>
+			<exponentialGrowth idref="exponentialReference"/>
+		</model>
+		<populationTree>
+			<treeModel idref="treeModel"/>
+		</populationTree>
+	</coalescentLikelihood>
+
+	<!-- Define marginal likelihood estimator (GSS) settings                     -->
+	<marginalLikelihoodEstimator chainLength="1000000" pathSteps="100" pathScheme="betaquantile" alpha="0.3">
+		<samplers>
+			<mcmc idref="mcmc"/>
+		</samplers>
+		<pathLikelihood id="pathLikelihood">
+			<source>
+				<joint idref="joint"/>
+			</source>
+			<destination>
+				<workingPrior>
+					<logTransformedNormalReferencePrior fileName="H5N1_HA_panel_postQC.log" parameterColumn="CP1+2.kappa" burnin="1000000">
+						<parameter idref="CP1+2.kappa"/>
+					</logTransformedNormalReferencePrior>
+					<logTransformedNormalReferencePrior fileName="H5N1_HA_panel_postQC.log" parameterColumn="CP3.kappa" burnin="1000000">
+						<parameter idref="CP3.kappa"/>
+					</logTransformedNormalReferencePrior>
+					<logitTransformedNormalReferencePrior fileName="H5N1_HA_panel_postQC.log" parameterColumn="allNus" dimension="2" parameterNames="CP1+2.nu CP3.nu " burnin="1000000">
+						<parameter idref="allNus"/>
+					</logitTransformedNormalReferencePrior>
+					<logitTransformedNormalReferencePrior fileName="H5N1_HA_panel_postQC.log" parameterColumn="CP1+2.frequencies" dimension="4" burnin="1000000">
+						<parameter idref="CP1+2.frequencies"/>
+					</logitTransformedNormalReferencePrior>
+					<logitTransformedNormalReferencePrior fileName="H5N1_HA_panel_postQC.log" parameterColumn="CP3.frequencies" dimension="4" burnin="1000000">
+						<parameter idref="CP3.frequencies"/>
+					</logitTransformedNormalReferencePrior>
+					<logTransformedNormalReferencePrior fileName="H5N1_HA_panel_postQC.log" parameterColumn="CP1+2.alpha" burnin="1000000">
+						<parameter idref="CP1+2.alpha"/>
+					</logTransformedNormalReferencePrior>
+					<logTransformedNormalReferencePrior fileName="H5N1_HA_panel_postQC.log" parameterColumn="CP3.alpha" burnin="1000000">
+						<parameter idref="CP3.alpha"/>
+					</logTransformedNormalReferencePrior>
+					<logTransformedNormalReferencePrior fileName="H5N1_HA_panel_postQC.log" parameterColumn="clock.rate" burnin="1000000">
+						<parameter idref="clock.rate"/>
+					</logTransformedNormalReferencePrior>
+					<strictClockBranchRates idref="branchRates"/>
+					<logTransformedNormalReferencePrior fileName="H5N1_HA_panel_postQC.log" parameterColumn="exponential.popSize" burnin="1000000">
+						<parameter idref="exponential.popSize"/>
+					</logTransformedNormalReferencePrior>
+					<normalReferencePrior fileName="H5N1_HA_panel_postQC.log" parameterColumn="exponential.growthRate" burnin="1000000">
+						<parameter idref="exponential.growthRate"/>
+					</normalReferencePrior>
+					<coalescentLikelihood idref="coalescentReference"/>
+				</workingPrior>
+			</destination>
+		</pathLikelihood>
+		<log id="MLELog" logEvery="1000" fileName="H5N1_HA_panel_postQC.mle.log">
+			<pathLikelihood idref="pathLikelihood"/>
+		</log>
+	</marginalLikelihoodEstimator>
+
+	<!-- Generalized stepping-stone sampling estimator from collected samples    -->
+	<generalizedSteppingStoneSamplingAnalysis fileName="H5N1_HA_panel_postQC.mle.log" resultsFileName="H5N1_HA_panel_postQC.mle.result.log">
+		<sourceColumn name="pathLikelihood.source"/>
+		<destinationColumn name="pathLikelihood.destination"/>
+		<thetaColumn name="pathLikelihood.theta"/>
+	</generalizedSteppingStoneSamplingAnalysis>
+
+	<!-- END Marginal Likelihood Estimator                                       -->
+
 	<report>
 		<property name="timer">
 			<mcmc idref="mcmc"/>
