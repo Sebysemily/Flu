@@ -21,11 +21,12 @@ beast:
   # Snakemake threads per BEAST job. Use 1 so -j2 runs two chains in parallel (-j2 with 5 only runs one).
   threads_per_chain: 1
   # Per model: chainLength/logEvery (MCMC). gss: true runs marginal likelihood after MCMC target
-  # (GSS block must exist in template_beast/<scenario>.xml). Omit gss or gss: false = MCMC only.
+  # matching coalescent model para conts y exp, bay usa product of exponential distributions
+  # bay tiene que correr como GSS desde un principio, los otros se puede probar y retomar la cadena 
   models:
-    strict_const: { chainLength: 50000000, logEvery: 5000, gss: true }
+    strict_const: { chainLength: 50000000, logEvery: 5000, gss: true }   
     strict_exp: { chainLength: 50000000, logEvery: 5000, gss: true }
-    strict_bay: { chainLength: 50000000, logEvery: 5000, gss: false }
+    strict_bay: { chainLength: 50000000, logEvery: 5000, gss: true }
     ucln_const: { chainLength: 75000000, logEvery: 7500, gss: true }
-    ucln_exp: { chainLength: 75000000, logEvery: 7500, gss: false }
-    ucln_bay: { chainLength: 75000000, logEvery: 7500, gss: false }
+    ucln_exp: { chainLength: 100000000, logEvery: 7500, gss: true }
+    ucln_bay: { chainLength: 75000000, logEvery: 7500, gss: true }

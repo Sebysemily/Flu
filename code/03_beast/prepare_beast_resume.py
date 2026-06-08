@@ -25,16 +25,24 @@ GSS_END = "<!-- END Marginal Likelihood Estimator"
 
 
 def extract_gss_block(content: str) -> str:
-    start = content.find(GSS_START)
-    if start == -1:
-        return ""
-    end = content.find(GSS_END, start)
-    if end == -1:
-        raise ValueError("GSS start marker found but end marker missing.")
-    end = content.find("\n", end)
-    if end == -1:
-        return content[start:]
-    return content[start : end + 1]
+    start = 0
+    while True:
+        start = content.find(GSS_START, start)
+        if start == -1:
+            return ""
+        end = content.find(GSS_END, start)
+        if end == -1:
+            raise ValueError("GSS start marker found but end marker missing.")
+        end = content.find("\n", end)
+        if end == -1:
+            block = content[start:]
+        else:
+            block = content[start : end + 1]
+        
+        if "marginalLikelihoodEstimator" in block:
+            return block
+            
+        start = end if end != -1 else len(content)
 
 
 def append_gss_block(body: str, gss: str) -> str:
@@ -180,18 +188,25 @@ def best_mcmc_log_path(
 
 
 def strip_gss_block(content: str) -> str:
-    start = content.find(GSS_START)
-    if start == -1:
-        return content
-    end = content.find(GSS_END, start)
-    if end == -1:
-        raise ValueError("GSS start marker found but end marker missing.")
-    end = content.find("\n", end)
-    if end == -1:
-        end = len(content)
-    else:
-        end += 1
-    return content[:start] + content[end:]
+    start = 0
+    while True:
+        start = content.find(GSS_START, start)
+        if start == -1:
+            return content
+        end = content.find(GSS_END, start)
+        if end == -1:
+            raise ValueError("GSS start marker found but end marker missing.")
+        
+        # Check if this block is the one with the marginalLikelihoodEstimator
+        if "marginalLikelihoodEstimator" in content[start:end]:
+            end = content.find("\n", end)
+            if end == -1:
+                end = len(content)
+            else:
+                end += 1
+            return content[:start] + content[end:]
+        
+        start = end + 1
 
 
 def set_mcmc_chain_length(content: str, chain_length: int) -> str:

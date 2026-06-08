@@ -2216,7 +2216,7 @@
 		<frequencies>
 			<frequencyModel dataType="nucleotide">
 				<frequencies>
-					<parameter id="frequencies" value="0.25 0.25 0.25 0.25"/>
+					<parameter id="CP1+2.frequencies" value="0.25 0.25 0.25 0.25"/>
 				</frequencies>
 			</frequencyModel>
 		</frequencies>
@@ -2230,7 +2230,7 @@
 		<frequencies>
 			<frequencyModel dataType="nucleotide">
 				<frequencies>
-					<parameter idref="frequencies"/>
+					<parameter id="CP3.frequencies" value="0.25 0.25 0.25 0.25"/>
 				</frequencies>
 			</frequencyModel>
 		</frequencies>
@@ -2308,7 +2308,10 @@
 			<parameter idref="CP3.kappa"/>
 		</scaleOperator>
 		<deltaExchange delta="0.01" weight="1">
-			<parameter idref="frequencies"/>
+			<parameter idref="CP1+2.frequencies"/>
+		</deltaExchange>
+		<deltaExchange delta="0.01" weight="1">
+			<parameter idref="CP3.frequencies"/>
 		</deltaExchange>
 		<scaleOperator scaleFactor="0.75" weight="1">
 			<parameter idref="CP1+2.alpha"/>
@@ -2365,7 +2368,10 @@
 					<parameter idref="CP3.kappa"/>
 				</logNormalPrior>
 				<dirichletPrior alpha="1.0" sumsTo="1.0">
-					<parameter idref="frequencies"/>
+					<parameter idref="CP1+2.frequencies"/>
+				</dirichletPrior>
+				<dirichletPrior alpha="1.0" sumsTo="1.0">
+					<parameter idref="CP3.frequencies"/>
 				</dirichletPrior>
 				<exponentialPrior mean="0.5" offset="0.0">
 					<parameter idref="CP1+2.alpha"/>
@@ -2429,7 +2435,8 @@
 			<parameter idref="skygrid.cutOff"/>
 			<parameter idref="CP1+2.kappa"/>
 			<parameter idref="CP3.kappa"/>
-			<parameter idref="frequencies"/>
+			<parameter idref="CP1+2.frequencies"/>
+			<parameter idref="CP3.frequencies"/>
 			<parameter idref="CP1+2.alpha"/>
 			<parameter idref="CP3.alpha"/>
 			<compoundParameter idref="allNus"/>
@@ -2440,6 +2447,15 @@
 			<rateStatistic idref="meanRate"/>
 			<rateStatistic idref="coefficientOfVariation"/>
 			<rateCovarianceStatistic idref="covariance"/>
+
+			<!-- START Marginal Likelihood Estimator                                     -->
+			<coalescentEventsStatistic>
+				<gmrfSkyrideLikelihood idref="skygrid"/>
+				
+			</coalescentEventsStatistic>
+
+			<!-- END Marginal Likelihood Estimator                                       -->
+
 			<treeDataLikelihood idref="treeLikelihood"/>
 			<discretizedBranchRates idref="branchRates"/>
 			<gmrfSkyGridLikelihood idref="skygrid"/>
@@ -2458,6 +2474,75 @@
 		<logCheckpoint id="checkpointFileLog" checkpointEvery="1500000" checkpointFinal="75000000" fileName="H5N1_HA_panel_postQC.chkpt" overwrite="false"/>
 	</mcmc>
 	
+
+	<!-- START Marginal Likelihood Estimator                                     -->
+	<productOfExponentialsPosteriorMeansLoess id="exponentials" fileName="H5N1_HA_panel_postQC.log" burnin="1000000" parameterColumn="coalescentEventsStatistic" dimension="293">
+		<treeModel idref="treeModel"/>
+	</productOfExponentialsPosteriorMeansLoess>
+
+	<!-- Define marginal likelihood estimator (GSS) settings                     -->
+	<marginalLikelihoodEstimator chainLength="1000000" pathSteps="100" pathScheme="betaquantile" alpha="0.3">
+		<samplers>
+			<mcmc idref="mcmc"/>
+		</samplers>
+		<pathLikelihood id="pathLikelihood">
+			<source>
+				<joint idref="joint"/>
+			</source>
+			<destination>
+				<workingPrior>
+					<logTransformedNormalReferencePrior fileName="H5N1_HA_panel_postQC.log" parameterColumn="CP1+2.kappa" burnin="1000000">
+						<parameter idref="CP1+2.kappa"/>
+					</logTransformedNormalReferencePrior>
+					<logTransformedNormalReferencePrior fileName="H5N1_HA_panel_postQC.log" parameterColumn="CP3.kappa" burnin="1000000">
+						<parameter idref="CP3.kappa"/>
+					</logTransformedNormalReferencePrior>
+					<logitTransformedNormalReferencePrior fileName="H5N1_HA_panel_postQC.log" parameterColumn="allNus" dimension="2" parameterNames="CP1+2.nu CP3.nu " burnin="1000000">
+						<parameter idref="allNus"/>
+					</logitTransformedNormalReferencePrior>
+					<logitTransformedNormalReferencePrior fileName="H5N1_HA_panel_postQC.log" parameterColumn="CP1+2.frequencies" dimension="4" burnin="1000000">
+						<parameter idref="CP1+2.frequencies"/>
+					</logitTransformedNormalReferencePrior>
+					<logitTransformedNormalReferencePrior fileName="H5N1_HA_panel_postQC.log" parameterColumn="CP3.frequencies" dimension="4" burnin="1000000">
+						<parameter idref="CP3.frequencies"/>
+					</logitTransformedNormalReferencePrior>
+					<logTransformedNormalReferencePrior fileName="H5N1_HA_panel_postQC.log" parameterColumn="CP1+2.alpha" burnin="1000000">
+						<parameter idref="CP1+2.alpha"/>
+					</logTransformedNormalReferencePrior>
+					<logTransformedNormalReferencePrior fileName="H5N1_HA_panel_postQC.log" parameterColumn="CP3.alpha" burnin="1000000">
+						<parameter idref="CP3.alpha"/>
+					</logTransformedNormalReferencePrior>
+					<discretizedBranchRates idref="branchRates"/>
+					<logTransformedNormalReferencePrior fileName="H5N1_HA_panel_postQC.log" parameterColumn="ucld.mean" burnin="1000000">
+						<parameter idref="ucld.mean"/>
+					</logTransformedNormalReferencePrior>
+					<logTransformedNormalReferencePrior fileName="H5N1_HA_panel_postQC.log" parameterColumn="ucld.stdev" burnin="1000000">
+						<parameter idref="ucld.stdev"/>
+					</logTransformedNormalReferencePrior>
+					<normalReferencePrior fileName="H5N1_HA_panel_postQC.log" parameterColumn="skygrid.logPopSize" dimension="50" burnin="1000000">
+						<parameter idref="skygrid.logPopSize"/>
+					</normalReferencePrior>
+					<logTransformedNormalReferencePrior fileName="H5N1_HA_panel_postQC.log" parameterColumn="skygrid.precision" burnin="1000000">
+						<parameter idref="skygrid.precision"/>
+					</logTransformedNormalReferencePrior>
+					<productOfExponentialsPosteriorMeansLoess idref="exponentials"/>
+				</workingPrior>
+			</destination>
+		</pathLikelihood>
+		<log id="MLELog" logEvery="1000" fileName="H5N1_HA_panel_postQC.mle.log">
+			<pathLikelihood idref="pathLikelihood"/>
+		</log>
+	</marginalLikelihoodEstimator>
+
+	<!-- Generalized stepping-stone sampling estimator from collected samples    -->
+	<generalizedSteppingStoneSamplingAnalysis fileName="H5N1_HA_panel_postQC.mle.log" resultsFileName="H5N1_HA_panel_postQC.mle.result.log">
+		<sourceColumn name="pathLikelihood.source"/>
+		<destinationColumn name="pathLikelihood.destination"/>
+		<thetaColumn name="pathLikelihood.theta"/>
+	</generalizedSteppingStoneSamplingAnalysis>
+
+	<!-- END Marginal Likelihood Estimator                                       -->
+
 	<report>
 		<property name="timer">
 			<mcmc idref="mcmc"/>
