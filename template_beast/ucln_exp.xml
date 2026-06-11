@@ -2349,7 +2349,7 @@
 	
 
 	<!-- Define MCMC                                                             -->
-	<mcmc id="mcmc" chainLength="10000000" autoOptimize="true" operatorAnalysis="H5N1_HA_panel_postQC.ops">
+	<mcmc id="mcmc" chainLength="100000000" autoOptimize="true" operatorAnalysis="H5N1_HA_panel_postQC.ops">
 		<joint id="joint">
 			<prior id="prior">
 				<logNormalPrior mu="1.0" sigma="1.25" offset="0.0">
@@ -2400,7 +2400,7 @@
 		<operators idref="operators"/>
 
 		<!-- write log to screen                                                     -->
-		<log id="screenLog" logEvery="1000">
+		<log id="screenLog" logEvery="7500">
 			<column label="Joint" dp="4" width="12">
 				<joint idref="joint"/>
 			</column>
@@ -2419,7 +2419,7 @@
 		</log>
 
 		<!-- write log to file                                                       -->
-		<log id="fileLog" logEvery="1000" fileName="H5N1_HA_panel_postQC.log" overwrite="false">
+		<log id="fileLog" logEvery="7500" fileName="H5N1_HA_panel_postQC.log" >
 			<joint idref="joint"/>
 			<prior idref="prior"/>
 			<likelihood idref="likelihood"/>
@@ -2458,7 +2458,7 @@
 		</log>
 
 		<!-- write tree log to file                                                  -->
-		<logTree id="treeFileLog" logEvery="1000" nexusFormat="true" fileName="H5N1_HA_panel_postQC.trees" sortTranslationTable="true">
+		<logTree id="treeFileLog" logEvery="7500" nexusFormat="true" fileName="H5N1_HA_panel_postQC.trees" sortTranslationTable="true">
 			<treeModel idref="treeModel"/>
 			<trait name="rate" tag="rate">
 				<discretizedBranchRates idref="branchRates"/>
@@ -2467,7 +2467,7 @@
 		</logTree>
 
 		<!-- write state of Markov chain to checkpoint file                          -->
-		<logCheckpoint id="checkpointFileLog" checkpointEvery="1000000" checkpointFinal="10000000" fileName="H5N1_HA_panel_postQC.chkpt" overwrite="false"/>
+		<logCheckpoint id="checkpointFileLog" checkpointEvery="2000000" checkpointFinal="100000000" fileName="H5N1_HA_panel_postQC.chkpt" overwrite="false"/>
 	</mcmc>
 	
 
