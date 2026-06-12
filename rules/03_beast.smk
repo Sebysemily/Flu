@@ -78,7 +78,7 @@ BEAST_GSS_SCENARIOS = [s for s, xml in BEAST_PREPARED_XMLS.items() if os.path.ex
 BEAST_GSS_TARGETS = expand("results/beast/GSS/{scenario}/run.done", scenario=BEAST_GSS_SCENARIOS)
 
 BEAST_PUBLIC_TARGETS = (
-    [*BEAST_RUN_TARGETS, *BEAST_FINAL_TARGETS, *BEAST_GSS_TARGETS]
+    [*BEAST_RUN_TARGETS, *BEAST_FINAL_TARGETS, *BEAST_GSS_TARGETS, "results/beast/GSS/model_selection.csv"]
     if BEAST_ENABLED
     else []
 )
@@ -544,4 +544,19 @@ final_tree	{input.tree}
 burnin_states_per_replicate	{params.burnin}
 tree_summary	MCC_mean_heights
 EOF
+        """
+
+
+rule extract_gss_mle:
+    input:
+        mle_logs=expand("results/beast/GSS/{scenario}/H5N1_HA_panel_postQC.mle.result.log", scenario=BEAST_GSS_SCENARIOS)
+    output:
+        csv="results/beast/GSS/model_selection.csv"
+    conda:
+        "../envs/03_beast.yml"
+    shell:
+        r"""
+        python code/03_beast/extract_mle.py \
+            --output {output.csv} \
+            {input.mle_logs}
         """
