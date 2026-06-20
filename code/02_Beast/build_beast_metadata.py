@@ -3,10 +3,12 @@ import argparse
 import csv
 import os
 import sys
+import time
+import requests
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Build BEAST metadata TSV from H5N1_context.csv"
+        description="Build BEAST metadata TSV from H5N1_context.csv with latitude and longitude"
     )
     parser.add_argument("--metadata", required=True, help="Path to metadata/H5N1_context.csv")
     parser.add_argument("--out", required=True, help="Output metadata TSV")
@@ -28,38 +30,96 @@ def main() -> None:
     seen = set()
     rows = []
 
+    # Cache for coordinates to avoid redundant API calls
+    coord_cache = {}
+    
+    BASE_URL = "https://nominatim.openstreetmap.org/search"
+    HEADERS = {"User-Agent": "FluCentroidApp/1.0 (sebascalvas@outlook.com)"}
+
+    print("Reading metadata and querying OpenStreetMap Nominatim for coordinates...", file=sys.stderr)
+
     with open(args.metadata, "r", encoding="utf-8") as fh:
         reader = csv.DictReader(fh)
-        for row in reader:
+        for index, row in enumerate(reader):
             file_name = (row.get("file_name") or "").strip()
             date_val = (row.get("collection_date") or "").strip()
             country = (row.get("country") or "").strip()
-            expected_role = (row.get("expected_role") or "").strip()
+            province = (row.get("province") or "").strip()
+            host_raw = (row.get("host") or "").strip()
 
             if file_name and file_name not in seen:
                 if valid_taxa is not None and file_name not in valid_taxa:
                     continue
 
-                # Location mapping logic
-                if country == "Ecuador":
-                    if expected_role == "flu_costa":
-                        location = "Ecuador_Coastal"
-                    elif expected_role == "flu_sierra":
-                        location = "Ecuador_Andine"
-                    elif expected_role == "flu_amazonia":
-                        location = "Ecuador_Amazon"
-                    else:
-                        location = "Ecuador"
-                else:
-                    location = country
+                if country == "FalklandIslands":
+                    country = "Falkland Islands"
+
+                query_string = ""
+                resolution = ""
+                if province and province.lower() != "nan":
+                    query_string = f"{province}, {country}"
+                    resolution = "Province"
+                elif country and country.lower() != "nan":
+                    query_string = country
+                    resolution = "Country"
                 
-                rows.append((file_name, date_val, location))
+                latitude = ""
+                longitude = ""
+
+                if query_string:
+                    if query_string in coord_cache:
+                        latitude, longitude, resolution = coord_cache[query_string]
+                    else:
+                        print(f"Querying -> {query_string} (Resolution: {resolution})", file=sys.stderr)
+                        params = {"q": query_string, "format": "json", "limit": 1}
+                        try:
+                            response = requests.get(BASE_URL, params=params, headers=HEADERS)
+                            if response.status_code == 200:
+                                data = response.json()
+                                if data:
+                                    latitude = data[0]['lat']
+                                    longitude = data[0]['lon']
+                                    coord_cache[query_string] = (latitude, longitude, resolution)
+                                else:
+                                    print(f"   ⚠️ No coordinates found for: {query_string}", file=sys.stderr)
+                                    coord_cache[query_string] = ("", "", resolution)
+                            else:
+                                print(f"   ❌ API Error (Status {response.status_code})", file=sys.stderr)
+                                coord_cache[query_string] = ("", "", resolution)
+                        except Exception as e:
+                            print(f"   ❌ Request failed: {e}", file=sys.stderr)
+                            coord_cache[query_string] = ("", "", resolution)
+                        
+                        # Nominatim's usage policy requires a 1-second sleep between requests
+                        time.sleep(1)
+
+                # Assign Host Group
+                host_group = "?"
+                host_lower = host_raw.lower()
+                if host_lower == "avian" or not host_lower:
+                    host_group = "?"
+                elif any(kw in host_lower for kw in ["chicken", "turkey", "gallus", "numida", "guineafowl", "pheasant"]):
+                    host_group = "Poultry"
+                elif any(kw in host_lower for kw in ["duck", "goose", "eider", "wigeon", "teal", "swan", "merganser", "shoveler", "scaup", "mallard", "gadwall", "goldeneye", "brant", "cygnus", "dendrocygna", "mergus", "coscoroba"]):
+                    host_group = "Waterfowl"
+                elif any(kw in host_lower for kw in ["pelican", "booby", "gull", "tern", "pelecanus", "skimmer", "cormorant", "phalacrocorax", "frigatebird", "sterna", "thalasseus", "sula", "fregata", "penguin", "fulmar", "shearwater", "sanderling", "plover", "seabird", "puffinus", "calidris", "seagull"]):
+                    host_group = "Coastal Seabirds"
+                elif any(kw in host_lower for kw in ["vulture", "eagle", "owl", "hawk", "falcon", "caracara", "condor", "coragyps", "buteogallus", "skua", "megascops"]):
+                    host_group = "Scavengers/Raptors"
+                elif any(kw in host_lower for kw in ["sea_lion", "sea lion", "pinniped", "dolphin", "porpoise", "elephant_seal", "elephant seal", "fur_seal", "fur seal", "marine_otter", "otter", "otaria", "chungungo", "seal", "arctocephalus"]):
+                    host_group = "Marine Mammals"
+                elif any(kw in host_lower for kw in ["feline", "lion", "nasua", "coati"]):
+                    host_group = "Terrestrial Mammals"
+                elif any(kw in host_lower for kw in ["crow", "raven", "furnarius", "dromaius", "emu", "backyard_bird", "backyard bird"]):
+                    host_group = "Terrestrial Birds"
+
+                rows.append((file_name, date_val, latitude, longitude, resolution, host_group))
                 seen.add(file_name)
 
     with open(args.out, "w", encoding="utf-8") as handle:
-        handle.write("Taxon\tDate\tLocation\n")
-        for file_name, date_val, location in sorted(rows):
-            handle.write(f"{file_name}\t{date_val}\t{location}\n")
+        handle.write("Taxon\tDate\tLatitude\tLongitude\tHost\n")
+        for file_name, date_val, lat, lon, res, host in sorted(rows):
+            handle.write(f"{file_name}\t{date_val}\t{lat}\t{lon}\t{host}\n")
 
     print(f"Wrote {len(rows)} entries to {args.out}", file=sys.stderr)
 
