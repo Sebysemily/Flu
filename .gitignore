@@ -40,3 +40,6 @@ temp/*
 **/.antigravity.md
 **/__pycache__/
 *.sif
+/data
+/data
+/scratch
