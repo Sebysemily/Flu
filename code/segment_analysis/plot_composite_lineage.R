@@ -3,7 +3,7 @@
 # Composite: flu_lineage heatmap + HA/PB2 cophylogenetic tanglegram (phytools).
 #
 # Usage:
-#   Rscript plot_composite_lineage.R <heatmap_rds> <ha_tree> <pb2_tree> \
+#   Rscript plot_composite_lineage.R <ha_tree> <pb2_tree> \
 #       <panel_metadata_csv> <output_png> [max_tips] [ribbon_segment]
 #
 # max_tips: preview subset (keeps all Ecuador tips, fills with context).
@@ -65,22 +65,24 @@ context_lineages_in_panel <- function(tips, roles, lineages_ha, lineages_pb2) {
 }
 
 args <- commandArgs(trailingOnly = TRUE)
-
-heatmap_rds         <- args[1]
-ha_tree_path        <- args[2]
-pb2_tree_path       <- args[3]
-panel_metadata_path <- args[4]
-output_png          <- args[5]
-max_tips            <- if (length(args) >= 6 && nzchar(args[6])) as.integer(args[6]) else NA_integer_
-outgroup_sample     <- if (length(args) >= 8 && nzchar(args[8])) args[8] else NA_character_
-
-for (path in c(heatmap_rds, ha_tree_path, pb2_tree_path, panel_metadata_path)) {
-  if (!file.exists(path)) stop("File not found: ", path)
+if (length(args) < 4) {
+  stop("Usage: Rscript plot_composite_lineage.R <ha_tree> <pb2_tree> <panel_metadata_csv> <output_png> [max_tips] [ribbon_segment]")
 }
 
-heatmap_obj <- readRDS(heatmap_rds)
-p_heatmap <- heatmap_obj$plot
-lineage_palette <- heatmap_obj$palette
+ha_tree_path <- args[1]
+pb2_tree_path <- args[2]
+panel_metadata_path <- args[3]
+output_png <- args[4]
+max_tips <- if (length(args) >= 5) as.integer(args[5]) else NA_integer_
+ribbon_segment <- if (length(args) >= 6) args[6] else "HA"
+outgroup_sample <- if (length(args) >= 8 && nzchar(args[8])) args[8] else NA_character_
+
+# We no longer load the heatmap or its palette.
+lineage_palette <- character()
+
+for (path in c(ha_tree_path, pb2_tree_path, panel_metadata_path)) {
+  if (!file.exists(path)) stop("File not found: ", path)
+}
 
 panel_meta <- read.csv(panel_metadata_path, stringsAsFactors = FALSE, check.names = FALSE)
 

@@ -151,7 +151,14 @@ def main() -> None:
         if (row.get("expected_role") or "").startswith("flu_")
         and (row.get("file_name") or "").strip() in ha_ids
     ]
-    protected = sorted(set([args.outgroup] + flu_ha))
+    old_usa_ha = [
+        (row.get("file_name") or "").strip()
+        for row in rows
+        if (row.get("country") or "").strip() == "USA"
+        and (row.get("collection_date") or "").startswith("2021-12")
+        and (row.get("file_name") or "").strip() in ha_ids
+    ]
+    protected = sorted(set([args.outgroup] + flu_ha + old_usa_ha))
     write_lines(args.out_include_list, protected)
     print(f"Mandatory panel strains (outgroup + flu with HA): {len(protected)}", file=sys.stderr)
 
@@ -214,13 +221,6 @@ def main() -> None:
         f"expected_role == 'regional_context' and "
         f"collection_date >= '{window_start}' and collection_date <= '{window_end}'"
     )
-    run_augur_filter(
-        tmp_meta,
-        costa_query,
-        args.regional_costa_adjacent_max,
-        args.seed + 1,
-        rc_costa,
-    )
 
     run_augur_filter(
         tmp_meta,
@@ -232,7 +232,7 @@ def main() -> None:
 
     merged: list[str] = []
     seen: set[str] = set()
-    for path in [args.out_include_list, rc_global, rc_costa, aa_out]:
+    for path in [args.out_include_list, rc_global, aa_out]:
         for strain in read_strain_list(path):
             if strain not in seen:
                 seen.add(strain)
@@ -241,12 +241,11 @@ def main() -> None:
     write_lines(args.out_context_taxa, merged)
     print(f"Final context_taxa: {len(merged)} strains", file=sys.stderr)
     print(
-        f"  protected={len(protected)}, rc_global={len(read_strain_list(rc_global))}, "
-        f"rc_costa={len(read_strain_list(rc_costa))}, aa={len(read_strain_list(aa_out))}",
+        f"protected={len(protected)}, rc_global={len(read_strain_list(rc_global))}, aa={len(read_strain_list(aa_out))}",
         file=sys.stderr,
     )
 
-    for tmp in [tmp_meta, rc_global, rc_costa, aa_out]:
+    for tmp in [tmp_meta, rc_global, aa_out]:
         try:
             os.remove(tmp)
         except OSError:

@@ -6,7 +6,7 @@
 # -----------------------------
 # Inputs & Metadata
 # -----------------------------
-mira_base_dir: "../../../MIRA_NGS"
+mira_base_dir: "/home/sebas/work_projects/naspool/MIRA_flu_H5N1/runs"
 flu_filtrado: "metadata/flu_filtrado.csv"
 context_base: "metadata/context_base.csv"
 context_fasta_raw: "data/context/gisaid_epiflu_sequence.fasta"

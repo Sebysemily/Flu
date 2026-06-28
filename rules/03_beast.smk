@@ -549,14 +549,47 @@ EOF
 
 rule extract_gss_mle:
     input:
-        mle_logs=expand("results/beast/GSS/{scenario}/H5N1_HA_panel_postQC.mle.result.log", scenario=BEAST_GSS_SCENARIOS)
+        done_files=expand("results/beast/GSS/{scenario}/run.done", scenario=BEAST_GSS_SCENARIOS)
     output:
         csv="results/beast/GSS/model_selection.csv"
+    params:
+        mle_logs=expand("results/beast/GSS/{scenario}/H5N1_HA_panel_postQC.mle.result.log", scenario=BEAST_GSS_SCENARIOS)
     conda:
         "../envs/03_beast.yml"
     shell:
         r"""
         python code/03_beast/extract_mle.py \
             --output {output.csv} \
-            {input.mle_logs}
+            {params.mle_logs}
+        """
+
+rule run_final_beast:
+    input:
+        xml="template_beast/final_run.xml"
+    output:
+        done="results/beast/final_run/run.done"
+    params:
+        outdir="results/beast/final_run",
+        chain_length=200000000,
+        log_every=20000,
+        seed=config.get("random_seed", 1001)
+    threads: BEAST_THREADS_PER_CHAIN
+    conda:
+        "../envs/03_beast.yml"
+    shell:
+        r"""
+        python -c "
+import sys
+sys.path.append('code/03_beast')
+from update_beast_xmls import update_xml
+update_xml('{input.xml}', {params.chain_length}, {params.log_every}, None)
+"
+        
+        mkdir -p {params.outdir}
+        cd {params.outdir}
+        
+        REL_XML="../../../{input.xml}"
+        
+        beast -beagle_CPU -seed {params.seed} "$REL_XML" 2>&1 | tee beast_console.log
+        touch run.done
         """

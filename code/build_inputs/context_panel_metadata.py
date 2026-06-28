@@ -85,39 +85,48 @@ _AVIAN_GENERA: frozenset[str] = frozenset({
 
 
 def classify_host_type(host: str) -> str:
-    """Classify a host string as 'avian', 'mammal', 'human', or 'unknown'.
+    """Classify a host string into specific host groups."""
+    if not host or str(host).lower() in {"", "unknown", "na", "nan", "none", "avian", "bird", "environment"}:
+        return "?"
 
-    Priority:
-        1. Exact match against known mammal keys.
-        2. Human keywords.
-        3. Avian keyword substring search.
-        4. Avian genus lookup (first word of Latin binomial).
-        5. 'unknown' for anything else (e.g. 'environment').
-    """
-    if not host or str(host).lower() in {"", "unknown", "na", "nan", "none"}:
-        return "unknown"
+    host_lower = host.lower()
+    
+    # Domesticated bird
+    if any(kw in host_lower for kw in ["chicken", "turkey", "gallus", "numida", "guineafowl", "pheasant", "poultry"]):
+        return "domesticated bird"
+        
+    # Wild bird
+    elif any(kw in host_lower for kw in [
+        "duck", "goose", "eider", "wigeon", "teal", "swan", "merganser", "shoveler", "scaup", "mallard", 
+        "gadwall", "goldeneye", "brant", "cygnus", "dendrocygna", "mergus", "coscoroba", "pelican", 
+        "booby", "gull", "tern", "pelecanus", "skimmer", "cormorant", "phalacrocorax", "frigatebird", 
+        "sterna", "thalasseus", "sula", "fregata", "penguin", "fulmar", "shearwater", "sanderling", 
+        "plover", "seabird", "puffinus", "calidris", "seagull", "vulture", "eagle", "owl", "hawk", 
+        "falcon", "caracara", "condor", "coragyps", "buteogallus", "skua", "megascops", "crow", "raven", 
+        "furnarius", "dromaius", "emu", "backyard_bird", "backyard bird", "wild_bird", "wild bird",
+        "strix", "tyto", "otus", "columba", "streptopelia", "zenaida", "turdus", "sialia", "mimus", "sturnus",
+        "passer", "spizella", "zonotrichia", "setophaga"
+    ]):
+        return "wild bird"
+        
+    # Domesticated mammal
+    elif any(kw in host_lower for kw in ["cow", "cattle", "bovine", "bos", "cat", "feline", "dog", "canine", "mink", "swine", "pig", "sus"]):
+        return "domesticated mammal"
+        
+    # Wild mammal
+    elif any(kw in host_lower for kw in [
+        "sea_lion", "sea lion", "pinniped", "dolphin", "porpoise", "elephant_seal", "elephant seal", 
+        "fur_seal", "fur seal", "marine_otter", "otter", "otaria", "chungungo", "seal", "arctocephalus", 
+        "lion", "nasua", "coati", "fox", "vulpes", "bear", "ursus", "skunk", "racoon", "raccoon", "procyon", 
+        "mustela", "martes", "puma", "leopard", "tiger", "panthera"
+    ]):
+        return "wild mammal"
+        
+    # If "human", map to "?"
+    elif any(kw in host_lower for kw in ["human", "homo", "person", "patient"]):
+        return "?"
 
-    key = re.sub(r"[^a-z0-9]", "", host.lower())
-
-    if key in _MAMMAL_HOST_KEYS:
-        return "mammal"
-
-    if key in {"human", "homo", "homosapiens", "person", "patient"}:
-        return "human"
-
-    # Substring search for avian keywords
-    for kw in _AVIAN_KEYWORDS:
-        if kw in key:
-            return "avian"
-
-    # Latin genus check (first word split by whitespace/underscore/dash)
-    words = [re.sub(r"[^a-z0-9]", "", w) for w in re.split(r"[_\s\-]+", host.lower()) if w]
-    if words:
-        first_word = words[0]
-        if first_word in _AVIAN_GENERA:
-            return "avian"
-
-    return "unknown"
+    return "?"
 
 
 def read_epi_isls_from_fasta(path: str) -> frozenset[str]:
@@ -186,9 +195,11 @@ def build_gisaid_context_rows(
 
         for _seg, (epi_isl, _seq, _hdr) in segs.items():
             if epi_isl in human_epi_isls:
-                host_type = "human"
+                host_type = "Human"
             elif epi_isl in avian_epi_isls:
-                host_type = "avian"
+                host_type = classify_host_type(host)
+                if host_type == "?":
+                    host_type = "Terrestrial Birds" # Fallback if forced avian but unknown group
             else:
                 host_type = classify_host_type(host)
 

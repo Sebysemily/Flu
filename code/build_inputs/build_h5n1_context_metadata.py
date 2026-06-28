@@ -112,8 +112,7 @@ def build_panel_rows(
 
     for row in ecuador_rows:
         row["host"] = epi_to_host.get(row["file_name"], "unknown")
-        # Ecuador samples are always avian; host_type already set in build_ecuador_metadata_rows
-        row.setdefault("host_type", "avian")
+        row["host_type"] = classify_host_type(row["host"])
 
     context_rows = build_gisaid_context_rows(
         context_fasta, local_epi_isls, human_epi_isls, avian_epi_isls

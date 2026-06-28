@@ -42,7 +42,8 @@ ALL_VALIDATION_TARGETS = [
     "results/phylogeny/flu_mut/flumut_report_markers.tsv",
     "results/phylogeny/flu_mut/flumut_report_mutations.tsv",
     *BEAST_GSS_TARGETS,
-    "results/beast/GSS/model_selection.csv"
+    "results/beast/GSS/model_selection.csv",
+    "results/beast/final_run/run.done"
 ]
 
 GENOFLU_METADATA_TARGETS = [

@@ -24,9 +24,9 @@ beast:
   # matching coalescent model para conts y exp, bay usa product of exponential distributions
   # bay tiene que correr como GSS desde un principio, los otros se puede probar y retomar la cadena 
   models:
-    strict_const: { chainLength: 50000000, logEvery: 5000, gss: true }   
-    strict_exp: { chainLength: 50000000, logEvery: 5000, gss: true }
-    strict_bay: { chainLength: 50000000, logEvery: 5000, gss: true }
-    ucln_const: { chainLength: 75000000, logEvery: 7500, gss: true }
-    ucln_exp: { chainLength: 100000000, logEvery: 7500, gss: true }
-    ucln_bay: { chainLength: 75000000, logEvery: 7500, gss: true }
+    strict_const: { chainLength: 100000000, logEvery: 10000, gss: true }   
+    strict_exp: { chainLength: 100000000, logEvery: 10000, gss: true }
+    strict_bay: { chainLength: 100000000, logEvery: 10000, gss: true }
+    ucln_const: { chainLength: 100000000, logEvery: 10000, gss: true }
+    ucln_exp: { chainLength: 125000000, logEvery: 12500, gss: true }
+    ucln_bay: { chainLength: 100000000, logEvery: 10000, gss: true }

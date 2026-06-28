@@ -195,9 +195,9 @@ MAIN_PANEL_CONTEXT_TAXA = f"{PRUNED_HA_DIR}/context_taxa.txt"
 MAIN_PANEL_COSTA_AUDIT = f"{PRUNED_HA_DIR}/costa_window.audit.tsv"
 MAIN_PANEL_FILTERED_AUDIT = f"{PRUNED_HA_DIR}/pruning.audit.tsv"
 # HA panel augur + post-QC (hardcoded; edit here if needed)
-PANEL_REGIONAL_CONTEXT_MAX = 200
+PANEL_REGIONAL_CONTEXT_MAX = 250
 PANEL_AMERICAN_ANCHOR_MAX = 100
-PANEL_REGIONAL_COSTA_ADJACENT_MAX = 80
+PANEL_REGIONAL_COSTA_ADJACENT_MAX = 0
 PANEL_COSTA_WINDOW_PADDING_MONTHS = 2
 MAIN_PANEL_ALIGNMENT = f"{MAIN_PANEL_DIR}/main_alignment.fasta"
 MAIN_PANEL_PARTITIONS = f"{MAIN_PANEL_DIR}/main_alignment.partitions"
@@ -392,7 +392,6 @@ rule segment_analysis_ggtree_lineage:
 
 rule segment_analysis_composite_lineage_preview:
     input:
-        heatmap_rds="figures/build_inputs/flu_lineage.rds",
         ha_tree=f"{RESULTS_PHYLOGENY}/iq-tree/HA/lineage/H5N1_HA_fast.treefile",
         pb2_tree=f"{RESULTS_PHYLOGENY}/iq-tree/PB2/lineage/H5N1_PB2_fast.treefile",
         panel_metadata=MAIN_PANEL_METADATA,
@@ -400,7 +399,6 @@ rule segment_analysis_composite_lineage_preview:
         png=f"{LINEAGE_FIGURES_DIR}/HA_PB2_lineage_composite_preview.png",
     params:
         figures_dir=LINEAGE_FIGURES_DIR,
-        max_tips=60,
         ribbon_segment="HA",
         outgroup_sample=config.get("outgroup_root_sample", ""),
     conda:
@@ -410,12 +408,11 @@ rule segment_analysis_composite_lineage_preview:
         ulimit -s unlimited || true
         mkdir -p {params.figures_dir}
         Rscript code/segment_analysis/plot_composite_lineage.R \
-            {input.heatmap_rds} \
             {input.ha_tree} \
             {input.pb2_tree} \
             {input.panel_metadata} \
             {output.png} \
-            {params.max_tips} \
+            60 \
             {params.ribbon_segment} \
             "{params.outgroup_sample}"
         test -s {output.png}
@@ -423,7 +420,6 @@ rule segment_analysis_composite_lineage_preview:
 
 rule segment_analysis_composite_lineage:
     input:
-        heatmap_rds="figures/build_inputs/flu_lineage.rds",
         ha_tree=f"{RESULTS_PHYLOGENY}/iq-tree/HA/lineage/H5N1_HA_fast.treefile",
         pb2_tree=f"{RESULTS_PHYLOGENY}/iq-tree/PB2/lineage/H5N1_PB2_fast.treefile",
         panel_metadata=MAIN_PANEL_METADATA,
@@ -440,7 +436,6 @@ rule segment_analysis_composite_lineage:
         ulimit -s unlimited || true
         mkdir -p {params.figures_dir}
         Rscript code/segment_analysis/plot_composite_lineage.R \
-            {input.heatmap_rds} \
             {input.ha_tree} \
             {input.pb2_tree} \
             {input.panel_metadata} \

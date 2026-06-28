@@ -129,21 +129,15 @@ build_segment_panels <- function(tree_path, segment_name, flu_tips_all, role_loo
     )
   }
 
-  ctx <- tip_data[!tip_data$is_flu, ]
-  if (nrow(ctx) > 0) {
-    p_top <- p_top + geom_point(
-      data = ctx, aes(x = x, y = y),
-      color = "grey70", shape = 16, size = 0.8, alpha = 0.7
-    )
-  }
+  tip_data$role <- normalize_role_vector(setNames(tip_data$expected_role, tip_data$label))
+  tip_data$pt_size <- ifelse(tip_data$is_flu, 2.2, 0.8)
 
-  flu_df <- tip_data[tip_data$is_flu, ]
-  if (nrow(flu_df) > 0) {
-    flu_df$role <- normalize_role_vector(setNames(flu_df$expected_role, flu_df$label))
+  if (nrow(tip_data) > 0) {
     p_top <- p_top + geom_point(
-      data = flu_df, aes(x = x, y = y, color = role),
-      shape = 17, size = 2.2, alpha = 0.95
-    ) + scale_color_manual(values = panel_type_colors, na.value = "grey70")
+      data = tip_data, aes(x = x, y = y, color = role, shape = host_type),
+      size = tip_data$pt_size, alpha = ifelse(tip_data$is_flu, 0.95, 0.7)
+    ) + scale_color_manual(values = panel_type_colors, na.value = "grey70") +
+      scale_shape_manual(values = c("domesticated bird"=15, "wild bird"=16, "domesticated mammal"=17, "wild mammal"=18, "?"=3))
   }
 
   # Draw rectangle and extract subtree
@@ -188,12 +182,9 @@ build_segment_panels <- function(tree_path, segment_name, flu_tips_all, role_loo
         role   = ifelse(is_flu, expected_role, "context")
       )
     
-    # ensure country colors are mostly covered
-    tip_data_sub$country_plot <- ifelse(tip_data_sub$country %in% names(country_palette), tip_data_sub$country, "Other")
-
-    # Split into context and flu
-    ctx_sub <- tip_data_sub[!tip_data_sub$is_flu, ]
-    flu_sub <- tip_data_sub[tip_data_sub$is_flu, ]
+    tip_data_sub$role <- normalize_role_vector(setNames(tip_data_sub$expected_role, tip_data_sub$label))
+    tip_data_sub$pt_size <- ifelse(tip_data_sub$is_flu, 4, 2.5)
+    tip_data_sub$pt_alpha <- ifelse(tip_data_sub$is_flu, 1.0, 0.6)
 
     p_bot <- ggplot() +
       geom_tree(data = d_sub, color = "grey35", linewidth = 0.3) +
@@ -206,25 +197,16 @@ build_segment_panels <- function(tree_path, segment_name, flu_tips_all, role_loo
         legend.position = "none"
       )
 
-    if (nrow(ctx_sub) > 0) {
+    if (nrow(tip_data_sub) > 0) {
       p_bot <- p_bot + geom_point(
-        data = ctx_sub,
-        aes(x = x, y = y, fill = country_plot),
-        shape = 21, size = 2.5, color = "white", stroke = 0.2, alpha = 0.5
-      )
+        data = tip_data_sub,
+        aes(x = x, y = y, color = role, shape = host_type),
+        size = tip_data_sub$pt_size,
+        alpha = tip_data_sub$pt_alpha,
+        stroke = 0.2
+      ) + scale_color_manual(values = panel_type_colors, na.value = "grey70") +
+        scale_shape_manual(values = c("domesticated bird"=15, "wild bird"=16, "domesticated mammal"=17, "wild mammal"=18, "?"=3))
     }
-
-    if (nrow(flu_sub) > 0) {
-      flu_sub$role <- normalize_role_vector(setNames(flu_sub$expected_role, flu_sub$label))
-      p_bot <- p_bot + geom_point(
-        data = flu_sub,
-        aes(x = x, y = y, color = role),
-        shape = 17, size = 6, alpha = 1.0
-      ) + scale_color_manual(values = panel_type_colors, na.value = "grey70")
-    }
-    
-    # We must add scale_fill_manual for country colors
-    p_bot <- p_bot + scale_fill_manual(values = c(country_palette, "Other" = "grey70"))
   }
 
   list(top = p_top, bot = p_bot)
@@ -244,38 +226,47 @@ for (i in seq_along(tree_paths)) {
 
 # Build Legends
 legend_roles <- names(panel_type_colors)
-legend_shapes <- c(flu_costa = 17, flu_andine = 17, flu_amazonia = 17, american_anchor = 16, regional_context = 16)
 legend_data_role <- data.frame(x=seq_along(legend_roles), y=1, role=legend_roles, stringsAsFactors=FALSE)
 
-p_leg_role <- ggplot(legend_data_role, aes(x=x, y=y, color=role, shape=role)) +
-  geom_point(size=3) +
+p_leg_role <- ggplot(legend_data_role, aes(x=x, y=y, color=role)) +
+  geom_point(size=4, shape=15) +
   scale_color_manual(values=panel_type_colors, labels=panel_type_labels, name="Role") +
-  scale_shape_manual(values=legend_shapes, labels=panel_type_labels, name="Role") +
   theme_void() + theme(legend.position="bottom", legend.box="horizontal")
 leg_role <- cowplot::get_legend(p_leg_role)
 
-country_levels <- c(names(country_palette), "Other")
-country_colors <- c(country_palette, "Other" = "grey70")
-p_leg_country <- ggplot(data.frame(country=country_levels), aes(x=1,y=1,fill=country)) +
-  geom_point(shape=21, size=3) +
-  scale_fill_manual(values=country_colors, name="Country") +
+host_shape_mapping <- c(
+  "domesticated bird" = 15,
+  "wild bird" = 16,
+  "domesticated mammal" = 17,
+  "wild mammal" = 18,
+  "?" = 3
+)
+
+p_leg_shape <- ggplot(data.frame(host=names(host_shape_mapping)), aes(x=1,y=1,shape=host)) +
+  geom_point(size=4, color="grey30") +
+  scale_shape_manual(values=host_shape_mapping, name="Host Type") +
   theme_void() + theme(legend.position="bottom", legend.box="horizontal")
-leg_country <- cowplot::get_legend(p_leg_country)
+leg_shape <- cowplot::get_legend(p_leg_shape)
 
-combined_legends <- plot_grid(leg_role, leg_country, ncol=1)
+combined_legends <- plot_grid(leg_role, leg_shape, ncol=1)
 
-# Compose Graphic 1 (first 4 segments)
+# Reorder trees to: PB1, PB2, NP, NS and PA, HA, NA, MP
+desired_order <- c("PB1", "PB2", "NP", "NS", "PA", "HA", "NA", "MP")
+match_idx <- match(desired_order, segments)
+panels_reordered <- panels[match_idx]
+
+# Compose Graphic 1 (first 4 segments: PB1, PB2, NP, NS)
 layout_1 <- plot_grid(
-  plot_grid(panels[[1]]$top, panels[[2]]$top, panels[[3]]$top, panels[[4]]$top, ncol=4),
-  plot_grid(panels[[1]]$bot, panels[[2]]$bot, panels[[3]]$bot, panels[[4]]$bot, ncol=4),
+  plot_grid(panels_reordered[[1]]$top, panels_reordered[[2]]$top, panels_reordered[[3]]$top, panels_reordered[[4]]$top, ncol=4),
+  plot_grid(panels_reordered[[1]]$bot, panels_reordered[[2]]$bot, panels_reordered[[3]]$bot, panels_reordered[[4]]$bot, ncol=4),
   ncol = 1, rel_heights = c(1, 1)
 )
 final_plot_1 <- plot_grid(layout_1, combined_legends, ncol=1, rel_heights=c(1, 0.1))
 
-# Compose Graphic 2 (last 4 segments)
+# Compose Graphic 2 (last 4 segments: PA, HA, NA, MP)
 layout_2 <- plot_grid(
-  plot_grid(panels[[5]]$top, panels[[6]]$top, panels[[7]]$top, panels[[8]]$top, ncol=4),
-  plot_grid(panels[[5]]$bot, panels[[6]]$bot, panels[[7]]$bot, panels[[8]]$bot, ncol=4),
+  plot_grid(panels_reordered[[5]]$top, panels_reordered[[6]]$top, panels_reordered[[7]]$top, panels_reordered[[8]]$top, ncol=4),
+  plot_grid(panels_reordered[[5]]$bot, panels_reordered[[6]]$bot, panels_reordered[[7]]$bot, panels_reordered[[8]]$bot, ncol=4),
   ncol = 1, rel_heights = c(1, 1)
 )
 final_plot_2 <- plot_grid(layout_2, combined_legends, ncol=1, rel_heights=c(1, 0.1))

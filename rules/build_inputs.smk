@@ -33,6 +33,8 @@ rule build_gisaid_input_from_mira:
         ancient(FILTRADO_CSV)
     output:
         MIRA_GISAID_FASTA
+    conda:
+        GENOFLU_CONDA
     shell:
         r"""
         python code/build_inputs/build_gisaid_input_from_mira.py
@@ -141,8 +143,6 @@ rule build_h5n1_context_metadata:
         context_fasta=CONTEXT_FASTA_RAW,
         genoflu_context="metadata/genoflu_results.tsv",
         genoflu_ecuador_done="metadata/genoflu_results.done",
-        human_fasta=os.path.join(CONTEXT_DIR, "Human_host.fasta"),
-        avian_fasta=os.path.join(CONTEXT_DIR, "avian_only_regional_context.fasta"),
     output:
         context_base=CONTEXT_BASE_METADATA,
         metadata=MAIN_PANEL_METADATA,
@@ -159,9 +159,7 @@ rule build_h5n1_context_metadata:
             --genoflu-context-results {input.genoflu_context} \
             --ecuador-date-source {params.ecuador_date_source} \
             --context-base-out {output.context_base} \
-            --metadata-out {output.metadata} \
-            --human-fasta {input.human_fasta} \
-            --avian-fasta {input.avian_fasta}
+            --metadata-out {output.metadata}
         """
 
 # =====================================================================

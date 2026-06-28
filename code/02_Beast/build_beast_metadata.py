@@ -93,25 +93,8 @@ def main() -> None:
                         # Nominatim's usage policy requires a 1-second sleep between requests
                         time.sleep(1)
 
-                # Assign Host Group
-                host_group = "?"
-                host_lower = host_raw.lower()
-                if host_lower == "avian" or not host_lower:
-                    host_group = "?"
-                elif any(kw in host_lower for kw in ["chicken", "turkey", "gallus", "numida", "guineafowl", "pheasant"]):
-                    host_group = "Poultry"
-                elif any(kw in host_lower for kw in ["duck", "goose", "eider", "wigeon", "teal", "swan", "merganser", "shoveler", "scaup", "mallard", "gadwall", "goldeneye", "brant", "cygnus", "dendrocygna", "mergus", "coscoroba"]):
-                    host_group = "Waterfowl"
-                elif any(kw in host_lower for kw in ["pelican", "booby", "gull", "tern", "pelecanus", "skimmer", "cormorant", "phalacrocorax", "frigatebird", "sterna", "thalasseus", "sula", "fregata", "penguin", "fulmar", "shearwater", "sanderling", "plover", "seabird", "puffinus", "calidris", "seagull"]):
-                    host_group = "Coastal Seabirds"
-                elif any(kw in host_lower for kw in ["vulture", "eagle", "owl", "hawk", "falcon", "caracara", "condor", "coragyps", "buteogallus", "skua", "megascops"]):
-                    host_group = "Scavengers/Raptors"
-                elif any(kw in host_lower for kw in ["sea_lion", "sea lion", "pinniped", "dolphin", "porpoise", "elephant_seal", "elephant seal", "fur_seal", "fur seal", "marine_otter", "otter", "otaria", "chungungo", "seal", "arctocephalus"]):
-                    host_group = "Marine Mammals"
-                elif any(kw in host_lower for kw in ["feline", "lion", "nasua", "coati"]):
-                    host_group = "Terrestrial Mammals"
-                elif any(kw in host_lower for kw in ["crow", "raven", "furnarius", "dromaius", "emu", "backyard_bird", "backyard bird"]):
-                    host_group = "Terrestrial Birds"
+                # Assign Host Group directly from host_type
+                host_group = (row.get("host_type") or "?").strip()
 
                 rows.append((file_name, date_val, latitude, longitude, resolution, host_group))
                 seen.add(file_name)
