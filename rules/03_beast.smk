@@ -78,7 +78,7 @@ BEAST_GSS_SCENARIOS = [s for s, xml in BEAST_PREPARED_XMLS.items() if os.path.ex
 BEAST_GSS_TARGETS = expand("results/beast/GSS/{scenario}/run.done", scenario=BEAST_GSS_SCENARIOS)
 
 BEAST_PUBLIC_TARGETS = (
-    [*BEAST_RUN_TARGETS, *BEAST_FINAL_TARGETS, *BEAST_GSS_TARGETS, "results/beast/GSS/model_selection.csv"]
+    [*BEAST_RUN_TARGETS, *BEAST_FINAL_TARGETS, *BEAST_GSS_TARGETS, "results/beast/GSS/model_selection.csv", "figures/main_panel_HA_beast_mcc.png", "results/beast/final_run/joint_transitions_summary.csv"]
     if BEAST_ENABLED
     else []
 )
@@ -428,7 +428,7 @@ rule annotate_strict_constant_final_tree:
         rm -f {output.tree}
         treeannotator \
             -type mcc \
-            -heights mean \
+            -heights keep \
             -threads {threads} \
             {input.trees} \
             {output.tree}
@@ -518,7 +518,7 @@ rule annotate_strict_constant_lugar_final_tree:
         rm -f {output.tree}
         treeannotator \
             -type mcc \
-            -heights mean \
+            -heights keep \
             -threads {threads} \
             {input.trees} \
             {output.tree}
@@ -567,7 +567,8 @@ rule run_final_beast:
     input:
         xml="template_beast/final_run.xml"
     output:
-        done="results/beast/final_run/run.done"
+        done="results/beast/final_run/run.done",
+        trees="results/beast/final_run/H5N1_HA_panel_postQC.trees"
     params:
         outdir="results/beast/final_run",
         chain_length=200000000,
@@ -590,6 +591,72 @@ update_xml('{input.xml}', {params.chain_length}, {params.log_every}, None)
         
         REL_XML="../../../{input.xml}"
         
-        beast -beagle_CPU -seed {params.seed} "$REL_XML" 2>&1 | tee beast_console.log
+        # Auto-resume from checkpoint if one exists (e.g. after power loss)
+        RESUME_FLAG=""
+        if ls *.chkpt 1>/dev/null 2>&1; then
+            echo "Checkpoint found, resuming BEAST run..."
+            RESUME_FLAG="-resume"
+        fi
+        
+        beast -beagle_CPU $RESUME_FLAG -seed {params.seed} "$REL_XML" 2>&1 | tee beast_console.log
         touch run.done
+        """
+
+# =====================================================================
+# Rule: annotate_final_tree
+# =====================================================================
+rule annotate_final_tree:
+    input:
+        trees="results/beast/final_run/H5N1_HA_panel_postQC.trees"
+    output:
+        tree="results/beast/final_run/H5N1_HA_panel_postQC.mcc.tree"
+    params:
+        burnin_trees=1000
+    threads: BEAST_THREADS
+    conda:
+        "../envs/03_beast.yml"
+    shell:
+        r"""
+        treeannotator \
+            -burninTrees {params.burnin_trees} \
+            -type hipstr \
+            -heights mean \
+            -threads {threads} \
+            {input.trees} \
+            {output.tree}
+        """
+
+# =====================================================================
+# Rule: plot_final_tree
+# =====================================================================
+rule plot_final_tree:
+    input:
+        tree="results/beast/final_run/H5N1_HA_panel_postQC.mcc.tree",
+        metadata="metadata/beast/metadata_beast.tsv"
+    output:
+        plot="figures/main_panel_HA_beast_mcc.png"
+    params:
+        script="code/segment_analysis/plot_beast_tree.R"
+    conda:
+        "../envs/r.yml"
+    shell:
+        r"""
+        Rscript {params.script} {input.tree} {input.metadata} {output.plot} "HA - BEAST Time-Scaled Tree"
+        """
+
+# =====================================================================
+# Rule: extract_beast_transitions
+# =====================================================================
+rule extract_beast_transitions:
+    input:
+        tree="results/beast/final_run/H5N1_HA_panel_postQC.mcc.tree"
+    output:
+        csv="results/beast/final_run/joint_transitions_summary.csv"
+    params:
+        script="code/segment_analysis/extract_beast_transitions.R"
+    conda:
+        "../envs/r.yml"
+    shell:
+        r"""
+        Rscript {params.script} {input.tree} {output.csv}
         """

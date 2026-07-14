@@ -912,13 +912,11 @@ EPI_ISL_20450120,chicken,domesticated bird,2023-04-02,Ecuador,NAPO,flu_amazonia,
 EPI_ISL_20450142,chicken,domesticated bird,2024-02-27,Ecuador,PASTAZA,flu_amazonia,Not assigned: Only 1 segments >98.0% match found of total 1 segments in input file
 EPI_ISL_20450143,chicken,domesticated bird,2024-02-27,Ecuador,PASTAZA,flu_amazonia,Not assigned: Only 2 segments >98.0% match found of total 2 segments in input file
 EPI_ISL_20450144,chicken,domesticated bird,2024-02-27,Ecuador,PASTAZA,flu_amazonia,Not assigned: Only 3 segments >98.0% match found of total 3 segments in input file
-EPI_ISL_16157545,chicken,domesticated bird,2022-11-25,Ecuador,,flu_costa,Not assigned: Only 1 segments >98.0% match found of total 1 segments in input file
 EPI_ISL_16161673,chicken,domesticated bird,2022-11-25,Ecuador,,flu_costa,Not assigned: Only 1 segments >98.0% match found of total 1 segments in input file
-EPI_ISL_16161675,chicken,domesticated bird,2022-11-25,Ecuador,,flu_costa,Not assigned: Only 1 segments >98.0% match found of total 1 segments in input file
-EPI_ISL_17973443,wildbird-Fregata-magnificens,wild bird,2023-01-11,Ecuador,,flu_costa,B3.2
-EPI_ISL_17973458,wildbird-Fregata-magnificens,wild bird,2023-01-11,Ecuador,,flu_costa,Not assigned: Only 7 segments >98.0% match found of total 8 segments in input file
-EPI_ISL_18137626,wildbird-Sula-nebouxii,wild bird,2023-05-18,Ecuador,,flu_costa,Not assigned: Only 1 segments >98.0% match found of total 1 segments in input file
-EPI_ISL_18137671,wildbird-Sula-nebouxii,wild bird,2023-05-18,Ecuador,,flu_costa,Not assigned: Only 6 segments >98.0% match found of total 8 segments in input file
+EPI_ISL_17973443,wildbird-Fregata-magnificens,wild bird,2023-01-11,Ecuador,Manabi,flu_costa,B3.2
+EPI_ISL_17973458,wildbird-Fregata-magnificens,wild bird,2023-01-11,Ecuador,Manabi,flu_costa,Not assigned: Only 7 segments >98.0% match found of total 8 segments in input file
+EPI_ISL_18137626,wildbird-Sula-nebouxii,wild bird,2023-05-18,Ecuador,Playas,flu_costa,Not assigned: Only 1 segments >98.0% match found of total 1 segments in input file
+EPI_ISL_18137671,wildbird-Sula-nebouxii,wild bird,2023-05-18,Ecuador,Playas,flu_costa,Not assigned: Only 6 segments >98.0% match found of total 8 segments in input file
 EPI_ISL_20450056,unknown,?,2023-06-01,Ecuador,SANTA ELENA,flu_costa,Not assigned: Only 1 segments >98.0% match found of total 1 segments in input file
 EPI_ISL_20450065,chicken,domesticated bird,2023-08-17,Ecuador,GUAYAS,flu_costa,Not assigned: Only 3 segments >98.0% match found of total 3 segments in input file
 EPI_ISL_20450066,booby,wild bird,2023-05-10,Ecuador,SANTAELENA,flu_costa,Not assigned: Only 0 segments >98.0% match found of total 1 segments in input file
@@ -936,6 +934,8 @@ EPI_ISL_20450096,frigatebird,wild bird,2023-10-31,Ecuador,GUAYAS,flu_costa,Not a
 EPI_ISL_20450097,frigatebird,wild bird,2023-10-31,Ecuador,GUAYAS,flu_costa,Not assigned: Only 1 segments >98.0% match found of total 1 segments in input file
 EPI_ISL_20450099,frigatebird,wild bird,2023-12-06,Ecuador,MANABI,flu_costa,Not assigned: Only 5 segments >98.0% match found of total 5 segments in input file
 EPI_ISL_20450137,chicken,domesticated bird,2023-08-17,Ecuador,GUAYAS,flu_costa,Not assigned: Only 3 segments >98.0% match found of total 3 segments in input file
+EPI_ISL_16157545,chicken,domesticated bird,2022-11-25,Ecuador,Cotopaxi,flu_sierra,Not assigned: Only 1 segments >98.0% match found of total 1 segments in input file
+EPI_ISL_16161675,chicken,domesticated bird,2022-11-25,Ecuador,Cotopaxi,flu_sierra,Not assigned: Only 1 segments >98.0% match found of total 1 segments in input file
 EPI_ISL_20386477,chicken,domesticated bird,2023-01-20,Ecuador,TUNGURAHUA,flu_sierra,B3.2
 EPI_ISL_20387860,chicken,domesticated bird,2022-12-02,Ecuador,COTOPAXI,flu_sierra,B3.2
 EPI_ISL_20387861,chicken,domesticated bird,2022-12-02,Ecuador,COTOPAXI,flu_sierra,B3.2

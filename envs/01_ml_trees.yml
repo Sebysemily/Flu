@@ -6,12 +6,12 @@ dependencies:
   - python=3.11
   - pandas
   - biopython
-  - nextclade
-  - raxml-ng
-  - iqtree
+  - nextclade=3.21.2
+  - raxml-ng=2.0.2
+  - iqtree=3.1.2
   - matplotlib
   - genoflu
-  - augur
+  - augur=33.4.1
   - openpyxl
   - flumut
 

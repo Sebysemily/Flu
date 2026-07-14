@@ -900,9 +900,9 @@ EPI_ISL_17353510,chicken,domesticated bird,2022-11-26,Argentina,Cordoba,regional
 EPI_ISL_11628222,chicken,domesticated bird,2022-02-21,USA,Delaware,american_anchor
 EPI_ISL_11628223,chicken,domesticated bird,2022-02-21,USA,Delaware,american_anchor
 EPI_ISL_11628224,chicken,domesticated bird,2022-02-21,USA,Delaware,american_anchor
-EPI_ISL_16157545,chicken,domesticated bird,2022-11-25,Ecuador,,flu_costa
+EPI_ISL_16157545,chicken,domesticated bird,2022-11-25,Ecuador,Cotopaxi,flu_sierra
 EPI_ISL_16161673,chicken,domesticated bird,2022-11-25,Ecuador,,flu_costa
-EPI_ISL_16161675,chicken,domesticated bird,2022-11-25,Ecuador,,flu_costa
+EPI_ISL_16161675,chicken,domesticated bird,2022-11-25,Ecuador,Cotopaxi,flu_sierra
 EPI_ISL_16102168,chicken,domesticated bird,2022-04-18,USA,Idaho,american_anchor
 EPI_ISL_16240169,chicken,domesticated bird,2022-05-06,USA,Idaho,american_anchor
 EPI_ISL_16240220,chicken,domesticated bird,2022-05-06,USA,Idaho,american_anchor
@@ -1491,10 +1491,10 @@ EPI_ISL_19604854,turkey_vulture,domesticated bird,2022-09-20,USA,Wyoming,america
 EPI_ISL_19604888,vulture,wild bird,2022-05-16,USA,New Jersey,american_anchor
 EPI_ISL_17885960,whimbrel,?,2023-03-05,Chile,Coquimbo,regional_context
 EPI_ISL_17885987,whimbrel,?,2023-03-05,Chile,Valparaiso,regional_context
-EPI_ISL_17973443,wildbird-Fregata-magnificens,wild bird,2023-01-11,Ecuador,,flu_costa
-EPI_ISL_17973458,wildbird-Fregata-magnificens,wild bird,2023-01-11,Ecuador,,flu_costa
-EPI_ISL_18137626,wildbird-Sula-nebouxii,wild bird,2023-05-18,Ecuador,,flu_costa
-EPI_ISL_18137671,wildbird-Sula-nebouxii,wild bird,2023-05-18,Ecuador,,flu_costa
+EPI_ISL_17973443,wildbird-Fregata-magnificens,wild bird,2023-01-11,Ecuador,Manabi,flu_costa
+EPI_ISL_17973458,wildbird-Fregata-magnificens,wild bird,2023-01-11,Ecuador,Manabi,flu_costa
+EPI_ISL_18137626,wildbird-Sula-nebouxii,wild bird,2023-05-18,Ecuador,Playas,flu_costa
+EPI_ISL_18137671,wildbird-Sula-nebouxii,wild bird,2023-05-18,Ecuador,Playas,flu_costa
 EPI_ISL_19605218,wood_duck,wild bird,2022-09-15,USA,Iowa,american_anchor
 EPI_ISL_19605219,wood_duck,wild bird,2022-06-14,USA,Michigan,american_anchor
 EPI_ISL_19605188,wood_duck,wild bird,2022-09-09,USA,Minnesota,american_anchor

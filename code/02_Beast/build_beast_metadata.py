@@ -44,8 +44,8 @@ def main() -> None:
             file_name = (row.get("file_name") or "").strip()
             date_val = (row.get("collection_date") or "").strip()
             country = (row.get("country") or "").strip()
-            province = (row.get("province") or "").strip()
-            host_raw = (row.get("host") or "").strip()
+            expected_role = (row.get("expected_role") or "").strip()
+            host_group = (row.get("host_type") or "?").strip()
 
             if file_name and file_name not in seen:
                 if valid_taxa is not None and file_name not in valid_taxa:
@@ -54,14 +54,8 @@ def main() -> None:
                 if country == "FalklandIslands":
                     country = "Falkland Islands"
 
-                query_string = ""
-                resolution = ""
-                if province and province.lower() != "nan":
-                    query_string = f"{province}, {country}"
-                    resolution = "Province"
-                elif country and country.lower() != "nan":
-                    query_string = country
-                    resolution = "Country"
+                query_string = country
+                resolution = "Country"
                 
                 latitude = ""
                 longitude = ""
@@ -93,16 +87,27 @@ def main() -> None:
                         # Nominatim's usage policy requires a 1-second sleep between requests
                         time.sleep(1)
 
-                # Assign Host Group directly from host_type
-                host_group = (row.get("host_type") or "?").strip()
+                location = country
+                if country.lower() == "ecuador":
+                    if expected_role == "flu_costa":
+                        location = "ecuador_coastal"
+                    elif expected_role == "flu_sierra":
+                        location = "ecuador_andine"
+                    elif expected_role == "flu_amazonia":
+                        location = "ecuador_amazonia"
+                    else:
+                        location = "Ecuador"
+                
+                if not location:
+                    location = "?"
 
-                rows.append((file_name, date_val, latitude, longitude, resolution, host_group))
+                rows.append((file_name, date_val, latitude, longitude, location, host_group))
                 seen.add(file_name)
 
     with open(args.out, "w", encoding="utf-8") as handle:
-        handle.write("Taxon\tDate\tLatitude\tLongitude\tHost\n")
-        for file_name, date_val, lat, lon, res, host in sorted(rows):
-            handle.write(f"{file_name}\t{date_val}\t{lat}\t{lon}\t{host}\n")
+        handle.write("Taxon\tDate\tLatitude\tLongitude\tLocation\tHost\n")
+        for file_name, date_val, lat, lon, loc, host in sorted(rows):
+            handle.write(f"{file_name}\t{date_val}\t{lat}\t{lon}\t{loc}\t{host}\n")
 
     print(f"Wrote {len(rows)} entries to {args.out}", file=sys.stderr)
 

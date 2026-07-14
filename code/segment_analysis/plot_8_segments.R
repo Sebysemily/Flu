@@ -72,26 +72,29 @@ build_segment_panels <- function(tree_path, segment_name, flu_tips_all, role_loo
     desc_all  <- phangorn::Descendants(tree, type = "all")
 
     for (node in (n_tips + 1):(n_tips + Nnode(tree))) {
+      if (node %in% nodes_to_drop) next
       tips_in_node <- tree$tip.label[desc_tips[[node]]]
       if (length(intersect(tips_in_node, flu_tips_in_tree)) == 0) {
-        parent <- tree$edge[tree$edge[, 2] == node, 1]
-        if (length(parent) > 0) {
-          parent_tips <- tree$tip.label[desc_tips[[parent]]]
-          if (length(intersect(parent_tips, flu_tips_in_tree)) > 0) {
-            desc_nodes <- desc_all[[node]]
-            x_root     <- d$x[d$node == node]
-            y_root     <- d$y[d$node == node]
-            desc_data  <- d[d$node %in% desc_nodes, ]
-            if (nrow(desc_data) > 0) {
-              poly_list[[poly_id]] <- data.frame(
-                x     = c(x_root, max(desc_data$x), max(desc_data$x)),
-                y     = c(y_root, max(desc_data$y), min(desc_data$y)),
-                group = paste0("poly_", poly_id)
-              )
-              poly_id       <- poly_id + 1
-              nodes_to_drop <- c(nodes_to_drop, desc_nodes)
-            }
-          }
+        roles_node <- meta$expected_role[match(tips_in_node, meta$file_name)]
+        roles_node <- roles_node[!is.na(roles_node) & roles_node != ""]
+        if (length(unique(roles_node)) > 1) next
+        
+        desc_nodes <- desc_all[[node]]
+        x_root     <- d$x[d$node == node]
+        y_root     <- d$y[d$node == node]
+        desc_data  <- d[d$node %in% desc_nodes, ]
+        if (nrow(desc_data) > 0) {
+          majority_role <- if (length(roles_node) > 0) unique(roles_node)[1] else "unknown"
+          majority_role <- normalize_ecuador_role(majority_role)
+
+          poly_list[[poly_id]] <- data.frame(
+            x     = c(x_root, max(desc_data$x), max(desc_data$x)),
+            y     = c(y_root, max(desc_data$y), min(desc_data$y)),
+            group = paste0("poly_", poly_id),
+            poly_role = majority_role
+          )
+          poly_id       <- poly_id + 1
+          nodes_to_drop <- c(nodes_to_drop, desc_nodes)
         }
       }
     }
@@ -124,20 +127,23 @@ build_segment_panels <- function(tree_path, segment_name, flu_tips_all, role_loo
   if (length(poly_list) > 0) {
     poly_df <- bind_rows(poly_list)
     p_top <- p_top + geom_polygon(
-      data = poly_df, aes(x = x, y = y, group = group),
-      fill = "grey82", color = "grey55", alpha = 0.75, linewidth = 0.25
-    )
+      data = poly_df, aes(x = x, y = y, group = group, fill = poly_role, color = poly_role),
+      alpha = 0.25, linewidth = 0.25
+    ) + scale_fill_manual(values = panel_type_colors, na.value = "grey82")
   }
 
   tip_data$role <- normalize_role_vector(setNames(tip_data$expected_role, tip_data$label))
-  tip_data$pt_size <- ifelse(tip_data$is_flu, 2.2, 0.8)
+  tip_data$pt_size  <- ifelse(tip_data$is_flu, 2.2, 0.8)
+  tip_data$pt_alpha <- ifelse(tip_data$is_flu, 0.95, 0.7)
 
   if (nrow(tip_data) > 0) {
     p_top <- p_top + geom_point(
-      data = tip_data, aes(x = x, y = y, color = role, shape = host_type),
-      size = tip_data$pt_size, alpha = ifelse(tip_data$is_flu, 0.95, 0.7)
+      data = tip_data, aes(x = x, y = y, color = role, shape = host_type,
+                           size = pt_size, alpha = pt_alpha),
+      stroke = 0.2
     ) + scale_color_manual(values = panel_type_colors, na.value = "grey70") +
-      scale_shape_manual(values = c("domesticated bird"=15, "wild bird"=16, "domesticated mammal"=17, "wild mammal"=18, "?"=3))
+      scale_shape_manual(values = c("domesticated bird"=15, "wild bird"=16, "domesticated mammal"=17, "wild mammal"=18, "?"=3)) +
+      scale_size_identity() + scale_alpha_identity()
   }
 
   # Draw rectangle and extract subtree
@@ -175,6 +181,56 @@ build_segment_panels <- function(tree_path, segment_name, flu_tips_all, role_loo
     }
     
     d_sub <- ggtree::fortify(subtree)
+
+    # --- Gentle collapsing of large pure-context clades in zoom panel ---
+    ecuador_roles <- c("flu_costa", "flu_andine", "flu_amazonia", "flu_sierra")
+    min_collapse_zoom <- 4
+
+    poly_list_sub  <- list()
+    poly_id_sub    <- 1
+    nodes_to_drop_sub <- c()
+
+    if (segment_name %in% c("NA", "NP", "MP", "NS") && Ntip(subtree) > 2) {
+      desc_tips_sub <- phangorn::Descendants(subtree, type = "tips")
+      desc_all_sub  <- phangorn::Descendants(subtree, type = "all")
+      n_tips_sub    <- Ntip(subtree)
+
+      for (node in (n_tips_sub + 1):(n_tips_sub + Nnode(subtree))) {
+        if (node %in% nodes_to_drop_sub) next
+        tips_in_node <- subtree$tip.label[desc_tips_sub[[node]]]
+        if (length(tips_in_node) < min_collapse_zoom) next
+
+        roles_node <- meta$expected_role[match(tips_in_node, meta$file_name)]
+        roles_node <- roles_node[!is.na(roles_node) & roles_node != ""]
+        
+        if (any(roles_node %in% ecuador_roles)) next
+        if (length(unique(roles_node)) > 1) next
+        
+        desc_nodes <- desc_all_sub[[node]]
+        x_root     <- d_sub$x[d_sub$node == node]
+        y_root     <- d_sub$y[d_sub$node == node]
+        desc_data  <- d_sub[d_sub$node %in% desc_nodes, ]
+        if (nrow(desc_data) > 0) {
+          majority_role <- if (length(roles_node) > 0) unique(roles_node)[1] else "unknown"
+          majority_role <- normalize_ecuador_role(majority_role)
+
+          poly_list_sub[[poly_id_sub]] <- data.frame(
+            x     = c(x_root, max(desc_data$x), max(desc_data$x)),
+            y     = c(y_root, max(desc_data$y), min(desc_data$y)),
+            group = paste0("sub_poly_", poly_id_sub),
+            poly_role = majority_role
+          )
+          poly_id_sub       <- poly_id_sub + 1
+          nodes_to_drop_sub <- c(nodes_to_drop_sub, desc_nodes)
+        }
+      }
+    }
+
+    if (length(nodes_to_drop_sub) > 0) {
+      d_sub <- d_sub[!d_sub$node %in% nodes_to_drop_sub, ]
+    }
+
+    # --- Build tip data from (possibly reduced) d_sub ---
     tip_data_sub <- d_sub[d_sub$isTip, ] |>
       left_join(meta, by = c("label" = "file_name")) |>
       mutate(
@@ -183,7 +239,7 @@ build_segment_panels <- function(tree_path, segment_name, flu_tips_all, role_loo
       )
     
     tip_data_sub$role <- normalize_role_vector(setNames(tip_data_sub$expected_role, tip_data_sub$label))
-    tip_data_sub$pt_size <- ifelse(tip_data_sub$is_flu, 4, 2.5)
+    tip_data_sub$pt_size  <- ifelse(tip_data_sub$is_flu, 2, 2.5)
     tip_data_sub$pt_alpha <- ifelse(tip_data_sub$is_flu, 1.0, 0.6)
 
     p_bot <- ggplot() +
@@ -197,15 +253,24 @@ build_segment_panels <- function(tree_path, segment_name, flu_tips_all, role_loo
         legend.position = "none"
       )
 
+    # Draw collapsed-clade polygons
+    if (length(poly_list_sub) > 0) {
+      poly_df_sub <- bind_rows(poly_list_sub)
+      p_bot <- p_bot + geom_polygon(
+        data = poly_df_sub, aes(x = x, y = y, group = group, fill = poly_role, color = poly_role),
+        alpha = 0.25, linewidth = 0.25
+      ) + scale_fill_manual(values = panel_type_colors, na.value = "grey82")
+    }
+
     if (nrow(tip_data_sub) > 0) {
       p_bot <- p_bot + geom_point(
         data = tip_data_sub,
-        aes(x = x, y = y, color = role, shape = host_type),
-        size = tip_data_sub$pt_size,
-        alpha = tip_data_sub$pt_alpha,
+        aes(x = x, y = y, color = role, shape = host_type,
+            size = pt_size, alpha = pt_alpha),
         stroke = 0.2
       ) + scale_color_manual(values = panel_type_colors, na.value = "grey70") +
-        scale_shape_manual(values = c("domesticated bird"=15, "wild bird"=16, "domesticated mammal"=17, "wild mammal"=18, "?"=3))
+        scale_shape_manual(values = c("domesticated bird"=15, "wild bird"=16, "domesticated mammal"=17, "wild mammal"=18, "?"=3)) +
+        scale_size_identity() + scale_alpha_identity()
     }
   }
 
@@ -231,7 +296,11 @@ legend_data_role <- data.frame(x=seq_along(legend_roles), y=1, role=legend_roles
 p_leg_role <- ggplot(legend_data_role, aes(x=x, y=y, color=role)) +
   geom_point(size=4, shape=15) +
   scale_color_manual(values=panel_type_colors, labels=panel_type_labels, name="Role") +
-  theme_void() + theme(legend.position="bottom", legend.box="horizontal")
+  theme_void() + theme(
+    legend.position="bottom", 
+    legend.box="horizontal",
+    legend.text = element_text(margin = margin(r = 15))
+  )
 leg_role <- cowplot::get_legend(p_leg_role)
 
 host_shape_mapping <- c(
@@ -245,7 +314,11 @@ host_shape_mapping <- c(
 p_leg_shape <- ggplot(data.frame(host=names(host_shape_mapping)), aes(x=1,y=1,shape=host)) +
   geom_point(size=4, color="grey30") +
   scale_shape_manual(values=host_shape_mapping, name="Host Type") +
-  theme_void() + theme(legend.position="bottom", legend.box="horizontal")
+  theme_void() + theme(
+    legend.position="bottom", 
+    legend.box="horizontal",
+    legend.text = element_text(margin = margin(r = 15))
+  )
 leg_shape <- cowplot::get_legend(p_leg_shape)
 
 combined_legends <- plot_grid(leg_role, leg_shape, ncol=1)

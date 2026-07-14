@@ -6,5 +6,5 @@ dependencies:
   - python=3.11
   - pandas
   - biopython
-  - treetime
+  - treetime=0.12.1
   - requests

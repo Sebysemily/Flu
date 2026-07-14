@@ -6,4 +6,4 @@ dependencies:
   - python=3.11
   - pyyaml
   - openjdk
-  - beast
+  - beast=10.5.0

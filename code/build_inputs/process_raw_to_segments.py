@@ -36,7 +36,7 @@ def ecuador_expected_role(sample_id: str, epi_isl: str, provincia: str = "") -> 
     prov_norm = unicodedata.normalize('NFKD', str(provincia or ""))
     prov_clean = "".join(c for c in prov_norm if c.isalnum()).upper()
     
-    coastal_provs = {"GUAYAS", "MANABI", "ESMERALDAS", "ELORO", "LOSRIOS", "SANTAELENA"}
+    coastal_provs = {"GUAYAS", "MANABI", "ESMERALDAS", "ELORO", "LOSRIOS", "SANTAELENA", "PLAYAS", "GENERALVILLAMILPLAYAS", "GENERALVILLAMIL"}
     amazonia_provs = {"PASTAZA", "MORONASANTIAGO", "NAPO", "SUCUMBIOS", "ORELLANA", "ZAMORACHINCHIPE"}
     
     if sample_id in ("Flu-0402", "Flu-0406", "Flu-0407") or epi_isl in COASTAL_EPI_ISLS or prov_clean in coastal_provs:
@@ -532,6 +532,23 @@ def main():
 
     isolates_data = parse_context_isolates(args.context_fasta)
     print(f"Loaded context isolates: {len(isolates_data)}")
+
+    # Extract any local isolates found in context fasta and add them to ecuador_by_segment
+    context_isolates_to_remove = []
+    for isolate, segs in isolates_data.items():
+        is_local = False
+        for seg, (epi_isl, seq, orig_hdr) in segs.items():
+            if epi_isl in local_epi_isls:
+                ecuador_by_segment[seg][epi_isl] = sanitize_dna(seq).replace("-", "")
+                ecuador_seen.add(epi_isl)
+                is_local = True
+        if is_local:
+            context_isolates_to_remove.append(isolate)
+
+    for isolate in context_isolates_to_remove:
+        del isolates_data[isolate]
+
+    print(f"Ecuador local sequences after extracting from context: {len(ecuador_seen)} unique isolates.")
 
     complete_context, context_dates, context_places, context_types, context_provinces = filter_complete_context_isolates(
         isolates_data, local_epi_isls

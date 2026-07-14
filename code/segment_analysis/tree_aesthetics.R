@@ -53,11 +53,23 @@ is_ecuador_tip <- function(role) {
 }
 
 panel_type_colors <- c(
-  flu_costa        = "#FF0000",
+  flu_costa        = "#FF0000", # Pure High-Visibility Red
   flu_andine       = "#00008B",
   flu_amazonia     = "#008000",
   american_anchor  = AM21_RIBBON_COLOR,
-  regional_context = "#1B9E77"
+  regional_context = "#1B9E77",
+  # Warm palette for countries
+  Peru             = "#E65100", # Deep orange
+  Colombia         = "#FF8F00", # Amber
+  Venezuela        = "#F57C00", # Orange
+  Brazil           = "#FBC02D", # Yellow
+  Bolivia          = "#FFB300", # Lighter amber
+  Chile            = "#1565C0", # Deep Blue
+  Argentina        = "#64B5F6", # Light Blue
+  Uruguay          = "#9C27B0", # Purple
+  USA              = "grey70",
+  "Falkland Islands"= "grey80",
+  Antarctica       = "#00BCD4"  # Vibrant Cyan
 )
 
 panel_type_labels <- c(

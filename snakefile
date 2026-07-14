@@ -43,7 +43,8 @@ ALL_VALIDATION_TARGETS = [
     "results/phylogeny/flu_mut/flumut_report_mutations.tsv",
     *BEAST_GSS_TARGETS,
     "results/beast/GSS/model_selection.csv",
-    "results/beast/final_run/run.done"
+    "results/beast/final_run/run.done",
+    "figures/main_panel_HA_beast_mcc.png"
 ]
 
 GENOFLU_METADATA_TARGETS = [

@@ -4,5 +4,5 @@ channels:
   - bioconda
   - defaults
 dependencies:
-  - augur
+  - augur=33.4.1
   - pandas

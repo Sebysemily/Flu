@@ -8,6 +8,7 @@ from build_inputs.process_raw_to_segments import (
     dedupe_metadata_rows,
     filter_complete_context_isolates,
     parse_context_isolates,
+    ecuador_expected_role,
 )
 
 PANEL_COLUMNS = [
@@ -203,6 +204,22 @@ def build_gisaid_context_rows(
             else:
                 host_type = classify_host_type(host)
 
+            final_province = province
+            final_role = role
+
+            # Hardcoded exceptions for specific Ecuador sequences
+            hardcoded_provinces = {
+                "EPI_ISL_18137671": "Playas",
+                "EPI_ISL_18137626": "Playas",
+                "EPI_ISL_17973458": "Manabi",
+                "EPI_ISL_17973443": "Manabi",
+                "EPI_ISL_16161675": "Cotopaxi",
+                "EPI_ISL_16157545": "Cotopaxi",
+            }
+            if epi_isl in hardcoded_provinces:
+                final_province = hardcoded_provinces[epi_isl]
+                final_role = ecuador_expected_role("", epi_isl, final_province)
+
             rows.append(
                 {
                     "file_name": epi_isl,
@@ -210,8 +227,8 @@ def build_gisaid_context_rows(
                     "host_type": host_type,
                     "collection_date": date_value,
                     "country": country,
-                    "province": province,
-                    "expected_role": role,
+                    "province": final_province,
+                    "expected_role": final_role,
                 }
             )
 
