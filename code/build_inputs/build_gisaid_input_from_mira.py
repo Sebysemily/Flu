@@ -223,6 +223,11 @@ def main():
             )
 
             if non_n == 0:
+                issue_rows.append({
+                    "sample": sample,
+                    "segment": segment,
+                    "issue": "Segment sequence entirely Ns or empty in MIRA output; dropped."
+                })
                 continue
 
             sample_runs[sample].add(run_name)
@@ -246,8 +251,33 @@ def main():
     not_in_filtrado_samples = []
     discrepancy_rows = []
     sample_col = pick_column(filtrado_df, ["Código USFQ", "Codigo USFQ"])
-
     standard_records = []
+    
+    # Check for discrepancies with flu_filtrado.csv
+    # We will build a map of what flu_filtrado.csv claims
+    filtrado_claims = {s: {seg: False for seg in SEGMENTS} for s in valid_samples}
+    for _, row in filtrado_df.iterrows():
+        sample = normalize_sample_id(row.get(sample_col, ""))
+        if sample in filtrado_claims:
+            for seg in SEGMENTS:
+                if str(row.get(seg, "")).strip().upper() == "SI":
+                    filtrado_claims[sample][seg] = True
+
+    # Check for false positives (in CSV but not in MIRA) and false negatives (not in CSV but in MIRA)
+    for sample, claims in filtrado_claims.items():
+        if sample not in best_records:
+            if any(claims.values()):
+                discrepancy_rows.append({"sample": sample, "issue": "Sample has 'SI' in CSV but is completely missing from MIRA FASTAs."})
+            continue
+        
+        for seg in SEGMENTS:
+            claimed = claims[seg]
+            actual = seg in best_records[sample]
+            
+            if claimed and not actual:
+                discrepancy_rows.append({"sample": sample, "issue": f"Segment {seg} marked as 'SI' in CSV but not found/assembled by MIRA."})
+            elif not claimed and actual:
+                discrepancy_rows.append({"sample": sample, "issue": f"Segment {seg} NOT marked as 'SI' in CSV but WAS assembled by MIRA."})
     for sample in sorted(best_records):
         if sample not in valid_samples:
             not_in_filtrado_samples.append(sample)
@@ -386,7 +416,21 @@ def main():
     print()
     print("RESUMEN DE VALIDACION:")
     print(f"Muestras procesadas: {len(summary_df)}")
-    print(f"Regiones ensambladas escritas: {len(standard_records)}")
+    print(f"Total secuencias (todos los segmentos combinados): {len(standard_records)}")
+
+    # Print out warnings
+    if issue_rows:
+        print("\n--- ADVERTENCIAS DE CALIDAD (Secuencias vacías) ---")
+        for i in issue_rows:
+            if 'segment' in i:
+                print(f"[{i['sample']} - {i['segment']}] {i['issue']}")
+
+    if discrepancy_rows:
+        print("\n--- INCONGRUENCIAS CON flu_filtrado.csv ---")
+        for d in discrepancy_rows:
+            print(f"[{d.get('sample', d.get('Código USFQ'))}] {d.get('issue', d.get('reason'))}")
+
+    print("\nResumen por Muestra en 'ecuador_intermediate_summary.csv'")
     print(f"Muestras procesadas con discrepancias: {len(discrepancy_rows)}")
     print(f"Muestras no encontradas en MIRA: {len([r for r in issue_rows if r['status'] == 'NOT_FOUND'])}")
     print(f"Muestras descartadas por metadata: {len([r for r in issue_rows if r['status'] == 'SKIPPED'])}")

@@ -55,8 +55,22 @@ def get_gisaid_input_fastas():
     return sorted(set(fastas))
 
 GISAID_INPUT_FASTAS = get_gisaid_input_fastas()
-STANDARD_HEADER_FASTAS = GISAID_INPUT_FASTAS if GISAID_INPUT_FASTAS else [MIRA_GISAID_FASTA]
+STANDARD_HEADER_FASTAS = GISAID_INPUT_FASTAS if GISAID_INPUT_FASTAS else ["data/input/ecuador_extracted_from_gisaid.fasta"]
 CONTEXT_FASTA_RAW = config.get("context_fasta_raw", "data/context/gisaid_epiflu_sequence.fasta")
+
+# =====================================================================
+# Rule: extract_local_from_context
+# =====================================================================
+rule extract_local_from_context:
+    input:
+        context_fasta=CONTEXT_FASTA_RAW,
+        metadata=ancient(FILTRADO_CSV)
+    output:
+        "data/input/ecuador_extracted_from_gisaid.fasta"
+    shell:
+        r"""
+        python code/build_inputs/extract_local_from_gisaid.py --context {input.context_fasta} --metadata {input.metadata} --out {output}
+        """
 
 rule process_raw_to_segments:
     input:
