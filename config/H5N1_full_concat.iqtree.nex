@@ -1,0 +1,17 @@
+#nexus
+begin sets;
+    charset PB2_cp12 = DNA, 1-2826\3 2-2826\3;
+    charset PB2_cp3 = DNA, 3-2826\3;
+    charset PB1_cp12 = DNA, 2827-5246\3 2828-5246\3;
+    charset PB1_cp3 = DNA, 2829-5246\3;
+    charset PA_cp12 = DNA, 5247-7543\3 5248-7543\3;
+    charset PA_cp3 = DNA, 5249-7543\3;
+    charset HA_cp12 = DNA, 7544-9487\3 7545-9487\3;
+    charset HA_cp3 = DNA, 7546-9487\3;
+    charset NP_cp12 = DNA, 9488-11134\3 9489-11134\3;
+    charset NP_cp3 = DNA, 9490-11134\3;
+    charset NA_cp12 = DNA, 11135-12797\3 11136-12797\3;
+    charset NA_cp3 = DNA, 11137-12797\3;
+    charset MP = DNA, 12798-13936;
+    charset NS = DNA, 13937-14933;
+end;

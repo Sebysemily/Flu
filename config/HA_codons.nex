@@ -1,0 +1,6 @@
+#nexus
+begin sets;
+    charset pos1 = 1-.\3;
+    charset pos2 = 2-.\3;
+    charset pos3 = 3-.\3;
+end;

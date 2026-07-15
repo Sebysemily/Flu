@@ -567,7 +567,7 @@ rule report_panel_ha_trim_discarded:
 rule iqtree_pruned_ha:
     input:
         alignment=MAIN_PANEL_HA_POSTQC,
-        partitions="data/phylogeny/HA_codons.nex"
+        partitions="config/HA_codons.nex"
     output:
         treefile="results/pre_beast/model_selection/HA.treefile",
         iqtree="results/pre_beast/model_selection/HA.iqtree",
