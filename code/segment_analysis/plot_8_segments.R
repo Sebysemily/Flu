@@ -41,6 +41,19 @@ segments <- sapply(tree_paths, function(x) {
 
 meta          <- read.csv(metadata_path, stringsAsFactors = FALSE)
 flu_tips_all  <- meta$file_name[grepl("^flu_", meta$expected_role)]
+
+# Define outliers per segment based on user input
+outliers_map <- list(
+  "EPI_ISL_20450124" = c("MP", "NA", "NP", "NS"),
+  "EPI_ISL_20450123" = c("MP", "NS"),
+  "EPI_ISL_20450128" = c("MP", "NS"),
+  "EPI_ISL_20450130" = c("MP"),
+  "EPI_ISL_20450131" = c("MP"),
+  "EPI_ISL_20450132" = c("MP"),
+  "EPI_ISL_20450133" = c("MP"),
+  "EPI_ISL_18137671" = c("MP", "NA", "NP", "NS", "PA")
+)
+
 role_lookup   <- setNames(meta$expected_role, meta$file_name)
 
 # Get top N countries for consistent coloring
@@ -48,7 +61,7 @@ top_countries <- meta %>% count(country, sort=TRUE) %>% head(10) %>% pull(countr
 country_palette <- scales::hue_pal()(length(top_countries))
 names(country_palette) <- top_countries
 
-build_segment_panels <- function(tree_path, segment_name, flu_tips_all, role_lookup, outgroup_sample) {
+build_segment_panels <- function(tree_path, segment_name, flu_tips_all, outliers_map, role_lookup, outgroup_sample) {
   tree <- read.tree(tree_path)
   
   if (!is.na(outgroup_sample) && outgroup_sample %in% tree$tip.label) {
@@ -59,6 +72,11 @@ build_segment_panels <- function(tree_path, segment_name, flu_tips_all, role_loo
   tree <- ape::ladderize(tree, right = FALSE)
 
   flu_tips_in_tree <- intersect(tree$tip.label, flu_tips_all)
+  
+  # Determine which tips to use as anchors for this segment's MRCA
+  outliers_this_seg <- names(outliers_map)[sapply(outliers_map, function(x) segment_name %in% x)]
+  flu_anchors_in_tree <- setdiff(flu_tips_in_tree, outliers_this_seg)
+  
   n_tips <- Ntip(tree)
 
   d <- ggtree::fortify(tree)
@@ -148,13 +166,13 @@ build_segment_panels <- function(tree_path, segment_name, flu_tips_all, role_loo
 
   # Draw rectangle and extract subtree
   p_bot <- NULL
-  if (length(flu_tips_in_tree) > 0) {
-    if (length(flu_tips_in_tree) > 1) {
-      mrca_node <- ape::getMRCA(tree, flu_tips_in_tree)
+  if (length(flu_anchors_in_tree) > 0) {
+    if (length(flu_anchors_in_tree) > 1) {
+      mrca_node <- ape::getMRCA(tree, flu_anchors_in_tree)
       desc_mrca <- phangorn::Descendants(tree, mrca_node, type = "all")
       mrca_nodes_all <- c(mrca_node, desc_mrca)
     } else {
-      mrca_node <- which(tree$tip.label == flu_tips_in_tree[1])
+      mrca_node <- which(tree$tip.label == flu_anchors_in_tree[1])
       mrca_nodes_all <- c(mrca_node)
     }
 
@@ -182,53 +200,7 @@ build_segment_panels <- function(tree_path, segment_name, flu_tips_all, role_loo
     
     d_sub <- ggtree::fortify(subtree)
 
-    # --- Gentle collapsing of large pure-context clades in zoom panel ---
-    ecuador_roles <- c("flu_costa", "flu_andine", "flu_amazonia", "flu_sierra")
-    min_collapse_zoom <- 4
-
-    poly_list_sub  <- list()
-    poly_id_sub    <- 1
-    nodes_to_drop_sub <- c()
-
-    if (segment_name %in% c("NA", "NP", "MP", "NS") && Ntip(subtree) > 2) {
-      desc_tips_sub <- phangorn::Descendants(subtree, type = "tips")
-      desc_all_sub  <- phangorn::Descendants(subtree, type = "all")
-      n_tips_sub    <- Ntip(subtree)
-
-      for (node in (n_tips_sub + 1):(n_tips_sub + Nnode(subtree))) {
-        if (node %in% nodes_to_drop_sub) next
-        tips_in_node <- subtree$tip.label[desc_tips_sub[[node]]]
-        if (length(tips_in_node) < min_collapse_zoom) next
-
-        roles_node <- meta$expected_role[match(tips_in_node, meta$file_name)]
-        roles_node <- roles_node[!is.na(roles_node) & roles_node != ""]
-        
-        if (any(roles_node %in% ecuador_roles)) next
-        if (length(unique(roles_node)) > 1) next
-        
-        desc_nodes <- desc_all_sub[[node]]
-        x_root     <- d_sub$x[d_sub$node == node]
-        y_root     <- d_sub$y[d_sub$node == node]
-        desc_data  <- d_sub[d_sub$node %in% desc_nodes, ]
-        if (nrow(desc_data) > 0) {
-          majority_role <- if (length(roles_node) > 0) unique(roles_node)[1] else "unknown"
-          majority_role <- normalize_ecuador_role(majority_role)
-
-          poly_list_sub[[poly_id_sub]] <- data.frame(
-            x     = c(x_root, max(desc_data$x), max(desc_data$x)),
-            y     = c(y_root, max(desc_data$y), min(desc_data$y)),
-            group = paste0("sub_poly_", poly_id_sub),
-            poly_role = majority_role
-          )
-          poly_id_sub       <- poly_id_sub + 1
-          nodes_to_drop_sub <- c(nodes_to_drop_sub, desc_nodes)
-        }
-      }
-    }
-
-    if (length(nodes_to_drop_sub) > 0) {
-      d_sub <- d_sub[!d_sub$node %in% nodes_to_drop_sub, ]
-    }
+    # --- Gentle collapsing logic removed from zoom panel ---
 
     # --- Build tip data from (possibly reduced) d_sub ---
     tip_data_sub <- d_sub[d_sub$isTip, ] |>
@@ -253,14 +225,7 @@ build_segment_panels <- function(tree_path, segment_name, flu_tips_all, role_loo
         legend.position = "none"
       )
 
-    # Draw collapsed-clade polygons
-    if (length(poly_list_sub) > 0) {
-      poly_df_sub <- bind_rows(poly_list_sub)
-      p_bot <- p_bot + geom_polygon(
-        data = poly_df_sub, aes(x = x, y = y, group = group, fill = poly_role, color = poly_role),
-        alpha = 0.25, linewidth = 0.25
-      ) + scale_fill_manual(values = panel_type_colors, na.value = "grey82")
-    }
+    # Draw collapsed-clade polygons removed from zoom panel
 
     if (nrow(tip_data_sub) > 0) {
       p_bot <- p_bot + geom_point(
@@ -284,6 +249,7 @@ for (i in seq_along(tree_paths)) {
     tree_path       = tree_paths[i],
     segment_name    = segments[i],
     flu_tips_all    = flu_tips_all,
+    outliers_map    = outliers_map,
     role_lookup     = role_lookup,
     outgroup_sample = outgroup_sample
   )

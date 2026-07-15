@@ -45,3 +45,4 @@ temp/*
 /scratch
 /metadata/original_filtrado
 /metadata/original_filtraedo
+/metadata/genoflu_context_results.tsv
