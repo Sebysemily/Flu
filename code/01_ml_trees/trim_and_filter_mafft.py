@@ -146,6 +146,7 @@ DISCARD_FIELDS = [
     "max_divergence",
     "filter_step",
     "discard_reason",
+    "qc_action",
 ]
 
 
@@ -202,6 +203,20 @@ def main() -> None:
     for row in dropped_rows:
         row["expected_role"] = role_map.get(row["taxon"], "")
         row["filter_step"] = args.filter_step
+        row["qc_action"] = "DISCARDED"
+
+    for header, div in protected_kept:
+        dropped_rows.append(
+            {
+                "taxon": header,
+                "expected_role": role_map.get(header, ""),
+                "gap_n_fraction": f"{div:.4f}",
+                "max_divergence": args.max_divergence,
+                "discard_reason": f"Local Core - Kept despite: gaps/N > {args.max_divergence:.0%} in trimmed CDS",
+                "filter_step": args.filter_step,
+                "qc_action": "KEPT"
+            }
+        )
 
     flu_dropped = [r for r in dropped_rows if r["expected_role"].startswith("flu_")]
     print(
