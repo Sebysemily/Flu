@@ -75,7 +75,7 @@ panel_metadata_path <- args[3]
 output_png <- args[4]
 max_tips <- if (length(args) >= 5) as.integer(args[5]) else NA_integer_
 ribbon_segment <- if (length(args) >= 6) args[6] else "HA"
-outgroup_sample <- if (length(args) >= 8 && nzchar(args[8])) args[8] else NA_character_
+outgroup_sample <- if (length(args) >= 7 && nzchar(args[7])) args[7] else NA_character_
 
 # We no longer load the heatmap or its palette.
 lineage_palette <- character()
