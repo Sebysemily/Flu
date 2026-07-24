@@ -209,10 +209,9 @@ def main():
     if discard_set:
         print(f"Discarded IDs: {sorted(list(discard_set))}")
 
-    discarded_only = [r for r in summary_rows if r.get("qc_action") == "DISCARDED"]
     if args.discarded_csv:
-        write_discarded_rows(args.discarded_csv, discarded_only, NEXTCLADE_DISCARD_FIELDS)
-        print(f"Written QC report CSV: {args.discarded_csv} ({len(discarded_only)} discarded)")
+        write_discarded_rows(args.discarded_csv, summary_rows, NEXTCLADE_DISCARD_FIELDS)
+        print(f"Written QC report CSV: {args.discarded_csv} ({len(summary_rows)} rows)")
     if args.discarded_csv_only:
         return
 

@@ -15,6 +15,7 @@ LINEAGE_ALIGNMENT_TARGETS = [
     *expand(f"{PROCESSED_ALIGNMENTS_QC_FILTERED}/H5N1_{{segment}}.mafft", segment=["PB2", "PB1", "PA", "HA", "NP", "NA", "MP", "NS"]),
     f"{RESULTS_QC_METRICS}/nextclade/HA_eliminated.csv",
     f"{RESULTS_QC_METRICS}/nextclade/HA/nextclade_report.csv",
+    *expand(f"{RESULTS_QC_METRICS}/trim_gap_n/{{segment}}_eliminated.csv", segment=["PB2", "PB1", "PA", "HA", "NP", "NA", "MP", "NS"]),
 
     *expand("figures/HA_PB2_lineage/{segment}_lineage_fast_tree.png", segment=["HA", "PB2"]),
     *expand("figures/HA_PB2_lineage/{segment}_lineage_fast_tree.rds", segment=["HA", "PB2"]),
