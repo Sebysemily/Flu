@@ -58,26 +58,26 @@ panel_type_colors <- c(
   flu_amazonia     = "#008000",
   american_anchor  = AM21_RIBBON_COLOR,
   regional_context = "#1B9E77",
-  # Warm palette for countries
-  Peru             = "#E65100", # Deep orange
-  Colombia         = "#FF8F00", # Amber
-  Venezuela        = "#F57C00", # Orange
-  Brazil           = "#FBC02D", # Yellow
-  Bolivia          = "#FFB300", # Lighter amber
-  Chile            = "#1565C0", # Deep Blue
-  Argentina        = "#64B5F6", # Light Blue
-  Uruguay          = "#9C27B0", # Purple
+  # Diverse palette for countries
+  Peru             = "#A34700", # Naranja muy oscuro/opaco
+  Colombia         = "#E91E63", # Pink-ish (rosado ish)
+  Venezuela        = "#8D6E63", # Mocha / Brown
+  Brazil           = "#FDD835", # Bright Yellow
+  Bolivia          = "#5E35B1", # Deep Purple
+  Chile            = "#1E88E5", # Strong Blue
+  Argentina        = "#29B6F6", # Azul celeste vibrante (Argentina)
+  Uruguay          = "#00897B", # Teal
   USA              = "grey70",
   "Falkland Islands"= "grey80",
-  Antarctica       = "#00BCD4"  # Vibrant Cyan
+  Antarctica       = "#B0BEC5"  # Gris Hielo (Ice Gray) para separarlo de los azules
 )
 
 panel_type_labels <- c(
   flu_costa        = "Ecuador (coastal)",
   flu_andine       = "Ecuador (andine)",
   flu_amazonia     = "Ecuador (amazon)",
-  american_anchor  = "American anchor",
-  regional_context = "Regional context"
+  american_anchor  = "U.S.A",
+  regional_context = "South America"
 )
 
 PANEL_TYPE_ROLES <- names(panel_type_colors)
@@ -134,4 +134,12 @@ get_custom_genotype_style <- function(genotype, is_ec, palette = NULL) {
   }
   
   list(color = base_color, pch = pch, label = label)
+}
+
+# --- GLOBAL FONT SETTINGS ---
+# The journal requires a non-serif font (Arial/Helvetica). "sans" is the default non-serif.
+if (requireNamespace("ggplot2", quietly = TRUE)) {
+  ggplot2::theme_set(ggplot2::theme_get() + ggplot2::theme(text = ggplot2::element_text(family = "sans")))
+  ggplot2::update_geom_defaults("text", list(family = "sans"))
+  ggplot2::update_geom_defaults("label", list(family = "sans"))
 }

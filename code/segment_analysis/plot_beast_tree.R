@@ -50,6 +50,9 @@ tip_data$role <- ifelse(tip_data$role == "ecuador_coastal", "flu_costa", tip_dat
 tip_data$role <- ifelse(tip_data$role == "ecuador_andine", "flu_andine", tip_data$role)
 tip_data$role <- ifelse(tip_data$role == "ecuador_amazonia", "flu_amazonia", tip_data$role)
 
+# Rename '?' to 'Unknown' for host type
+tip_data$host_type <- ifelse(tip_data$host_type == "?", "Unknown", tip_data$host_type)
+
 tip_data$is_flu <- grepl("^flu_", tip_data$role)
 tip_data$pt_size <- 8.0
 tip_data$pt_alpha <- case_when(
@@ -90,7 +93,7 @@ if (nrow(tip_data) > 0) {
     stroke = 1.0
   ) +
     scale_color_manual(values = panel_type_colors, guide = "none", na.value = "grey70", na.translate = FALSE) +
-    scale_shape_manual(values = c("domesticated bird"=15, "wild bird"=16, "domesticated mammal"=17, "wild mammal"=18, "?"=3), name = "Host Type", na.value=16, na.translate = FALSE) +
+    scale_shape_manual(values = c("domesticated bird"=15, "wild bird"=16, "domesticated mammal"=17, "wild mammal"=18, "Unknown"=3), name = "Host Type", na.value=16, na.translate = FALSE) +
     scale_size_identity() + scale_alpha_identity() + scale_linewidth_identity()
 }
 
@@ -123,20 +126,21 @@ if (!is.null(tree@data) && "posterior" %in% names(tree@data)) {
 
 p <- p + theme_tree() +
   theme(
+    text = element_text(family = "sans"),
     legend.position = "inside",
     legend.position.inside = c(0.0, 0.95),
     legend.justification = c(0, 1),
     legend.box = "vertical",
     legend.background = element_blank(),
     legend.direction = "vertical",
-    legend.title = element_text(face="bold", size=58),
-    legend.text = element_text(size=50),
-    legend.key.size = unit(4.0, "cm"),
+    legend.title = element_text(face="bold", size=70),
+    legend.text = element_text(size=64),
+    legend.key.size = unit(5.0, "cm"),
     plot.margin = margin(t=5, r=5, b=40, l=35)
   ) +
   guides(
-    shape = guide_legend(ncol = 2, override.aes = list(size = 28)),
-    fill = guide_legend(ncol = 2, override.aes = list(size = 24))
+    shape = guide_legend(ncol = 2, override.aes = list(size = 38)),
+    fill = guide_legend(ncol = 2, override.aes = list(size = 34))
   )
 
 # --- ADD SOUTH AMERICA MAP AND CONNECTING LINES ---
@@ -285,14 +289,17 @@ p <- p +
 # Add custom colored text legend for countries
 # Moved to the top-left, just below the metadata legend
 roles_present <- sort(unique(tip_coords$role))
+if ("USA" %in% p$data$role) {
+  roles_present <- c(roles_present, "USA")
+}
 custom_legend <- data.frame(
   role = roles_present,
   y = seq(tree_y_max * 0.68, by = -tree_y_max * 0.035, length.out = length(roles_present))
 )
 p <- p + geom_text(
   data = custom_legend,
-  aes(x = -Inf, y = y, label = role, color = role),
-  fontface = "bold", size = 26, hjust = 0, inherit.aes = FALSE
+  aes(x = -Inf, y = y, label = ifelse(role %in% names(panel_type_labels), panel_type_labels[role], role), color = role),
+  fontface = "bold", size = 30, hjust = 0, family = "sans", inherit.aes = FALSE
 )
 
 # Force the X-axis to only appear under the tree (not the map) manually
@@ -306,16 +313,9 @@ p <- p +
   # Ticks
   geom_segment(data = data.frame(x = b_ticks), aes(x = x, xend = x, y = axis_y, yend = axis_y - tree_y_max * 0.015), color = "black", linewidth = 1.2, inherit.aes = FALSE) +
   # Tick Labels
-  geom_text(data = data.frame(x = b_ticks), aes(x = x, y = axis_y - tree_y_max * 0.04), label = b_ticks, size = 14, color = "black", inherit.aes = FALSE)
+  geom_text(data = data.frame(x = b_ticks), aes(x = x, y = axis_y - tree_y_max * 0.04), label = b_ticks, size = 24, color = "black", family = "sans", inherit.aes = FALSE)
 
-# Add Floating Title to compact the layout vertically
-p <- p + annotate(
-  "text",
-  x = min_tree_x + (max_tree_x - min_tree_x) * 0.65,
-  y = tree_y_max * 0.98,
-  label = title,
-  size = 24, fontface = "bold", hjust = 0.5
-)
+# Title removed as requested
 
 # 6. Save the final combined plot
 dir.create(dirname(output_file), showWarnings=FALSE, recursive=TRUE)
@@ -328,4 +328,5 @@ diff_x_total <- diff_x * 1.1 + map_target_width
 # We set them equal to maintain aspect ratio 1:1
 fig_w <- (scale_y * fig_h / tree_y_max) * diff_x_total / scale_x
 
+# Save high resolution for journal (300 DPI)
 ggsave(output_file, plot=p, width=fig_w, height=fig_h, dpi=300, limitsize=FALSE, bg = "white")

@@ -180,6 +180,7 @@ p_tanglegram <- cowplot::ggdraw() +
     hjust = 0.5,
     vjust = 1,
     fontface = "bold",
+    fontfamily = "sans",
     size = 18
   ) +
   cowplot::draw_label(
@@ -189,6 +190,7 @@ p_tanglegram <- cowplot::ggdraw() +
     hjust = 0.5,
     vjust = 1,
     fontface = "bold",
+    fontfamily = "sans",
     size = 18
   )
 
@@ -200,7 +202,7 @@ p_tangle_legend <- build_tanglegram_legend(
  ) +
    ggplot2::theme(plot.tag = ggplot2::element_blank())
 
-composite_plot <- (p_tanglegram + p_tangle_legend + patchwork::plot_layout(widths = c(4, 1)))
+composite_plot <- (p_tanglegram + p_tangle_legend + patchwork::plot_layout(widths = c(4.0, 1.4)))
 
 dir.create(dirname(output_png), showWarnings = FALSE, recursive = TRUE)
 ggsave(

@@ -4,10 +4,10 @@
 source("code/segment_analysis/tree_aesthetics.R")
 source("code/segment_analysis/lineage_palette.R")
 
-LEGEND_ROW_SPACING <- 1.0
-LEGEND_SECTION_GAP <- 1.4
-LEGEND_TITLE_OFFSET <- 1.0
-LEGEND_ECUADOR_TIP_SIZE <- 4
+LEGEND_ROW_SPACING <- 2.0
+LEGEND_SECTION_GAP <- 2.5
+LEGEND_TITLE_OFFSET <- 2.0
+LEGEND_ECUADOR_TIP_SIZE <- 7
 LEGEND_CONTEXT_TIP_SIZE <- LEGEND_ECUADOR_TIP_SIZE
 
 lineage_color_for <- function(lineage, palette) {
@@ -90,8 +90,8 @@ draw_legend_markers <- function(items) {
       list(
         ggplot2::geom_segment(
           data = ribbon_items,
-          ggplot2::aes(x = 0, xend = 0.55, y = y, yend = y),
-          linewidth = 3.5,
+          ggplot2::aes(x = 0, xend = 1.5, y = y, yend = y),
+          linewidth = 4.5,
           lineend = "round",
           color = ribbon_items$color
         )
@@ -106,7 +106,7 @@ draw_legend_markers <- function(items) {
       list(
         ggplot2::geom_point(
           data = triangle_items,
-          ggplot2::aes(x = 0.28, y = y),
+          ggplot2::aes(x = 0.5, y = y),
           shape = 17,
           size = LEGEND_ECUADOR_TIP_SIZE,
           color = triangle_items$color
@@ -122,7 +122,7 @@ draw_legend_markers <- function(items) {
       list(
         ggplot2::geom_point(
           data = circle_items,
-          ggplot2::aes(x = 0.28, y = y),
+          ggplot2::aes(x = 0.5, y = y),
           shape = CONTEXT_TIP_SHAPE,
           size = LEGEND_CONTEXT_TIP_SIZE,
           color = circle_items$color
@@ -145,13 +145,13 @@ draw_legend_section <- function(section) {
         label = section$title,
         hjust = 0,
         fontface = "bold",
-        size = 3.2
+        size = 6.0
       ),
       ggplot2::geom_text(
         data = items,
-        ggplot2::aes(x = 0.65, y = y, label = label),
+        ggplot2::aes(x = 1.8, y = y, label = label),
         hjust = 0,
-        size = 2.7
+        size = 5.0
       )
     ),
     draw_legend_markers(items)
@@ -223,7 +223,7 @@ build_tanglegram_legend <- function(
   )
 
   sections <- list(
-    list(title = "Ribbons (sample type)", items = ribbon_items),
+    list(title = "Ribbons (geographic groups)", items = ribbon_items),
     list(title = "Tree tips", items = tip_items)
   )
 
@@ -238,8 +238,8 @@ build_tanglegram_legend <- function(
 
   p +
     ggplot2::coord_cartesian(
-      xlim = c(0, 2.4),
-      ylim = c(layout$y_bottom - 0.3, layout$y_top + 0.5),
+      xlim = c(0, 18.0),
+      ylim = c(layout$y_bottom - 0.5, layout$y_top + 0.8),
       expand = FALSE
     ) +
     ggplot2::theme_void() +

@@ -126,21 +126,33 @@ build_segment_panels <- function(tree_path, segment_name, flu_tips_all, outliers
     left_join(meta, by = c("label" = "file_name")) |>
     mutate(
       is_flu = label %in% flu_tips_in_tree,
-      role   = ifelse(is_flu, expected_role, "context")
+      role   = expected_role
     )
 
   p_top <- ggplot() +
     geom_tree(data = d, color = "grey35", linewidth = 0.25) +
-    theme_tree2() +
+    theme_tree() +
     theme(
-      plot.title      = element_text(face = "bold", size = 13, hjust = 0.5, margin = margin(b = 4)),
-      axis.line.x     = element_line(color = "grey40", linewidth = 0.35),
-      axis.ticks.x    = element_line(color = "grey40", linewidth = 0.3),
-      axis.text.x     = element_text(size = 6, color = "grey30"),
-      plot.margin     = margin(6, 8, 6, 4),
+      plot.title      = element_text(face = "bold", size = 32, hjust = 0.5, margin = margin(b = 10)),
+      plot.margin     = margin(6, 8, 20, 4),
       legend.position = "none"
     ) +
+    coord_cartesian(clip = "off") +
     ggtitle(segment_name)
+
+  # Add top scale dynamically (bottom right)
+  x_max <- max(d$x, na.rm=TRUE)
+  y_max <- max(d$y, na.rm=TRUE)
+  scale_y <- y_max * -0.015
+  scale_len_top <- signif(x_max * 0.15, 1) # 15% of the total width
+  scale_x_start_top <- x_max - scale_len_top - (x_max * 0.05) # Shifted a bit left
+  p_top <- p_top +
+    annotate("segment", x = scale_x_start_top, xend = scale_x_start_top + scale_len_top, y = scale_y, yend = scale_y, linewidth = 1.2, color = "grey30") +
+    annotate("text", x = scale_x_start_top + (scale_len_top / 2), y = scale_y - (y_max * 0.035), label = paste(scale_len_top, "subs/site"), size = 6, color = "grey30")
+
+
+
+
 
   if (length(poly_list) > 0) {
     poly_df <- bind_rows(poly_list)
@@ -187,7 +199,7 @@ build_segment_panels <- function(tree_path, segment_name, flu_tips_all, outliers
       p_top <- p_top + geom_rect(
         aes(xmin = xmin - 0.02 * x_range, xmax = xmax + 0.03 * x_range,
             ymin = ymin - 0.6, ymax = ymax + 0.6),
-        fill = NA, color = "red", linetype = "dashed", linewidth = 0.5
+        fill = NA, color = "red", linetype = "dashed", linewidth = 2.5
       )
     }
 
@@ -207,7 +219,7 @@ build_segment_panels <- function(tree_path, segment_name, flu_tips_all, outliers
       left_join(meta, by = c("label" = "file_name")) |>
       mutate(
         is_flu = label %in% flu_tips_in_tree,
-        role   = ifelse(is_flu, expected_role, "context")
+        role   = expected_role
       )
     
     tip_data_sub$role <- normalize_role_vector(setNames(tip_data_sub$expected_role, tip_data_sub$label))
@@ -216,14 +228,27 @@ build_segment_panels <- function(tree_path, segment_name, flu_tips_all, outliers
 
     p_bot <- ggplot() +
       geom_tree(data = d_sub, color = "grey35", linewidth = 0.3) +
-      theme_tree2() +
+      theme_tree() +
       theme(
-        axis.line.x     = element_line(color = "grey40", linewidth = 0.35),
-        axis.ticks.x    = element_line(color = "grey40", linewidth = 0.3),
-        axis.text.x     = element_text(size = 6, color = "grey30"),
-        plot.margin     = margin(6, 8, 6, 4),
-        legend.position = "none"
-      )
+        plot.margin     = margin(10, 10, 20, 10),
+        legend.position = "none",
+        panel.border    = element_rect(color = "red", linetype = "dashed", fill = NA, linewidth = 0.5)
+      ) +
+      coord_cartesian(clip = "off")
+
+    x_max_sub <- max(d_sub$x, na.rm=TRUE)
+    x_min_sub <- min(d_sub$x, na.rm=TRUE)
+    x_range_sub <- x_max_sub - x_min_sub
+    y_max_sub <- max(d_sub$y, na.rm=TRUE)
+    scale_len_bot <- signif(x_range_sub * 0.2, 1) # ~20% of the subtree width
+    scale_x_start <- x_max_sub - scale_len_bot - (x_range_sub * 0.05) # Shift left a bit
+    p_bot <- p_bot +
+      annotate("segment", x = scale_x_start, xend = scale_x_start + scale_len_bot, y = 0, yend = 0, linewidth = 1, color = "grey30") +
+      annotate("text", x = scale_x_start + (scale_len_bot / 2), y = -(y_max_sub * 0.08), label = paste(scale_len_bot, "subs/site"), size = 5, color = "grey30")
+
+
+
+
 
     # Draw collapsed-clade polygons removed from zoom panel
 
@@ -256,17 +281,20 @@ for (i in seq_along(tree_paths)) {
 }
 
 # Build Legends
-legend_roles <- names(panel_type_colors)
+legend_roles <- PANEL_TYPE_RIBBON_ORDER
 legend_data_role <- data.frame(x=seq_along(legend_roles), y=1, role=legend_roles, stringsAsFactors=FALSE)
 
 p_leg_role <- ggplot(legend_data_role, aes(x=x, y=y, color=role)) +
-  geom_point(size=4, shape=15) +
-  scale_color_manual(values=panel_type_colors, labels=panel_type_labels, name="Role") +
+  geom_point(size=12, shape=15) +
+  scale_color_manual(values=panel_type_colors, labels=panel_type_labels, name="Geographic groups") +
   theme_void() + theme(
     legend.position="bottom", 
     legend.box="horizontal",
-    legend.text = element_text(margin = margin(r = 15))
-  )
+    legend.margin = margin(t=0, b=0, r=0, l=0),
+    legend.text = element_text(margin = margin(r = 15), size=18),
+    legend.title = element_text(size=20, face="bold", vjust=0.5, margin=margin(r=20))
+  ) +
+  guides(color = guide_legend(override.aes = list(size = 9, alpha = c(1, 1, 1, 0.4, 0.4)), nrow = 1, title.position = "left", title.vjust = 0.5, keywidth = unit(2, "cm")))
 leg_role <- cowplot::get_legend(p_leg_role)
 
 host_shape_mapping <- c(
@@ -274,20 +302,23 @@ host_shape_mapping <- c(
   "wild bird" = 16,
   "domesticated mammal" = 17,
   "wild mammal" = 18,
-  "?" = 3
+  "Unknown" = 3
 )
 
 p_leg_shape <- ggplot(data.frame(host=names(host_shape_mapping)), aes(x=1,y=1,shape=host)) +
-  geom_point(size=4, color="grey30") +
+  geom_point(size=12, color="grey30") +
   scale_shape_manual(values=host_shape_mapping, name="Host Type") +
   theme_void() + theme(
     legend.position="bottom", 
     legend.box="horizontal",
-    legend.text = element_text(margin = margin(r = 15))
-  )
+    legend.margin = margin(t=0, b=0, r=0, l=0),
+    legend.text = element_text(margin = margin(r = 40), size=18),
+    legend.title = element_text(size=20, face="bold", vjust=0.5, margin=margin(r=20))
+  ) +
+  guides(shape = guide_legend(override.aes = list(size = 9), nrow = 1, title.position = "left", title.vjust = 0.5, keywidth = unit(2, "cm")))
 leg_shape <- cowplot::get_legend(p_leg_shape)
 
-combined_legends <- plot_grid(leg_role, leg_shape, ncol=1)
+combined_legends <- plot_grid(leg_role, leg_shape, ncol=1, rel_heights=c(1, 1))
 
 # Reorder trees to: PB1, PB2, NP, NS and PA, HA, NA, MP
 desired_order <- c("PB1", "PB2", "NP", "NS", "PA", "HA", "NA", "MP")
@@ -300,7 +331,7 @@ layout_1 <- plot_grid(
   plot_grid(panels_reordered[[1]]$bot, panels_reordered[[2]]$bot, panels_reordered[[3]]$bot, panels_reordered[[4]]$bot, ncol=4),
   ncol = 1, rel_heights = c(1, 1)
 )
-final_plot_1 <- plot_grid(layout_1, combined_legends, ncol=1, rel_heights=c(1, 0.1))
+final_plot_1 <- plot_grid(layout_1, combined_legends, ncol=1, rel_heights=c(1, 0.12), labels=c("A", ""), label_size=60, label_fontfamily="sans")
 
 # Compose Graphic 2 (last 4 segments: PA, HA, NA, MP)
 layout_2 <- plot_grid(
@@ -308,7 +339,8 @@ layout_2 <- plot_grid(
   plot_grid(panels_reordered[[5]]$bot, panels_reordered[[6]]$bot, panels_reordered[[7]]$bot, panels_reordered[[8]]$bot, ncol=4),
   ncol = 1, rel_heights = c(1, 1)
 )
-final_plot_2 <- plot_grid(layout_2, combined_legends, ncol=1, rel_heights=c(1, 0.1))
+final_plot_2 <- plot_grid(layout_2, combined_legends, ncol=1, rel_heights=c(1, 0.12), labels=c("B", ""), label_size=60, label_fontfamily="sans")
+
 
 out1 <- sub(".png$", "_1.png", output_png)
 out2 <- sub(".png$", "_2.png", output_png)
