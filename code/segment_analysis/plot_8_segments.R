@@ -45,13 +45,15 @@ flu_tips_all  <- meta$file_name[grepl("^flu_", meta$expected_role)]
 # Define outliers per segment based on user input
 outliers_map <- list(
   "EPI_ISL_20450124" = c("MP", "NA", "NP", "NS"),
-  "EPI_ISL_20450123" = c("MP", "NS"),
+  "EPI_ISL_20450123" = c("MP"),
   "EPI_ISL_20450128" = c("MP", "NS"),
   "EPI_ISL_20450130" = c("MP"),
   "EPI_ISL_20450131" = c("MP"),
   "EPI_ISL_20450132" = c("MP"),
   "EPI_ISL_20450133" = c("MP"),
-  "EPI_ISL_18137671" = c("MP", "NA", "NP", "NS", "PA")
+  "EPI_ISL_20450121" = c("MP"),
+  "EPI_ISL_20450122" = c("MP"),
+  "EPI_ISL_18137671" = c("NP", "NS")
 )
 
 role_lookup   <- setNames(meta$expected_role, meta$file_name)

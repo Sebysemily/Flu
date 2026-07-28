@@ -47,3 +47,9 @@ temp/*
 /metadata/original_filtraedo
 /metadata/genoflu_context_results.tsv
 figures/
+/metadata/beast
+/metadata/H5N1_context.csv
+/metadata/context_base.csv
+/metadata/context_base.csv.bak
+/metadata/genoflu_results.done
+/metadata/genoflu_results.tsv
