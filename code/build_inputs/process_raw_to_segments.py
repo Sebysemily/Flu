@@ -384,6 +384,10 @@ def parse_context_isolates(context_fasta: str) -> dict:
         if not segment or not epi_isl:
             continue
 
+        if segment in isolates_data.get(isolate_name, {}):
+            print(f"INFO: Ignorando segmento duplicado para {isolate_name} ({segment})")
+            continue
+
         isolates_data.setdefault(isolate_name, {})[segment] = (epi_isl, seq, header)
     return isolates_data
 
@@ -525,6 +529,11 @@ def main():
             seg, epi_isl = parsed
             if epi_isl not in local_epi_isls:
                 raise ValueError(f"ERROR: Ecuador sequence {epi_isl} (header: {header}) not found in metadata file {args.metadata_csv}")
+            
+            if epi_isl in ecuador_by_segment[seg]:
+                print(f"INFO: Ignorando segmento duplicado de Ecuador para {epi_isl} ({seg})")
+                continue
+                
             ecuador_by_segment[seg][epi_isl] = sanitize_dna(seq).replace("-", "")
             ecuador_seen.add(epi_isl)
 
