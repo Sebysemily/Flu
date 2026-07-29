@@ -2,7 +2,6 @@ import glob
 import os
 
 FILTRADO_CSV = config.get("flu_filtrado", "metadata/flu_filtrado.csv")
-DATA_COMBINED_CONTEXT_EC = config.get("data_combined_context_ecuador", "data/standard_header_input_fasta")
 DATA_PHYLOGENY = config.get("data_phylogeny", "data/phylogeny")
 PHYLO_SEGMENTS = ["PB2", "PB1", "PA", "HA", "NP", "NA", "MP", "NS"]
 MAIN_PANEL_METADATA = "metadata/H5N1_context.csv"

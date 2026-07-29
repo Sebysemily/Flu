@@ -2,7 +2,6 @@ RANDOM_SEED = config.get("random_seed", 39809473)
 MAX_THREADS = int(config.get("max_threads", 18))
 
 PHYLO_SEGMENTS = ["PB2", "PB1", "PA", "HA", "NP", "NA", "MP", "NS"]
-LINEAGE_SEGMENTS = ["HA", "PB2"]
 CODON_SEGMENTS = ["PB2", "PB1", "PA", "HA", "NP", "NA"]
 SIMPLE_SEGMENTS = ["NS", "MP"]
 MAIN_PANEL_METADATA = "metadata/H5N1_context.csv"
@@ -193,93 +192,19 @@ MAIN_PANEL_HA_MAFFT = f"{PRUNED_HA_DIR}/H5N1_HA_panel_mafft.mafft"
 MAIN_PANEL_HA_POSTQC = f"{MAIN_PANEL_DIR}/H5N1_HA_panel_postQC.fasta"
 MAIN_PANEL_CONTEXT_TAXA = f"{PRUNED_HA_DIR}/context_taxa.txt"
 MAIN_PANEL_COSTA_AUDIT = f"{PRUNED_HA_DIR}/costa_window.audit.tsv"
-MAIN_PANEL_FILTERED_AUDIT = f"{PRUNED_HA_DIR}/pruning.audit.tsv"
 # HA panel augur + post-QC (hardcoded; edit here if needed)
 PANEL_REGIONAL_CONTEXT_MAX = 250
 PANEL_AMERICAN_ANCHOR_MAX = 100
 PANEL_REGIONAL_COSTA_ADJACENT_MAX = 0
 PANEL_COSTA_WINDOW_PADDING_MONTHS = 2
-MAIN_PANEL_ALIGNMENT = f"{MAIN_PANEL_DIR}/main_alignment.fasta"
-MAIN_PANEL_PARTITIONS = f"{MAIN_PANEL_DIR}/main_alignment.partitions"
 
 
 def main_panel_segment_fasta(segment):
     if segment == "HA":
         return MAIN_PANEL_HA_POSTQC
     return f"{MAIN_PANEL_DIR}/H5N1_{segment}.fasta"
-
-
-rule build_single_segment_codon_partition:
-    input:
-        alignment=lambda wildcards: main_panel_segment_fasta(wildcards.segment),
-    output:
-        partition=f"{MAIN_PANEL_DIR}/H5N1_{{segment}}.partitions"
-    wildcard_constraints:
-        segment="|".join(CODON_SEGMENTS)
-    conda:
-        "../envs/01_ml_trees.yml"
-    shell:
-        r"""
-        python code/01_ml_trees/build_single_segment_codon_partition.py \
-            --alignment {input.alignment} \
-            --segment {wildcards.segment} \
-            --output {output.partition}
-        """
-
-# =====================================================================
-# Rule: run_iqtree_codon_segment
-# =====================================================================
-
 RESULTS_PHYLOGENY = config.get("results_phylogeny", "results/phylogeny")
 
-rule run_iqtree_codon_segment:
-    input:
-        alignment=lambda wildcards: main_panel_segment_fasta(wildcards.segment),
-        partitions=f"{MAIN_PANEL_DIR}/H5N1_{{segment}}.partitions"
-    output:
-        treefile=f"{RESULTS_PHYLOGENY}/iq-tree/{{segment}}/{{segment}}.treefile"
-    params:
-        prefix=f"{RESULTS_PHYLOGENY}/iq-tree/{{segment}}/workdir/{{segment}}",
-        seed=RANDOM_SEED,
-        bootstrap=1000
-    wildcard_constraints:
-        segment="|".join(CODON_SEGMENTS)
-    threads: 4
-    conda:
-        "../envs/01_ml_trees.yml"
-    shell:
-        r"""
-        mkdir -p $(dirname {params.prefix})
-        iqtree -s {input.alignment} -spp {input.partitions} -pre {params.prefix} -seed {params.seed} -nt {threads} -bb {params.bootstrap} -bnni
-        cp {params.prefix}.treefile {output.treefile}
-        """
-
-# =====================================================================
-# Rule: run_iqtree_simple_segment
-# =====================================================================
-
-rule run_iqtree_simple_segment:
-    input:
-        alignment=lambda wildcards: main_panel_segment_fasta(wildcards.segment),
-    output:
-        treefile=f"{RESULTS_PHYLOGENY}/iq-tree/{{segment}}/{{segment}}.treefile"
-    params:
-        prefix=f"{RESULTS_PHYLOGENY}/iq-tree/{{segment}}/workdir/{{segment}}",
-        seed=RANDOM_SEED,
-        bootstrap=1000
-    wildcard_constraints:
-        segment="|".join(SIMPLE_SEGMENTS)
-    threads: 4
-    conda:
-        "../envs/01_ml_trees.yml"
-    shell:
-        r"""
-        mkdir -p $(dirname {params.prefix})
-        iqtree -s {input.alignment} -pre {params.prefix} -seed {params.seed} -nt {threads} -bb {params.bootstrap} -bnni
-        cp {params.prefix}.treefile {output.treefile}
-        """
-
-# =====================================================================
 # Rule: build_lineage_codon_partition
 # =====================================================================
 

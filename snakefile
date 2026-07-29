@@ -41,8 +41,6 @@ ALL_VALIDATION_TARGETS = [
     "metadata/beast/metadata_beast.tsv",
     "results/phylogeny/flu_mut/flumut_report_markers.tsv",
     "results/phylogeny/flu_mut/flumut_report_mutations.tsv",
-    *BEAST_GSS_TARGETS,
-    "results/beast/GSS/model_selection.csv",
     "results/beast/final_run/run.done",
     "figures/main_panel_HA_beast_mcc.png",
     "results/beast/final_run/joint_transitions_summary.csv"
