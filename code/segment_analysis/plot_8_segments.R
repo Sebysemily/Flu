@@ -51,9 +51,7 @@ outliers_map <- list(
   "EPI_ISL_20450131" = c("MP"),
   "EPI_ISL_20450132" = c("MP"),
   "EPI_ISL_20450133" = c("MP"),
-  "EPI_ISL_20450121" = c("MP"),
-  "EPI_ISL_20450122" = c("MP"),
-  "EPI_ISL_18137671" = c("NP", "NS")
+  "EPI_ISL_18137671" = c("NS", "NA")
 )
 
 role_lookup   <- setNames(meta$expected_role, meta$file_name)
@@ -192,10 +190,11 @@ build_segment_panels <- function(tree_path, segment_name, flu_tips_all, outliers
 
     mrca_data <- d[d$node %in% mrca_nodes_all, ]
     if (nrow(mrca_data) > 0) {
-      xmin <- min(mrca_data$x)
-      xmax <- max(mrca_data$x)
-      ymin <- min(mrca_data$y)
-      ymax <- max(mrca_data$y)
+      mrca_tips_core <- mrca_data[mrca_data$isTip & !(mrca_data$label %in% outliers_this_seg), ]
+      xmin <- d$x[d$node == mrca_node]
+      xmax <- max(mrca_tips_core$x, na.rm = TRUE)
+      ymin <- min(mrca_data$y, na.rm=TRUE)
+      ymax <- max(mrca_data$y, na.rm=TRUE)
       x_range <- max(d$x, na.rm=TRUE) - min(d$x, na.rm=TRUE)
       
       p_top <- p_top + geom_rect(
@@ -211,12 +210,16 @@ build_segment_panels <- function(tree_path, segment_name, flu_tips_all, outliers
     } else {
       subtree <- ape::keep.tip(tree, flu_tips_in_tree[1])
     }
-    
+    # Drop extreme outliers from the zoomed subtree so they do not distort the scale
+    # INSTEAD OF DROPPING: We will keep them in the tree but restrict the plot limits
     d_sub <- ggtree::fortify(subtree)
+    
+    outliers_in_sub <- intersect(outliers_this_seg, subtree$tip.label)
+    d_sub_core <- d_sub[!(d_sub$label %in% outliers_in_sub), ]
+    x_max_core <- max(d_sub_core$x, na.rm=TRUE)
+    x_min_core <- min(d_sub_core$x, na.rm=TRUE)
+    x_range_core <- x_max_core - x_min_core
 
-    # --- Gentle collapsing logic removed from zoom panel ---
-
-    # --- Build tip data from (possibly reduced) d_sub ---
     tip_data_sub <- d_sub[d_sub$isTip, ] |>
       left_join(meta, by = c("label" = "file_name")) |>
       mutate(
@@ -236,23 +239,15 @@ build_segment_panels <- function(tree_path, segment_name, flu_tips_all, outliers
         legend.position = "none",
         panel.border    = element_rect(color = "red", linetype = "dashed", fill = NA, linewidth = 0.5)
       ) +
-      coord_cartesian(clip = "off")
+      coord_cartesian(xlim = c(x_min_core, x_max_core + (x_range_core * 0.05)), clip = "on")
 
-    x_max_sub <- max(d_sub$x, na.rm=TRUE)
-    x_min_sub <- min(d_sub$x, na.rm=TRUE)
-    x_range_sub <- x_max_sub - x_min_sub
+    scale_len_bot <- signif(x_range_core * 0.2, 1) # ~20% of the core subtree width
+    scale_x_start <- x_max_core - scale_len_bot - (x_range_core * 0.05) # Shift left a bit
     y_max_sub <- max(d_sub$y, na.rm=TRUE)
-    scale_len_bot <- signif(x_range_sub * 0.2, 1) # ~20% of the subtree width
-    scale_x_start <- x_max_sub - scale_len_bot - (x_range_sub * 0.05) # Shift left a bit
+    
     p_bot <- p_bot +
-      annotate("segment", x = scale_x_start, xend = scale_x_start + scale_len_bot, y = 0, yend = 0, linewidth = 1, color = "grey30") +
-      annotate("text", x = scale_x_start + (scale_len_bot / 2), y = -(y_max_sub * 0.08), label = paste(scale_len_bot, "subs/site"), size = 5, color = "grey30")
-
-
-
-
-
-    # Draw collapsed-clade polygons removed from zoom panel
+      annotate("segment", x = scale_x_start, xend = scale_x_start + scale_len_bot, y = -(y_max_sub * 0.03), yend = -(y_max_sub * 0.03), linewidth = 1, color = "grey30") +
+      annotate("text", x = scale_x_start + (scale_len_bot / 2), y = -(y_max_sub * 0.06), label = paste(scale_len_bot, "subs/site"), size = 5, color = "grey30")
 
     if (nrow(tip_data_sub) > 0) {
       p_bot <- p_bot + geom_point(

@@ -59,3 +59,7 @@ rule all:
 rule genoflu_metadata:
     input:
         GENOFLU_METADATA_TARGETS
+
+rule build_inputs:
+    input:
+        "data/input/H5N1_EC_gisaid_from_mira.fasta"

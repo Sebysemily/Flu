@@ -1,19 +1,19 @@
 # -----------------------------
 # Reproducibility and resources
 # -----------------------------
-random_seed: 39809473   # Base seed reused across steps that require randomization, to ensure reproducibility.
-max_threads: 16         # Default thread cap 
+random_seed: 39809473 # Base seed reused across steps that require randomization, to ensure reproducibility.
+max_threads: 16 # Default thread cap
 
 # -----------------------------
 # treetime prunning values
 # -----------------------------
 treetime_parameters:
-  clock_filter: 4.0   # Outlier detection threshold (number of interquartile ranges from regression)
+  clock_filter: 4.0 # Outlier detection threshold (number of interquartile ranges from regression)
 # -----------------------------
 # ML_parameters
 
 # Outgroup root sample
-outgroup_root_sample: "EPI_ISL_18133029" #muestra mas antigua para root
+outgroup_root_sample: "EPI_ISL_18133029" # oldest sample available for tree rooting
 # -----------------------------
 # BEAST parameters
 # -----------------------------
@@ -21,10 +21,8 @@ beast:
   # Snakemake threads per BEAST job. Use 1 so -j2 runs two chains in parallel (-j2 with 5 only runs one).
   threads_per_chain: 1
   # Per model: chainLength/logEvery (MCMC). gss: true runs marginal likelihood after MCMC target
-  # matching coalescent model para conts y exp, bay usa product of exponential distributions
-  # bay tiene que correr como GSS desde un principio, los otros se puede probar y retomar la cadena 
   models:
-    strict_const: { chainLength: 100000000, logEvery: 10000, gss: true }   
+    strict_const: { chainLength: 100000000, logEvery: 10000, gss: true }
     strict_exp: { chainLength: 100000000, logEvery: 10000, gss: true }
     strict_bay: { chainLength: 100000000, logEvery: 10000, gss: true }
     ucln_const: { chainLength: 100000000, logEvery: 10000, gss: true }
