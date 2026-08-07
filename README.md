@@ -1,22 +1,12 @@
 <!--toc:start-->
-- [Requirements
-----------](#requirements)
-- [Useful Commands
----------------](#useful-commands)
-- [Current Flow
-------------](#current-flow)
-- [Main Outputs
--------------------](#main-outputs)
-- [Global Parameters
--------------](#global-parameters)
-- [Visualization (manual backlog)
-------------------------------](#visualization-manual-backlog)
-- [Extra Notes
-----------------](#extra-notes)
-- [Reassortments and Outliers (Genotype Analysis)
-------------------------------------------------](#reassortments-and-outliers-genotype-analysis)
-- [Tools and Core Parameters
--------------------------](#tools-and-core-parameters)
+- [Requirements](#requirements)
+- [Useful Commands](#useful-commands)
+- [Current Flow](#current-flow)
+- [Main Outputs](#main-outputs)
+- [Global Parameters](#global-parameters)
+- [Visualization (manual backlog)](#visualization-manual-backlog)
+- [Extra Notes](#extra-notes)
+- [Tools and Core Parameters](#tools-and-core-parameters)
 <!--toc:end-->
 
 H5N1 Ecuador Pipeline
@@ -81,7 +71,6 @@ To avoid cluttering the configuration files, not all parameters used across the 
 - **TreeTime:** `treetime_parameters.clock_filter` (set to 4.0).
 - **Outgroup:** `outgroup_root_sample` (set to EPI_ISL_18133029).
 Extra Notes
-
 ----------------
 
 - **Reassortments and Outliers (Genotype Analysis):** During the process, samples acting as recombinants or endemic strains are identified and excluded from the main H5N1 visualization due to massive divergence in certain segments (e.g., NS or MP). The metadata extracted from GenoFLU for these key samples (condors, boobies, otters, etc.), where the discordance of their genotypes against typical HPAI lineages is observed, is consolidated in the `results/possible_reassortants_ignored.csv` file.
