@@ -1,17 +1,24 @@
 <!--toc:start-->
-- [Requirements](#requirements)
-- [Useful Commands](#useful-commands)
-- [Current Flow](#current-flow)
-- [Main Outputs](#main-outputs)
-- [Global Parameters](#global-parameters)
-- [Visualization (manual backlog)](#visualization-manual-backlog)
-- [Extra Notes](#extra-notes)
-- [Tools and Core Parameters](#tools-and-core-parameters)
+- [Requirements
+----------](#requirements)
+- [Useful Commands
+---------------](#useful-commands)
+- [Current Flow
+------------](#current-flow)
+- [Main Outputs
+-------------------](#main-outputs)
+- [Global Parameters
+-----------------](#global-parameters)
+  - [Note about ignored segments in ML zoom](#note-about-ignored-segments-in-ml-zoom)
+- [Tools and Core Parameters
+-------------------------](#tools-and-core-parameters)
+  - [Panel Subsampling (Augur Filter Logic)](#panel-subsampling-augur-filter-logic)
+  - [Bayesian Phylodynamics (BEAST 1.10.4)](#bayesian-phylodynamics-beast-1104)
 <!--toc:end-->
 
 H5N1 Ecuador Pipeline
 
-Workflow for the phylogenetic analysis of H5N1 in Ecuador, associated with the analysis of doi..
+Workflow for the phylogenetic analysis of H5N1 in Ecuador. This repository contains all analytical data, alignments, log files, XML configurations, and scripts for this study. The complete repository is archived and publicly available via Zenodo: **[DOI: TO BE ADDED]**.
 
 Requirements
 ----------
@@ -70,10 +77,10 @@ To avoid cluttering the configuration files, not all parameters used across the 
 - **Panel Selection:** Maximum thresholds for context taxa (e.g., `PANEL_REGIONAL_CONTEXT_MAX = 250`) are defined natively in the `snakefile`.
 - **TreeTime:** `treetime_parameters.clock_filter` (set to 4.0).
 - **Outgroup:** `outgroup_root_sample` (set to EPI_ISL_18133029).
-Extra Notes
-----------------
 
-- **Reassortments and Outliers (Genotype Analysis):** During the process, samples acting as recombinants or endemic strains are identified and excluded from the main H5N1 visualization due to massive divergence in certain segments (e.g., NS or MP). The metadata extracted from GenoFLU for these key samples (condors, boobies, otters, etc.), where the discordance of their genotypes against typical HPAI lineages is observed, is consolidated in the `results/possible_reassortants_ignored.csv` file.
+### Note about ignored segments in ML zoom
+
+During the process, samples acting as recombinants or endemic strains are identified and excluded from the main H5N1 visualization due to massive divergence in certain segments (e.g., NS or MP). The metadata extracted from GenoFLU for these key samples (condors, boobies, otters, etc.), where the discordance of their genotypes against typical HPAI lineages is observed, is consolidated in the `results/possible_reassortants_ignored.csv` file.
 
 Tools and Core Parameters
 -------------------------
@@ -92,10 +99,13 @@ The pipeline relies on several standard bioinformatics tools for evolutionary an
   nextclade run -D <dataset_dir> -j 16 --output-tsv <output_report.tsv> <input.fasta>
   ```
 
-- **Panel Subsampling (Augur Filter Logic):** Selects context sequences to build the final phylogenetic panel while keeping the dataset computationally manageable for BEAST. In plain English, the selection logic works by:
-  1. **Mandatory Inclusion:** Forcing the inclusion of all local Ecuador sequences and a mandatory outgroup to root the tree.
-  2. **Regional Context (South America):** Randomly subsampling other South American sequences up to a strict limit of 250 (`regional_context_max`), distributing them evenly across time (by year and month) so no single heavily-sampled outbreak dominates the tree.
-  3. **American Anchors (North America):** Subsampling older North American precursor sequences up to a limit of 100 (`american_anchor_max`) to properly anchor the root of the lineage.
+### Panel Subsampling (Augur Filter Logic)
+
+Selects context sequences to build the final phylogenetic panel while keeping the dataset computationally manageable for BEAST. In plain English, the selection logic works by:
+
+  1. *Mandatory Inclusion:* Forcing the inclusion of all local Ecuador sequences and a mandatory outgroup to root the tree.
+  2. *Regional Context (South America):* Randomly subsampling other South American sequences up to a strict limit of 250 (`regional_context_max`), distributing them evenly across time (by year and month) so no single heavily-sampled outbreak dominates the tree.
+  3. *American Anchors (North America):* Subsampling older North American precursor sequences up to a limit of 100 (`american_anchor_max`) to properly anchor the root of the lineage.
   (rule `augur_filter_context` in `rules/01_ml_trees.smk`).
 
   ```bash
@@ -114,11 +124,17 @@ The pipeline relies on several standard bioinformatics tools for evolutionary an
   treetime clock --tree <ML.treefile> --aln <alignment.fasta> --dates <dates.tsv> --clock-filter 4.0 --outdir <output_dir>
   ```
 
-- **Bayesian Phylodynamics (BEAST 1.10.4):** Evaluates models and estimates time-scaled trees using BEAGLE (CPU only for maximum cross-compatibility). XML templates are stored in `template_beast/` (rule `run_final_beast` in `rules/03_beast.smk`).
+### Bayesian Phylodynamics (BEAST 1.10.4)
 
-  ```bash
-  beast -beagle_CPU -overwrite -threads 1 <model.xml>
-  ```
+Evaluates models and estimates time-scaled trees using BEAGLE (CPU only for maximum cross-compatibility). XML templates are stored in `template_beast/` (rule `run_final_beast` in `rules/03_beast.smk`).
+
+```bash
+beast -beagle_CPU -overwrite -threads 1 <model.xml>
+```
+
+**Bayesian Inference Priors (BEAST):** The final model employed an uncorrelated relaxed clock with a lognormal distribution (UCLN) for the sequence alignment, assigning a continuous-time Markov-chain (CTMC) reference prior to the mean clock rate and an exponential prior (mean = 0.33) to the standard deviation. The coalescent history was modeled using a Bayesian skygrid prior with a gamma-distributed precision parameter (shape = 0.001, scale = 1000). For the discrete traits (location and host), strict clocks with CTMC reference priors were applied to the overall rates, and gamma priors (shape = 1.0, scale = 1.0) were assigned to the relative transition rates. To maintain a sparse transition graph, the BSSVS indicator variables were given a Poisson prior with a mean of ln(2) (≈ 0.693), conferring a 50% prior probability on the minimum number of transitions required to connect all states. Two independent MCMC chains were run, discarding the first 10% as burn-in, and combined to ensure convergence (ESS > 200). The complete XML specification is provided in this repository (`template_beast/final_run.xml`).
+
+**Bayes Factor Calculations:** Bayes factors (BF) for the discrete trait transitions were calculated as the ratio of posterior odds to prior odds for each transition rate being non-zero. The prior odds were computed as $q / (1 - q)$, where $q = (K - 1) / E_{total}$ represents the expected prior probability of inclusion under the Poisson distribution, with $K$ being the number of discrete states and $E_{total}$ the total number of possible pairwise transitions in the graph. In cases where the MCMC sampling yielded a posterior probability of 1.0 for a transition (which mathematically leads to a division by zero in the posterior odds calculation), the Bayes factor is explicitly reported as 'Inf' (infinity) to denote absolute statistical support within the limits of the finite chain length.
 
 - **Reassortment Typing (GenoFLU):** Used to classify the genomic constellations of all 8 segments and detect inter-lineage reassortments (rule `genoflu_multi` in `rules/build_inputs.smk`).
 
