@@ -46,12 +46,12 @@ cat("Reading tree...\n")
 tree <- read.beast(tree_file)
 df <- as_tibble(tree)
 
-lookup <- df %>% select(node, Location, Host.rate)
+lookup <- df %>% select(node, Location, Host.rate, height_median, posterior)
 
 cat("Mapping parent states...\n")
 transitions <- df %>%
   filter(parent != node) %>%
-  rename(child = node, child_Location = Location, child_Host = Host.rate) %>%
+  rename(child = node, child_Location = Location, child_Host = Host.rate, child_height = height_median, child_posterior = posterior) %>%
   left_join(lookup, by = c("parent" = "node")) %>%
   rename(parent_Location = Location, parent_Host = Host.rate)
 
@@ -66,7 +66,12 @@ jumps <- transitions %>%
 cat("Summarizing transitions...\n")
 summary_table <- jumps %>%
   group_by(parent_Location, parent_Host, child_Location, child_Host, from_state, to_state) %>%
-  summarise(count = n(), .groups = "drop")
+  summarise(
+    count = n(), 
+    jump_tmrcas = paste(round(child_height, 2), collapse=", "),
+    jump_posteriors = paste(round(child_posterior, 2), collapse=", "),
+    .groups = "drop"
+  )
 
 # Append BF and PP
 summary_table <- summary_table %>%
@@ -88,7 +93,7 @@ summary_table <- summary_table %>%
 summary_table <- summary_table %>%
   filter(grepl("ecuador", from_state, ignore.case=TRUE) | grepl("ecuador", to_state, ignore.case=TRUE)) %>%
   arrange(desc(count)) %>%
-  select(from_state, to_state, count, Location_PP, Location_BF, Host_PP, Host_BF)
+  select(from_state, to_state, count, jump_tmrcas, jump_posteriors, Location_PP, Location_BF, Host_PP, Host_BF)
 
 write.csv(summary_table, out_file, row.names = FALSE)
 cat(sprintf("Saved summary to %s\n", out_file))
