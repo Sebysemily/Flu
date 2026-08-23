@@ -68,8 +68,8 @@ summary_table <- jumps %>%
   group_by(parent_Location, parent_Host, child_Location, child_Host, from_state, to_state) %>%
   summarise(
     count = n(), 
-    jump_tmrcas = paste(round(child_height, 2), collapse=", "),
-    jump_posteriors = paste(round(child_posterior, 2), collapse=", "),
+    jump_tmrcas = paste(round(as.numeric(child_height), 2), collapse=", "),
+    jump_posteriors = paste(round(as.numeric(child_posterior), 2), collapse=", "),
     .groups = "drop"
   )
 
