@@ -49,7 +49,6 @@ ALL_VALIDATION_TARGETS = [
     "figures/main_panel_HA_beast_mcc.png",
     "results/beast/final_run/joint_transitions_summary.csv",
     "figures/main_panel_critical_mutations.png",
-    "figures/main_panel_private_mutations.png",
     "results/phylogeny/flu_mut/critical_markers.txt"
 ]
 
