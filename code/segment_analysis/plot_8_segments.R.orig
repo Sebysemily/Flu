@@ -42,23 +42,6 @@ segments <- sapply(tree_paths, function(x) {
 meta          <- read.csv(metadata_path, stringsAsFactors = FALSE)
 flu_tips_all  <- meta$file_name[grepl("^flu_", meta$expected_role)]
 
-# Load genoflu details
-genoflu_path <- "metadata/genoflu_results.tsv"
-if (file.exists(genoflu_path)) {
-  gf <- read.delim(genoflu_path, stringsAsFactors = FALSE, check.names = FALSE)
-  gf_cols <- c("Strain", "Genotype List Used, >=98.0%", "Genotype Sample Title List", "Genotype Percent Match List")
-  gf_cols_present <- intersect(gf_cols, names(gf))
-  gf_sub <- gf[, gf_cols_present, drop = FALSE]
-  names(gf_sub)[names(gf_sub) == "Genotype List Used, >=98.0%"] <- "Genotype_List"
-  names(gf_sub)[names(gf_sub) == "Genotype Sample Title List"] <- "Genotype_Top_Hits"
-  names(gf_sub)[names(gf_sub) == "Genotype Percent Match List"] <- "Genotype_Percent_Match"
-  meta <- merge(meta, gf_sub, by.x = "file_name", by.y = "Strain", all.x = TRUE)
-} else {
-  meta$Genotype_List <- NA
-  meta$Genotype_Top_Hits <- NA
-  meta$Genotype_Percent_Match <- NA
-}
-
 # Define outliers per segment based on user input
 outliers_map <- list(
   "EPI_ISL_20450124" = c("MP", "NA", "NP", "NS"),
@@ -68,11 +51,7 @@ outliers_map <- list(
   "EPI_ISL_20450131" = c("MP"),
   "EPI_ISL_20450132" = c("MP"),
   "EPI_ISL_20450133" = c("MP"),
-  "EPI_ISL_18137671" = c("NS", "NA"),
-  "EPI_ISL_20267521" = c("PB2"),
-  "EPI_ISL_20370746" = c("PB2"),
-  "EPI_ISL_18137626" = c("PB2"),
-  "EPI_ISL_19418489" = c("NS")
+  "EPI_ISL_18137671" = c("NS", "NA")
 )
 
 role_lookup   <- setNames(meta$expected_role, meta$file_name)
@@ -91,17 +70,57 @@ build_segment_panels <- function(tree_path, segment_name, flu_tips_all, outliers
     tree <- phytools::midpoint.root(tree)
   }
   tree <- ape::ladderize(tree, right = FALSE)
-  
-  # Identify outliers for this segment
-  outliers_this_seg <- names(outliers_map)[sapply(outliers_map, function(x) segment_name %in% x)]
-  
+
   flu_tips_in_tree <- intersect(tree$tip.label, flu_tips_all)
+  
+  # Determine which tips to use as anchors for this segment's MRCA
+  outliers_this_seg <- names(outliers_map)[sapply(outliers_map, function(x) segment_name %in% x)]
   flu_anchors_in_tree <- setdiff(flu_tips_in_tree, outliers_this_seg)
   
   n_tips <- Ntip(tree)
 
   d <- ggtree::fortify(tree)
 
+  poly_list  <- list()
+  poly_id    <- 1
+  nodes_to_drop <- c()
+
+  if (length(flu_tips_in_tree) > 0) {
+    desc_tips <- phangorn::Descendants(tree, type = "tips")
+    desc_all  <- phangorn::Descendants(tree, type = "all")
+
+    for (node in (n_tips + 1):(n_tips + Nnode(tree))) {
+      if (node %in% nodes_to_drop) next
+      tips_in_node <- tree$tip.label[desc_tips[[node]]]
+      if (length(intersect(tips_in_node, flu_tips_in_tree)) == 0) {
+        roles_node <- meta$expected_role[match(tips_in_node, meta$file_name)]
+        roles_node <- roles_node[!is.na(roles_node) & roles_node != ""]
+        if (length(unique(roles_node)) > 1) next
+        
+        desc_nodes <- desc_all[[node]]
+        x_root     <- d$x[d$node == node]
+        y_root     <- d$y[d$node == node]
+        desc_data  <- d[d$node %in% desc_nodes, ]
+        if (nrow(desc_data) > 0) {
+          majority_role <- if (length(roles_node) > 0) unique(roles_node)[1] else "unknown"
+          majority_role <- normalize_ecuador_role(majority_role)
+
+          poly_list[[poly_id]] <- data.frame(
+            x     = c(x_root, max(desc_data$x), max(desc_data$x)),
+            y     = c(y_root, max(desc_data$y), min(desc_data$y)),
+            group = paste0("poly_", poly_id),
+            poly_role = majority_role
+          )
+          poly_id       <- poly_id + 1
+          nodes_to_drop <- c(nodes_to_drop, desc_nodes)
+        }
+      }
+    }
+  }
+
+  if (length(nodes_to_drop) > 0) {
+    d <- d[!d$node %in% nodes_to_drop, ]
+  }
 
   tip_data <- d[d$isTip, ] |>
     left_join(meta, by = c("label" = "file_name")) |>
@@ -125,7 +144,7 @@ build_segment_panels <- function(tree_path, segment_name, flu_tips_all, outliers
   x_max <- max(d$x, na.rm=TRUE)
   y_max <- max(d$y, na.rm=TRUE)
   scale_y <- y_max * -0.015
-  scale_len_top <- 0.005 # Fixed standard scale for top plot
+  scale_len_top <- signif(x_max * 0.15, 1) # 15% of the total width
   scale_x_start_top <- x_max - scale_len_top - (x_max * 0.05) # Shifted a bit left
   p_top <- p_top +
     annotate("segment", x = scale_x_start_top, xend = scale_x_start_top + scale_len_top, y = scale_y, yend = scale_y, linewidth = 1.2, color = "grey30") +
@@ -135,11 +154,17 @@ build_segment_panels <- function(tree_path, segment_name, flu_tips_all, outliers
 
 
 
+  if (length(poly_list) > 0) {
+    poly_df <- bind_rows(poly_list)
+    p_top <- p_top + geom_polygon(
+      data = poly_df, aes(x = x, y = y, group = group, fill = poly_role, color = poly_role),
+      alpha = 0.25, linewidth = 0.25
+    ) + scale_fill_manual(values = panel_type_colors, na.value = "grey82")
+  }
 
   tip_data$role <- normalize_role_vector(setNames(tip_data$expected_role, tip_data$label))
   tip_data$pt_size  <- ifelse(tip_data$is_flu, 2.2, 0.8)
-  tip_data$pt_alpha <- ifelse(tip_data$is_flu, 1.0, 
-                              ifelse(tip_data$role == "american_anchor", 0.3, 0.7))
+  tip_data$pt_alpha <- ifelse(tip_data$is_flu, 0.95, 0.7)
 
   if (nrow(tip_data) > 0) {
     p_top <- p_top + geom_point(
@@ -149,12 +174,6 @@ build_segment_panels <- function(tree_path, segment_name, flu_tips_all, outliers
     ) + scale_color_manual(values = panel_type_colors, na.value = "grey70") +
       scale_shape_manual(values = c("domesticated bird"=15, "wild bird"=16, "domesticated mammal"=17, "wild mammal"=18, "?"=3)) +
       scale_size_identity() + scale_alpha_identity()
-      
-    booby_data_top <- tip_data[tip_data$label == "EPI_ISL_18137671", ]
-    if (nrow(booby_data_top) > 0) {
-      p_top <- p_top + geom_text(data = booby_data_top, aes(x = x, y = y), label = "*", color = "red", size = 12, fontface = "bold", hjust = -0.2, vjust = 0.75)
-    }
-    p_top <- p_top + coord_cartesian(clip = "off")
   }
 
   # Draw rectangle and extract subtree
@@ -196,7 +215,7 @@ build_segment_panels <- function(tree_path, segment_name, flu_tips_all, outliers
     d_sub <- ggtree::fortify(subtree)
     
     outliers_in_sub <- intersect(outliers_this_seg, subtree$tip.label)
-    d_sub_core <- d_sub[d_sub$isTip & !(d_sub$label %in% outliers_in_sub), ]
+    d_sub_core <- d_sub[!(d_sub$label %in% outliers_in_sub), ]
     x_max_core <- max(d_sub_core$x, na.rm=TRUE)
     x_min_core <- min(d_sub_core$x, na.rm=TRUE)
     x_range_core <- x_max_core - x_min_core
@@ -210,8 +229,7 @@ build_segment_panels <- function(tree_path, segment_name, flu_tips_all, outliers
     
     tip_data_sub$role <- normalize_role_vector(setNames(tip_data_sub$expected_role, tip_data_sub$label))
     tip_data_sub$pt_size  <- ifelse(tip_data_sub$is_flu, 2, 2.5)
-    tip_data_sub$pt_alpha <- ifelse(tip_data_sub$is_flu, 1.0, 
-                                    ifelse(tip_data_sub$role == "american_anchor", 0.3, 0.6))
+    tip_data_sub$pt_alpha <- ifelse(tip_data_sub$is_flu, 1.0, 0.6)
 
     p_bot <- ggplot() +
       geom_tree(data = d_sub, color = "grey35", linewidth = 0.3) +
@@ -221,9 +239,9 @@ build_segment_panels <- function(tree_path, segment_name, flu_tips_all, outliers
         legend.position = "none",
         panel.border    = element_rect(color = "red", linetype = "dashed", fill = NA, linewidth = 0.5)
       ) +
-      coord_cartesian(xlim = c(x_min_core, x_max_core + (x_range_core * 0.05)), clip = "off")
+      coord_cartesian(xlim = c(x_min_core, x_max_core + (x_range_core * 0.05)), clip = "on")
 
-    scale_len_bot <- 0.003 # Fixed scale bar for all zoomed segments
+    scale_len_bot <- signif(x_range_core * 0.2, 1) # ~20% of the core subtree width
     scale_x_start <- x_max_core - scale_len_bot - (x_range_core * 0.05) # Shift left a bit
     y_max_sub <- max(d_sub$y, na.rm=TRUE)
     
@@ -240,11 +258,6 @@ build_segment_panels <- function(tree_path, segment_name, flu_tips_all, outliers
       ) + scale_color_manual(values = panel_type_colors, na.value = "grey70") +
         scale_shape_manual(values = c("domesticated bird"=15, "wild bird"=16, "domesticated mammal"=17, "wild mammal"=18, "?"=3)) +
         scale_size_identity() + scale_alpha_identity()
-        
-      booby_data_bot <- tip_data_sub[tip_data_sub$label == "EPI_ISL_18137671", ]
-      if (nrow(booby_data_bot) > 0) {
-        p_bot <- p_bot + geom_text(data = booby_data_bot, aes(x = x, y = y), label = "*", color = "red", size = 12, fontface = "bold", hjust = -0.2, vjust = 0.75)
-      }
     }
   }
 
@@ -278,7 +291,7 @@ p_leg_role <- ggplot(legend_data_role, aes(x=x, y=y, color=role)) +
     legend.text = element_text(margin = margin(r = 15), size=18),
     legend.title = element_text(size=20, face="bold", vjust=0.5, margin=margin(r=20))
   ) +
-  guides(color = guide_legend(override.aes = list(size = 9, alpha = c(1, 1, 1, 0.3, 0.4)), nrow = 1, title.position = "left", title.vjust = 0.5, keywidth = unit(2, "cm")))
+  guides(color = guide_legend(override.aes = list(size = 9, alpha = c(1, 1, 1, 0.4, 0.4)), nrow = 1, title.position = "left", title.vjust = 0.5, keywidth = unit(2, "cm")))
 leg_role <- cowplot::get_legend(p_leg_role)
 
 host_shape_mapping <- c(
@@ -302,18 +315,7 @@ p_leg_shape <- ggplot(data.frame(host=names(host_shape_mapping)), aes(x=1,y=1,sh
   guides(shape = guide_legend(override.aes = list(size = 9), nrow = 1, title.position = "left", title.vjust = 0.5, keywidth = unit(2, "cm")))
 leg_shape <- cowplot::get_legend(p_leg_shape)
 
-p_leg_reassortant <- ggplot(data.frame(x=1, y=1, type="NS outlier"), aes(x,y, color=type)) + 
-  geom_point(shape="*", size=16, stroke=1.5) +
-  scale_color_manual(values=c("NS outlier"="red"), name=NULL) +
-  theme_void() + theme(
-    legend.position="bottom", 
-    legend.margin = margin(t=0, b=0, r=0, l=0),
-    legend.text = element_text(size=18, margin=margin(r=20))
-  ) + guides(color = guide_legend(override.aes = list(size = 14), nrow = 1))
-leg_reassortant <- cowplot::get_legend(p_leg_reassortant)
-
-bottom_row <- plot_grid(leg_shape, leg_reassortant, NULL, nrow=1, rel_widths=c(1.2, 0.4, 0.3))
-combined_legends <- plot_grid(leg_role, bottom_row, ncol=1, rel_heights=c(1, 1))
+combined_legends <- plot_grid(leg_role, leg_shape, ncol=1, rel_heights=c(1, 1))
 
 # Reorder trees to: PB1, PB2, NP, NS and PA, HA, NA, MP
 desired_order <- c("PB1", "PB2", "NP", "NS", "PA", "HA", "NA", "MP")
@@ -358,17 +360,6 @@ cat("Created dummy file", output_png, "for Snakemake compatibility\n")
 # -------------------------------------------------------------
 out_csv <- "results/ignored_in_per_segment.csv"
 
-b32_constellation <- list(
-  "PB2" = "am2.1",
-  "PB1" = "am1.2",
-  "PA"  = "ea1",
-  "HA"  = "ea1",
-  "NP"  = "am1.4.1",
-  "NA"  = "ea1",
-  "MP"  = "ea1",
-  "NS"  = "am1.1"
-)
-
 # Extract information from meta to match the original CSV structure
 ignored_list <- lapply(names(outliers_map), function(sid) {
   row <- meta[meta$file_name == sid, ]
@@ -378,124 +369,36 @@ ignored_list <- lapply(names(outliers_map), function(sid) {
   geno_raw <- as.character(row$genotype[1])
   if (is.na(geno_raw)) geno_raw <- ""
   
-  geno_list <- as.character(row$Genotype_List[1])
-  if (is.na(geno_list)) geno_list <- ""
+  comp <- "Unknown"
+  if (grepl("B3.2", geno_raw) || grepl("ea1", geno_raw)) comp <- "Yes"
   
-  incompatible_segs <- c()
-  
-  if (grepl("B3.2", geno_raw) && !grepl("Not assigned", geno_raw)) {
-    comp <- "Yes"
-  } else {
-    comp <- "No"
-  }
-  
-  top_hits <- as.character(row$Genotype_Top_Hits[1])
-  if (is.na(top_hits)) top_hits <- ""
-  pcts <- as.character(row$Genotype_Percent_Match[1])
-  if (is.na(pcts)) pcts <- ""
-  
-  ignored_segs_list <- outliers_map[[sid]]
-  
-  ignored_info <- c()
-  other_info <- c()
-  
-  if (top_hits != "") {
-    hits_vec <- strsplit(top_hits, ",\\s*")[[1]]
-    pcts_vec <- strsplit(pcts, ",\\s*")[[1]]
-    
-    for (k in seq_along(hits_vec)) {
-      h <- hits_vec[k]
-      p <- if (k <= length(pcts_vec)) pcts_vec[k] else ""
-      parts <- strsplit(h, ":")[[1]]
-      lin <- parts[1]
-      seg <- parts[length(parts)]
-      
-      info_str <- sprintf("%s (%s, %s)", seg, lin, p)
-      if (seg %in% ignored_segs_list) {
-        ignored_info <- c(ignored_info, info_str)
-      } else {
-        other_info <- c(other_info, info_str)
-      }
+  geno_main <- geno_raw
+  geno_det <- ""
+  if (grepl("Not assigned:", geno_raw)) {
+    parts <- strsplit(geno_raw, ",", fixed=TRUE)[[1]]
+    if (length(parts) > 1) {
+      geno_main <- parts[1]
+      geno_det <- paste(parts[-1], collapse=",")
     }
   }
   
   data.frame(
     Sample_ID = sid,
     Segments_Ignored_In_Plots = segs,
-    ">98% match to B3.2 genotype" = comp,
+    Compatible_with_B3.2 = comp,
     Host = as.character(row$host_type[1]),
     Collection_Date = as.character(row$collection_date[1]),
     Location = paste0(row$country[1], " (", row$province[1], ")"),
     Role = as.character(row$expected_role[1]),
-    Ignored_Segments_Top_Hits = paste(ignored_info, collapse="; "),
-    Other_Segments_Top_Hits = paste(other_info, collapse="; "),
-    stringsAsFactors = FALSE,
-    check.names = FALSE
+    GenoFLU_Genotype = geno_main,
+    GenoFLU_Details = trimws(geno_det),
+    stringsAsFactors = FALSE
   )
 })
 
-
 ignored_df <- do.call(rbind, ignored_list)
-
-# Additional Ecuadorian sequences retained in trees with sub-threshold (<98%) GenoFLU hits
-ec_retained <- meta[grepl("^flu_", meta$expected_role) & !(meta$file_name %in% names(outliers_map)), ]
-retained_divergent_list <- list()
-
-if (nrow(ec_retained) > 0) {
-  for (i in seq_len(nrow(ec_retained))) {
-    row_ec <- ec_retained[i, ]
-    top_hits <- as.character(row_ec$Genotype_Top_Hits)
-    pcts <- as.character(row_ec$Genotype_Percent_Match)
-    if (!is.na(top_hits) && top_hits != "") {
-      hits_vec <- strsplit(top_hits, ",\\s*")[[1]]
-      pcts_vec <- strsplit(pcts, ",\\s*")[[1]]
-      
-      for (j in seq_along(hits_vec)) {
-        h <- hits_vec[j]
-        p_str <- if (j <= length(pcts_vec)) pcts_vec[j] else ""
-        p_val <- as.numeric(gsub("%", "", p_str))
-        parts <- strsplit(h, ":")[[1]]
-        lin <- parts[1]
-        seg <- parts[length(parts)]
-        canon <- if (seg %in% names(b32_constellation)) b32_constellation[[seg]] else "unknown"
-        
-        # Only include if the top-hit lineage diverges from the canonical B3.2 constellation
-        if (seg %in% names(b32_constellation) && lin != canon) {
-          retained_divergent_list[[length(retained_divergent_list) + 1]] <- data.frame(
-            Sample_ID = row_ec$file_name,
-            Segment = seg,
-            GenoFLU_Top_Hit_Lineage = lin,
-            Canonical_B3.2_Lineage = canon,
-            Percent_Identity = p_str,
-            Full_Top_Hit_Reference = h,
-            Host = row_ec$host_type,
-            Location = paste0(row_ec$country, " (", row_ec$province, ")"),
-            Collection_Date = row_ec$collection_date,
-            Role = row_ec$expected_role,
-            stringsAsFactors = FALSE
-          )
-        }
-      }
-    }
-  }
-}
-retained_divergent_df <- if (length(retained_divergent_list) > 0) do.call(rbind, retained_divergent_list) else NULL
-
 if (!is.null(ignored_df)) {
   write.csv(ignored_df, out_csv, row.names = FALSE, quote = TRUE)
-  
-  if (!is.null(retained_divergent_df) && nrow(retained_divergent_df) > 0) {
-    cat("\n", file=out_csv, append=TRUE)
-    cat("\"--- Additional Ecuadorian Sequences Retained in Trees with Non-Canonical B3.2 GenoFLU Hits ---\"\n", file=out_csv, append=TRUE)
-    write.table(retained_divergent_df, out_csv, row.names = FALSE, quote = TRUE, sep = ",", append = TRUE)
-  }
-  
-  # Append the official B3.2 constellation at the end of the CSV
-  cat("\n", file=out_csv, append=TRUE)
-  cat("\"Official B3.2 Constellation\",\"Lineage\"\n", file=out_csv, append=TRUE)
-  for (seg in names(b32_constellation)) {
-    cat(sprintf("\"%s\",\"%s\"\n", seg, b32_constellation[[seg]]), file=out_csv, append=TRUE)
-  }
 }
 # -------------------------------------------------------------
 

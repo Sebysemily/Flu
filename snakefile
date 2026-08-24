@@ -5,6 +5,7 @@ include: "rules/build_inputs.smk"
 include: "rules/01_ml_trees.smk"
 include: "rules/02_pre_beast.smk"
 include: "rules/03_beast.smk"
+include: "rules/04_mutations.smk"
 
 BY_SEGMENT_FASTAS = expand(
     f"{DATA_PHYLOGENY}/by_segment/H5N1_{{segment}}.fasta",
@@ -41,15 +42,20 @@ ALL_VALIDATION_TARGETS = [
     "metadata/beast/metadata_beast.tsv",
     "results/phylogeny/flu_mut/flumut_report_markers.tsv",
     "results/phylogeny/flu_mut/flumut_report_mutations.tsv",
+    "results/clasifications_ecological_groups.csv",
+    "results/ignored_in_per_segment.csv",
+    "results/qc_metrics/qc_eliminated_sequences.csv",
     "results/beast/final_run/run.done",
     "figures/main_panel_HA_beast_mcc.png",
-    "results/beast/final_run/joint_transitions_summary.csv"
+    "results/beast/final_run/joint_transitions_summary.csv",
+    "figures/main_panel_critical_mutations.png",
+    "figures/main_panel_private_mutations.png",
+    "results/phylogeny/flu_mut/critical_markers.txt"
 ]
 
 GENOFLU_METADATA_TARGETS = [
     MAIN_PANEL_METADATA,
     "metadata/genoflu_results.done",
-    "metadata/genoflu_context_results.tsv",
 ]
 
 rule all:

@@ -202,7 +202,7 @@ p_tangle_legend <- build_tanglegram_legend(
  ) +
    ggplot2::theme(plot.tag = ggplot2::element_blank())
 
-composite_plot <- (p_tanglegram + p_tangle_legend + patchwork::plot_layout(widths = c(4.0, 1.4)))
+composite_plot <- (p_tanglegram + p_tangle_legend + patchwork::plot_layout(widths = c(3.8, 1.45)))
 
 dir.create(dirname(output_png), showWarnings = FALSE, recursive = TRUE)
 ggsave(

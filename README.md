@@ -18,7 +18,7 @@
 
 H5N1 Ecuador Pipeline
 
-Workflow for the phylogenetic analysis of H5N1 in Ecuador. This repository contains all analytical data, alignments, log files, XML configurations, and scripts for this study. The complete repository is archived and publicly available via Zenodo: **[DOI: TO BE ADDED]**.
+Workflow for the phylogenetic analysis of H5N1 in Ecuador. Reproducibility materials—including the custom Python wrapper scripts and exact parameters used for the augur filter subsampling, complete Snakemake pipeline commands, conda environment files, BEAST XML configurations, inferred tree files, and visualization R scripts—are openly available in this repository. The complete repository is permanently archived and publicly available via Zenodo: **[DOI: TO BE ADDED]**. Locally generated consensus sequences and raw sequencing reads from the Ecuadorian samples have been deposited in **[PLACEHOLDER FOR GENBANK/SRA ACCESSIONS]**. All contextual genomes retrieved from GISAID remain subject to their respective access and acknowledgment terms (Shu and McCauley, 2017).
 
 Requirements
 ----------
@@ -37,7 +37,7 @@ snakemake --cores all --use-conda
 # To re-run model selection (GSS), use the GSS target...
 snakemake --cores all --use-conda gss_model_selection
 
-# To build the local Ecuador FASTA inputs from MIRA NGS assemblies (optional)
+# To build the local Ecuador FASTA inputs from MIRA (instead of epi_set fasta)
 snakemake --cores all --use-conda build_inputs
 ```
 
@@ -62,7 +62,9 @@ Main Outputs
 - BEAST MCC tree and final results: `results/beast/final_run/`
 - Main figures folder : `figures/`
 - Main BEAST figure: `figures/main_panel_HA_beast_mcc.png`
-- QC: `results/qc_metrics/alignments/pruning_discarded_sequences.csv`
+- QC (Nextclade HA Reports): `results/qc_metrics/nextclade/HA/nextclade_report.csv`
+- QC (Nextclade Discarded Sequences): `results/qc_metrics/nextclade/HA_eliminated.csv`
+- QC (MAFFT Trim/Gap Discarded): `results/qc_metrics/trim_gap_n/{segment}_eliminated.csv`
 - RTT Panel: `data/phylogeny/rtt/panel_main_concat.filtered.nwk` (tip list = pruned panel)
 - Ecological Groups and Reassortments: Classification files in `results/clasifications_ecological_groups.csv` and outlier details in `results/possible_reassortants_ignored.csv`.
 
@@ -99,6 +101,12 @@ The pipeline relies on several standard bioinformatics tools for evolutionary an
   nextclade run -D <dataset_dir> -j 16 --output-tsv <output_report.tsv> <input.fasta>
   ```
 
+- **Mutational Risk Profiling (FluMut):** Screens complete and partial genomes for curated adaptive markers of public health concern (mammalian adaptation, altered virulence, antiviral resistance). We explicitly queried a predefined panel of 10 critical molecular signatures (e.g., PB2 E627K, PB2 D701N, NA H275Y, etc.) to evaluate the pandemic potential of the Ecuadorian outbreak. The full list of evaluated markers is exported to `results/phylogeny/flu_mut/critical_markers.txt`.
+
+  ```bash
+  flumut -m <output_markers.tsv> -M <output_mutations.tsv> --relaxed <input.fasta>
+  ```
+
 ### Panel Subsampling (Augur Filter Logic)
 
 Selects context sequences to build the final phylogenetic panel while keeping the dataset computationally manageable for BEAST. In plain English, the selection logic works by:
@@ -112,7 +120,7 @@ Selects context sequences to build the final phylogenetic panel while keeping th
   python code/01_ml_trees/build_panel_context_taxa.py --metadata <metadata.csv> --ha-fasta <HA.fasta> --out-context-taxa <output_taxa.txt> --outgroup EPI_ISL_18133029 --seed 39809473 --regional-context-max 250 --american-anchor-max 100
   ```
 
-- **Maximum Likelihood Trees (IQ-TREE 2):** Infers phylogenies using ModelFinder (`-m TEST` by default) and 1000 ultrafast bootstraps (`-bb 1000` with `-bnni` for robust support). Full ML trees are computed for individual segments (e.g. `iqtree_fast_codon_segment` in `rules/01_ml_trees.smk`), and a pruned codon-partitioned tree is generated for HA (`iqtree_pruned_ha` in `rules/01_ml_trees.smk`).
+- **Maximum Likelihood Trees (IQ-TREE 3):** Infers phylogenies using ModelFinder (`-m TEST` by default) and 1000 ultrafast bootstraps (`-bb 1000` with `-bnni` for robust support). Full ML trees are computed for individual segments (e.g. `iqtree_fast_codon_segment` in `rules/01_ml_trees.smk`), and a pruned codon-partitioned tree is generated for HA (`iqtree_pruned_ha` in `rules/01_ml_trees.smk`).
 
   ```bash
   iqtree -s <aligned_segment.mafft> -pre <output_prefix> -seed 39809473 -nt 16 -bb 1000 -bnni
@@ -132,7 +140,7 @@ Evaluates models and estimates time-scaled trees using BEAGLE (CPU only for maxi
 beast -beagle_CPU -overwrite -threads 1 <model.xml>
 ```
 
-**Bayesian Inference Priors (BEAST):** The final model employed an uncorrelated relaxed clock with a lognormal distribution (UCLN) for the sequence alignment, assigning a continuous-time Markov-chain (CTMC) reference prior to the mean clock rate and an exponential prior (mean = 0.33) to the standard deviation. The coalescent history was modeled using a Bayesian skygrid prior with a gamma-distributed precision parameter (shape = 0.001, scale = 1000). For the discrete traits (location and host), strict clocks with CTMC reference priors were applied to the overall rates, and gamma priors (shape = 1.0, scale = 1.0) were assigned to the relative transition rates. To maintain a sparse transition graph, the BSSVS indicator variables were given a Poisson prior with a mean of ln(2) (≈ 0.693), conferring a 50% prior probability on the minimum number of transitions required to connect all states. Two independent MCMC chains were run, discarding the first 10% as burn-in, and combined to ensure convergence (ESS > 200). The complete XML specification is provided in this repository (`template_beast/final_run.xml`).
+**Bayesian Inference Priors (BEAST):** The final model employed an uncorrelated lognormal (UCLN) relaxed clock for the sequence alignment and a Bayesian skygrid coalescent prior. Geographic location and host category were modeled as discrete traits using strict clocks and continuous-time Markov-chain (CTMC) models with Bayesian stochastic search variable selection (BSSVS). Standard default priors generated by BEAUti v1.10.4 were used for all trait and clock parameters, including a Poisson prior on the BSSVS indicators to favor a sparse transition graph. A single MCMC chain was run for 200 million states, discarding the first 10% as burn-in to ensure convergence (ESS > 200). The complete XML specification is provided in this repository (`template_beast/final_run.xml`).
 
 **Bayes Factor Calculations:** Bayes factors (BF) for the discrete trait transitions were calculated as the ratio of posterior odds to prior odds for each transition rate being non-zero. The prior odds were computed as $q / (1 - q)$, where $q = (K - 1) / E_{total}$ represents the expected prior probability of inclusion under the Poisson distribution, with $K$ being the number of discrete states and $E_{total}$ the total number of possible pairwise transitions in the graph. In cases where the MCMC sampling yielded a posterior probability of 1.0 for a transition (which mathematically leads to a division by zero in the posterior odds calculation), the Bayes factor is explicitly reported as 'Inf' (infinity) to denote absolute statistical support within the limits of the finite chain length.
 

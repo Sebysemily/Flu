@@ -194,3 +194,17 @@ rule plot_flu_lineage:
         Rscript {params.script} {input.metadata} {output.plot}
         test -s {output.rds}
         """
+
+rule export_summary_tables:
+    input:
+        metadata="metadata/H5N1_context.csv"
+    output:
+        out_eco="results/clasifications_ecological_groups.csv"
+    conda:
+        "../envs/01_ml_trees.yml"
+    shell:
+        """
+        python code/build_inputs/export_summary_tables.py \
+            --metadata {input.metadata} \
+            --out_eco {output.out_eco}
+        """

@@ -1,0 +1,43 @@
+--- code/segment_analysis/plot_8_segments.R
++++ code/segment_analysis/plot_8_segments.R
+@@ -94,10 +94,29 @@
+   geno_raw <- as.character(row$genotype[1])
+   if (is.na(geno_raw)) geno_raw <- ""
+   
+-  comp <- "Unknown"
+-  # Logic to be refined by user: Currently setting 'Yes' if there's any compatible lineage found
+-  # or if we have at least 1 segment > 98% match.
+-  if (grepl("B3.2", geno_raw) || !grepl("Only 0 segments", geno_raw)) comp <- "Yes"
++  b32_constellation <- list(
++    "PB2" = "am2.1",
++    "PB1" = "am1.2",
++    "PA"  = "ea1",
++    "HA"  = "ea1",
++    "NP"  = "am1.4.1",
++    "NA"  = "ea1",
++    "MP"  = "ea1",
++    "NS"  = "am1.1"
++  )
++  
++  if (grepl("B3.2", geno_raw)) {
++    comp <- "Yes"
++  } else if (grepl("Only 0 segments", geno_raw) || geno_raw == "") {
++    comp <- "Unknown"
++  } else {
++    # Not assigned but has some segments
++    # We will assume "Yes" until proven otherwise
++    comp <- "Yes"
++    for (seg in names(b32_constellation)) {
++      expected <- b32_constellation[[seg]]
++      # Regex to match if the segment is assigned to something ELSE
++      # e.g., "NS:am1.2" instead of "NS:am1.1"
++      pattern_seg_wrong <- paste0(seg, ":(?!(", expected, "))[a-zA-Z0-9.-]+")
++      if (grepl(pattern_seg_wrong, geno_raw, perl=TRUE)) {
++        comp <- "No"
++        break
++      }
++    }
++  }
+   
+   geno_main <- geno_raw
+   geno_det <- ""

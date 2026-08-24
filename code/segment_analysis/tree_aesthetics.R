@@ -53,10 +53,10 @@ is_ecuador_tip <- function(role) {
 }
 
 panel_type_colors <- c(
-  flu_costa        = "#FF0000", # Pure High-Visibility Red
+  flu_costa        = "#8B0000", # Dark Red
   flu_andine       = "#00008B",
   flu_amazonia     = "#008000",
-  american_anchor  = AM21_RIBBON_COLOR,
+  american_anchor  = "#FFA500", # Bright Orange
   regional_context = "#1B9E77",
   # Diverse palette for countries
   Peru             = "#A34700", # Naranja muy oscuro/opaco
@@ -104,7 +104,7 @@ ribbon_color_for_type <- function(role, flu_alpha = 1, context_alpha = 0.30) {
 
 
 get_custom_genotype_style <- function(genotype, is_ec, palette = NULL) {
-  if (is.na(genotype) || genotype == "" || tolower(genotype) == "none") {
+  if (is.na(genotype) || genotype == "" || tolower(genotype) == "none" || grepl("^not assigned", tolower(trimws(genotype)))) {
     genotype <- "unknown"
   }
   
@@ -128,9 +128,9 @@ get_custom_genotype_style <- function(genotype, is_ec, palette = NULL) {
   } else if (geno_clean == "b4.1") {
     base_color <- "#00BFFF" # Celeste / Deep Sky Blue
     label <- "B4.1"
-  } else if (geno_clean == "unknown") {
+  } else if (geno_clean == "unknown" || geno_clean == "partial genome" || geno_clean == "unassigned" || geno_clean == "partial / unassigned") {
     base_color <- "grey85"
-    label <- "unknown"
+    label <- "Partial / Unassigned"
   }
   
   list(color = base_color, pch = pch, label = label)

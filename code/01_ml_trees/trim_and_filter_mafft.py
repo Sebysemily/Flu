@@ -44,11 +44,7 @@ def write_fasta(path: str, records: list[tuple[str, str]]) -> None:
             handle.write(f">{header}\n{seq}\n")
 
 
-def load_protected_ids(path: str | None) -> set[str]:
-    if not path:
-        return set()
-    with open(path, encoding="utf-8") as handle:
-        return {line.strip() for line in handle if line.strip()}
+
 
 
 def gap_n_fraction(seq: str, valid_len: int) -> float:
@@ -102,11 +98,6 @@ def parse_args() -> argparse.Namespace:
         help="Max fraction of gaps/N in trimmed CDS (default 0.10)",
     )
     parser.add_argument(
-        "--protect-ids",
-        default=None,
-        help="Taxon IDs kept regardless of gap/N rate (one per line)",
-    )
-    parser.add_argument(
         "--qc-audit",
         default=None,
         help="Optional TSV of protected taxa kept above --max-divergence",
@@ -141,7 +132,7 @@ def parse_args() -> argparse.Namespace:
 
 DISCARD_FIELDS = [
     "taxon",
-    "expected_role",
+    "country",
     "gap_n_fraction",
     "max_divergence",
     "filter_step",
@@ -183,11 +174,21 @@ def evaluate_trim(
 
     return kept, dropped_rows, protected_kept
 
+def load_country_map(path: str) -> dict[str, str]:
+    import csv
+    cmap = {}
+    with open(path, encoding="utf-8") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            if "file_name" in row and "country" in row:
+                cmap[row["file_name"]] = row["country"]
+    return cmap
 
 def main() -> None:
     args = parse_args()
-    protected = load_protected_ids(args.protect_ids)
     role_map = load_role_map(args.role_metadata)
+    country_map = load_country_map(args.role_metadata)
+    protected = {taxon for taxon, role in role_map.items() if role.startswith("flu_")}
 
     records = read_fasta(args.input)
     if not records:
@@ -201,7 +202,7 @@ def main() -> None:
     )
 
     for row in dropped_rows:
-        row["expected_role"] = role_map.get(row["taxon"], "")
+        row["country"] = country_map.get(row["taxon"], "Unknown")
         row["filter_step"] = args.filter_step
         row["qc_action"] = "DISCARDED"
 
@@ -209,7 +210,7 @@ def main() -> None:
         dropped_rows.append(
             {
                 "taxon": header,
-                "expected_role": role_map.get(header, ""),
+                "country": country_map.get(header, "Unknown"),
                 "gap_n_fraction": f"{div:.4f}",
                 "max_divergence": args.max_divergence,
                 "discard_reason": f"Local Core - Kept despite: gaps/N > {args.max_divergence:.0%} in trimmed CDS",
@@ -218,7 +219,7 @@ def main() -> None:
             }
         )
 
-    flu_dropped = [r for r in dropped_rows if r["expected_role"].startswith("flu_")]
+    flu_dropped = [r for r in dropped_rows if r["country"] == "Ecuador" and r["qc_action"] == "DISCARDED"]
     print(
         f"Kept {len(kept)} / {len(records)} sequences; dropped {len(dropped_rows)} "
         f"(>{args.max_divergence:.0%} gaps/N); flu_* dropped: {len(flu_dropped)}."

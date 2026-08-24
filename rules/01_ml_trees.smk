@@ -142,6 +142,7 @@ rule mafft_align_segment:
 rule trim_and_filter_mafft:
     input:
         alignment=f"{PROCESSED_ALIGNMENTS_CODON_AWARE}/H5N1_{{segment}}.mafft",
+        role_metadata=MAIN_PANEL_METADATA,
     output:
         filtered=f"{PROCESSED_ALIGNMENTS_QC_FILTERED}/H5N1_{{segment}}.mafft",
     conda:
@@ -151,6 +152,7 @@ rule trim_and_filter_mafft:
         python code/01_ml_trees/trim_and_filter_mafft.py \
             --input {input.alignment} \
             --output {output.filtered} \
+            --role-metadata {input.role_metadata} \
             --max-divergence {TRIM_MAX_DIVERGENCE}
         """
 
@@ -543,7 +545,8 @@ rule plot_8_segments_composite:
         trees=expand(f"{RESULTS_PHYLOGENY}/iq-tree/{{segment}}/lineage/H5N1_{{segment}}_fast.treefile", segment=PHYLO_SEGMENTS),
         metadata=MAIN_PANEL_METADATA
     output:
-        png="figures/main_panel_8_segments_collapsed.png"
+        png="figures/main_panel_8_segments_collapsed.png",
+        csv="results/ignored_in_per_segment.csv"
     conda:
         "../envs/r.yml"
     params:
@@ -601,4 +604,18 @@ rule run_flumut:
     shell:
         r"""
         flumut -m {output.markers} -M {output.mutations} --relaxed {input.fasta}
+        """
+
+rule aggregate_eliminated_qc:
+    input:
+        expand(f"{TRIM_GAP_N_QC_DIR}/{{segment}}_eliminated.csv", segment=PHYLO_SEGMENTS)
+    output:
+        "results/qc_metrics/qc_eliminated_sequences.csv"
+    conda:
+        "../envs/01_ml_trees.yml"
+    shell:
+        r"""
+        python code/01_ml_trees/aggregate_eliminated.py \
+            --inputs {input} \
+            --output {output}
         """

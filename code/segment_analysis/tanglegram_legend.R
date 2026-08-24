@@ -6,7 +6,7 @@ source("code/segment_analysis/lineage_palette.R")
 
 LEGEND_ROW_SPACING <- 2.0
 LEGEND_SECTION_GAP <- 2.5
-LEGEND_TITLE_OFFSET <- 2.0
+LEGEND_TITLE_OFFSET <- 2.8
 LEGEND_ECUADOR_TIP_SIZE <- 7
 LEGEND_CONTEXT_TIP_SIZE <- LEGEND_ECUADOR_TIP_SIZE
 
@@ -144,8 +144,10 @@ draw_legend_section <- function(section) {
         y = section$title_y,
         label = section$title,
         hjust = 0,
+        vjust = 1,
         fontface = "bold",
-        size = 6.0
+        size = 5.5,
+        lineheight = 0.95
       ),
       ggplot2::geom_text(
         data = items,
@@ -197,7 +199,7 @@ build_tanglegram_legend <- function(
     "B1.3", 
     "B4.1", 
     "Others", 
-    "unknown"
+    "Partial / Unassigned"
   )
   colors <- c(
     scales::alpha("#0000FF", 0.7),      # B3.2 - alpha 0.7 (Blue)
@@ -205,7 +207,7 @@ build_tanglegram_legend <- function(
     scales::alpha("#FF8C00", 0.7),      # B1.3 - alpha 0.7 (Orange)
     scales::alpha(b41_color, 0.7),     # B4.1 - alpha 0.7
     scales::alpha("#78C67A", 0.7),     # Others (B2.1 pastel green) - alpha 0.7
-    scales::alpha("grey85", 0.7)       # unknown - alpha 0.7
+    scales::alpha("grey85", 0.7)       # Partial / Unassigned - alpha 0.7
   )
   markers <- c(
     "circle", 
@@ -224,7 +226,7 @@ build_tanglegram_legend <- function(
 
   sections <- list(
     list(title = "Ribbons (geographic groups)", items = ribbon_items),
-    list(title = "Tree tips", items = tip_items)
+    list(title = "Tree tips\n(Genotype assignment)", items = tip_items)
   )
 
   layout <- layout_legend_sections(sections)
@@ -238,7 +240,7 @@ build_tanglegram_legend <- function(
 
   p +
     ggplot2::coord_cartesian(
-      xlim = c(0, 18.0),
+      xlim = c(0, 17.0),
       ylim = c(layout$y_bottom - 0.5, layout$y_top + 0.8),
       expand = FALSE
     ) +
