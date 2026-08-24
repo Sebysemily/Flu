@@ -224,5 +224,12 @@ def main():
     fig.subplots_adjust(bottom=0.15, left=0.05, top=0.95, right=0.95) 
     fig.savefig(args.out_png, bbox_inches='tight', bbox_extra_artists=(leg1, leg2, leg3), pad_inches=0.4, facecolor='white')
 
+    # 6. Escribir la lista de marcadores al archivo de salida
+    with open(args.out_list, "w") as f:
+        f.write("Critical Molecular Signatures Assessed:\n")
+        f.write("=======================================\n")
+        for marker in CRITICAL_MARKERS:
+            f.write(f"- {marker}\n")
+
 if __name__ == '__main__':
     main()
