@@ -61,18 +61,7 @@ if (file.exists(genoflu_path)) {
 
 # Define outliers per segment based on user input
 outliers_map <- list(
-  "EPI_ISL_20450124" = c("MP", "NA", "NP", "NS"),
-  "EPI_ISL_20450123" = c("MP"),
-  "EPI_ISL_20450128" = c("MP", "NS"),
-  "EPI_ISL_20450130" = c("MP"),
-  "EPI_ISL_20450131" = c("MP"),
-  "EPI_ISL_20450132" = c("MP"),
-  "EPI_ISL_20450133" = c("MP"),
-  "EPI_ISL_18137671" = c("NS", "NA"),
-  "EPI_ISL_20267521" = c("PB2"),
-  "EPI_ISL_20370746" = c("PB2"),
-  "EPI_ISL_18137626" = c("PB2"),
-  "EPI_ISL_19418489" = c("NS")
+  "EPI_ISL_18137671" = c("NS")
 )
 
 role_lookup   <- setNames(meta$expected_role, meta$file_name)
@@ -312,8 +301,14 @@ p_leg_reassortant <- ggplot(data.frame(x=1, y=1, type="NS outlier"), aes(x,y, co
   ) + guides(color = guide_legend(override.aes = list(size = 14), nrow = 1))
 leg_reassortant <- cowplot::get_legend(p_leg_reassortant)
 
-bottom_row <- plot_grid(leg_shape, leg_reassortant, NULL, nrow=1, rel_widths=c(1.2, 0.4, 0.3))
-combined_legends <- plot_grid(leg_role, bottom_row, ncol=1, rel_heights=c(1, 1))
+grid_2x2 <- plot_grid(
+  leg_reassortant, leg_role,
+  leg_shape, NULL,
+  nrow = 2,
+  rel_widths = c(0.4, 1.2),
+  rel_heights = c(1, 1)
+)
+combined_legends <- plot_grid(NULL, grid_2x2, nrow=1, rel_widths=c(0.12, 1))
 
 # Reorder trees to: PB1, PB2, NP, NS and PA, HA, NA, MP
 desired_order <- c("PB1", "PB2", "NP", "NS", "PA", "HA", "NA", "MP")
