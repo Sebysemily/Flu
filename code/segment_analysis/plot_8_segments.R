@@ -264,8 +264,9 @@ p_leg_role <- ggplot(legend_data_role, aes(x=x, y=y, color=role)) +
     legend.position="bottom", 
     legend.box="horizontal",
     legend.margin = margin(t=0, b=0, r=0, l=0),
+    legend.justification = "left",
     legend.text = element_text(margin = margin(r = 15), size=18),
-    legend.title = element_text(size=20, face="bold", vjust=0.5, margin=margin(r=20))
+    legend.title = element_text(size=20, face="bold", vjust=0.5, margin=margin(r=10))
   ) +
   guides(color = guide_legend(override.aes = list(size = 9, alpha = c(1, 1, 1, 0.3, 0.4)), nrow = 1, title.position = "left", title.vjust = 0.5, keywidth = unit(2, "cm")))
 leg_role <- cowplot::get_legend(p_leg_role)
@@ -284,9 +285,10 @@ p_leg_shape <- ggplot(data.frame(host=names(host_shape_mapping)), aes(x=1,y=1,sh
   theme_void() + theme(
     legend.position="bottom", 
     legend.box="horizontal",
-    legend.margin = margin(t=0, b=0, r=0, l=0),
+    legend.margin = margin(t=0, b=0, r=0, l=15),
+    legend.justification = "left",
     legend.text = element_text(margin = margin(r = 40), size=18),
-    legend.title = element_text(size=20, face="bold", vjust=0.5, margin=margin(r=20))
+    legend.title = element_text(size=20, face="bold", vjust=0.5, margin=margin(r=10))
   ) +
   guides(shape = guide_legend(override.aes = list(size = 9), nrow = 1, title.position = "left", title.vjust = 0.5, keywidth = unit(2, "cm")))
 leg_shape <- cowplot::get_legend(p_leg_shape)
@@ -297,7 +299,8 @@ p_leg_reassortant <- ggplot(data.frame(x=1, y=1, type="NS outlier"), aes(x,y, co
   theme_void() + theme(
     legend.position="bottom", 
     legend.margin = margin(t=0, b=0, r=0, l=0),
-    legend.text = element_text(size=18, margin=margin(r=20))
+    legend.justification = "left",
+    legend.text = element_text(size=18, margin=margin(r=10))
   ) + guides(color = guide_legend(override.aes = list(size = 14), nrow = 1))
 leg_reassortant <- cowplot::get_legend(p_leg_reassortant)
 
@@ -305,7 +308,7 @@ grid_2x2 <- plot_grid(
   leg_reassortant, leg_role,
   leg_shape, NULL,
   nrow = 2,
-  rel_widths = c(0.4, 1.2),
+  rel_widths = c(0.25, 1.5),
   rel_heights = c(1, 1)
 )
 combined_legends <- plot_grid(NULL, grid_2x2, nrow=1, rel_widths=c(0.12, 1))

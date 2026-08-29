@@ -9,6 +9,7 @@ import matplotlib.lines as mlines
 
 CRITICAL_MARKERS = [
     "PB2:E627K", "PB2:D701N", "PB2:Q591K", "PB2:Q591R",
+    "PB2:T271A", "PB2:K702R",
     "PA:N383D", "PB1-F2:N66S", "HA1-5:S223R", "HA1-5:T156A",
     "NP:A184K", "NS-1:P42S", "M1:N30D", "NA-1:H275Y", "M2:S31N"
 ]
@@ -23,9 +24,9 @@ GEO_COLOR_MAP = {
 }
 
 HOST_COLOR_MAP = {
-    "domesticated bird": "#E6AB02", 
-    "wild bird": "#7570B3",         
-    "mammal": "#00BCD4",            
+    "domesticated bird": "#F59E0B", # Amber
+    "wild bird": "#10B981",         # Emerald Green
+    "mammal": "#EC4899",            # Pink
     "unknown": "#999999"            
 }
 
@@ -181,9 +182,9 @@ def main():
         ax.text(-0.7, i + 0.05, sample, ha='right', va='center', fontsize=40, color=g_color, fontweight='bold', clip_on=False, zorder=3)
         
         if sample in avian_ancestors:
-            ax.text(-0.4, i + 0.28, "*", ha='center', va='center', fontsize=65, color='red', fontweight='bold', clip_on=False, zorder=6)
+            ax.text(-0.4, i + 0.28, "*", ha='center', va='center', fontsize=85, color='red', fontweight='bold', clip_on=False, zorder=6)
         elif sample in mammal_ancestor:
-            ax.text(-0.4, i + 0.28, "*", ha='center', va='center', fontsize=65, color='#F59E0B', fontweight='bold', clip_on=False, zorder=6)
+            ax.text(-0.4, i + 0.28, "*", ha='center', va='center', fontsize=85, color='#F59E0B', fontweight='bold', clip_on=False, zorder=6)
 
     ax.set_xticks([])
     ax.set_yticks([]) 
@@ -202,20 +203,20 @@ def main():
         mpatches.Patch(color=HOST_COLOR_MAP['mammal'], label='Mammal (Sea Lion)')
     ]
     ast_handles = [
-        mlines.Line2D([], [], color='none', marker='*', markerfacecolor='red', markeredgecolor='none', markersize=60, label='Avian Intro. Ancestor'),
-        mlines.Line2D([], [], color='none', marker='*', markerfacecolor='#F59E0B', markeredgecolor='none', markersize=60, label='Close Mammal Relative'),
+        mlines.Line2D([], [], color='none', marker='*', markerfacecolor='red', markeredgecolor='none', markersize=80, label='Avian Intro. Ancestor'),
+        mlines.Line2D([], [], color='none', marker='*', markerfacecolor='#F59E0B', markeredgecolor='none', markersize=80, label='Close Mammal Relative'),
         mpatches.Patch(color='#1D4ED8', label='Target Mutation'),
         mpatches.Patch(color='#F8FAFC', label='Baseline / WT'),
         mpatches.Patch(color='#CBD5E1', label='Missing Data')
     ]
 
-    leg1 = ax.legend(handles=geo_handles, loc='upper center', bbox_to_anchor=(0.12, -0.01), ncol=2, frameon=False, fontsize=65, title="Location", title_fontproperties={'weight':'bold', 'size':80}, alignment='left', handlelength=0, handletextpad=0.1, columnspacing=0.6, labelspacing=0.05, borderpad=0.0)
+    leg1 = ax.legend(handles=geo_handles, loc='upper center', bbox_to_anchor=(0.12, -0.01), ncol=2, frameon=False, fontsize=85, title="Location", title_fontproperties={'weight':'bold', 'size':80}, alignment='left', handlelength=0, handletextpad=0.1, columnspacing=0.6, labelspacing=0.05, borderpad=0.0)
     for text, color in zip(leg1.get_texts(), [GEO_COLOR_MAP['flu_sierra'], GEO_COLOR_MAP['flu_costa'], GEO_COLOR_MAP['flu_amazonia'], GEO_COLOR_MAP['Peru'], GEO_COLOR_MAP['Chile']]):
         text.set_color(color)
         text.set_fontweight('bold')
     
-    leg2 = ax.legend(handles=host_handles, loc='upper center', bbox_to_anchor=(0.45, -0.01), ncol=1, frameon=False, fontsize=65, title="Host Type", title_fontproperties={'weight':'bold', 'size':80}, alignment='left', handletextpad=0.2, labelspacing=0.05, borderpad=0.0)
-    leg3 = ax.legend(handles=ast_handles, loc='upper center', bbox_to_anchor=(0.82, -0.01), ncol=2, frameon=False, fontsize=65, title="Markers", title_fontproperties={'weight':'bold', 'size':80}, alignment='left', handletextpad=0.2, columnspacing=0.6, labelspacing=0.05, borderpad=0.0)
+    leg2 = ax.legend(handles=host_handles, loc='upper center', bbox_to_anchor=(0.45, -0.01), ncol=1, frameon=False, fontsize=85, title="Host Type", title_fontproperties={'weight':'bold', 'size':80}, alignment='left', handletextpad=0.2, labelspacing=0.05, borderpad=0.0)
+    leg3 = ax.legend(handles=ast_handles, loc='upper center', bbox_to_anchor=(0.82, -0.01), ncol=2, frameon=False, fontsize=85, title="Markers", title_fontproperties={'weight':'bold', 'size':80}, alignment='left', handletextpad=0.2, columnspacing=0.6, labelspacing=0.05, borderpad=0.0)
     
     ax.add_artist(leg1)
     ax.add_artist(leg2)
