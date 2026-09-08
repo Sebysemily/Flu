@@ -454,6 +454,7 @@ rule run_mafft_alignment_pruned_ha:
 rule trim_and_filter_pruned_ha:
     input:
         alignment=MAIN_PANEL_HA_MAFFT,
+        role_metadata="metadata/H5N1_context.csv",
     output:
         filtered=MAIN_PANEL_HA_POSTQC,
     conda:
@@ -463,6 +464,7 @@ rule trim_and_filter_pruned_ha:
         python code/01_ml_trees/trim_and_filter_mafft.py \
             --input {input.alignment} \
             --output {output.filtered} \
+            --role-metadata {input.role_metadata} \
             --max-divergence {TRIM_MAX_DIVERGENCE}
         """
 

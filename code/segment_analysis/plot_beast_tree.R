@@ -93,7 +93,7 @@ if (nrow(tip_data) > 0) {
     stroke = 1.0
   ) +
     scale_color_manual(values = panel_type_colors, guide = "none", na.value = "grey70", na.translate = FALSE) +
-    scale_shape_manual(values = c("domesticated bird"=15, "wild bird"=16, "domesticated mammal"=17, "wild mammal"=18, "Unknown"=3), name = "Host Type", na.value=16, na.translate = FALSE) +
+    scale_shape_manual(values = c("domesticated bird"=15, "wild bird"=16, "domesticated mammal"=17, "wild mammal"=18, "Unknown"=3), name = "Host Type", na.value=16, na.translate = FALSE, drop = FALSE) +
     scale_size_identity() + scale_alpha_identity() + scale_linewidth_identity()
 }
 

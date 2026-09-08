@@ -35,7 +35,7 @@ Useful Commands
 snakemake --cores all --use-conda
 
 # To re-run model selection (GSS), use the GSS target...
-snakemake --cores all --use-conda gss_model_selection
+snakemake --cores all --use-conda extract_gss_mle
 
 # To build the local Ecuador FASTA inputs from MIRA (instead of epi_set fasta)
 snakemake --cores all --use-conda build_inputs

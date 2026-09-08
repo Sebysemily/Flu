@@ -256,6 +256,7 @@ for (i in seq_along(tree_paths)) {
 # Build Legends
 legend_roles <- PANEL_TYPE_RIBBON_ORDER
 legend_data_role <- data.frame(x=seq_along(legend_roles), y=1, role=legend_roles, stringsAsFactors=FALSE)
+legend_data_role$role <- factor(legend_data_role$role, levels = PANEL_TYPE_RIBBON_ORDER)
 
 p_leg_role <- ggplot(legend_data_role, aes(x=x, y=y, color=role)) +
   geom_point(size=12, shape=15) +
@@ -266,7 +267,7 @@ p_leg_role <- ggplot(legend_data_role, aes(x=x, y=y, color=role)) +
     legend.margin = margin(t=0, b=0, r=0, l=0),
     legend.justification = "left",
     legend.text = element_text(margin = margin(r = 15), size=18),
-    legend.title = element_text(size=20, face="bold", vjust=0.5, margin=margin(r=10))
+    legend.title = element_text(size=20, face="bold", vjust=0.5, margin=margin(r=60))
   ) +
   guides(color = guide_legend(override.aes = list(size = 9, alpha = c(1, 1, 1, 0.3, 0.4)), nrow = 1, title.position = "left", title.vjust = 0.5, keywidth = unit(2, "cm")))
 leg_role <- cowplot::get_legend(p_leg_role)
@@ -288,7 +289,7 @@ p_leg_shape <- ggplot(data.frame(host=names(host_shape_mapping)), aes(x=1,y=1,sh
     legend.margin = margin(t=0, b=0, r=0, l=15),
     legend.justification = "left",
     legend.text = element_text(margin = margin(r = 40), size=18),
-    legend.title = element_text(size=20, face="bold", vjust=0.5, margin=margin(r=10))
+    legend.title = element_text(size=20, face="bold", vjust=0.5, margin=margin(r=60))
   ) +
   guides(shape = guide_legend(override.aes = list(size = 9), nrow = 1, title.position = "left", title.vjust = 0.5, keywidth = unit(2, "cm")))
 leg_shape <- cowplot::get_legend(p_leg_shape)
@@ -308,7 +309,7 @@ grid_2x2 <- plot_grid(
   leg_reassortant, leg_role,
   leg_shape, NULL,
   nrow = 2,
-  rel_widths = c(0.25, 1.5),
+  rel_widths = c(0.15, 1.2),
   rel_heights = c(1, 1)
 )
 combined_legends <- plot_grid(NULL, grid_2x2, nrow=1, rel_widths=c(0.12, 1))
@@ -324,7 +325,7 @@ layout_1 <- plot_grid(
   plot_grid(panels_reordered[[1]]$bot, panels_reordered[[2]]$bot, panels_reordered[[3]]$bot, panels_reordered[[4]]$bot, ncol=4),
   ncol = 1, rel_heights = c(1, 1)
 )
-final_plot_1 <- plot_grid(layout_1, combined_legends, ncol=1, rel_heights=c(1, 0.12), labels=c("A", ""), label_size=60, label_fontfamily="sans")
+final_plot_1 <- plot_grid(layout_1, combined_legends, ncol=1, rel_heights=c(1, 0.12), labels=c("A", ""), label_size=40, label_fontfamily="sans")
 
 # Compose Graphic 2 (last 4 segments: PA, HA, NA, MP)
 layout_2 <- plot_grid(
@@ -332,7 +333,7 @@ layout_2 <- plot_grid(
   plot_grid(panels_reordered[[5]]$bot, panels_reordered[[6]]$bot, panels_reordered[[7]]$bot, panels_reordered[[8]]$bot, ncol=4),
   ncol = 1, rel_heights = c(1, 1)
 )
-final_plot_2 <- plot_grid(layout_2, combined_legends, ncol=1, rel_heights=c(1, 0.12), labels=c("B", ""), label_size=60, label_fontfamily="sans")
+final_plot_2 <- plot_grid(layout_2, combined_legends, ncol=1, rel_heights=c(1, 0.12), labels=c("B", ""), label_size=40, label_fontfamily="sans")
 
 
 out1 <- sub(".png$", "_1.png", output_png)

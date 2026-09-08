@@ -5316,7 +5316,7 @@
 	
 
 	<!-- Define MCMC                                                             -->
-	<mcmc id="mcmc" chainLength="10000000" autoOptimize="true" operatorAnalysis="H5N1_HA_panel_postQC.ops">
+	<mcmc id="mcmc" chainLength="200000000" autoOptimize="true" operatorAnalysis="H5N1_HA_panel_postQC.ops">
 		<joint id="joint">
 			<prior id="prior">
 				<logNormalPrior mu="1.0" sigma="1.25" offset="0.0">
@@ -5414,7 +5414,7 @@
 		<operators idref="operators"/>
 
 		<!-- write log to screen                                                     -->
-		<log id="screenLog" logEvery="1000">
+		<log id="screenLog" logEvery="20000">
 			<column label="Joint" dp="4" width="12">
 				<joint idref="joint"/>
 			</column>
@@ -5450,7 +5450,7 @@
 		</log>
 
 		<!-- write log to file                                                       -->
-		<log id="fileLog" logEvery="1000" fileName="H5N1_HA_panel_postQC.log" overwrite="false">
+		<log id="fileLog" logEvery="20000" fileName="H5N1_HA_panel_postQC.log" >
 			<joint idref="joint"/>
 			<prior idref="prior"/>
 			<likelihood idref="likelihood"/>
@@ -5508,12 +5508,12 @@
 		</log>
 
 		<!-- START Discrete Traits Model                                             -->
-		<log id="H5N1_HA_panel_postQC.LocationrateMatrixLog" logEvery="1000" fileName="H5N1_HA_panel_postQC.Location.rates.log">
+		<log id="H5N1_HA_panel_postQC.LocationrateMatrixLog" logEvery="20000" fileName="H5N1_HA_panel_postQC.Location.rates.log">
 			<parameter idref="Location.rates"/>
 			<parameter idref="Location.indicators"/>
 			<sumStatistic idref="Location.nonZeroRates"/>
 		</log>
-		<log id="H5N1_HA_panel_postQC.HostrateMatrixLog" logEvery="1000" fileName="H5N1_HA_panel_postQC.Host.rates.log">
+		<log id="H5N1_HA_panel_postQC.HostrateMatrixLog" logEvery="20000" fileName="H5N1_HA_panel_postQC.Host.rates.log">
 			<parameter idref="Host.rates"/>
 			<parameter idref="Host.indicators"/>
 			<sumStatistic idref="Host.nonZeroRates"/>
@@ -5523,7 +5523,7 @@
 
 
 		<!-- write tree log to file                                                  -->
-		<logTree id="treeFileLog" logEvery="1000" nexusFormat="true" fileName="H5N1_HA_panel_postQC.trees" sortTranslationTable="true">
+		<logTree id="treeFileLog" logEvery="20000" nexusFormat="true" fileName="H5N1_HA_panel_postQC.trees" sortTranslationTable="true">
 			<treeModel idref="treeModel"/>
 			<trait name="rate" tag="default.rate">
 				<discretizedBranchRates idref="default.branchRates"/>
@@ -5557,13 +5557,13 @@
 		<!-- START Ancestral state reconstruction                                    -->
 
 		<!-- write complete history tree log to file                                 -->
-		<logTree logEvery="1000" nexusFormat="true" fileName="H5N1_HA_panel_postQC.Location.history.trees" sortTranslationTable="true">
+		<logTree logEvery="20000" nexusFormat="true" fileName="H5N1_HA_panel_postQC.Location.history.trees" sortTranslationTable="true">
 			<treeModel idref="treeModel"/>
 			<markovJumpsTreeLikelihood idref="Location.treeLikelihood"/>
 		</logTree>
 
 		<!-- write complete history tree log to file                                 -->
-		<logTree logEvery="1000" nexusFormat="true" fileName="H5N1_HA_panel_postQC.Host.history.trees" sortTranslationTable="true">
+		<logTree logEvery="20000" nexusFormat="true" fileName="H5N1_HA_panel_postQC.Host.history.trees" sortTranslationTable="true">
 			<treeModel idref="treeModel"/>
 			<markovJumpsTreeLikelihood idref="Host.treeLikelihood"/>
 		</logTree>
@@ -5572,7 +5572,7 @@
 
 
 		<!-- write state of Markov chain to checkpoint file                          -->
-		<logCheckpoint id="checkpointFileLog" checkpointEvery="1000000" checkpointFinal="10000000" fileName="H5N1_HA_panel_postQC.chkpt" overwrite="false"/>
+		<logCheckpoint id="checkpointFileLog" checkpointEvery="4000000" checkpointFinal="200000000" fileName="H5N1_HA_panel_postQC.chkpt" overwrite="false"/>
 	</mcmc>
 	
 	<report>

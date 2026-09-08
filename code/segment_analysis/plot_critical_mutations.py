@@ -80,10 +80,8 @@ def main():
     ecuador_ids = ecuador_sierra + ecuador_costa + ecuador_amazonia + ecuador_other
     
     avian_ancestors = ["EPI_ISL_20359491", "EPI_ISL_17660072", "EPI_ISL_17777528", "EPI_ISL_18054500", "EPI_ISL_19781426"]
-    mammal_ancestor = ["EPI_ISL_18054502"]
-    other_context = ["EPI_ISL_17777531", "EPI_ISL_18054509", "EPI_ISL_18265430", "EPI_ISL_18777129", "EPI_ISL_19391462"]
-    
-    jump_ids = avian_ancestors + mammal_ancestor + other_context
+    sa_mammals = meta_valid[(meta_valid['host_type'].str.contains('mammal', case=False, na=False)) & (meta_valid['country'] != 'USA') & (meta_valid['country'] != 'Ecuador')].index.tolist()
+    jump_ids = avian_ancestors + sa_mammals
     
     seen = set()
     jump_ids_uniq = [x for x in jump_ids if not (x in seen or seen.add(x))]
@@ -183,8 +181,10 @@ def main():
         
         if sample in avian_ancestors:
             ax.text(-0.4, i + 0.28, "*", ha='center', va='center', fontsize=85, color='red', fontweight='bold', clip_on=False, zorder=6)
-        elif sample in mammal_ancestor:
-            ax.text(-0.4, i + 0.28, "*", ha='center', va='center', fontsize=85, color='#F59E0B', fontweight='bold', clip_on=False, zorder=6)
+        else:
+            host_str = str(meta.loc[sample, 'host']).lower()
+            if 'sea_lion' in host_str or 'sea lion' in host_str or 'otaria' in host_str:
+                ax.text(-0.4, i + 0.28, "*", ha='center', va='center', fontsize=85, color='#F59E0B', fontweight='bold', clip_on=False, zorder=6)
 
     ax.set_xticks([])
     ax.set_yticks([]) 
@@ -200,11 +200,11 @@ def main():
     host_handles = [
         mpatches.Patch(color=HOST_COLOR_MAP['domesticated bird'], label='Domesticated Bird'),
         mpatches.Patch(color=HOST_COLOR_MAP['wild bird'], label='Wild Bird'),
-        mpatches.Patch(color=HOST_COLOR_MAP['mammal'], label='Mammal (Sea Lion)')
+        mpatches.Patch(color=HOST_COLOR_MAP['mammal'], label='Mammal')
     ]
     ast_handles = [
         mlines.Line2D([], [], color='none', marker='*', markerfacecolor='red', markeredgecolor='none', markersize=80, label='Avian Intro. Ancestor'),
-        mlines.Line2D([], [], color='none', marker='*', markerfacecolor='#F59E0B', markeredgecolor='none', markersize=80, label='Close Mammal Relative'),
+        mlines.Line2D([], [], color='none', marker='*', markerfacecolor='#F59E0B', markeredgecolor='none', markersize=80, label='Sea Lion'),
         mpatches.Patch(color='#1D4ED8', label='Target Mutation'),
         mpatches.Patch(color='#F8FAFC', label='Baseline / WT'),
         mpatches.Patch(color='#CBD5E1', label='Missing Data')
@@ -224,6 +224,10 @@ def main():
     fig.tight_layout()
     fig.subplots_adjust(bottom=0.15, left=0.05, top=0.95, right=0.95) 
     fig.savefig(args.out_png, bbox_inches='tight', bbox_extra_artists=(leg1, leg2, leg3), pad_inches=0.4, facecolor='white')
+    
+    # Also save as PDF for the journal submission
+    out_pdf = args.out_png.replace('.png', '.pdf')
+    fig.savefig(out_pdf, bbox_inches='tight', bbox_extra_artists=(leg1, leg2, leg3), pad_inches=0.4, facecolor='white')
 
     # 6. Escribir la lista de marcadores al archivo de salida
     with open(args.out_list, "w") as f:
