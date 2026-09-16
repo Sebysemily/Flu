@@ -1,3 +1,4 @@
+# H5N1 Ecuador Phylogenetic Analysis Pipeline
 <!--toc:start-->
 - [Requirements
 ----------](#requirements)
@@ -15,8 +16,6 @@
   - [Panel Subsampling (Augur Filter Logic)](#panel-subsampling-augur-filter-logic)
   - [Bayesian Phylodynamics (BEAST 1.10.4)](#bayesian-phylodynamics-beast-1104)
 <!--toc:end-->
-
-H5N1 Ecuador Pipeline
 
 Workflow for the phylogenetic analysis of H5N1 in Ecuador. Reproducibility materials—including the custom Python wrapper scripts and exact parameters used for the augur filter subsampling, complete Snakemake pipeline commands, conda environment files, BEAST XML configurations, inferred tree files, and visualization R scripts—are openly available in this repository. The complete repository is permanently archived and publicly available via Zenodo: **[DOI: TO BE ADDED]**. Locally generated consensus sequences and raw sequencing reads from the Ecuadorian samples have been deposited in **[PLACEHOLDER FOR GENBANK/SRA ACCESSIONS]**. All contextual genomes retrieved from GISAID remain subject to their respective access and acknowledgment terms (Shu and McCauley, 2017).
 
