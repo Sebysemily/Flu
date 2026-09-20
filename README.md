@@ -17,7 +17,7 @@
   - [Bayesian Phylodynamics (BEAST 1.10.4)](#bayesian-phylodynamics-beast-1104)
 <!--toc:end-->
 
-Workflow for the phylogenetic analysis of H5N1 in Ecuador. Reproducibility materials—including the custom Python wrapper scripts and exact parameters used for the augur filter subsampling, complete Snakemake pipeline commands, conda environment files, BEAST XML configurations, inferred tree files, and visualization R scripts—are openly available in this repository. The complete repository is permanently archived and publicly available via Zenodo: **[DOI: TO BE ADDED]**. Locally generated consensus sequences and raw sequencing reads from the Ecuadorian samples have been deposited in **[PLACEHOLDER FOR GENBANK/SRA ACCESSIONS]**. All contextual genomes retrieved from GISAID remain subject to their respective access and acknowledgment terms (Shu and McCauley, 2017).
+Workflow for the phylogenetic analysis of H5N1 in Ecuador. Reproducibility materials—including the custom Python wrapper scripts and exact parameters used for the augur filter subsampling, complete Snakemake pipeline commands, conda environment files, BEAST XML configurations, inferred tree files, and visualization R scripts—are openly available in this repository. The complete repository is permanently archived and publicly available via Zenodo: **[DOI: TO BE ADDED]**. Locally generated consensus sequences and raw sequencing reads from the Ecuadorian samples have been deposited in **EPI_SET LINK (?)**. All contextual genomes retrieved from GISAID remain subject to their respective access and acknowledgment terms (Shu and McCauley, 2017).
 
 Requirements
 ----------
@@ -36,16 +36,16 @@ snakemake --cores all --use-conda
 # To re-run model selection (GSS), use the GSS target...
 snakemake --cores all --use-conda extract_gss_mle
 
-# To build the local Ecuador FASTA inputs from MIRA (instead of epi_set fasta)
+# To build the local Ecuador FASTA inputs from MIRA with raw fastq files (instead of epi_set assembled fasta)
 snakemake --cores all --use-conda build_inputs
 ```
 
 Current Flow
 ------------
 
-1. **Inputs:** An `epi_set` file in `data/context` (which must have at least the columns `Virus name`, `Isolate ID`, `Collection date`, and `Segment`). For the Ecuador input: FASTA in `data/input/` (GISAID) or constructed from MIRA (`mira_base_dir`) → `data/input/H5N1_EC_gisaid_from_mira.fasta`. Extra metadata of Ecuadorian samples in `metadata/flu_filtrado.csv`.
-2. **Unified Ingestion:** `process_raw_to_segments` (rule in `rules/build_inputs.smk`) writes `data/phylogeny/by_segment/H5N1_{segment}.fasta` (headers `EPI_ISL`) and `metadata/H5N1_context.csv` (Ecuador + regional context, deduplicated by taxon).
-3. **ML Phylogeny:** Nextclade by segment and QC across the 8 segments; robust Maximum Likelihood trees with 1000 ultrafast bootstraps (e.g., `iqtree_fast_codon_segment` in `rules/01_ml_trees.smk`) on all samples for exploratory and structural analyses.
+1. **Inputs:** An `epi_set` file in `data/context` (which must have at least the columns `Virus name`, `Isolate ID`, `Collection date`, and `Segment`). For starting with raw, MIRA run with the correct path in `config/config.yml` (`mira_base_dir`) → `data/input/H5N1_EC_gisaid_from_mira.fasta`. Extra metadata of Ecuadorian samples in `metadata/flu_filtrado.csv`.
+2. **Unification with context:** `process_raw_to_segments` (rule in `rules/build_inputs.smk`) writes `data/phylogeny/by_segment/H5N1_{segment}.fasta` (headers `EPI_ISL`) and `metadata/H5N1_context.csv` (Ecuador + regional context, deduplicated by taxon).
+3. **ML Phylogeny:** Nextclade by segment and QC across the 8 segments; Maximum Likelihood trees with 1000 ultrafast2 bootstraps (e.g., `iqtree_fast_codon_segment` in `rules/01_ml_trees.smk`) on all samples for exploratory and structural analyses.
 4. **Panel:** Subsets sequences based on geographic/temporal metadata roles (Ecuador core, American anchors, regional context) using `build_panel_context_taxa.py` (rule `augur_filter_context` in `rules/01_ml_trees.smk`) → `data/phylogeny/main_panel/`.
 5. **Subset + RTT:** IQ-TREE on the final panel; TreeTime with dates from `H5N1_context.csv` (rules in `rules/02_pre_beast.smk`).
 6. **Figures:** `plot_8_segments.R` + `tree_aesthetics.R` produce `figures/main_panel_8_segments_collapsed.png` via the rule `plot_8_segments_composite` (in `rules/01_ml_trees.smk`).
@@ -76,12 +76,8 @@ To avoid cluttering the configuration files, not all parameters used across the 
 
 - **Reproducibility & Resources:** `random_seed: 39809473`, `max_threads: 16`.
 - **Panel Selection:** Maximum thresholds for context taxa (e.g., `PANEL_REGIONAL_CONTEXT_MAX = 250`) are defined natively in the `snakefile`.
-- **TreeTime:** `treetime_parameters.clock_filter` (set to 4.0).
-- **Outgroup:** `outgroup_root_sample` (set to EPI_ISL_18133029).
-
-### Note about ignored segments in ML zoom
-
-During the process, samples acting as recombinants or endemic strains are identified and excluded from the main H5N1 visualization due to massive divergence in certain segments (e.g., NS or MP). The metadata extracted from GenoFLU for these key samples (condors, boobies, otters, etc.), where the discordance of their genotypes against typical HPAI lineages is observed, is consolidated in the `results/possible_reassortants_ignored.csv` file.
+- **TreeTime:** `treetime_parameters.clock_filter` (set to 4.0: **default**).
+- **Root for trees:** `outgroup_root_sample` (set to EPI_ISL_18133029).
 
 Tools and Core Parameters
 -------------------------
@@ -94,7 +90,7 @@ The pipeline relies on several standard bioinformatics tools for evolutionary an
   mafft --auto --thread 16 <input_segment.fasta> > <aligned_segment.mafft>
   ```
 
-- **Quality Control & Clade Assignment (Nextclade):** Used for robust QC and determining specific viral clades, filtering out bad alignments or overly divergent segments (rule `run_nextclade_alignment_all` in `rules/01_ml_trees.smk`).
+- **Quality Control & Clade Assignment (Nextclade):** Used for robust QC in HA segments and confirming specific viral clades, filtering out bad alignments or overly divergent segments (rule `run_nextclade_alignment_all` in `rules/01_ml_trees.smk`).
 
   ```bash
   nextclade run -D <dataset_dir> -j 16 --output-tsv <output_report.tsv> <input.fasta>
@@ -133,7 +129,7 @@ Selects context sequences to build the final phylogenetic panel while keeping th
 
 ### Bayesian Phylodynamics (BEAST 1.10.4)
 
-Evaluates models and estimates time-scaled trees using BEAGLE (CPU only for maximum cross-compatibility). XML templates are stored in `template_beast/` (rule `run_final_beast` in `rules/03_beast.smk`).
+Evaluates models and estimates time-scaled trees using BEAGLE (CPU only). XML templates are stored in `template_beast/` (rule `run_final_beast` in `rules/03_beast.smk`).
 
 ```bash
 beast -beagle_CPU -overwrite -threads 1 <model.xml>
